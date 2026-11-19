@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><script>window.SC_PUBLIC = true;</script></head><body style="margin:0"><title>Splatoocat 貓咪遊樂園</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><script>window.SC_PUBLIC = true;</script></head><body style="margin:0"><title>漆貓大作戰 SplaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -482,7 +482,7 @@ html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
   <div id="ui"></div>
-  <div id="boot"><div class="logo"><span>Splatoo</span><span class="l2">cat</span></div><div class="boot-sub">正在擠墨水…</div></div>
+  <div id="boot"><div class="logo"><span>Spla</span><span class="l2">Cat</span></div><div class="boot-sub">正在擠墨水…</div></div>
   <div id="fatal" hidden></div>
 </div>
 <script>console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
@@ -638,8 +638,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   add([
     // 開機、標題
     ['正在擠墨水…', 'Squeezing the ink…', 'インクをしぼってるよ…', '잉크 짜는 중…'],
-    ['貓咪遊樂園・網頁試玩版', 'Cat Playground · Web Demo', 'ネコ遊園地・ウェブ体験版', '고양이 놀이공원 · 웹 체험판'],
-    ['Splatoocat 貓咪遊樂園', 'Splatoocat Cat Playground', 'Splatoocat ネコ遊園地', 'Splatoocat 고양이 놀이공원'],
+    ['漆貓大作戰・網頁試玩版', 'Web Demo', 'ウェブ体験版', '웹 체험판'],
+    ['漆貓大作戰 SplaCat', 'SplaCat', 'SplaCat', 'SplaCat'],
     ['模式', 'Mode', 'モード', '모드'],
     ['電腦對戰', 'vs Computer', 'CPUと対戦', '컴퓨터 대전'],
     ['三分鐘塗地', '3-min Turf War', '3分間ナワバリ', '3분 땅따먹기'],
@@ -1021,7 +1021,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const FONT = { ja: 'Noto+Sans+JP', ko: 'Noto+Sans+KR' }, fontOn = {};
   const setDocLang = () => {
     try {
-      document.documentElement.lang = HTML_LANG[lang]; document.documentElement.dataset.lang = lang; document.title = tr('Splatoocat 貓咪遊樂園');
+      document.documentElement.lang = HTML_LANG[lang]; document.documentElement.dataset.lang = lang; document.title = tr('漆貓大作戰 SplaCat');
       if (FONT[lang] && !fontOn[lang] && document.head) { fontOn[lang] = 1; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = `https://fonts.googleapis.com/css2?family=${FONT[lang]}:wght@500;700;900&display=swap`; document.head.append(l); } // 日文、韓文字型選了才載
     } catch (e) {}
   };
@@ -9589,8 +9589,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     <div class="menu" id="m-title">
       <div class="title-card">
         <div class="logo-wrap">
-          <div class="logo"><span>Splatoo</span><span class="l2">cat</span></div>
-          <div class="logo-sub">貓咪遊樂園・網頁試玩版</div>
+          <div class="logo"><span>Spla</span><span class="l2">Cat</span></div>
+          <div class="logo-sub">漆貓大作戰・網頁試玩版</div>
           <p class="lede" id="lede"></p>
         </div>
         <div class="opts">
