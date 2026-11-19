@@ -494,7 +494,7 @@ SC.CFG = {
 
   PAINT: 1.5, // Yen 2026-11-14：武器的塗地半徑再大 1.5 倍
 
-  W01: { id: 'W01', name: '漆彈槍', damage: 24, ink: 100 / 160 / INK_LAST, range: 70, interval: 0.066, radius: 4.1, speed: 110, gravity: 105 },
+  W01: { id: 'W01', name: '漆彈槍', damage: 24, ink: 100 / 160 / INK_LAST, range: 70, interval: 0.066, radius: 4.1, speed: 135, gravity: 105 }, // Yen 2026-11-19 打擊感：子彈快一點（110→135）
   // 滾刷：按一下往前甩一排墨水（空中是直的一道），按住就把刷頭壓在地上往前推，邊走邊塗出一條連續的寬帶，越推越快
   W02: { id: 'W02', name: '滾刷', swingInk: 8 / INK_LAST, rollInk: 0.42 / INK_LAST, swingInterval: 0.5, rollDelay: 0.2, swingRange: 19, airRange: 40, // 跳起來甩：直的一道、噴得遠（Yen 11/14，像漆彈大作戰的跳甩）
     
@@ -1924,6 +1924,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map: tagTex, depthTest: false, transparent: true })); tag.scale.set(5.2, 1.95, 1); tag.position.y = 7.6; tag.renderOrder = 10; root.add(tag);
 
     const cat = { group: root, trail, kind: kindId, name: K.name, phase: Math.random() * 6, hand, weapons, weaponId: null, squash: 0, recoil: 0, swing: 0 };
+    // 被打到時全身閃白一下（Yen 2026-11-19 打擊感）
+    const flashMats = [mFur, mLight, mDark, mEar, mTail, mTeam, mTeamGloss], flashBase = flashMats.map((m) => [m.emissive.clone(), m.emissiveIntensity]); let flashK = 0;
+    let flashAt = 0; cat.hitFlash = () => { const n = performance.now(); if (n - flashAt < 130) return; flashAt = n; flashK = 1; cat.squash = Math.max(cat.squash, 0.22); }; // 一直被打時一閃一閃，不會整隻變白
+    const flashTick = (dt) => { if (flashK <= 0) return; flashK = Math.max(0, flashK - dt * 13); flashMats.forEach((m, i) => { if (flashK > 0) { m.emissive.setRGB(1, 1, 1); m.emissiveIntensity = flashK * 0.6; } else { m.emissive.copy(flashBase[i][0]); m.emissiveIntensity = flashBase[i][1]; } }); };
     cat.setTeamColor = (c) => { mTeam.color.copy(c); mTeamGloss.color.copy(c); cat.color = c; };
     cat.setTag = (text, css, show) => {
       tag.visible = show; if (!show) return;
@@ -1936,6 +1940,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 
     // s: { speed, onGround, vy, form:'biped'|'cat', submerged, pitch, firing, rolling, charge, t }
     cat.animate = (dt, s) => {
+      flashTick(dt);
       const isCat = s.form === 'cat';
       biped.visible = !isCat; blob.visible = isCat && !s.submerged; ripple.visible = isCat && s.submerged && s.onGround;
       // 潛行軌跡：每移動一小段留下一顆墨水泡泡，慢慢縮小消失
@@ -2220,7 +2225,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 (() => {
   const fx = (SC.fx = {});
   const NP = 900, NB = 200;
-  let parts, blobs, pList = [], pNext = 0, beams = [], ghosts = [], rings = [], scene;
+  let parts, blobs, pList = [], pNext = 0, beams = [], ghosts = [], rings = [], pops = [], popNext = 0, scene;
   const dummy = new THREE.Object3D(), col = new THREE.Color(), up = new THREE.Vector3(0, 0, 1), dir = new THREE.Vector3();
 
   fx.init = (sc) => {
@@ -2237,6 +2242,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       m.visible = false; scene.add(m); beams.push({ m, life: 0 });
     }
     for (let i = 0; i < 4; i++) { const g = SC.makeGhost(); scene.add(g); ghosts.push({ g, life: 0 }); }
+    // 一閃即逝的光點：槍口火光、打到東西的「啪」（Yen 2026-11-19 打擊感）
+    const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.35, 'rgba(255,255,255,.85)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    const popTex = new THREE.CanvasTexture(c);
+    for (let i = 0; i < 24; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: popTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })); sp.visible = false; sp.renderOrder = 6; scene.add(sp); pops.push({ sp, life: 0 }); }
     for (let i = 0; i < 8; i++) {
       const m = new THREE.Mesh(new THREE.RingGeometry(0.72, 1, 48), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
       m.rotation.x = -Math.PI / 2; m.visible = false; m.renderOrder = 4; scene.add(m); rings.push({ m, life: 0 });
@@ -2268,6 +2278,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     s.m.scale.set(width, len, width); s.m.material.color.copy(color); s.m.visible = true; s.life = s.max = 0.3; s.w = width;
   };
 
+  fx.pop = (x, y, z, color, size = 2, life = 0.08) => { const s = pops[popNext]; popNext = (popNext + 1) % pops.length; s.sp.position.set(x, y, z); s.sp.material.color.copy(color || WHITE); s.sp.visible = true; s.life = s.max = life; s.size = size; s.sp.scale.setScalar(size); };
+  const WHITE = new THREE.Color(0xffffff);
   fx.ghost = (x, y, z) => { const s = ghosts.find((q) => q.life <= 0) || ghosts[0]; s.g.position.set(x, y + 2, z); s.g.visible = true; s.life = 2.2; };
 
   // list: [{x,y,z,vx,vy,vz,r,color}]
@@ -2276,8 +2288,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     for (let i = 0; i < n; i++) {
       const b = list[i]; dummy.position.set(b.x, b.y, b.z); dir.set(b.vx, b.vy, b.vz);
       const sp = dir.length(); if (sp > 0.01) dummy.quaternion.setFromUnitVectors(up, dir.multiplyScalar(1 / sp));
-      const st = 1 + Math.min(1.4, sp * 0.012); dummy.scale.set(b.vr / Math.sqrt(st), b.vr / Math.sqrt(st), b.vr * st); dummy.updateMatrix();
-      blobs.setMatrixAt(i, dummy.matrix); blobs.setColorAt(i, b.color);
+      const st = 1 + Math.min(1.4, sp * 0.012), fl = b.flash && b.life < 0.035 ? 1.7 : 1; dummy.scale.set(fl * b.vr / Math.sqrt(st), fl * b.vr / Math.sqrt(st), fl * b.vr * st); dummy.updateMatrix(); // 第一格是大白點（槍口火光）
+      blobs.setMatrixAt(i, dummy.matrix); blobs.setColorAt(i, fl > 1 ? WHITE : b.color);
     }
     blobs.count = n; blobs.instanceMatrix.needsUpdate = true; if (blobs.instanceColor) blobs.instanceColor.needsUpdate = true;
   };
@@ -2292,6 +2304,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     }
     parts.instanceMatrix.needsUpdate = true;
     beams.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = Math.max(0, s.life / s.max); s.m.material.opacity = k; s.m.scale.x = s.m.scale.z = s.w * (0.3 + k); if (s.life <= 0) s.m.visible = false; });
+    pops.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = Math.max(0, s.life / s.max); s.sp.scale.setScalar(s.size * (0.6 + 0.6 * (1 - k))); s.sp.material.opacity = k; if (s.life <= 0) s.sp.visible = false; });
     rings.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = 1 - Math.max(0, s.life / s.max), e = 1 - (1 - k) * (1 - k); s.m.scale.setScalar(s.r * (0.15 + 0.85 * e)); s.m.material.opacity = 0.85 * (1 - k); if (s.life <= 0) s.m.visible = false; });
     ghosts.forEach((s) => {
       if (s.life <= 0) return; s.life -= dt; s.g.position.y += dt * 5.5; s.g.position.x += Math.sin(s.life * 5) * dt * 1.5;
@@ -6828,7 +6841,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const G = (SC.game = { state: 'boot', actors: [], time: 0, paused: false, opts: { kind: 'maomao', weapon: 'W01', difficulty: 'normal', mode: 'versus', roster: '2v2' }, demo: true, mode: 'versus', targets: [], hit: [], menu: false });
   let scene, camera, renderer, I, A;
   const projectiles = [], bombs = [], bombMeshes = [], colors = [new THREE.Color(), new THREE.Color()], WHITE = new THREE.Color(0xffffff);
-  const cam = { yaw: Math.PI / 2, pitch: -0.14, dist: 15, shake: 0, pos: new V3(), orbit: 0, zoom: 1 };
+  const cam = { yaw: Math.PI / 2, pitch: -0.14, dist: 15, shake: 0, pos: new V3(), orbit: 0, zoom: 1, kick: 0, fp: null };
   const SCOPE_ZOOM = 4; // 狙擊鏡最大倍率（Yen 2026-11-14：放大距離要夠）
   const V0 = Math.sqrt(2 * C.GRAVITY * C.GROUND_JUMP_HEIGHT), V1 = Math.sqrt(2 * C.GRAVITY * C.AIR_JUMP_HEIGHT);
   const t1 = new V3(), t2 = new V3(), t3 = new V3(), viewDir = new V3();
@@ -6993,7 +7006,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       if (t.remote) { // 打到別人：通知對方自己扣體力
         if (!t.alive || G.state !== 'play' || G.time < t.protectUntil) return false;
         SC.net.ev('h', t.idx, amount, CAUSES.indexOf(cause));
-        SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, colors[from.team], 6, 14, 0.45); A.sfx.hit(); SC.ui.hitMarker(false); return true;
+        SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, colors[from.team], 6, 14, 0.45); hitFx(t, from); A.sfx.hit(); SC.ui.hitMarker(false); return true;
       }
     }
     return damage(t, amount, from, cause);
@@ -7002,13 +7015,26 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (!t.alive || G.state !== 'play' || G.time < t.protectUntil || t.spT != null) return false; // 放絕招的時候不會受傷
     if (onBase(t)) return false; // 站在自家出生台上不會受傷，避免被堵在重生點
     t.hp -= amount; t.lastHitAt = G.time;
-    SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, from ? colors[from.team] : WHITE, 6, 14, 0.45);
+    SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, from ? colors[from.team] : WHITE, 6, 14, 0.45); hitFx(t, from);
+    knock(t, from, cause);
     if (t.isPlayer) { A.sfx.hurt(); cam.shake = Math.min(1, cam.shake + 0.45); SC.ui.hurt(); }
     if (from && from.isPlayer) { A.sfx.hit(); SC.ui.hitMarker(t.hp <= 0); }
     if (t.hp <= 0) ko(t, from, cause);
     return true;
   }
 
+  // 打到角色：白色小閃光＋身體閃白（Yen 2026-11-19 打擊感）
+  function hitFx(t, from) {
+    if (t.cat && t.cat.hitFlash) t.cat.hitFlash();
+    if (!G.demo && near(t) > 0.1) { SC.fx.pop(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 2.4, 0.07); SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 3, 18, 0.28); }
+  }
+  // 被打到往後退一點（在被打的人自己那台算，連線時位置照常同步）。漆彈槍一下退一點點，滾刷、墨水彈退比較多
+  const KNOCK = { W01: 1.8, W02: 6, bomb: 9, sp: 0 };
+  function knock(t, from, cause) {
+    const k = KNOCK[cause] || 0; if (!k || !from || !from.pos || t.spT != null) return;
+    const dx = t.pos.x - from.pos.x, dz = t.pos.z - from.pos.z, d = Math.hypot(dx, dz); if (d < 0.01) return;
+    t.kx = (t.kx || 0) + (dx / d) * k; t.kz = (t.kz || 0) + (dz / d) * k; const m = Math.hypot(t.kx, t.kz); if (m > 11) { t.kx *= 11 / m; t.kz *= 11 / m; }
+  }
   function ko(t, from, cause) {
     t.alive = false; t.hp = 0; t.deaths++; t.respawnAt = G.time + C.RESPAWN_SECONDS; t.cat.group.visible = false; t.charge = -1; t.rolling = false;
     if (t.sight) t.sight.visible = false;
@@ -7018,7 +7044,9 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     SC.fx.burst(t.pos.x, Math.max(t.pos.y, -5) + 2.5, t.pos.z, col, 42, 30, 0.8); SC.fx.ghost(t.pos.x, Math.max(t.pos.y, -6), t.pos.z);
     if (!G.demo) {
       SC.ui.feed(from, t, cause);
-      if (t.isPlayer) { A.sfx.ko(); cam.shake = 1; SC.ui.onKo(from, cause); if (G.mode === 'boss') BS.taunt(); } else if (from && from.isPlayer) { A.sfx.koGot(); if (netOn()) SC.ui.hitMarker(true); } else A.sfx.splat(0.6);
+      if (t.isPlayer) { A.sfx.ko(); cam.shake = 1; SC.ui.onKo(from, cause); if (G.mode === 'boss') BS.taunt(); if (slowT <= 0) { slowT = 0.4; slowK = 0.3; } } // 自己被擊倒：短短的慢動作
+      else if (from && from.isPlayer) { A.sfx.koGot(); if (netOn()) SC.ui.hitMarker(true); if (slowT <= 0) { slowT = 0.2; slowK = 0.15; } cam.shake = Math.min(1, cam.shake + 0.35); } // 打倒對手：畫面頓一下
+      else A.sfx.splat(0.6);
     }
   }
 
@@ -7047,9 +7075,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (d > w.range) tgt.sub(m).multiplyScalar(w.range / d).add(m);
     const v = jitter(ballistic(m, tgt, w.speed, w.gravity, t3), a.onGround ? 0.03 : 0.065, 0.018);
     const r = w.radius * C.PAINT * paintBoost(a);
-    projectiles.push({ x: m.x, y: m.y, z: m.z, vx: v.x, vy: v.y, vz: v.z, team: a.team, owner: a, dmg: w.damage * (a.ai ? aiD().dmg : 1), r, range: w.range, g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.55, color: colors[a.team], cause: 'W01' });
+    projectiles.push({ x: m.x, y: m.y, z: m.z, vx: v.x, vy: v.y, vz: v.z, team: a.team, owner: a, dmg: w.damage * (a.ai ? aiD().dmg : 1), r, range: w.range, g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.8, flash: true, color: colors[a.team], cause: 'W01' }); // 子彈大一點（0.55→0.8）
     if (netOn()) SC.net.ev('p', m.x, m.y, m.z, v.x, v.y, v.z, r);
     a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1; A.sfx.shot(near(a));
+    if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 1.9, 0.06); // 槍口火光
+    if (a.isPlayer) cam.kick = Math.min(0.045, cam.kick + 0.014); // 鏡頭小小往上跳（只有畫面，不影響瞄準）
   }
 
   function swing(a) {
@@ -7113,7 +7143,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const m = muzzle(a, t1).clone(), dir = t2.copy(a.aim).sub(m).normalize().clone(), boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
     if (netOn()) SC.net.ev('z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
-    if (a.isPlayer) cam.shake = Math.min(1, cam.shake + 0.25 + c * 0.25);
+    if (a.isPlayer) { cam.shake = Math.min(1, cam.shake + 0.25 + c * 0.25); cam.kick = Math.min(0.12, cam.kick + 0.05 + c * 0.05); }
   }
   // 狙擊槍的一槍：沿線塗地、判定命中、畫光束。replay 是連線時別人開的槍（{ len, hit }），照他那邊算好的長度重播，不再判定命中。
   function sniperShot(a, m, dir, c, boost, replay) {
@@ -7133,7 +7163,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     }
     if (hitActor) { hurt(hitActor, dmg, a, 'W03'); INK.splat(a.team, hitActor.pos.x, H(hitActor.pos.x, hitActor.pos.z), hitActor.pos.z, rad); }
     else if (replay && replay.hit) { const gh = H(end.x, end.z); if (gh > -4) INK.splat(a.team, end.x, gh, end.z, rad); }
-    INK.by = null; SC.fx.beam(m, end, colors[a.team], 0.3 + c * 0.45); SC.fx.burst(end.x, end.y + 0.3, end.z, colors[a.team], 10, 16, 0.5);
+    INK.by = null; SC.fx.beam(m, end, colors[a.team], 0.3 + c * 0.45); SC.fx.burst(end.x, end.y + 0.3, end.z, colors[a.team], 10, 16, 0.5); SC.fx.pop(m.x, m.y, m.z, WHITE, 2.6 + c * 1.6, 0.09); SC.fx.pop(end.x, end.y + 0.3, end.z, colors[a.team], 3 + c * 2, 0.14);
     a.cat.recoil = 2; if (near(a) > 0.05) A.sfx.sniper(c);
     return { len: t, hit: hitActor };
   }
@@ -7318,6 +7348,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (!a.onGround) a.vel.y -= C.GRAVITY * dt;
     const nx = a.pos.x + a.vel.x * dt; if (blocked(a, nx, a.pos.z)) a.vel.x = 0; else a.pos.x = nx;
     const nz = a.pos.z + a.vel.z * dt; if (blocked(a, a.pos.x, nz)) a.vel.z = 0; else a.pos.z = nz;
+    if (a.kx || a.kz) { const kx = a.pos.x + a.kx * dt, kz = a.pos.z + a.kz * dt; if (!blocked(a, kx, a.pos.z)) a.pos.x = kx; if (!blocked(a, a.pos.x, kz)) a.pos.z = kz; const f = Math.exp(-7 * dt); a.kx *= f; a.kz *= f; if (Math.hypot(a.kx, a.kz) < 0.2) a.kx = a.kz = 0; } // 被打退
     const g = H(a.pos.x, a.pos.z);
     if (a.onGround) { if (g < a.pos.y - 1.1) { a.onGround = false; a.jumps = Math.max(a.jumps, 1); a.vel.y = 0; } else a.pos.y = g; }
     else {
@@ -7569,8 +7600,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   G.netEvent = (idx, type, d) => {
     const a = G.netActor(idx); if (!a || !a.remote || a.gone || G.state !== 'play') return;
     if (type === 'p') {
-      if (projectiles.length < 500) projectiles.push({ x: d[0], y: d[1], z: d[2], vx: d[3], vy: d[4], vz: d[5], team: a.team, owner: a, dmg: 0, r: SC.clamp(d[6], 1, 10), range: C.W01.range, g: C.W01.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.55, color: colors[a.team], cause: 'W01' });
-      a.cat.recoil = 1; A.sfx.shot(near(a));
+      if (projectiles.length < 500) projectiles.push({ x: d[0], y: d[1], z: d[2], vx: d[3], vy: d[4], vz: d[5], team: a.team, owner: a, dmg: 0, r: SC.clamp(d[6], 1, 10), range: C.W01.range, g: C.W01.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.8, flash: true, color: colors[a.team], cause: 'W01' });
+      a.cat.recoil = 1; A.sfx.shot(near(a)); if (near(a) > 0.15) SC.fx.pop(d[0], d[1], d[2], WHITE, 1.9, 0.06);
     } else if (type === 'w') { if (projectiles.length < 500) flecks(a, d[0], d[1], d[2], d[3], SC.clamp(d[4], -1.3, 1.3), SC.clamp(d[5], 1, 1.2), d[6], d[7] ? 1 : 0); a.cat.swing = 1; a.cat.recoil = 1.6; if (near(a) > 0.1) A.sfx.swing(); }
     else if (type === 'r') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 12) { rollPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 8)); SC.fx.burst(d[2], d[4] + 0.4, d[3], colors[a.team], 2, 9, 0.35); } }
     else if (type === 'z') { const dir = new V3(d[3], d[4], d[5]); if (dir.lengthSq() > 0.5) sniperShot(a, new V3(d[0], d[1], d[2]), dir.normalize(), SC.clamp(d[6], 0, 1), SC.clamp(d[7], 1, 1.2), { len: d[8], hit: d[9] }); }
@@ -7682,11 +7713,16 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (W.camR) { const bx = -viewDir.x, bz = -viewDir.z, a = bx * bx + bz * bz, b = p.pos.x * bx + p.pos.z * bz, c = p.pos.x * p.pos.x + p.pos.z * p.pos.z - W.camR * W.camR; if (a > 1e-6) { const t = (-b + Math.sqrt(Math.max(0, b * b - a * c))) / a; if (t < want) want = Math.max(Math.min(3.5, want), t); } } // 圓形場地：鏡頭不退到場外的裝飾後面
     cam.dist = want < cam.dist ? want : SC.damp(cam.dist, want, scopeK > 0.01 ? 14 : 5, dt);
     if (p.alive) p.cat.group.visible = scopeK < 0.5; // 開鏡時隱藏自己的角色
-    cam.pos.set(p.pos.x - viewDir.x * cam.dist, py - viewDir.y * cam.dist, p.pos.z - viewDir.z * cam.dist);
+    // Yen 2026-11-19 打擊感：鏡頭跟著角色時稍微慢一拍（更滑順）；角色放在畫面中間偏左，往前看的畫面多一點（瞄準照樣從畫面中央射出）
+    const fx0 = p.pos.x, fz0 = p.pos.z; if (!cam.fp || Math.hypot(cam.fp.x - fx0, cam.fp.z - fz0) > 9 || Math.abs(cam.fp.y - py) > 9 || !p.alive) cam.fp = new V3(fx0, py, fz0);
+    else { cam.fp.x = SC.damp(cam.fp.x, fx0, 16, dt); cam.fp.z = SC.damp(cam.fp.z, fz0, 16, dt); cam.fp.y = SC.damp(cam.fp.y, py, 11, dt); }
+    const sh = SC.lerp(aspect < 1 ? 1.1 : 2.4, 0, scopeK) * Math.min(1, cam.dist / 8), rx = Math.cos(cam.yaw), rz = -Math.sin(cam.yaw); // 鏡頭往右肩移
+    cam.pos.set(cam.fp.x - viewDir.x * cam.dist - rx * sh, cam.fp.y - viewDir.y * cam.dist, cam.fp.z - viewDir.z * cam.dist - rz * sh);
     const gh = H(cam.pos.x, cam.pos.z); if (cam.pos.y < (gh < (W.openH || 40) ? gh : -1) + 1.2) cam.pos.y = (gh < (W.openH || 40) ? gh : -1) + 1.2;
     cam.shake = SC.damp(cam.shake, 0, 6, dt);
     camera.position.copy(cam.pos); camera.up.set(0, 1, 0);
-    camera.lookAt(cam.pos.x + viewDir.x * 30, cam.pos.y + viewDir.y * 30, cam.pos.z + viewDir.z * 30);
+    cam.kick = SC.damp(cam.kick, 0, 14, dt);
+    camera.lookAt(cam.pos.x + viewDir.x * 30, cam.pos.y + viewDir.y * 30 + cam.kick * 30, cam.pos.z + viewDir.z * 30);
     if (cam.shake > 0.01) { camera.position.x += (Math.random() - 0.5) * cam.shake * 0.9; camera.position.y += (Math.random() - 0.5) * cam.shake * 0.9; }
     camera.updateProjectionMatrix();
   }
