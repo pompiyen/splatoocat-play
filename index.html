@@ -662,6 +662,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['選貓咪', 'Pick a Cat', 'ネコをえらぶ', '고양이 고르기'],
     ['毛毛', 'Maomao', 'マオマオ', '마오마오'],
     ['雙雙', 'Shuangshuang', 'シュアンシュアン', '솽솽'],
+    ['班班', 'Banban', 'バンバン', '반반'],
+    ['太郎', 'Taro', 'タロウ', '타로'],
+    ['梨花貓・棕色斑紋', 'Li Hua cat · brown tabby', 'リーファ猫・茶色のしま', '리화 고양이 · 갈색 줄무늬'],
+    ['橘虎斑・帥氣擔當', 'Orange tabby · the cool one', '茶トラ・イケメン担当', '치즈 태비 · 멋짐 담당'],
     ['金吉拉・臭臉擔當', 'Chinchilla · the grumpy face', 'チンチラ・ムスッと顔担当', '친칠라 · 뚱한 얼굴 담당'],
     ['布偶貓・藍眼睛', 'Ragdoll · blue eyes', 'ラグドール・青い目', '랙돌 · 파란 눈'],
     ['墨水顏色', 'Ink Color', 'インクの色', '잉크 색'],
@@ -946,7 +950,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ]);
 
   // ---------- 句型 ----------
-  pat(/^(毛毛|雙雙)(\d+)$/, ['$1$2', '$1$2', '$1$2']);
+  pat(/^(毛毛|雙雙|班班|太郎)(\d+)$/, ['$1$2', '$1$2', '$1$2']);
   pat(/^第 (\d+) 名$/, null);
   pat(/^第 (\d+) 隊$/, ['Team $1', 'チーム$1', '$1팀']);
   pat(/^第 (\d+) 關$/, ['Stage $1', 'ステージ$1', '스테이지 $1']);
@@ -3183,7 +3187,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   world.update = (t) => { if (world.ticks && world.root.visible) world.ticks.forEach((f) => f(t)); };
 })();
 
-// 貓咪角色：毛毛（金吉拉）與雙雙（布偶貓）。Q 版比例、隊色連帽衣、背上的墨水罐，以及共用的「墨貓」形態。
+// 貓咪角色：毛毛（金吉拉）、雙雙（布偶貓）、班班（棕色斑紋梨花貓）、太郎（帥氣虎斑橘貓，Yen 2026-11-20 加）。Q 版比例、隊色連帽衣、背上的墨水罐，以及共用的「墨貓」形態。
 // 全部用圓潤的基本形狀組成，模型朝 +Z。
 (() => {
   const S = (r, w = 20, h = 14) => new THREE.SphereGeometry(r, w, h);
@@ -3193,6 +3197,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const KINDS = {
     maomao: { name: '毛毛', fur: 0xf2a24a, sheen: 0xffe2b0, light: 0xfff0d2, dark: 0xc97422, eye: 0xb8892b, ear: 0xf2a24a, tail: 0xf7b765, fluffy: 1.25 },
     shuang: { name: '雙雙', fur: 0xfdfaf4, sheen: 0xffffff, light: 0xffffff, dark: 0xb3a198, eye: 0x3f8cf0, ear: 0xa6948b, tail: 0xb3a198, fluffy: 1.1 },
+    // 班班：短毛的棕灰底、深褐色條紋（額頭 M 字、臉頰兩條、眼角眼線、尾巴一圈一圈），黃綠色眼睛
+    banban: { name: '班班', fur: 0xa8865a, sheen: 0xd8c09a, light: 0xf1e4c8, dark: 0x3f2c1d, eye: 0xa6c83a, ear: 0x8f6f48, tail: 0xa8865a, fluffy: 0.82, tabby: true },
+    // 太郎：深一點的橘色、紅褐色條紋、白嘴巴白下巴、金色眼睛，眼皮半蓋住的帥氣眼神和頭頂一撮翹毛
+    taro: { name: '太郎', fur: 0xef8a2c, sheen: 0xffc684, light: 0xfff6e8, dark: 0xa8470d, eye: 0xf2c230, ear: 0xe27f25, tail: 0xef8a2c, fluffy: 0.8, tabby: true },
   };
   SC.CAT_KINDS = KINDS;
 
@@ -3252,7 +3260,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const head = new THREE.Group(); head.position.set(0, 3.8, 0.05); body.add(head);
     head.add(mesh(S(1.45, 28, 20), mFur, 0, 0, 0, 1.13, 1, 1));
     [-1, 1].forEach((s) => { // 臉頰的蓬毛
-      const cm = kindId === 'shuang' ? mLight : mFur; // 臉頰的蓬毛：幾顆壓扁的毛球
+      const cm = kindId === 'shuang' || kindId === 'taro' ? mLight : mFur; // 臉頰的蓬毛：幾顆壓扁的毛球
       head.add(mesh(S(0.62 * K.fluffy, 14, 10), cm, s * 1.32, -0.5, 0.3, 1.1, 0.8, 0.85));
       head.add(mesh(S(0.4 * K.fluffy, 12, 8), cm, s * 1.72, -0.62, 0.2, 1.2, 0.6, 0.8));
       head.add(mesh(S(0.36 * K.fluffy, 12, 8), cm, s * 1.55, -0.95, 0.3, 1.1, 0.6, 0.8));
@@ -3264,13 +3272,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       head.add(mesh(S(0.07, 8, 6), mShine, s * 0.58 + 0.1, 0.27, 1.44));
       if (kindId === 'maomao') { // 毛毛招牌的不爽眉毛
         const brow = mesh(new THREE.CapsuleGeometry(0.11, 0.5, 4, 8), mDark, s * 0.6, 0.55, 1.22); brow.rotation.z = Math.PI / 2 + s * 0.45; head.add(brow);
-      } else { // 雙雙眼周的灰褐色面罩
+      } else if (kindId === 'shuang') { // 雙雙眼周的灰褐色面罩
         head.add(mesh(S(0.66, 16, 12), mDark, s * 0.78, 0.36, 0.7, 1, 1.12, 0.9));
+      } else { // 虎斑：眼角往外的眼線、臉頰兩條橫紋
+        const liner = mesh(new THREE.CapsuleGeometry(0.06, 0.42, 4, 6), mDark, s * 1.02, 0.08, 1.02); liner.rotation.z = Math.PI / 2 - s * 0.25; liner.rotation.y = s * 0.55; head.add(liner);
+        [0, 1].forEach((k) => { const st = mesh(new THREE.CapsuleGeometry(0.07, 0.5, 4, 6), mDark, s * 1.28, -0.28 - k * 0.24, 0.7 - k * 0.04); st.rotation.z = Math.PI / 2 + s * (0.1 + k * 0.12); st.rotation.y = s * 0.75; head.add(st); });
+        if (kindId === 'taro') { // 帥氣的半蓋眼皮
+          const lid = mesh(new THREE.SphereGeometry(0.37, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), mFur, s * 0.58, 0.16, 1.22, 1.0, 0.72, 0.55); lid.rotation.x = 0.35; lid.rotation.z = s * 0.18; head.add(lid);
+        }
       }
     });
     head.add(mesh(S(0.58, 16, 12), mLight, 0, -0.42, 1.12, 1.3, 0.82, 0.7)); // 口鼻
     head.add(mesh(S(0.13, 10, 8), mPink, 0, -0.2, 1.58, 1.25, 0.85, 0.8));
     if (kindId === 'maomao') [-0.34, 0, 0.34].forEach((x) => { const st = mesh(new THREE.CapsuleGeometry(0.09, 0.42, 4, 8), mDark, x, 1.02, 0.98); st.rotation.x = -0.75; head.add(st); });
+    else if (K.tabby) { // 額頭的 M 字條紋，頭頂往後三條
+      [[-0.42, 0.25], [-0.14, -0.2], [0.14, 0.2], [0.42, -0.25]].forEach(([x, rz]) => { const st = mesh(new THREE.CapsuleGeometry(0.08, 0.42, 4, 8), mDark, x, 0.78, 1.16); st.rotation.x = -0.45; st.rotation.z = rz; head.add(st); });
+      [-0.36, 0, 0.36].forEach((x) => { const st = mesh(new THREE.CapsuleGeometry(0.09, 0.62, 4, 8), mDark, x, 1.3, 0.35); st.rotation.x = -1.25; head.add(st); });
+      if (kindId === 'taro') { const tuft = mesh(new THREE.ConeGeometry(0.22, 0.7, 10), mFur, 0.1, 1.55, 0.1); tuft.rotation.z = -0.5; tuft.rotation.x = 0.3; head.add(tuft); const t2 = mesh(new THREE.ConeGeometry(0.16, 0.5, 8), mFur, -0.15, 1.5, 0.15); t2.rotation.z = 0.35; head.add(t2); } // 頭頂一撮翹毛
+      else head.add(mesh(S(0.5, 14, 10), mLight, 0, -0.62, 1.0, 1.15, 0.7, 0.6)); // 班班白白的下巴
+    }
     else head.add(mesh(S(0.4, 12, 10), mLight, 0, 0.62, 1.12, 0.62, 1.5, 0.6)); // 額頭的白色流星紋
 
     // 手腳
@@ -3281,7 +3301,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     // 尾巴
     const tail = new THREE.Group(); tail.position.set(0, 1.25, -0.85); body.add(tail);
-    for (let i = 0; i < 7; i++) { const t = i / 6; tail.add(mesh(S((0.24 + Math.sin(t * 3.1) * 0.16) * K.fluffy, 12, 10), mTail, 0.75 * t * t, t * 1.7, -0.3 - t * 1.5 + t * t * 0.9)); }
+    for (let i = 0; i < 7; i++) { const t = i / 6; tail.add(mesh(S((0.24 + Math.sin(t * 3.1) * 0.16) * K.fluffy, 12, 10), K.tabby && i % 2 ? mDark : mTail, 0.75 * t * t, t * 1.7, -0.3 - t * 1.5 + t * t * 0.9)); } // 虎斑的尾巴一圈一圈
+    if (K.tabby) [legL, legR].forEach((lg) => { const r = mesh(new THREE.TorusGeometry(0.33, 0.07, 6, 16), mDark, 0, -0.32, 0); r.rotation.x = Math.PI / 2; lg.add(r); }); // 腳上一圈條紋
 
     // 背上的墨水罐
     const tank = new THREE.Group(); tank.position.set(0, 2.0, -1.08); body.add(tank);
@@ -4739,7 +4760,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 限制：只有登入 Claude、而且被邀請看這個頁面的人連得進來；只拿公開連結的人不行。
 (() => {
   const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: null, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false });
-  const KINDS = ['maomao', 'shuang'], PI = Math.PI;
+  const KINDS = ['maomao', 'shuang', 'banban', 'taro'], PI = Math.PI;
   // 事件欄位裡要跟著場地翻轉的 x／z 分量，以及面向角
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
   const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], g: [0, 2, 3, 5], S: [0, 2], X: [0, 2] }, YAW = { w: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
@@ -4828,6 +4849,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (who.length >= 2 && cnt.filter(Boolean).length < 2) { const w = who[who.length - 1]; cnt[w.team]--; w.team = (w.team + 1) % n; cnt[w.team]++; } // 兩隊都要有人
     return who.sort((a, b) => a.i - b.i);
   };
+  // 每隊一種貓（同一種貓同一隊）：照隊伍順序，用隊上第一個人選的貓；被前面的隊用掉了就挑還沒用過的（Yen 2026-11-20 多了班班、太郎）
+  N.teamKinds = (L, n) => { const used = [], kd = []; for (let t = 0; t < n; t++) { const w = L.find((x) => x.team === t), r = w && N.list.find((x) => x.peer === w.peer); let k = r && r.kind; if (!k || used.includes(k)) k = KINDS.find((x) => !used.includes(x)) || KINDS[t % KINDS.length]; used.push(k); kd.push(k); } return kd; };
   N.setMix = (v) => { if (!N.isHost) return; N.mix = v === 'rand' ? 'rand' : 'pick'; send(hostPatch()); sig = ''; };
   // 房主點一個玩家：換到下一隊；那一隊滿了就跟那隊的人對調
   N.swap = (peer) => {
@@ -4849,7 +4872,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.start = () => {
     if (!room || !N.isHost || N.list.length < 2 || N.live) return;
     const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
-    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl } });
+    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()) } });
   };
 
   // spec：比賽開打後才進房的人（Yen 2026-11-19）只看不打，從房主那隊的角度看，不送任何資料
@@ -4861,7 +4884,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const players = h.pl.map((e, idx) => {
       const r = list.find((x) => x.peer === e[0]);
       // 開打那一刻剛好沒收到某人的資料（公開中繼站可能漏訊息）也要把他算進來，不然整場都看不到他（Yen 2026-11-19：各玩各的）
-      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e[0] === myPeer, gone: false };
+      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: Array.isArray(h.kd) && KINDS.includes(h.kd[e[1]]) ? h.kd[e[1]] : e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e[0] === myPeer, gone: false };
     });
     N.match = { id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
@@ -8426,7 +8449,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     W.setTeamColors(...colors.slice(0, G.teams)); INK.reset();
     G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); }); SC.swimTrail.clear();
     projectiles.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false));
-    const other = G.opts.kind === 'maomao' ? 'shuang' : 'maomao';
+    const others = Object.keys(SC.CAT_KINDS).filter((k) => k !== G.opts.kind), other = G.demo ? (G.opts.kind === 'maomao' ? 'shuang' : 'maomao') : others[(Math.random() * others.length) | 0]; // 對手隊隨機挑另一種貓（同一種貓固定同一隊）
     G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.targets = []; G.popped = 0;
     G.actors = net ? net.players.map((q, i) => { const a = makeActor(i, q.team, q.kind, q.isMe); a.idx = q.idx; a.slot = q.slot; if (!q.isMe) { a.remote = true; a.ai = null; a.name = q.nick; } return a; })
       : solo ? [makeActor(0, 0, G.opts.kind, true)]
@@ -9535,9 +9558,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     boss: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><path d="M12 34l-4-24 13 10 11-16 11 16 13-10-4 24z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.8" stroke-linejoin="round"/><circle cx="32" cy="26" r="4" fill="#ff4a6a" stroke="#1b1430" stroke-width="2"/><rect x="12" y="34" width="40" height="6" rx="2" fill="#ffb21f" stroke="#1b1430" stroke-width="2.6"/></svg>`,
     net: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><rect x="5" y="12" width="18" height="28" rx="4" fill="#2fb8ff" stroke="#1b1430" stroke-width="2.6"/><rect x="41" y="12" width="18" height="28" rx="4" fill="#ff7ab0" stroke="#1b1430" stroke-width="2.6"/><path d="M22 10q10-9 20 0M26 15q6-5 12 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="32" cy="20" r="2.6" fill="#fff"/></svg>`,
   };
-  ui.face = (kind) => kind === 'maomao'
+  const FACE_TABBY = {
+    banban: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 26 12 6l14 10zM56 26 52 6 38 16z" fill="#8f6f48" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><ellipse cx="32" cy="36" rx="26" ry="22" fill="#a8865a" stroke="#1b1430" stroke-width="3"/><ellipse cx="32" cy="47" rx="13" ry="8" fill="#f1e4c8"/><path d="M22 24l3-8 4 6 3-7 3 7 4-6 3 8" fill="none" stroke="#3f2c1d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 38h8M8 44l8-2M57 38h-8M56 44l-8-2" stroke="#3f2c1d" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="21" cy="35" rx="5" ry="5.5" fill="#a6c83a" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="43" cy="35" rx="5" ry="5.5" fill="#a6c83a" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="21" cy="35" rx="1.8" ry="4" fill="#1b1430"/><ellipse cx="43" cy="35" rx="1.8" ry="4" fill="#1b1430"/><path d="M29 43h6l-3 3z" fill="#ff8fa3"/><path d="M27 50q2.5 3 5 0q2.5 3 5 0" fill="none" stroke="#1b1430" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    taro: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 26 12 6l14 10zM56 26 52 6 38 16z" fill="#ef8a2c" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><path d="M30 15q2-9 8-11-2 6 1 10" fill="#ef8a2c" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><ellipse cx="32" cy="36" rx="26" ry="22" fill="#ef8a2c" stroke="#1b1430" stroke-width="3"/><ellipse cx="32" cy="46" rx="14" ry="9" fill="#fff6e8"/><path d="M26 17l1 8M32 15v9M38 17l-1 8M8 36h7M57 36h-7M9 42l7-1M55 42l-7-1" stroke="#a8470d" stroke-width="3" stroke-linecap="round"/><ellipse cx="21" cy="36" rx="5" ry="5" fill="#f2c230" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="43" cy="36" rx="5" ry="5" fill="#f2c230" stroke="#1b1430" stroke-width="2.5"/><circle cx="21" cy="37" r="2.4" fill="#1b1430"/><circle cx="43" cy="37" r="2.4" fill="#1b1430"/><path d="M15 34q6-4 12 0v-4H15zM49 34q-6-4-12 0v-4h12z" fill="#ef8a2c"/><path d="M15 33q6-3 12 0M49 33q-6-3-12 0" fill="none" stroke="#1b1430" stroke-width="2.6" stroke-linecap="round"/><path d="M29 43h6l-3 3z" fill="#ff8fa3"/><path d="M28 50q5 2 9-2" fill="none" stroke="#1b1430" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  };
+  ui.face = (kind) => FACE_TABBY[kind] || (kind === 'maomao'
     ? `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 26 12 6l14 10zM56 26 52 6 38 16z" fill="#f2a24a" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><ellipse cx="32" cy="36" rx="26" ry="22" fill="#f2a24a" stroke="#1b1430" stroke-width="3"/><ellipse cx="32" cy="45" rx="12" ry="8" fill="#fff0d2"/><path d="M27 20v7M32 18v8M37 20v7" stroke="#c97422" stroke-width="3" stroke-linecap="round"/><ellipse cx="21" cy="36" rx="4.5" ry="5" fill="#1b1430"/><ellipse cx="43" cy="36" rx="4.5" ry="5" fill="#1b1430"/><path d="M14 27l12 5M50 27l-12 5" stroke="#1b1430" stroke-width="3.5" stroke-linecap="round"/><path d="M29 42h6l-3 3z" fill="#ff8fa3"/><path d="M27 49q5-4 10 0" fill="none" stroke="#1b1430" stroke-width="2.5" stroke-linecap="round"/></svg>`
-    : `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 26 12 6l14 10zM56 26 52 6 38 16z" fill="#9c8a82" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><ellipse cx="32" cy="36" rx="26" ry="22" fill="#fdfaf4" stroke="#1b1430" stroke-width="3"/><path d="M8 32q4-16 20-16l2 18q-10 10-20 6zM56 32q-4-16-20-16l-2 18q10 10 20 6z" fill="#9c8a82"/><ellipse cx="21" cy="35" rx="5" ry="5.5" fill="#4a8fe0" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="43" cy="35" rx="5" ry="5.5" fill="#4a8fe0" stroke="#1b1430" stroke-width="2.5"/><circle cx="21" cy="35" r="2.2" fill="#1b1430"/><circle cx="43" cy="35" r="2.2" fill="#1b1430"/><path d="M29 43h6l-3 3z" fill="#ff8fa3"/><path d="M27 50q5 4 10 0" fill="none" stroke="#1b1430" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+    : `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 26 12 6l14 10zM56 26 52 6 38 16z" fill="#9c8a82" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><ellipse cx="32" cy="36" rx="26" ry="22" fill="#fdfaf4" stroke="#1b1430" stroke-width="3"/><path d="M8 32q4-16 20-16l2 18q-10 10-20 6zM56 32q-4-16-20-16l-2 18q10 10 20 6z" fill="#9c8a82"/><ellipse cx="21" cy="35" rx="5" ry="5.5" fill="#4a8fe0" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="43" cy="35" rx="5" ry="5.5" fill="#4a8fe0" stroke="#1b1430" stroke-width="2.5"/><circle cx="21" cy="35" r="2.2" fill="#1b1430"/><circle cx="43" cy="35" r="2.2" fill="#1b1430"/><path d="M29 43h6l-3 3z" fill="#ff8fa3"/><path d="M27 50q5 4 10 0" fill="none" stroke="#1b1430" stroke-width="2.5" stroke-linecap="round"/></svg>`);
 
   // 武器縮圖（SVG，自家設計）。--wc 是隊色，沒設定時用 A 隊顏色。
   const ST = 'stroke="#1b1430" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"', WC = 'var(--wc, var(--a))';
@@ -9650,7 +9677,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           <div class="opt" id="stage-opt" hidden><h3>選魔王</h3><div class="row" id="pick-world">${WORLDS.map((w, i) => `<button type="button" class="pick ico-pick world-pick w${i + 1}" data-v="${i + 1}" aria-label="世界 ${i + 1} ${w.name}">${w.icon}<b>世界 ${i + 1}</b><small>${w.name}</small></button>`).join('')}</div><div class="row" id="pick-stage"></div></div>
           <div class="opt" id="kind-opt"><h3>選貓咪</h3><div class="row" id="pick-kind">
             <button type="button" class="pick cat-pick" data-v="maomao">${ui.face('maomao')}<b>毛毛</b><small>金吉拉・臭臉擔當</small></button>
-            <button type="button" class="pick cat-pick" data-v="shuang">${ui.face('shuang')}<b>雙雙</b><small>布偶貓・藍眼睛</small></button></div></div>
+            <button type="button" class="pick cat-pick" data-v="shuang">${ui.face('shuang')}<b>雙雙</b><small>布偶貓・藍眼睛</small></button>
+            <button type="button" class="pick cat-pick" data-v="banban">${ui.face('banban')}<b>班班</b><small>梨花貓・棕色斑紋</small></button>
+            <button type="button" class="pick cat-pick" data-v="taro">${ui.face('taro')}<b>太郎</b><small>橘虎斑・帥氣擔當</small></button></div></div>
           <div class="opt" id="ink-opt"><h3>墨水顏色</h3><div class="row ink-row" id="pick-ink">
             <button type="button" class="pick ink-pick" data-v="random" aria-label="隨機顏色">${SPLAT('rand')}</button>
             ${SC.PALETTES.flatMap((p) => [p.a, p.b]).map((c) => `<button type="button" class="pick ink-pick" data-v="${c.hex}" aria-label="${c.name}" title="${c.name}" style="--ic:#${c.hex.toString(16).padStart(6, '0')}">${SPLAT()}</button>`).join('')}</div></div>
@@ -9761,7 +9790,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const tri = n.triOn(), rand = n.mix === 'rand', L = n.lineup(false);
       n.list.forEach((r, i) => {
         const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'), w = L.find((x) => x.peer === r.peer), t = w ? w.team : -1;
-        f.className = 'net-face'; f.innerHTML = ui.face(t === 1 ? 'shuang' : 'maomao'); name.textContent = (r.nick || '玩家' + (i + 1)) + (r.isMe ? '（你）' : '');
+        f.className = 'net-face'; f.innerHTML = ui.face(w && !rand ? n.teamKinds(L, n.nTeams())[t] : r.kind); name.textContent = (r.nick || '玩家' + (i + 1)) + (r.isMe ? '（你）' : '');
         tag.textContent = (i === 0 ? '房主・' : '') + (!w ? '等下一場' : rand ? '開打時抽籤' : `第 ${t + 1} 隊`); li.className = !w ? 'wait' : rand ? 'tr' : 't' + t; li.append(f, name, tag);
         if (w && !rand && n.isHost) { const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'net-swap'; sw.dataset.peer = r.peer; sw.setAttribute('aria-label', '換隊'); sw.textContent = '⇄'; li.append(sw); } // 房主點這顆換隊
         ul.append(li);
