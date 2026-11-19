@@ -526,6 +526,8 @@ SC.CFG = {
   W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, minRange: 85, maxRange: 150,
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
+  // 散彈槍（Yen 2026-11-19）：一次噴出 8 顆小墨彈成扇形，射程短；貼近時全中可以一發擊倒，遠一點只中幾顆
+  W04: { id: 'W04', name: '散彈槍', pellets: 8, spread: 0.26, damage: 13, ink: 100 / 26 / INK_LAST, range: 36, interval: 0.6, radius: 2.6, speed: 118, gravity: 105 },
   // Yen 2026-11-19：丟更遠（初速 54→72，最遠約 26→47），落地後滾一小段（落地保留約 0.3 的水平速度、每秒衰減）再停住
   // Yen 2026-11-14：墨水彈加強。爆炸塗地半徑 6→7（再乘 PAINT），傷害範圍 8.4→11，中心 5 以內直接擊倒，外圈 60
   BOMB: { ink: 20 / INK_LAST, speed: 72, gravity: 105, fuse: 2, roll: 0.32, rollDrag: 3.6, armDelay: 1.05, radius: 9.5, damageRadius: 14.5, nearRadius: 6.5, near: 12, far: 66, holdFull: 0.9, damage: 60, nearDamage: 100, maxFlight: 3 },
@@ -626,6 +628,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       noise(0.018, 0.32 * vol, 6500, 4200, 0.7, 'highpass'); // 噴嘴的「嗤」
       noise(0.11, 0.34 * vol, 2300 * p, 520, 1.3); // 墨水噴出去的「啪」
       tone('triangle', 760 * p, 240 * p, 0.06, 0.16 * vol, 0.004); // 啵
+    },
+    shotgun(vol = 1) { // 散彈槍：更低更厚的「轟」＋一大片噴灑聲
+      if (!A.ready || vol < 0.04) return; const p = 1 + (Math.random() - 0.5) * 0.12;
+      tone('sine', 140 * p, 38, 0.2, 0.75 * vol); tone('square', 90 * p, 40, 0.09, 0.12 * vol);
+      noise(0.03, 0.4 * vol, 5200, 3000, 0.7, 'highpass'); noise(0.22, 0.5 * vol, 1700 * p, 300, 1.1); tone('triangle', 520 * p, 160, 0.09, 0.14 * vol, 0.01);
     },
     splat(vol = 1) { if (vol < 0.04) return; noise(0.18, 0.3 * vol, 1400, 160, 0.9, 'lowpass'); tone('sine', 230, 60, 0.13, 0.28 * vol); },
     spReady() { [784, 988, 1175, 1568].forEach((f, i) => tone('triangle', f, f, 0.16, 0.24, i * 0.07)); noise(0.5, 0.12, 6000, 9000, 1, 'highpass', 0.2); }, // 絕招量表滿了
@@ -1997,6 +2004,13 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       const roll = mesh(new THREE.CylinderGeometry(0.62, 0.62, 3.4, 20), white, 0, -1.35, 2.35); roll.rotation.z = Math.PI / 2; g.add(roll);
       [-1, 1].forEach((s) => { const cap = mesh(new THREE.CylinderGeometry(0.66, 0.66, 0.3, 20), teamMat, s * 1.75, -1.35, 2.35); cap.rotation.z = Math.PI / 2; g.add(cap); });
       g.userData.roller = roll; g.userData.muzzle = 2.4;
+    } else if (id === 'W04') { // 散彈槍：胖胖的隊色槍身、兩根並排的短槍管（喇叭口），上面一顆透明墨水罐
+      const body = mesh(new THREE.CapsuleGeometry(0.4, 0.7, 6, 12), teamMat, 0, 0, 0.3); body.rotation.x = Math.PI / 2; g.add(body);
+      [-0.2, 0.2].forEach((x) => { const b = mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.9, 10), white, x, 0.05, 1.05); b.rotation.x = Math.PI / 2; g.add(b);
+        const bell = mesh(new THREE.CylinderGeometry(0.27, 0.17, 0.28, 12), dark, x, 0.05, 1.6); bell.rotation.x = Math.PI / 2; g.add(bell); });
+      g.add(mesh(S(0.34, 14, 10), std(0xffffff, 0.08, { transparent: true, opacity: 0.55 }), 0, 0.5, 0.15)); g.add(mesh(S(0.22, 12, 8), teamMat, 0, 0.47, 0.15));
+      g.add(mesh(new THREE.BoxGeometry(0.26, 0.6, 0.32), dark, 0, -0.42, 0.02));
+      g.userData.muzzle = 1.75;
     } else {
       const body = mesh(new THREE.CapsuleGeometry(0.26, 1.1, 6, 12), teamMat, 0, 0, 0.3); body.rotation.x = Math.PI / 2; g.add(body);
       const bar = mesh(new THREE.CylinderGeometry(0.11, 0.13, 2.6, 10), white, 0, 0.02, 2.1); bar.rotation.x = Math.PI / 2; g.add(bar);
@@ -2067,7 +2081,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 
     // 武器（接在右手）
     const hand = new THREE.Group(); hand.position.set(-0.85, 2.3, 0.95); body.add(hand);
-    const weapons = { W01: weaponModel('W01', mTeam), W02: weaponModel('W02', mTeam), W03: weaponModel('W03', mTeam) };
+    const weapons = { W01: weaponModel('W01', mTeam), W02: weaponModel('W02', mTeam), W03: weaponModel('W03', mTeam), W04: weaponModel('W04', mTeam) };
     Object.values(weapons).forEach((w) => { w.visible = false; hand.add(w); });
 
     // 墨貓形態（原創「魷魚貓」，Yen 2026-11-17：要更像魷魚）：往上尖尖的魷魚身體、頂端兩片三角形的鰭（做成貓耳朵的樣子，裡面粉紅色），
@@ -2273,6 +2287,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         case 'Digit1': I.select = 'W01'; break;
         case 'Digit2': I.select = 'W02'; break;
         case 'Digit3': I.select = 'W03'; break;
+        case 'Digit4': I.select = 'W04'; break;
         case 'Escape': case 'KeyP': I.pause = true; break;
         case 'KeyM': SC.ui.toggleMute(); break;
         case 'ArrowUp': case 'ArrowDown': e.preventDefault(); break;
@@ -2315,7 +2330,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       <button class="t-btn t-fire" id="t-fire" data-act="fire" type="button" aria-label="點一下跳躍，按住射擊"><i class="ic ic-fire"></i><small>點＝跳<br>按住＝射擊</small></button>
       <button class="t-btn t-cat" id="t-cat" data-act="cat" type="button" aria-label="按住變墨貓"><i class="ic ic-cat"></i><span>墨貓</span><small>按住</small></button>
       <button class="t-btn t-bomb" id="t-bomb" data-act="bomb" type="button" aria-label="墨水彈">${SC.ui.icon('BOMB')}<small>墨水彈</small></button>
-      <div class="t-wpns" id="t-wpns">${['W01', 'W02', 'W03'].map((w) => `<button class="t-btn t-w" data-act="pick" data-w="${w}" type="button" aria-label="${SC.CFG[w].name}">${SC.ui.icon(w)}<small>${SC.CFG[w].name}</small></button>`).join('')}</div>`;
+      <div class="t-wpns" id="t-wpns">${['W01', 'W02', 'W03', 'W04'].map((w) => `<button class="t-btn t-w" data-act="pick" data-w="${w}" type="button" aria-label="${SC.CFG[w].name}">${SC.ui.icon(w)}<small>${SC.CFG[w].name}</small></button>`).join('')}</div>`;
     ui.appendChild(layer);
     stickEl = layer.querySelector('#t-stick'); nubEl = layer.querySelector('#t-nub');
     const zone = layer.querySelector('#t-zone');
@@ -2755,7 +2770,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 // 打法：罐頭落地時沾滿對手墨水 → 把罐頭側面塗成自己的顏色 → 變墨貓爬上去 → 連跳到機頂 → 射紅色按鈕。
 (() => {
   const HALF = 48, DECK = 13, CAB = 12, CAB_TOP = 52, DECK_TOP = 54, BTN = 2.75, BTN_H = 0.9, CAN = 5, CAN_H = 22, CARRIAGE_Y = 74;
-  const PHASE_HP = 450, DMG = { W01: 10, W03: 60, roller: 30, bomb: 50 }, DECK_GRACE = 6, SHAKE_WARN = 1.2, CARRIAGE_SPEED = 46;
+  const PHASE_HP = 450, DMG = { W01: 10, W03: 60, W04: 9, roller: 30, bomb: 50 }, DECK_GRACE = 6, SHAKE_WARN = 1.2, CARRIAGE_SPEED = 46;
   // Yen 2026-11-18：第 3 階段對五歲小孩太難，調慢：招式間休息變長、預警時間跟前兩階段一樣、罐頭倒數變長、可以在機頂待久一點
   const MAX_CANS = [2, 3, 3], FUSE = 16, CAN_KEEP = 22, REST = [1.4, 1.1, 1.3], P3_DECK_GRACE = 9;
   const PHASE_NAMES = ['第 1 階段・夾子砸地', '第 2 階段・掃臂與毛線球', '第 3 階段・大王生氣了！'];
@@ -3293,7 +3308,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   }
   const onButton = (x, y, z, e) => Math.abs(x) <= BTN + e && Math.abs(z) <= BTN + e && y >= DECK_TOP - e && y <= DECK_TOP + BTN_H + e;
   // 戰鬥事件：子彈或狙擊打到紅鈕、滾刷在紅鈕旁揮擊、墨水彈在紅鈕旁爆炸
-  B.onImpact = (x, y, z, cause) => (B.on && (cause === 'W01' || cause === 'W03') && onButton(x, y, z, 0.6) ? damage(DMG[cause]) : false);
+  B.onImpact = (x, y, z, cause) => (B.on && (cause === 'W01' || cause === 'W03' || cause === 'W04') && onButton(x, y, z, 0.6) ? damage(DMG[cause]) : false);
   B.onRoller = (pos) => (B.on && Math.hypot(pos.x, pos.z) <= 6.5 && Math.abs(pos.y - DECK_TOP) <= 3 ? damage(DMG.roller) : false);
   B.special = (x, y, z, r) => (B.on && Math.hypot(x, z) <= r + 6 && Math.abs(y - DECK_TOP) <= 6 ? damage(DMG.bomb * 2) : false); // 在機頂放絕招：紅鈕大傷害
   B.onBomb = (x, y, z) => (B.on && Math.hypot(x, y - (DECK_TOP + BTN_H / 2), z) <= 5.5 ? damage(DMG.bomb) : false);
@@ -3510,7 +3525,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const KINDS = ['maomao', 'shuang'], PI = Math.PI;
   // 事件欄位裡要跟著場地翻轉的 x／z 分量，以及面向角
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
-  const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], S: [0, 2], X: [0, 2] }, YAW = { w: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
+  const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], g: [0, 2, 3, 5], S: [0, 2], X: [0, 2] }, YAW = { w: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
   let api = null, room = null, myPeer = null, clock = 0, joinAt = 0, prof = { n: '', k: 'maomao', w: 'W01' }, sig = '', seq = 0, out = [], sendT = 0, hostT = 0, hostSeen = '', rot = 0, rc = 1, rs = 0, nT = 2, g0 = 0, seen = new Map(), lastSeq = {}, missing = {}, heard = {}, hb = 0, done = new Set(); // done：自己已經打完或離開的場次，房主的狀態還沒更新時不要又被拉進去
   const r2 = (v) => Math.round(v * 100) / 100, r4 = (v) => Math.round(v * 10000) / 10000, G = () => SC.game;
   const changed = () => { if (N.onChange) N.onChange(); };
@@ -3744,7 +3759,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   SC.arenaBoss = (D) => {
     // Yen 2026-11-17：魔王先初步變弱：每回合血量約八成、整體動作（含預告和飛行物）慢 15%（PACE）
     const PACE = D.pace || 0.85;
-    const R = D.R || 46, PHASE_HP = Math.round((D.phaseHP || 360) * 0.82), DMG = D.dmg || { W01: 4, W02: 30, W03: 60, bomb: 60 };
+    const R = D.R || 46, PHASE_HP = Math.round((D.phaseHP || 360) * 0.82), DMG = D.dmg || { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
     const BODY_R = D.bodyR, TOP = D.top, NAMES = D.phaseNames;
     const CH0 = 0.05, CH1 = 2.7, BOOM = 2.82, CINE_END = BOOM + 0.42;
     const B = { name: D.name, face: D.face, lede: D.lede, spawn: D.spawn || { x: 0, z: -32 }, on: false, phase: 1, health: PHASE_HP, maxHealth: PHASE_HP, state: 'idle', phaseName: NAMES[0], time: 0, clearSeconds: 0, tired: false };
@@ -4487,7 +4502,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 // 招式：丟西瓜炸彈（地上紅圈）、墨水大砲（三連發）、第 3 回合會繞著場地下西瓜雨（只有紅圈外面安全）。
 (() => {
   const R = 46, BODY_R = 4.6, TOP = 12, FLY = 10, BALLOONS = 5, BALLOON_HP = 24;
-  const DMG = { W01: 4, W02: 30, W03: 60, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
   const balloons = []; let basketMat, ropeMat, glowI = 0, glowAt = 0;
   const COLORS = [0xff5d8f, 0x58c7ff, 0xffd23f, 0x7be36b, 0xb07bff];
 
@@ -4721,7 +4736,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 // 第 3 回合場上有三顆大石頭，站在石頭前面引他的鑽頭衝過來，撞到石頭就卡住。
 (() => {
   const R = 46, BODY_R = 5.4, TOP = 15, UNDER = -17, BALL_HP = 12, BALL_R = 2.4;
-  const DMG = { W01: 4, W02: 30, W03: 60, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
   const balls = [], holes = [], rocks = []; let dirt, vestMat;
 
   const B4 = SC.boss4 = SC.arenaBoss({
@@ -5810,7 +5825,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 // 破解（飄在天上打不到）：第 1 回合把雷球射回去打他；第 2 回合打散繞著他轉的四朵小烏雲，沒電就掉下來；第 3 回合兩顆雷球都要射回去。
 (() => {
   const R = 46, BODY_R = 7, TOP = 13, FLY = 11, BALL_HP = 12, BALL_R = 2;
-  const DMG = { W01: 4, W02: 30, W03: 60, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
   const balls = [], bolts = []; let cloudMat;
 
   const B9 = SC.boss9 = SC.arenaBoss({
@@ -7078,7 +7093,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const SCOPE_ZOOM = 4; // 狙擊鏡最大倍率（Yen 2026-11-14：放大距離要夠）
   const V0 = Math.sqrt(2 * C.GRAVITY * C.GROUND_JUMP_HEIGHT), V1 = Math.sqrt(2 * C.GRAVITY * C.AIR_JUMP_HEIGHT);
   const t1 = new V3(), t2 = new V3(), t3 = new V3(), viewDir = new V3();
-  const WEAPONS = ['W01', 'W02', 'W03'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
+  const WEAPONS = ['W01', 'W02', 'W03', 'W04'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special', 'W04'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
   let slowT = 0, slowK = 0.35, countdownT = 0, endT = 0, lastCount = 0, finalOn = false, swingSeq = 0, vic = null, judged = false, splatSfxAt = 0, resultsShown = false, nextSprayAt = 0, spraySerial = 0;
   G.cam = cam; G.colors = colors;
 
@@ -7267,7 +7282,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (!G.demo && near(t) > 0.1) { SC.fx.pop(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 2.4, 0.07); SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 3, 18, 0.28); }
   }
   // 被打到往後退一點（在被打的人自己那台算，連線時位置照常同步）。漆彈槍一下退一點點，滾刷、墨水彈退比較多
-  const KNOCK = { W01: 1.8, W02: 6, bomb: 9, sp: 0 };
+  const KNOCK = { W01: 1.8, W02: 6, W04: 1.3, bomb: 9, sp: 0 };
   function knock(t, from, cause) {
     const k = KNOCK[cause] || 0; if (!k || !from || !from.pos || t.spT != null) return;
     const dx = t.pos.x - from.pos.x, dz = t.pos.z - from.pos.z, d = Math.hypot(dx, dz); if (d < 0.01) return;
@@ -7319,6 +7334,24 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (netOn()) SC.net.ev('p', m.x, m.y, m.z, v.x, v.y, v.z, r);
     a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1; A.sfx.shot(near(a));
     if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 1.9, 0.06); // 槍口火光
+  }
+
+  // 散彈槍：用種子決定每顆的偏移，連線時每台噴出來的形狀一樣
+  function fireW04(a) {
+    const w = C.W04, m = muzzle(a, t1), dir = t2.copy(a.aim).sub(m).normalize(), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a);
+    pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, a.ai ? aiD().dmg : 1);
+    if (netOn()) SC.net.ev('g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed);
+    a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1.8; A.sfx.shotgun(near(a));
+    if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 3, 0.08);
+  }
+  function pellets(a, mx, my, mz, dx, dy, dz, boost, seed, dmgK) {
+    let s = seed | 0; const rnd = () => { s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const w = C.W04, yaw0 = Math.atan2(dx, dz), pitch0 = Math.asin(SC.clamp(dy, -1, 1));
+    for (let k = 0; k < w.pellets; k++) {
+      const ang = (k / w.pellets) * Math.PI * 2 + rnd() * 0.8, rr = k === 0 ? 0 : (0.35 + rnd() * 0.65) * w.spread, yaw = yaw0 + Math.cos(ang) * rr, pitch = pitch0 + Math.sin(ang) * rr * 0.6 + 0.03, sp = w.speed * (0.9 + rnd() * 0.2);
+      projectiles.push({ x: mx, y: my, z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
+        dmg: w.damage * dmgK, r: w.radius * C.PAINT * boost, range: w.range * (0.85 + rnd() * 0.3), g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.6, flash: k === 0, color: colors[a.team], cause: 'W04' });
+    }
   }
 
   function swing(a) {
@@ -7637,6 +7670,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         if (a.ink >= C.W01.ink) { fireW01(a); a.nextShotAt = Math.max(a.nextShotAt, now - dt) + C.W01.interval; }
         else { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
       }
+    } else if (a.weapon === 'W04') {
+      if (ctl.fire && canAct && now >= a.nextShotAt) {
+        if (a.ink >= C.W04.ink) { fireW04(a); a.nextShotAt = now + C.W04.interval; }
+        else { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
+      }
     } else if (a.weapon === 'W02') {
       if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= C.W02.swingInk) swing(a); else if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
       if (ctl.fire && canAct && now >= a.rollFrom && a.onGround) { a.rolling = true; roll(a); }
@@ -7877,6 +7915,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     } else if (type === 'w') { if (projectiles.length < 500) flecks(a, d[0], d[1], d[2], d[3], SC.clamp(d[4], -1.3, 1.3), SC.clamp(d[5], 1, 1.2), d[6], d[7] ? 1 : 0); a.cat.swing = 1; a.cat.recoil = 1.6; if (near(a) > 0.1) A.sfx.swing(); }
     else if (type === 'r') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 12) { rollPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 8)); SC.fx.burst(d[2], d[4] + 0.4, d[3], colors[a.team], 2, 9, 0.35); } }
     else if (type === 'z') { const dir = new V3(d[3], d[4], d[5]); if (dir.lengthSq() > 0.5) sniperShot(a, new V3(d[0], d[1], d[2]), dir.normalize(), SC.clamp(d[6], 0, 1), SC.clamp(d[7], 1, 1.2), { len: d[8], hit: d[9] }); }
+    else if (type === 'g') { const l = Math.hypot(d[3], d[4], d[5]); if (l > 0.5 && projectiles.length < 500) { pellets(a, d[0], d[1], d[2], d[3] / l, d[4] / l, d[5] / l, SC.clamp(d[6], 1, 1.2), d[7], 0); a.cat.recoil = 1.8; A.sfx.shotgun(near(a)); } }
     else if (type === 'b') spawnBomb(a, d[0], d[1], d[2], d[3], d[4], d[5]);
     else if (type === 'S') { a.cat.squash = -0.8; if (near(a) > 0.05) A.sfx.spUp(near(a)); SC.fx.burst(d[0], d[1] + 0.5, d[2], colors[a.team], 30, 24, 0.6); }
     else if (type === 'X') spImpact(a, d[0], d[1], d[2], false);
@@ -7908,7 +7947,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       if (I.fire || since > 4 || (p.onGround && since >= 0.3)) p.leapAt = null; else cat = true;
     }
     ctl.fire = I.fire || I.fireTap; ctl.cat = cat; if (I.jump) ctl.jump = true; if (I.bomb) { ctl.bomb = true; ctl.bombPow = I.bombPow; } if (I.sp) ctl.sp = true;
-    if (I.select) ctl.select = I.select; else if (I.swap) ctl.select = WEAPONS[(WEAPONS.indexOf(p.weapon) + I.swap + 3) % 3];
+    if (I.select) ctl.select = I.select; else if (I.swap) ctl.select = WEAPONS[(WEAPONS.indexOf(p.weapon) + I.swap + WEAPONS.length) % WEAPONS.length];
     if (I.pause) G.setPaused(true);
     if (!p.alive) return;
     if (p.form === 'cat' && p.speed > 2) p.yaw += SC.angDiff(p.yaw, Math.atan2(p.vel.x, p.vel.z)) * Math.min(1, dt * 12);
@@ -8227,6 +8266,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     W01: `<path d="M20 38l-5 15h10l4-15z" fill="#39324a" ${ST}/><rect x="8" y="25" width="38" height="16" rx="8" fill="${WC}" ${ST}/><rect x="44" y="28" width="12" height="10" rx="3" fill="#fff" ${ST}/><circle cx="25" cy="20" r="9" fill="#fff" ${ST}/><circle cx="25" cy="21.5" r="5" fill="${WC}"/><path d="M13 30h14" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6"/><circle cx="60" cy="27" r="2.6" fill="${WC}" ${ST.replace('3.2', '1.6')}/><circle cx="61" cy="38" r="2" fill="${WC}"/>`,
     W02: `<path d="M8 59q12-6 24-1t26-2v6H8z" fill="${WC}"/><path d="M12 8l20 26" stroke="#1b1430" stroke-width="8" stroke-linecap="round"/><path d="M12 8l20 26" stroke="#39324a" stroke-width="4" stroke-linecap="round"/><rect x="13" y="32" width="42" height="18" rx="7" fill="#fff" ${ST}/><rect x="9" y="30" width="8" height="22" rx="3" fill="${WC}" ${ST}/><rect x="51" y="30" width="8" height="22" rx="3" fill="${WC}" ${ST}/><path d="M22 37v8M30 37v8M38 37v8M46 37v8" stroke="#d9d4ea" stroke-width="2.4" stroke-linecap="round"/>`,
     W03: `<path d="M13 40l-4 14h9l4-14z" fill="#39324a" ${ST}/><rect x="4" y="29" width="26" height="13" rx="6.5" fill="${WC}" ${ST}/><rect x="28" y="32" width="28" height="7" rx="3.5" fill="#fff" ${ST}/><rect x="54" y="30" width="7" height="11" rx="2" fill="#39324a" ${ST}/><rect x="10" y="18" width="18" height="8" rx="4" fill="#39324a" ${ST}/><circle cx="27" cy="22" r="3" fill="#9fe8ff"/><path d="M34 22h24" stroke="${WC}" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 6"/>`,
+    W04: `<path d="M17 40l-5 14h10l4-14z" fill="#39324a" ${ST}/><rect x="6" y="26" width="30" height="17" rx="8" fill="${WC}" ${ST}/><rect x="32" y="24" width="16" height="9" rx="3" fill="#fff" ${ST}/><rect x="32" y="35" width="16" height="9" rx="3" fill="#fff" ${ST}/><path d="M47 22l6-3v14l-6-2zM47 33l6-2v15l-6-3z" fill="#39324a" ${ST}/><circle cx="20" cy="20" r="6" fill="#bff1ff" ${ST}/><circle cx="20" cy="21" r="3" fill="${WC}"/><circle cx="59" cy="22" r="2.4" fill="${WC}"/><circle cx="61" cy="33" r="2.4" fill="${WC}"/><circle cx="59" cy="44" r="2.4" fill="${WC}"/>`,
     BOMB: `<path d="M32 9L8 45 30 57z" fill="${WC}" ${ST}/><path d="M32 9L56 45 30 57z" fill="${WC}" ${ST}/><path d="M32 9L56 45 30 57z" fill="#1b1430" opacity=".22"/><path d="M27 17L15 39" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/><circle cx="21" cy="42" r="2.4" fill="#1b1430"/><circle cx="29" cy="44" r="2.4" fill="#1b1430"/><circle cx="32" cy="9" r="5.4" fill="#ffd23f" ${ST}/><circle cx="8" cy="45" r="5.4" fill="#ffd23f" ${ST}/><circle cx="56" cy="45" r="5.4" fill="#ffd23f" ${ST}/><circle cx="30" cy="57" r="5.4" fill="#ffd23f" ${ST}/>`,
     CAT: `<path d="M8 50q0-22 24-22t24 22q0 6-6 6H14q-6 0-6-6z" fill="${WC}" ${ST}/><path d="M14 34l2-14 10 9zM50 34l-2-14-10 9z" fill="${WC}" ${ST}/><ellipse cx="25" cy="42" rx="3.4" ry="4.4" fill="#fff"/><ellipse cx="39" cy="42" rx="3.4" ry="4.4" fill="#fff"/><path d="M4 60q14-5 28-1t28-1" fill="none" stroke="${WC}" stroke-width="4" stroke-linecap="round" opacity=".8"/>`,
   };
@@ -8273,8 +8313,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ui.trickIcon = (k) => TRICK[k] || '';
 
   const HELP = {
-    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍按住蓄力會放大，放開發射'], ['Q（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['G／右鍵', '丟墨水彈'], ['1 2 3／滾輪', '切換武器'], ['Esc／P', '暫停'], ['M', '靜音']],
-    touch: [['左半邊', '按住拖曳出搖桿來移動'], ['墨貓鈕（左下）', '按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動'], ['射擊鈕', '短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準'], ['狙擊槍', '按住射擊鈕蓄力會放大，放開發射，一發擊倒'], ['按著墨貓＋點射擊鈕', '墨貓跳，落地前都維持墨貓'], ['右半邊', '拖曳轉動視角瞄準'], ['墨水彈', '朝準星丟出墨水彈'], ['切換', '輪流換漆彈槍、滾刷、狙擊槍']],
+    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍按住蓄力會放大，放開發射'], ['Q（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['G／右鍵（按住）', '丟墨水彈：短按丟近，按越久丟越遠'], ['1 2 3 4／滾輪', '切換武器（4 是散彈槍：近距離很強）'], ['Esc／P', '暫停'], ['M', '靜音']],
+    touch: [['左半邊', '按住拖曳出搖桿來移動'], ['墨貓鈕（左下）', '按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動'], ['射擊鈕', '短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準'], ['狙擊槍', '按住射擊鈕蓄力會放大，放開發射，一發擊倒'], ['按著墨貓＋點射擊鈕', '墨貓跳，落地前都維持墨貓'], ['右半邊', '拖曳轉動視角瞄準'], ['墨水彈', '朝準星的方向丟：短按丟近，按越久丟越遠'], ['切換', '點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍']],
   };
 
   ui.build = () => {
@@ -8303,7 +8343,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       <div class="h-scope" id="scope"></div>
       <div class="h-cross" id="cross"><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div>
       <div class="h-weapons" id="weapons">
-        ${['W01', 'W02', 'W03'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>G</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Q</kbd><b>墨貓</b></span></div>
+        ${['W01', 'W02', 'W03', 'W04'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>G</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Q</kbd><b>墨貓</b></span></div>
       </div>
       <div class="h-tip" id="tip"></div>
       <div class="h-trick" id="trick-card"></div>
@@ -8575,7 +8615,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ui.tip = (text, dur) => { els.tip.textContent = text; els.tip.classList.add('on'); tipT = dur; };
   ui.lowInk = () => { const t = performance.now() / 1000; if (t - lowInkAt < 4) return; lowInkAt = t; ui.tip(SC.input.isTouch ? '墨水不夠了！按住「墨貓」潛進自己的墨水補充' : '墨水不夠了！按住 Q 潛進自己的墨水補充', 3); };
   const fallTxt = () => (G().mode === 'boss' ? '掉下去了' : '掉進' + (SC.world.riverName || '河')); // 每張場地的河不一樣（牛奶河、巧克力河、大海…）
-  const CAUSE = { W01: '漆彈槍', W02: '滾刷', W03: '狙擊槍', bomb: '墨水彈', fall: '掉進河裡', boss: '被喵抓抓大王擊倒', special: '絕招' };
+  const CAUSE = { W01: '漆彈槍', W02: '滾刷', W03: '狙擊槍', W04: '散彈槍', bomb: '墨水彈', fall: '掉進河裡', boss: '被喵抓抓大王擊倒', special: '絕招' };
   ui.feed = (from, t, cause) => {
     const el = document.createElement('div'); el.className = 'feed-item';
     const tag = (a) => `<span class="${['ta', 'tb', 'tc'][a.team] || 'tb'}">${a.isPlayer ? '你' : a.name}</span>`;
