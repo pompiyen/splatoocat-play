@@ -467,6 +467,17 @@ button { font: inherit; color: inherit; }
 @media (max-height: 520px) { .map-pick .mico { width: 36px; height: 25px; } .map-pick b { font-size: 11px; } }
 @media (max-width: 440px) { .is-touch .h-sp { right: calc(222 * var(--u) + env(safe-area-inset-right, 0px)); width: calc(62 * var(--u)); height: calc(62 * var(--u)); bottom: calc(44 * var(--u) + var(--sab)); } } /* 直式手機：絕招鈕縮小一點，不碰到左邊的墨貓鈕 */
 
+/* 語言選擇（v48）：地球圖示＋目前語言，透明的 select 蓋在上面，手機點了會跳出系統選單 */
+.lang-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; font-size: 15px; padding: 8px 14px; color: var(--cream); }
+.lang-btn svg { width: 20px; height: 20px; flex: none; }
+.lang-btn select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; -webkit-appearance: none; appearance: none; }
+.lang-btn:focus-within { outline: 3px solid var(--sun); outline-offset: 3px; }
+html[data-lang="ja"] { --f-display: 'Titan One', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans TC', system-ui, sans-serif; --f-body: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans TC', system-ui, sans-serif; }
+html[data-lang="ko"] { --f-display: 'Titan One', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans TC', system-ui, sans-serif; --f-body: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans TC', system-ui, sans-serif; }
+/* 外文名字比較長：選貓咪的名字可以縮小、斷行，不要撐出按鈕 */
+html:not([data-lang="zh"]) #pick-kind .cat-pick { grid-template-columns: auto minmax(0, 1fr); }
+html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw, 18px); overflow-wrap: anywhere; min-width: 0; }
+
 </style>
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
@@ -581,6 +592,460 @@ SC.lerp = (a, b, t) => a + (b - a) * t;
 SC.rand = (a, b) => a + Math.random() * (b - a);
 SC.damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
 SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; return d; };
+
+// 多國語言（Yen 2026-11-20：加入英文、日文、韓文等多國語言選項）
+// 做法：程式照舊寫中文，畫面上的文字在顯示前換成選的語言。
+//   1. SC.tr(中文) 查字典；查不到再套句型（例如「第 3 名」「被毛毛的滾刷擊倒了！」），句型裡的名字也會再翻一次。
+//   2. 一個 MutationObserver 看著整個畫面，新出現或改掉的文字、aria-label、placeholder、title 一出現就翻掉（在畫面更新前，不會閃中文）。
+//   3. 畫在 canvas 上的字（名字牌、靶子、看板）在畫的時候呼叫 SC.tr。
+// 每個節點記住原本的中文，切換語言時從原文重翻，不用重新整理頁面。
+(() => {
+  const LANGS = ['zh', 'en', 'ja', 'ko'];
+  const LABEL = { zh: '中文', en: 'English', ja: '日本語', ko: '한국어' };
+  const HTML_LANG = { zh: 'zh-Hant', en: 'en', ja: 'ja', ko: 'ko' };
+  let lang = 'zh';
+  try { const s = localStorage.getItem('sc-lang'); if (LANGS.includes(s)) lang = s; } catch (e) {}
+  const CJK = /[㐀-鿿　-〿＀-￯]/;
+  const D = new Map(); // 中文 → [en, ja, ko]
+  const P = []; // [正規式, [en, ja, ko]]，$1 $2 … 是翻過的抓取內容
+  const cache = new Map();
+  const miss = new Set();
+  const add = (rows) => rows.forEach((r) => D.set(r[0], r.slice(1)));
+  const pat = (re, out) => P.push([re, out]);
+
+  const tr = (s) => {
+    if (lang === 'zh' || typeof s !== 'string' || !CJK.test(s)) return s;
+    const key = lang + '\u0001' + s;
+    if (cache.has(key)) return cache.get(key);
+    const li = LANGS.indexOf(lang) - 1;
+    let out = null;
+    const m0 = /^(\s*)([\s\S]*?)(\s*)$/.exec(s);
+    if (m0[1] || m0[3]) out = m0[1] + tr(m0[2]) + m0[3];
+    else if (D.has(s)) out = D.get(s)[li];
+    else if (/[\n　]/.test(s)) out = s.split(/([\n　])/).map((p) => (p === '　' ? (lang === 'ja' ? '　' : '  ') : p === '\n' ? p : tr(p))).join('');
+    else {
+      for (const [re, o] of P) {
+        const m = re.exec(s); if (!m) continue;
+        out = (typeof o === 'function' ? o(m, li) : o[li]).replace(/\$(\d)/g, (_, n) => tr(m[+n] || ''));
+        break;
+      }
+    }
+    if (out == null) { out = s; miss.add(s); }
+    cache.set(key, out); return out;
+  };
+
+  // ---------- 字典：[中文, English, 日本語, 한국어] ----------
+  add([
+    // 開機、標題
+    ['正在擠墨水…', 'Squeezing the ink…', 'インクをしぼってるよ…', '잉크 짜는 중…'],
+    ['貓咪遊樂園・網頁試玩版', 'Cat Playground · Web Demo', 'ネコ遊園地・ウェブ体験版', '고양이 놀이공원 · 웹 체험판'],
+    ['Splatoocat 貓咪遊樂園', 'Splatoocat Cat Playground', 'Splatoocat ネコ遊園地', 'Splatoocat 고양이 놀이공원'],
+    ['模式', 'Mode', 'モード', '모드'],
+    ['電腦對戰', 'vs Computer', 'CPUと対戦', '컴퓨터 대전'],
+    ['三分鐘塗地', '3-min Turf War', '3分間ナワバリ', '3분 땅따먹기'],
+    ['自由試玩', 'Free Play', '自由練習', '자유 연습'],
+    ['不限時靶場', 'Target range, no timer', '時間無制限のマト場', '시간 제한 없는 과녁장'],
+    ['魔王關卡', 'Boss Stages', 'ボスステージ', '보스 스테이지'],
+    ['十五隻大魔王', '15 big bosses', '15体の大ボス', '대마왕 15마리'],
+    ['連線對戰', 'Online Battle', 'オンライン対戦', '온라인 대전'],
+    ['和朋友開房間', 'Make a room with friends', '友だちと部屋を作る', '친구와 방 만들기'],
+    ['選魔王', 'Pick a Boss', 'ボスをえらぶ', '보스 고르기'],
+    ['世界', 'World', 'ワールド', '월드'],
+    ['選貓咪', 'Pick a Cat', 'ネコをえらぶ', '고양이 고르기'],
+    ['毛毛', 'Maomao', 'マオマオ', '마오마오'],
+    ['雙雙', 'Shuangshuang', 'シュアンシュアン', '솽솽'],
+    ['金吉拉・臭臉擔當', 'Chinchilla · the grumpy face', 'チンチラ・ムスッと顔担当', '친칠라 · 뚱한 얼굴 담당'],
+    ['布偶貓・藍眼睛', 'Ragdoll · blue eyes', 'ラグドール・青い目', '랙돌 · 파란 눈'],
+    ['墨水顏色', 'Ink Color', 'インクの色', '잉크 색'],
+    ['隨機顏色', 'Random color', 'ランダムな色', '랜덤 색'],
+    ['場地', 'Stage', 'ステージ', '경기장'],
+    ['人數', 'Players', '人数', '인원'],
+    ['1 對 1', '1 vs 1', '1対1', '1 대 1'],
+    ['2 對 2', '2 vs 2', '2対2', '2 대 2'],
+    ['2 對 1', '2 vs 1', '2対1', '2 대 1'],
+    ['對手強度', 'CPU Strength', '相手の強さ', '상대 강함'],
+    ['輕鬆', 'Easy', 'かんたん', '쉬움'],
+    ['普通', 'Normal', 'ふつう', '보통'],
+    ['認真', 'Serious', 'ほんき', '진지함'],
+    ['連線房間', 'Online Room', 'オンラインの部屋', '온라인 방'],
+    ['暱稱', 'Nickname', 'ニックネーム', '닉네임'],
+    ['最多 8 個字', 'Up to 8 letters', '8文字まで', '최대 8글자'],
+    ['開新房間', 'New Room', '部屋を作る', '새 방 만들기'],
+    ['或', 'or', 'または', '또는'],
+    ['房號', 'Room #', '部屋番号', '방 번호'],
+    ['加入', 'Join', '入る', '참가'],
+    ['離開房間', 'Leave Room', '部屋を出る', '방 나가기'],
+    ['隨機分隊', 'Random Teams', 'ランダムでチーム分け', '랜덤 팀'],
+    ['指定組隊', 'Choose Teams', 'チームを決める', '팀 정하기'],
+    ['三方對戰', '3-Way Battle', '三つどもえ', '3팀 대결'],
+    ['兩隊對戰', 'Two Teams', '2チーム対戦', '두 팀 대결'],
+    ['三方', '3-Way', '三つどもえ', '3팀'],
+    ['塗地戰', 'Turf War', 'ナワバリバトル', '땅따먹기'],
+    ['塗得多的贏', 'Most paint wins', 'たくさん塗ったら勝ち', '많이 칠하면 승리'],
+    ['擊倒戰', 'Knockout', 'たおしあいバトル', '쓰러뜨리기'],
+    ['擊倒多的贏', 'Most KOs win', 'たくさんたおしたら勝ち', '많이 쓰러뜨리면 승리'],
+    ['開戰！', 'Battle!', 'バトル開始！', '시작!'],
+    ['操作說明', 'How to Play', 'あそびかた', '조작 방법'],
+    ['音效開關', 'Sound on/off', '音のオン・オフ', '소리 켜기/끄기'],
+    ['音效：開', 'Sound: On', '音：オン', '소리: 켬'],
+    ['音效：關', 'Sound: Off', '音：オフ', '소리: 끔'],
+    ['全螢幕', 'Full Screen', '全画面', '전체 화면'],
+    ['離開全螢幕', 'Exit Full Screen', '全画面をやめる', '전체 화면 끄기'],
+    ['這個瀏覽器不允許全螢幕', "This browser doesn't allow full screen", 'このブラウザは全画面にできません', '이 브라우저는 전체 화면을 쓸 수 없어요'],
+    ['進入試玩', 'Start Practice', '練習スタート', '연습 시작'],
+    ['挑戰魔王', 'Fight the Boss', 'ボスに挑戦', '보스 도전'],
+    ['開始對戰', 'Start Battle', '対戦スタート', '대전 시작'],
+    ['等房主開始', 'Waiting for host', 'ホストを待ってるよ', '방장을 기다리는 중'],
+    ['先開房間或加入房間', 'Make or join a room first', 'まず部屋を作るか入ってね', '먼저 방을 만들거나 참가하세요'],
+    ['語言', 'Language', '言語', '언어'],
+    // 地圖
+    ['隨機', 'Random', 'ランダム', '랜덤'],
+    ['貓咪樂園', 'Cat Park', 'ネコパーク', '고양이 공원'],
+    ['甜點', 'Sweets', 'スイーツ', '디저트'],
+    ['海盜船', 'Pirate Ships', '海賊船', '해적선'],
+    ['遊樂場', 'Fun Fair', '遊園地', '놀이동산'],
+    ['時鐘廣場', 'Clock Plaza', '時計広場', '시계 광장'],
+    ['滑板場', 'Skate Park', 'スケートパーク', '스케이트장'],
+    ['貓咪遊樂園', 'Cat Playground', 'ネコ遊園地', '고양이 놀이공원'],
+    ['甜點廚房', 'Sweets Kitchen', 'スイーツキッチン', '디저트 주방'],
+    ['歡樂遊樂場', 'Happy Fun Fair', 'わくわく遊園地', '신나는 놀이동산'],
+    ['貓咪時鐘廣場', 'Cat Clock Plaza', 'ネコ時計広場', '고양이 시계 광장'],
+    ['牛奶河', 'the milk river', 'ミルクの川', '우유 강'],
+    ['巧克力河', 'the chocolate river', 'チョコの川', '초콜릿 강'],
+    ['大海', 'the sea', '海', '바다'],
+    ['水池', 'the pool', 'プール', '물웅덩이'],
+    ['噴泉水池', 'the fountain', '噴水', '분수'],
+    ['河', 'the river', '川', '강'],
+    ['場地每次隨機挑一張。', 'A random stage each time.', 'ステージは毎回ランダム。', '경기장은 매번 랜덤이에요.'],
+    ['場地：貓咪遊樂園。', 'Stage: Cat Playground.', 'ステージ：ネコ遊園地。', '경기장: 고양이 놀이공원.'],
+    ['場地：甜點廚房，小心巧克力河！', 'Stage: Sweets Kitchen. Watch out for the chocolate river!', 'ステージ：スイーツキッチン。チョコの川に気をつけて！', '경기장: 디저트 주방. 초콜릿 강 조심!'],
+    ['場地：海盜船，兩艘船隔著大海，走跳板和碼頭過去，小心別掉進海裡！', 'Stage: Pirate Ships. Two ships across the sea. Cross the planks and piers, and don\'t fall in the water!', 'ステージ：海賊船。2そうの船の間は海。板とさん橋をわたってね。海に落ちないように！', '경기장: 해적선. 바다 사이에 배 두 척. 판자와 부두로 건너가요. 바다에 빠지지 마세요!'],
+    ['場地：歡樂遊樂場，有旋轉木馬、高高的雲霄飛車軌道和碰碰車坑。', 'Stage: Happy Fun Fair, with a carousel, a tall roller coaster track and a bumper car pit.', 'ステージ：わくわく遊園地。メリーゴーランド、高いジェットコースターのレール、ゴーカートの池があるよ。', '경기장: 신나는 놀이동산. 회전목마, 높은 롤러코스터 레일, 범퍼카 구덩이가 있어요.'],
+    ['場地：滑板場，有大碗池和 U 型滑道，跳上平台居高臨下。', 'Stage: Skate Park, with a big bowl and half-pipes. Jump on the platforms to look down on everyone.', 'ステージ：スケートパーク。大きなボウルとハーフパイプ。台に飛び乗って上からねらおう。', '경기장: 스케이트장. 큰 볼과 하프파이프가 있어요. 높은 곳에 올라가 내려다봐요.'],
+    ['場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。', 'Stage: Cat Clock Plaza, a big round stage. A clock tower in the middle, a fountain ring around it with bridges and stepping stones, plus high decks, lookouts and hedges.', 'ステージ：ネコ時計広場。大きくて丸いステージ。まん中に時計台、まわりに噴水。橋や飛び石、高台、見はり台、植えこみもあるよ。', '경기장: 고양이 시계 광장. 크고 둥근 경기장. 가운데 시계탑, 둘레에 분수가 있고 다리, 징검돌, 높은 단, 전망대, 울타리 나무가 있어요.'],
+    ['塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。', 'Turf War. Paint the stage in your team\'s color for 3 minutes. The team with more paint wins.', 'ナワバリバトル。3分間でステージを自分のチームの色に塗ろう。たくさん塗ったチームの勝ち。', '땅따먹기 대전. 3분 동안 경기장을 우리 팀 색으로 칠해요. 더 많이 칠한 팀이 이겨요.'],
+    ['一個人不限時自由練習。場上有氣球靶和會噴對手墨水的灑水器，打壞了過幾秒會再出現。', 'Practice alone with no timer. There are balloon targets and sprinklers that spray enemy ink. Broken ones come back after a few seconds.', 'ひとりで時間無制限の練習。風船のマトと、相手のインクをまくスプリンクラーがあるよ。こわしても数秒でまた出てくる。', '혼자서 시간 제한 없이 연습해요. 풍선 과녁과 상대 잉크를 뿌리는 스프링클러가 있어요. 부숴도 몇 초 뒤에 다시 나와요.'],
+    ['和朋友連線對戰，2 到 6 人。兩隊對戰最多 4 人；3 人以上可以每人一隊大亂鬥。一個人開房間，把房號告訴朋友，朋友打開同一個網址輸入房號就能加入，不用登入。', 'Play online with 2 to 6 friends. Two-team battles take up to 4; with 3 or more, everyone can be their own team. One person makes a room and tells friends the room number. Friends open the same link and type the number. No sign-in needed.', '友だちと2〜6人でオンライン対戦。2チーム対戦は4人まで。3人以上なら全員バラバラのバトルもできるよ。ひとりが部屋を作って部屋番号を教えてね。友だちは同じURLを開いて番号を入れれば入れる。ログインはいらないよ。', '친구와 2~6명이 온라인 대전. 두 팀 대전은 4명까지, 3명 이상이면 각자 한 팀으로 난투도 할 수 있어요. 한 명이 방을 만들고 방 번호를 알려 주면, 친구는 같은 주소를 열고 번호를 넣으면 들어와요. 로그인은 필요 없어요.'],
+    ['和朋友連線對戰，2 到 6 人。兩隊對戰最多 4 人；3 人以上可以每人一隊大亂鬥。一個人開房間，把房號告訴朋友。每個人都要登入 Claude，而且被邀請看這個頁面才連得進來。', 'Play online with 2 to 6 friends. Two-team battles take up to 4; with 3 or more, everyone can be their own team. One person makes a room and tells friends the room number. Everyone must be signed in to Claude and invited to this page.', '友だちと2〜6人でオンライン対戦。2チーム対戦は4人まで。3人以上なら全員バラバラのバトルもできるよ。ひとりが部屋を作って部屋番号を教えてね。全員Claudeにログインして、このページに招待されている必要があります。', '친구와 2~6명이 온라인 대전. 두 팀 대전은 4명까지, 3명 이상이면 각자 한 팀으로 난투도 할 수 있어요. 한 명이 방을 만들고 방 번호를 알려 주세요. 모두 Claude에 로그인하고 이 페이지에 초대받아야 해요.'],
+    // 魔王名字和關卡說明
+    ['屋頂城堡', 'Rooftop Castle', '屋根の上のお城', '지붕 위 성'],
+    ['玩具王國', 'Toy Kingdom', 'おもちゃの国', '장난감 왕국'],
+    ['大自然', 'Great Outdoors', '大自然', '대자연'],
+    ['喵抓抓大王', 'King Meowclaw', 'ニャンクロー大王', '냥발톱 대왕'],
+    ['胖嘟嘟魔王', 'Chubby Demon King', 'ぽっちゃり魔王', '통통 마왕'],
+    ['氣球小豬船長', 'Captain Balloon Piggy', 'ふうせんコブタ船長', '풍선 꿀꿀 선장'],
+    ['鑽地兔工頭', 'Digger Bunny Boss', 'あなほりウサギ親方', '땅굴 토끼 반장'],
+    ['狐狸大王機甲', 'Fox King Mech', 'キツネ大王メカ', '여우 대왕 로봇'],
+    ['方塊積木王', 'Block King', 'つみき大王', '블록 대왕'],
+    ['轉轉陀螺王', 'Spinning Top King', 'くるくるコマ大王', '빙글빙글 팽이 대왕'],
+    ['跳跳吐司機', 'Hoppy Toaster', 'ぴょんぴょんトースター', '폴짝폴짝 토스터'],
+    ['轟轟雷雲', 'Rumble Cloud', 'ゴロゴロ雷雲', '우르릉 먹구름'],
+    ['咚咚大鼓隊長', 'Captain Boom-Drum', 'ドンドン大太鼓隊長', '둥둥 큰북 대장'],
+    ['刺刺仙人掌', 'Prickly Cactus', 'チクチクサボテン', '따끔따끔 선인장'],
+    ['溜溜企鵝隊長', 'Captain Slidey Penguin', 'つるつるペンギン隊長', '미끌미끌 펭귄 대장'],
+    ['嘩嘩大鯨魚', 'Splashy Whale', 'ザブザブ大クジラ', '철썩철썩 큰고래'],
+    ['吼吼發條龍', 'Roary Windup Dragon', 'ガオガオぜんまいドラゴン', '어흥 태엽 드래곤'],
+    ['咕咕星星貓頭鷹', 'Hoo-Hoo Star Owl', 'ホーホー星フクロウ', '부엉부엉 별 부엉이'],
+    ['魔王關卡 1：喵抓抓大王。把罐頭側面塗成自己的顏色，變墨貓爬上去，連跳到機頂射紅色按鈕，打完三個階段就過關。', 'Boss 1: King Meowclaw. Paint the side of the can in your color, climb it as an ink cat, jump to the top and shoot the red button. Beat all 3 phases to win.', 'ボス1：ニャンクロー大王。カンの横を自分の色に塗って、インクネコでのぼろう。てっぺんまでジャンプして赤いボタンをうて。3段階クリアで勝ち。', '보스 1: 냥발톱 대왕. 깡통 옆면을 내 색으로 칠하고 잉크 고양이로 올라가요. 꼭대기까지 점프해서 빨간 버튼을 쏴요. 3단계를 깨면 클리어.'],
+    ['魔王關卡 2：胖嘟嘟魔王。躲開地上的紅色預告，魔王累到冒星星的時候用力打。身上沾滿墨水就會爆開，打完三個回合就過關。', 'Boss 2: Chubby Demon King. Dodge the red warnings on the floor. When the boss is tired and sees stars, hit hard. Cover it in ink to make it pop. Win 3 rounds to clear.', 'ボス2：ぽっちゃり魔王。床の赤い予告をよけて、ボスがつかれて星を出したら思いきりうとう。インクまみれにするとはじけるよ。3ラウンドでクリア。', '보스 2: 통통 마왕. 바닥의 빨간 예고를 피하고, 마왕이 지쳐서 별이 돌 때 세게 쏴요. 잉크로 가득 칠하면 터져요. 3라운드를 깨면 클리어.'],
+    ['魔王關卡 3：氣球小豬船長。把綁著船長的氣球一顆顆打破，他摔下來冒星星的時候用力打。', 'Boss 3: Captain Balloon Piggy. Pop his balloons one by one. When he falls and sees stars, hit hard.', 'ボス3：ふうせんコブタ船長。船長をつるした風船をひとつずつわって、落ちて星を出したら思いきりうとう。', '보스 3: 풍선 꿀꿀 선장. 선장을 매단 풍선을 하나씩 터뜨려요. 떨어져서 별이 돌 때 세게 쏴요.'],
+    ['魔王關卡 4：鑽地兔工頭。土堆追過來時快跑開；對滾過來的泥球射墨水，把它打回去撞工頭。', 'Boss 4: Digger Bunny Boss. Run when the dirt mound chases you. Shoot the rolling mud balls to send them back into the boss.', 'ボス4：あなほりウサギ親方。土のもり上がりが追ってきたらにげて。ころがってくる泥だまをうって、親方にはね返そう。', '보스 4: 땅굴 토끼 반장. 흙더미가 쫓아오면 도망쳐요. 굴러오는 진흙 공을 쏴서 반장에게 되받아쳐요.'],
+    ['魔王關卡 5：狐狸大王機甲。最後的大魔王！跳過地上的光圈、躲開雷射，機甲冒煙的時候用力打。', 'Boss 5: Fox King Mech. The last big boss! Jump over the glowing rings, dodge the lasers, and hit hard when the mech smokes.', 'ボス5：キツネ大王メカ。最後の大ボス！床の光の輪をとびこえて、レーザーをよけて、メカがけむりを出したら思いきりうとう。', '보스 5: 여우 대왕 로봇. 마지막 대마왕! 바닥의 빛 고리를 뛰어넘고 레이저를 피해요. 로봇에서 연기가 나면 세게 쏴요.'],
+    ['魔王關卡 6：方塊積木王。身體很硬打不動！撲倒後打彈出來的星星、一塊一塊拆掉積木塔、走到箱子的小窗前面打，讓他露出破綻！', "Boss 6: Block King. His body is too hard to hurt! After he flops, hit the star that pops out, take the block tower apart piece by piece, and shoot through the box's little window from the front!", 'ボス6：つみき大王。体がかたくてきかない！たおれたら飛び出す星をうって、つみきの塔をひとつずつくずして、箱の小窓の前からうってスキを作ろう！', '보스 6: 블록 대왕. 몸이 너무 단단해요! 엎어진 뒤 튀어나온 별을 쏘고, 블록 탑을 하나씩 부수고, 상자의 작은 창 앞에서 쏴서 빈틈을 만들어요!'],
+    ['魔王關卡 7：轉轉陀螺王。引他衝撞到頭暈、把他腳下塗成你的顏色讓他轉不動、把小陀螺射回去撞他！', 'Boss 7: Spinning Top King. Make him crash until he\'s dizzy, paint the floor under him so he can\'t spin, and shoot the little tops back at him!', 'ボス7：くるくるコマ大王。ぶつからせて目を回させよう。足もとを自分の色に塗って回れなくして、小さなコマをうち返そう！', '보스 7: 빙글빙글 팽이 대왕. 부딪히게 해서 어지럽게 만들고, 발밑을 내 색으로 칠해서 못 돌게 하고, 작은 팽이를 쏴서 되돌려요!'],
+    ['魔王關卡 8：跳跳吐司機。打發光的拉桿、把吐司射回去塞住吐司口、站上大吐司打頭頂的按鈕，讓吐司機卡住！', 'Boss 8: Hoppy Toaster. Hit the glowing lever, shoot the toast back to plug the slot, and stand on the big toast to hit the button on top. Jam that toaster!', 'ボス8：ぴょんぴょんトースター。光るレバーをうって、トーストをうち返して口をふさいで、大きなトーストに乗って頭のボタンをうとう。トースターをつまらせよう！', '보스 8: 폴짝폴짝 토스터. 빛나는 레버를 쏘고, 토스트를 되쏴서 입구를 막고, 큰 토스트 위에서 머리 버튼을 쏴요. 토스터를 고장 내요!'],
+    ['魔王關卡 9：轟轟雷雲。把雷球射回去、打散四朵小烏雲，讓雷雲掉下來頭暈！閃電的紅圈要躲開。', 'Boss 9: Rumble Cloud. Shoot the thunder balls back and break up the four little clouds to make it fall down dizzy! Stay out of the red lightning circles.', 'ボス9：ゴロゴロ雷雲。かみなりボールをうち返して、4つの小さな黒雲をけちらそう。雷雲が落ちて目を回すよ！いなずまの赤い輪はよけてね。', '보스 9: 우르릉 먹구름. 번개 공을 되쏘고 작은 먹구름 네 개를 흩어 놓으면 떨어져서 어지러워해요! 번개의 빨간 원은 피해요.'],
+    ['魔王關卡 10：咚咚大鼓隊長。打卡在地上的鼓棒、在發光圈裡跟著節奏跳、把音符射回去，讓大鼓亂了節奏！', 'Boss 10: Captain Boom-Drum. Hit the drumsticks stuck in the floor, jump to the beat inside the glowing rings, and shoot the notes back to throw off the rhythm!', 'ボス10：ドンドン大太鼓隊長。床にささったバチをうって、光る輪の中でリズムに合わせてジャンプ、音符をうち返してリズムをくずそう！', '보스 10: 둥둥 큰북 대장. 바닥에 박힌 북채를 쏘고, 빛나는 원 안에서 박자에 맞춰 뛰고, 음표를 되쏴서 박자를 흐트러뜨려요!'],
+    ['魔王關卡 11：刺刺仙人掌。手臂轉完頭暈時打、打翻水桶讓他喝飽睡著、把小仙人掌塗成花！刺飛過來就跳過去。', 'Boss 11: Prickly Cactus. Hit him when he\'s dizzy from spinning his arms, tip over the bucket so he drinks and falls asleep, and paint the little cacti into flowers! Jump over flying spikes.', 'ボス11：チクチクサボテン。うでを回して目を回したらうとう。バケツをたおして水を飲ませてねむらせて、小さなサボテンを花に塗りかえよう！トゲが飛んできたらジャンプ。', '보스 11: 따끔따끔 선인장. 팔을 다 돌리고 어지러울 때 쏘고, 물통을 엎어 물을 먹여 재우고, 작은 선인장을 꽃으로 칠해요! 가시가 날아오면 뛰어넘어요.'],
+    ['魔王關卡 12：溜溜企鵝隊長。引他滑去撞湖邊、把雪球射回去、引他撞上大冰柱，讓他頭暈！紅線出現就往旁邊跑。', 'Boss 12: Captain Slidey Penguin. Lure him into sliding into the lake edge, shoot the snowballs back, and make him crash into the big icicle to make him dizzy! Run sideways when a red line appears.', 'ボス12：つるつるペンギン隊長。すべらせて湖のふちにぶつけて、雪玉をうち返して、大きなつららにぶつけて目を回させよう！赤い線が出たら横ににげて。', '보스 12: 미끌미끌 펭귄 대장. 미끄러져서 호숫가에 부딪히게 하고, 눈덩이를 되쏘고, 큰 고드름에 부딪히게 해서 어지럽게 만들어요! 빨간 선이 나오면 옆으로 달려요.'],
+    ['魔王關卡 13：嘩嘩大鯨魚。張嘴時打嘴巴、把浮球塗成你的顏色讓他吸進去嗆到、打潛水時露出的背鰭！大浪來了就跳過去。', 'Boss 13: Splashy Whale. Hit the mouth when it opens, paint the floats in your color so he swallows them and chokes, and hit the back fin when he dives! Jump over the big waves.', 'ボス13：ザブザブ大クジラ。口を開けたら口をうって、ブイを自分の色に塗ってすいこませてむせさせて、もぐった時に出る背びれをうとう！大波はジャンプでこえて。', '보스 13: 철썩철썩 큰고래. 입을 벌리면 입을 쏘고, 부표를 내 색으로 칠해서 삼키게 해 사레들게 하고, 잠수할 때 나온 등지느러미를 쏴요! 큰 파도는 뛰어넘어요.'],
+    ['魔王關卡 14：吼吼發條龍。等發條轉完沒電、繞到背後打發條鑰匙、引牠衝去撞大樹！尾巴掃過來就跳，看到紅線就往旁邊跑。', 'Boss 14: Roary Windup Dragon. Wait until it winds down, go behind it and hit the windup key, and make it charge into the big tree! Jump over the tail swipe and run sideways from red lines.', 'ボス14：ガオガオぜんまいドラゴン。ぜんまいが止まるのを待って、後ろに回ってぜんまいのカギをうって、大きな木にぶつからせよう！しっぽが来たらジャンプ、赤い線が見えたら横ににげて。', '보스 14: 어흥 태엽 드래곤. 태엽이 다 풀릴 때를 기다리고, 뒤로 돌아가 태엽 열쇠를 쏘고, 큰 나무에 돌진하게 만들어요! 꼬리가 오면 뛰고, 빨간 선이 보이면 옆으로 달려요.'],
+    ['魔王關卡 15：咕咕星星貓頭鷹。最後的大魔王！等他俯衝撞到地上、打亮三盞星星燈、找出眼睛閃星星的真貓頭鷹！羽毛飛過來就跳。', 'Boss 15: Hoo-Hoo Star Owl. The final boss! Wait for him to dive into the ground, light up the three star lamps, and find the real owl with sparkly star eyes! Jump over flying feathers.', 'ボス15：ホーホー星フクロウ。最後の大ボス！急降下して地面にぶつかるのを待って、3つの星のランプをつけて、目が星に光る本物のフクロウを見つけよう！羽が飛んできたらジャンプ。', '보스 15: 부엉부엉 별 부엉이. 마지막 대마왕! 급강하해서 땅에 부딪히길 기다리고, 별 등불 세 개를 켜고, 눈이 별처럼 반짝이는 진짜 부엉이를 찾아요! 깃털이 날아오면 뛰어요.'],
+    // 墨水顏色
+    ['莓果粉', 'Berry Pink', 'ベリーピンク', '베리 핑크'],
+    ['薄荷青', 'Mint Teal', 'ミントブルー', '민트 청록'],
+    ['檸檬黃', 'Lemon Yellow', 'レモンイエロー', '레몬 노랑'],
+    ['芒果橘', 'Mango Orange', 'マンゴーオレンジ', '망고 주황'],
+    ['葡萄紫', 'Grape Purple', 'グレープパープル', '포도 보라'],
+    ['藍莓藍', 'Blueberry Blue', 'ブルーベリーブルー', '블루베리 파랑'],
+    ['萊姆綠', 'Lime Green', 'ライムグリーン', '라임 초록'],
+    ['桃紫', 'Peach Purple', 'ピーチパープル', '복숭아 보라'],
+    // 武器
+    ['漆彈槍', 'Ink Blaster', 'インク銃', '잉크 총'],
+    ['滾刷', 'Roller', 'ローラー', '롤러'],
+    ['狙擊槍', 'Sniper', 'スナイパー', '저격총'],
+    ['散彈槍', 'Shotgun', 'ショットガン', '산탄총'],
+    ['墨水彈', 'Ink Bomb', 'インクボム', '잉크 폭탄'],
+    ['墨貓', 'Ink Cat', 'インクネコ', '잉크 고양이'],
+    ['絕招', 'Special', 'ひっさつわざ', '필살기'],
+    // 操作說明
+    ['移動', 'Move', 'いどう', '이동'],
+    ['滑鼠', 'Mouse', 'マウス', '마우스'],
+    ['瞄準（點一下畫面鎖定游標）', 'Aim (click the screen to lock the pointer)', 'ねらう（画面をクリックでカーソル固定）', '조준 (화면을 클릭하면 커서 고정)'],
+    ['左鍵', 'Left click', '左クリック', '왼쪽 클릭'],
+    ['射擊；狙擊槍按住蓄力會放大，放開發射', 'Shoot. With the sniper, hold to charge and zoom, release to fire', 'うつ。スナイパーは長おしでためてズーム、はなすと発射', '쏘기. 저격총은 꾹 누르면 모으며 확대, 떼면 발사'],
+    ['Q（按住）', 'Q (hold)', 'Q（長おし）', 'Q (꾹 누르기)'],
+    ['變墨貓，在自己的墨水裡潛行、補墨水', 'Become an ink cat: swim in your own ink and refill', 'インクネコになって、自分のインクにもぐって進み、インクを補充', '잉크 고양이가 되어 내 잉크 속을 헤엄치고 잉크를 채워요'],
+    ['空白鍵', 'Space', 'スペース', '스페이스'],
+    ['跳躍，空中可再跳，最多五段', 'Jump. You can jump again in the air, up to 5 times', 'ジャンプ。空中でもう一回とべる、最大5段', '점프. 공중에서 또 뛸 수 있어요, 최대 5단'],
+    ['G／右鍵（按住）', 'G / Right click (hold)', 'G／右クリック（長おし）', 'G / 오른쪽 클릭 (꾹)'],
+    ['丟墨水彈：短按丟近，按越久丟越遠', 'Throw an ink bomb: tap for near, hold longer to throw farther', 'インクボムを投げる：短くおすと近く、長くおすほど遠く', '잉크 폭탄 던지기: 짧게 누르면 가까이, 오래 누를수록 멀리'],
+    ['1 2 3 4／滾輪', '1 2 3 4 / Wheel', '1 2 3 4／ホイール', '1 2 3 4 / 휠'],
+    ['切換武器（4 是散彈槍：近距離很強）', 'Switch weapon (4 is the shotgun: strong up close)', '武器を切りかえ（4はショットガン：近くでとても強い）', '무기 바꾸기 (4는 산탄총: 가까이에서 아주 강해요)'],
+    ['Esc／P', 'Esc / P', 'Esc／P', 'Esc / P'],
+    ['暫停', 'Pause', 'ポーズ', '일시정지'],
+    ['靜音', 'Mute', 'ミュート', '음소거'],
+    ['左半邊', 'Left half', '左半分', '왼쪽 절반'],
+    ['按住拖曳出搖桿來移動', 'Press and drag to make a joystick and move', 'おしたままドラッグでスティックを出して移動', '누른 채 끌어서 조이스틱으로 이동'],
+    ['墨貓鈕（左下）', 'Ink Cat button (bottom left)', 'インクネコボタン（左下）', '잉크 고양이 버튼 (왼쪽 아래)'],
+    ['按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動', 'Hold to become an ink cat and refill; keep holding and drag to swim around', '長おしでインクネコになってもぐり、インク補充。おしたままドラッグでもぐったまま移動', '꾹 누르면 잉크 고양이가 되어 잠수하고 잉크를 채워요. 누른 채 끌면 잠수한 채 이동'],
+    ['射擊鈕', 'Fire button', 'うつボタン', '발사 버튼'],
+    ['短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準', 'Tap = jump (tap again in the air, up to 5 times); hold or drag = shoot and aim', 'ちょんとタップ＝ジャンプ（空中でもう一回、最大5段）。長おしかドラッグ＝うちながらねらう', '톡 누르기 = 점프 (공중에서 또, 최대 5단). 꾹 누르거나 끌기 = 쏘면서 조준'],
+    ['按住射擊鈕蓄力會放大，放開發射，一發擊倒', 'Hold the fire button to charge and zoom, release to fire. One hit KO', 'うつボタン長おしでためてズーム、はなすと発射。一発でたおせる', '발사 버튼을 꾹 눌러 모으며 확대, 떼면 발사. 한 방에 쓰러뜨려요'],
+    ['按著墨貓＋點射擊鈕', 'Hold Ink Cat + tap Fire', 'インクネコをおしたまま＋うつボタンをタップ', '잉크 고양이 누른 채 + 발사 버튼 톡'],
+    ['墨貓跳，落地前都維持墨貓', 'Ink cat jump: stay an ink cat until you land', 'インクネコジャンプ。着地するまでインクネコのまま', '잉크 고양이 점프. 착지할 때까지 잉크 고양이 그대로'],
+    ['右半邊', 'Right half', '右半分', '오른쪽 절반'],
+    ['拖曳轉動視角瞄準', 'Drag to turn the camera and aim', 'ドラッグで視点を回してねらう', '끌어서 시점을 돌려 조준'],
+    ['朝準星的方向丟：短按丟近，按越久丟越遠', 'Throws toward the crosshair: tap for near, hold longer to throw farther', '照準の方向に投げる：短くおすと近く、長くおすほど遠く', '조준점 방향으로 던져요: 짧게 누르면 가까이, 오래 누를수록 멀리'],
+    ['切換', 'Switch', '切りかえ', '바꾸기'],
+    ['點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍', 'Tap a weapon picture to switch between Ink Blaster, Roller, Sniper and Shotgun', '武器の絵をタップで、インク銃・ローラー・スナイパー・ショットガンを切りかえ', '무기 그림을 눌러 잉크 총, 롤러, 저격총, 산탄총으로 바꿔요'],
+    ['鍵盤滑鼠', 'Keyboard & Mouse', 'キーボード・マウス', '키보드·마우스'],
+    ['手機／平板', 'Phone / Tablet', 'スマホ／タブレット', '휴대폰 / 태블릿'],
+    ['墨水用完時，站著只會慢慢回到兩成。變成墨貓潛進自己顏色的墨水，補得最快，移動也最快。踩到對手的墨水會變慢、慢慢扣體力。', 'When you run out of ink, standing still only slowly refills to 20%. Swim as an ink cat in your own color to refill fastest and move fastest. Stepping in enemy ink slows you down and slowly drains your health.', 'インクが切れたら、立っているだけでは2割までしかゆっくりもどらない。インクネコになって自分の色のインクにもぐると一番早く補充できて、移動も一番速い。相手のインクをふむとおそくなって、少しずつ体力がへるよ。', '잉크가 떨어지면 서 있기만 해서는 20%까지만 천천히 차요. 잉크 고양이가 되어 내 색 잉크에 잠수하면 가장 빨리 차고 가장 빨리 움직여요. 상대 잉크를 밟으면 느려지고 체력이 조금씩 줄어요.'],
+    ['知道了', 'Got it', 'わかった', '알겠어요'],
+    // 觸控按鈕
+    ['點一下跳躍，按住射擊', 'Tap to jump, hold to shoot', 'タップでジャンプ、長おしでうつ', '톡 누르면 점프, 꾹 누르면 발사'],
+    ['點＝跳', 'Tap = Jump', 'タップ＝ジャンプ', '톡 = 점프'],
+    ['按住＝射擊', 'Hold = Shoot', '長おし＝うつ', '꾹 = 발사'],
+    ['按住＝射', 'Hold = Shoot', '長おし＝うつ', '꾹 = 발사'],
+    ['按住', 'Hold', '長おし', '꾹'],
+    ['點一下切換', 'Tap to toggle', 'タップで切りかえ', '톡 눌러 전환'],
+    ['按住變墨貓', 'Hold to be an ink cat', '長おしでインクネコ', '꾹 누르면 잉크 고양이'],
+    // 暫停、設定
+    ['暫停中', 'Paused', 'ポーズ中', '일시정지 중'],
+    ['繼續', 'Resume', 'つづける', '계속하기'],
+    ['重新開始', 'Restart', 'やりなおす', '다시 시작'],
+    ['回主選單', 'Main Menu', 'メインメニュー', '메인 메뉴'],
+    ['視角靈敏度', 'Camera speed', '視点の感度', '시점 감도'],
+    ['墨貓鈕：按住', 'Ink Cat button: Hold', 'インクネコボタン：長おし', '잉크 고양이 버튼: 꾹 누르기'],
+    ['墨貓鈕：點一下切換', 'Ink Cat button: Tap to toggle', 'インクネコボタン：タップで切りかえ', '잉크 고양이 버튼: 톡 눌러 전환'],
+    ['對戰還在進行中', 'The battle is still going', '対戦はまだつづいてるよ', '대전이 아직 진행 중이에요'],
+    ['離開這場，回房間', 'Leave and go back to the room', 'ぬけて部屋にもどる', '나가서 방으로 돌아가기'],
+    ['把裝置轉成橫向，畫面更寬、更好瞄準', 'Turn your device sideways for a wider view and easier aiming', '画面を横にすると広くてねらいやすいよ', '기기를 가로로 돌리면 화면이 넓어서 조준하기 쉬워요'],
+    // 對戰中 HUD
+    ['剩下的命', 'Lives left', 'のこりの命', '남은 목숨'],
+    ['小地圖', 'Mini map', 'ミニマップ', '미니맵'],
+    ['換人看', 'Watch someone else', 'ほかの人を見る', '다른 사람 보기'],
+    ['觀戰中', 'Watching', '観戦中', '관전 중'],
+    ['體力', 'Health', '体力', '체력'],
+    ['墨水', 'Ink', 'インク', '잉크'],
+    ['不限時', 'No limit', '無制限', '무제한'],
+    ['你', 'You', 'あなた', '나'],
+    ['（你）', ' (you)', '（あなた）', ' (나)'],
+    ['開戰！', 'Battle!', 'バトル開始！', '시작!'],
+    ['最後 30 秒！', 'Last 30 seconds!', 'のこり30秒！', '마지막 30초!'],
+    ['時間到！', "Time's up!", 'タイムアップ！', '시간 끝!'],
+    ['平手！', "It's a tie!", '引き分け！', '무승부!'],
+    ['你獲勝！', 'You win!', 'あなたの勝ち！', '내가 이겼다!'],
+    ['我方獲勝！', 'Our team wins!', '味方の勝ち！', '우리 팀 승리!'],
+    ['對手獲勝…', 'The other team wins…', '相手の勝ち…', '상대 팀 승리…'],
+    ['壓扁啦！', 'Squashed them!', 'ぺしゃんこだ！', '납작하게 눌렀다!'],
+    ['被壓扁了…', 'Got squashed…', 'ぺしゃんこにされた…', '납작해졌다…'],
+    ['挑戰失敗…', 'Challenge failed…', 'チャレンジ失敗…', '도전 실패…'],
+    ['救出博士小鴨了！', 'You saved Dr. Duckling!', 'ハカセアヒルを助けた！', '박사 오리를 구했다!'],
+    ['好痛！再被打到一次就會倒下', 'Ouch! One more hit and you\'re down', 'いたい！もう一回当たるとやられちゃう', '아야! 한 번 더 맞으면 쓰러져요'],
+    ['對手都離線了，這場提早結束', 'All the other players left, so this match ends early', '相手がみんな抜けたので、早めに終わるよ', '상대가 모두 나가서 이번 판은 일찍 끝나요'],
+    ['自由試玩', 'Free Play', '自由練習', '자유 연습'],
+    ['打破氣球靶、擊毀灑水器，想練什麼就練什麼。按暫停可以回主選單', 'Pop balloon targets, break sprinklers, practice anything you like. Pause to go back to the menu', '風船のマトをわったり、スプリンクラーをこわしたり、すきに練習しよう。ポーズでメニューにもどれるよ', '풍선 과녁을 터뜨리고 스프링클러를 부수며 마음껏 연습해요. 일시정지를 누르면 메뉴로 돌아가요'],
+    ['把地面塗成你們隊的顏色！按住左下的「墨貓」可以在自己的墨水裡快速移動、補墨水；射擊鈕短點是跳', 'Paint the ground in your team\'s color! Hold "Ink Cat" at bottom left to zoom through your ink and refill. Tap the fire button to jump', '地面を自分のチームの色に塗ろう！左下の「インクネコ」を長おしすると、自分のインクの中をすばやく動けてインクも補充できる。うつボタンをちょんとおすとジャンプ', '땅을 우리 팀 색으로 칠해요! 왼쪽 아래 "잉크 고양이"를 꾹 누르면 내 잉크 속을 빠르게 이동하고 잉크를 채워요. 발사 버튼을 톡 누르면 점프'],
+    ['把地面塗成你們隊的顏色！按住 Q 可以在自己的墨水裡快速移動、補墨水', 'Paint the ground in your team\'s color! Hold Q to zoom through your own ink and refill', '地面を自分のチームの色に塗ろう！Qを長おしすると、自分のインクの中をすばやく動けてインクも補充できる', '땅을 우리 팀 색으로 칠해요! Q를 꾹 누르면 내 잉크 속을 빠르게 이동하고 잉크를 채워요'],
+    ['墨水不夠了！按住「墨貓」潛進自己的墨水補充', 'Low on ink! Hold "Ink Cat" and dive into your ink to refill', 'インクが足りない！「インクネコ」を長おしして自分のインクにもぐって補充', '잉크가 부족해요! "잉크 고양이"를 꾹 눌러 내 잉크에 잠수해서 채워요'],
+    ['墨水不夠了！按住 Q 潛進自己的墨水補充', 'Low on ink! Hold Q and dive into your ink to refill', 'インクが足りない！Qを長おしして自分のインクにもぐって補充', '잉크가 부족해요! Q를 꾹 눌러 내 잉크에 잠수해서 채워요'],
+    ['擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝', 'Knockout: when time runs out, the team with more KOs wins', 'たおしあいバトル：時間切れの時、相手をたくさんたおしたチームの勝ち', '쓰러뜨리기: 시간이 끝났을 때 상대를 더 많이 쓰러뜨린 팀이 이겨요'],
+    ['塗地戰：時間到時，塗得比較多的隊伍獲勝', 'Turf War: when time runs out, the team with more paint wins', 'ナワバリバトル：時間切れの時、たくさん塗ったチームの勝ち', '땅따먹기: 시간이 끝났을 때 더 많이 칠한 팀이 이겨요'],
+    ['絕招準備好了！點發亮的星星鈕', 'Special is ready! Tap the glowing star button', 'ひっさつわざ準備OK！光る星ボタンをタップ', '필살기 준비 완료! 빛나는 별 버튼을 눌러요'],
+    ['絕招準備好了！按 F', 'Special is ready! Press F', 'ひっさつわざ準備OK！Fをおして', '필살기 준비 완료! F를 눌러요'],
+    ['掉下去了', 'You fell off', '落っこちた', '떨어졌어요'],
+    ['掉進河裡', 'Fell in the river', '川に落ちた', '강에 빠졌어요'],
+    ['被喵抓抓大王擊倒', 'KO\'d by King Meowclaw', 'ニャンクロー大王にやられた', '냥발톱 대왕에게 당했어요'],
+    // 魔王 HUD
+    ['累了！快打！', "It's tired! Hit it!", 'つかれてる！今だ、うて！', '지쳤어요! 지금 쏴요!'],
+    ['頭暈中！', 'Dizzy!', '目を回してる！', '어지러워해요!'],
+    ['能量暴走！', 'Power overload!', 'エネルギー暴走！', '에너지 폭주!'],
+    ['打倒了！', 'Defeated!', 'たおした！', '쓰러뜨렸다!'],
+    ['通關', 'CLEAR', 'クリア', '클리어'],
+    ['貓罐頭', 'Cat Food', 'ネコ缶', '고양이 캔'],
+    // 結算
+    ['勝利！', 'Victory!', '勝利！', '승리!'],
+    ['惜敗…', 'So close…', 'おしかった…', '아쉽게 졌어요…'],
+    ['比賽結束！', 'Match over!', '試合終了！', '경기 끝!'],
+    ['再來一場', 'Play Again', 'もう一回', '한 판 더'],
+    ['再挑戰一次', 'Try Again', 'もう一回挑戦', '다시 도전'],
+    ['回房間', 'Back to Room', '部屋にもどる', '방으로'],
+    ['挑戰成功！', 'Challenge cleared!', 'チャレンジ成功！', '도전 성공!'],
+    ['打到第幾回合', 'Reached round', 'とどいたラウンド', '도달한 라운드'],
+    ['撐了', 'Lasted', 'がんばった時間', '버틴 시간'],
+    ['通關時間', 'Clear time', 'クリアタイム', '클리어 시간'],
+    ['被擊倒', 'Got KO\'d', 'やられた', '당함'],
+    ['擊倒', 'KOs', 'たおした', '쓰러뜨림'],
+    ['助攻', 'Assists', 'アシスト', '어시스트'],
+    ['塗地', 'Paint', 'ぬった', '칠하기'],
+    ['塗地是塗了幾平方公尺', 'Paint = square meters painted', 'ぬった＝ぬった広さ（平方メートル）', '칠하기 = 칠한 넓이(제곱미터)'],
+    // 連線大廳
+    ['正在檢查能不能連線…', 'Checking if we can connect…', '接続できるかチェック中…', '연결할 수 있는지 확인 중…'],
+    ['這台裝置現在不能連線。', "This device can't connect right now.", 'この端末は今は接続できません。', '이 기기는 지금 연결할 수 없어요.'],
+    ['這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。', "Can't connect from here. Open this in a normal browser (not inside LINE or Messenger), sign in to Claude with the account the host invited from the share menu, then reload the page.", 'ここからは接続できません。ふつうのブラウザ（LINEやMessengerの中ではなく）でClaudeにログインしてください。ホストが共有メニューで招待したアカウントでログインして、ページを再読みこみしてね。', '여기서는 연결할 수 없어요. 일반 브라우저(LINE, Messenger 안이 아닌)로 Claude에 로그인하세요. 방장이 공유 메뉴에서 초대한 계정이어야 하고, 로그인 후 페이지를 새로고침하세요.'],
+    ['重新連線中', 'Reconnecting', '再接続中', '다시 연결 중'],
+    ['玩家', 'Player', 'プレイヤー', '플레이어'],
+    ['等下一場', 'Next match', '次の試合を待つ', '다음 판 대기'],
+    ['開打時抽籤', 'Drawn at start', 'スタート時に抽選', '시작할 때 추첨'],
+    ['換隊', 'Change team', 'チームを変える', '팀 바꾸기'],
+    ['連線中斷，正在重新連線…', 'Connection lost, reconnecting…', '接続が切れました。再接続中…', '연결이 끊겼어요. 다시 연결 중…'],
+    ['正在進房間…', 'Entering the room…', '部屋に入っています…', '방에 들어가는 중…'],
+    ['這個房間正在對戰，等這一場結束', 'This room is in a match. Wait for it to end', 'この部屋は対戦中。終わるまで待ってね', '이 방은 대전 중이에요. 끝날 때까지 기다려요'],
+    ['等房主回到房間。等太久的話，可以離開房間另外開一間', 'Waiting for the host to come back. If it takes too long, leave and make a new room', 'ホストがもどるのを待っています。長すぎたら部屋を出て新しく作ってね', '방장이 돌아오길 기다리는 중. 너무 오래 걸리면 나가서 새 방을 만들어요'],
+    ['把房號告訴朋友，等他們加入', 'Tell your friends the room number and wait for them', '部屋番号を友だちに教えて、入ってくるのを待とう', '친구에게 방 번호를 알려 주고 기다려요'],
+    ['人到齊就按「開始對戰」', 'When everyone\'s here, press "Start Battle"', 'みんなそろったら「対戦スタート」をおしてね', '모두 모이면 "대전 시작"을 눌러요'],
+    ['等房主按開始', 'Waiting for the host to start', 'ホストがスタートするのを待ってるよ', '방장이 시작하길 기다리는 중'],
+    ['房號是 4 個數字', 'The room number is 4 digits', '部屋番号は4けたの数字だよ', '방 번호는 숫자 4개예요'],
+    ['連線中…', 'Connecting…', '接続中…', '연결 중…'],
+    ['這個帳號不能連線，要請房主先邀請你看這個頁面', "This account can't connect. Ask the host to invite you to this page first", 'このアカウントは接続できません。先にホストにこのページへ招待してもらってね', '이 계정은 연결할 수 없어요. 방장에게 이 페이지 초대를 먼저 부탁하세요'],
+    ['連不上連線中繼站，檢查一下網路，等一下再試一次', "Can't reach the relay. Check your internet and try again in a bit", '中継サーバーにつながりません。ネットを確認して、少ししてからもう一度', '중계 서버에 연결할 수 없어요. 인터넷을 확인하고 잠시 후 다시 해 봐요'],
+    ['連不上房間，等一下再試一次', "Can't reach the room. Try again in a bit", '部屋につながりません。少ししてからもう一度', '방에 연결할 수 없어요. 잠시 후 다시 해 봐요'],
+    ['連不上中繼站', "Can't reach the relay", '中継サーバーにつながりません', '중계 서버에 연결할 수 없어요'],
+    // 靶場
+    ['敵方灑水器', 'Enemy Sprinkler', '敵のスプリンクラー', '적 스프링클러'],
+    ['小氣球靶', 'Small Balloon', '小さい風船マト', '작은 풍선 과녁'],
+    ['中氣球靶', 'Medium Balloon', '中くらいの風船マト', '중간 풍선 과녁'],
+    ['大氣球靶', 'Big Balloon', '大きい風船マト', '큰 풍선 과녁'],
+    ['遠距氣球靶', 'Far Balloon', '遠くの風船マト', '먼 풍선 과녁'],
+    ['高台氣球靶', 'High Balloon', '高台の風船マト', '높은 풍선 과녁'],
+    // 小鴨
+    ['防護罩', 'Shield', 'バリア', '보호막'],
+    ['防護罩破了！3 秒內快去抱抱博士小鴨', 'The shield broke! Hug Dr. Duckling within 3 seconds', 'バリアがこわれた！3秒以内にハカセアヒルをだっこしに行こう', '보호막이 깨졌어요! 3초 안에 박사 오리를 안아 줘요'],
+    ['太慢了，防護罩又長回來了！再打破一次', 'Too slow, the shield grew back! Break it again', 'おそかった、バリアがもどっちゃった！もう一回こわそう', '너무 늦었어요, 보호막이 다시 생겼어요! 한 번 더 부숴요'],
+    ['用墨水打破防護罩，救出博士小鴨！', 'Break the shield with ink and save Dr. Duckling!', 'インクでバリアをこわして、ハカセアヒルを助けよう！', '잉크로 보호막을 부수고 박사 오리를 구해요!'],
+    ['走到場地中央，救出泡泡裡的小鴨！', 'Go to the middle and save the duckling in the bubble!', 'まん中に行って、あわの中のアヒルを助けよう！', '가운데로 가서 거품 속 오리를 구해요!'],
+    // 錯誤
+    ['這個瀏覽器無法啟動 3D 繪圖（WebGL）。請換用新版 Chrome、Safari 或 Edge 再試一次。', "This browser can't start 3D graphics (WebGL). Please try a recent Chrome, Safari or Edge.", 'このブラウザでは3D表示（WebGL）が使えません。新しいChrome、Safari、Edgeでためしてね。', '이 브라우저는 3D 그래픽(WebGL)을 쓸 수 없어요. 최신 Chrome, Safari, Edge로 해 보세요.'],
+    ['發生錯誤：', 'Something went wrong: ', 'エラーが出ました：', '오류가 났어요: '],
+    ['3D 函式庫沒有載入成功，請檢查網路後重新整理。', "The 3D library didn't load. Check your internet and reload.", '3Dライブラリが読みこめませんでした。ネットを確認して再読みこみしてね。', '3D 라이브러리를 불러오지 못했어요. 인터넷을 확인하고 새로고침하세요.'],
+  ]);
+
+  // ---------- 句型 ----------
+  pat(/^(毛毛|雙雙)(\d+)$/, ['$1$2', '$1$2', '$1$2']);
+  pat(/^第 (\d+) 名$/, null);
+  pat(/^第 (\d+) 隊$/, ['Team $1', 'チーム$1', '$1팀']);
+  pat(/^第 (\d+) 關$/, ['Stage $1', 'ステージ$1', '스테이지 $1']);
+  pat(/^第 (\d+) 回合$/, ['Round $1', 'ラウンド$1', '$1라운드']);
+  pat(/^第 (\d+) 關 (.+)$/, ['Stage $1 $2', 'ステージ$1 $2', '스테이지 $1 $2']);
+  pat(/^世界 (\d+) (.+)$/, ['World $1 $2', 'ワールド$1 $2', '월드 $1 $2']);
+  pat(/^世界 (\d+)$/, ['World $1', 'ワールド$1', '월드 $1']);
+  pat(/^(\d+) 次$/, ['$1 times', '$1回', '$1번']);
+  pat(/^(\d+) 擊倒$/, ['$1 KOs', '$1たおした', '$1 쓰러뜨림']);
+  pat(/^(\d+) 秒後回到出生台$/, ['Back to base in $1 s', '$1秒後にスタート地点へ', '$1초 뒤 출발대로']);
+  pat(/^(\d+) 方大亂鬥$/, ['$1-Way Free-for-All', '$1人バトルロイヤル', '$1인 난투']);
+  pat(/^(\d+) 方(塗地戰|擊倒戰)：每個人自己一隊，(.+)$/, (m, li) => ['$1-way $2: ', '$1人$2：', '$1인 $2: '][li] + tr('每個人自己一隊，' + m[3]));
+  pat(/^三方(塗地戰|擊倒戰)：每個人自己一隊，(.+)$/, (m, li) => ['3-way $1: ', '三つどもえ$1：', '3팀 $1: '][li] + tr('每個人自己一隊，' + m[2]));
+  pat(/^被(.+)的(漆彈槍|滾刷|狙擊槍|散彈槍|墨水彈|絕招|掉進河裡|被喵抓抓大王擊倒)擊倒了！$/, ["Splatted by $1's $2!", '$1の$2でやられた！', '$1의 $2에 당했다!']);
+  pat(/^被(.+)擊倒了！$/, ['KO\'d by $1!', '$1にやられた！', '$1에게 당했다!']);
+  pat(/^掉進(.+?)(！?)$/, ['Fell into $1$2', '$1に落ちた$2', '$1에 빠졌다$2']);
+  add([['！', '!', '！', '!']]);
+  pat(/^(.+)離線了$/, ['$1 left the game', '$1がぬけた', '$1님이 나갔어요']);
+  pat(/^(.+)擊破！(\d+) 秒後會再出現$/, ['$1 broken! Back in $2 s', '$1をこわした！$2秒後にまた出るよ', '$1 부쉈다! $2초 뒤 다시 나와요']);
+  pat(/^(擊倒|塗地) (.+ 比 .+)$/, (m, li) => [['KOs ', 'たおした ', '쓰러뜨림 '], ['Paint ', 'ぬった ', '칠하기 ']][m[1] === '擊倒' ? 0 : 1][li] + m[2].split(' 比 ').join([' vs ', ' 対 ', ' 대 '][li]));
+  pat(/^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
+  pat(/^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, ['Up to $1 players per match; the others wait for the next one. $2', '1試合は$1人まで。ほかの人は次の試合を待ってね。$2', '한 판에 최대 $1명, 나머지는 다음 판을 기다려요. $2']);
+  pat(/^中繼站：(.*)$/, (m, li) => ['Relay: ', '中継：', '중계: '][li] + (m[1] === '重新連線中' ? tr(m[1]) : m[1].replace(/、/g, li === 1 ? '、' : ', ')));
+  pat(/^房主・(.+)$/, ['Host · $1', 'ホスト・$1', '방장 · $1']);
+  pat(/^(.+)（你）$/, ['$1 (you)', '$1（あなた）', '$1 (나)']);
+  pat(/^玩家(\d+)$/, ['Player $1', 'プレイヤー$1', '플레이어 $1']);
+  pat(/^(擊倒戰|塗地戰)・塗地是塗了幾平方公尺$/, ['$1 · Paint = square meters painted', '$1・ぬった＝ぬった広さ（平方メートル）', '$1 · 칠하기 = 칠한 넓이(제곱미터)']);
+  pat(/^發生錯誤：(.*)$/s, ['Something went wrong: $1', 'エラーが出ました：$1', '오류가 났어요: $1']);
+  // 句型裡「每個人自己一隊，…」的後半
+  add([
+    ['每個人自己一隊，擊倒最多的人獲勝', 'everyone is their own team, most KOs wins', 'ひとりずつ別チーム、一番たくさんたおした人の勝ち', '각자 한 팀, 가장 많이 쓰러뜨린 사람이 승리'],
+    ['每個人自己一隊，塗得最多的人獲勝', 'everyone is their own team, most paint wins', 'ひとりずつ別チーム、一番たくさん塗った人の勝ち', '각자 한 팀, 가장 많이 칠한 사람이 승리'],
+  ]);
+  // 第 N 名（英文要 1st 2nd 3rd）
+  const ord = (n) => (n % 100 > 10 && n % 100 < 14 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
+  P.find((p) => String(p[0]) === String(/^第 (\d+) 名$/))[1] = (m, li) => ['$1' + ord(+m[1]) + ' place', '$1位', '$1위'][li];
+
+  // ---------- 畫面上的文字自動翻 ----------
+  const ATTRS = ['aria-label', 'placeholder', 'title'];
+  const orig = new WeakMap(); // 文字節點 → 原本的中文
+  const wrote = new WeakMap(); // 文字節點 → 我們寫進去的字
+  const aOrig = new WeakMap(); // 元素 → {屬性: [原文, 寫進去的字]}
+  const skip = (el) => el && (el.nodeName === 'SCRIPT' || el.nodeName === 'TITLE' || el.nodeName === 'STYLE' || el.nodeName === 'TEXTAREA' || el.nodeName === 'INPUT' || el.nodeName === 'OPTION');
+  const doText = (n) => {
+    const v = n.nodeValue; if (!v) return;
+    if (wrote.get(n) === v) return; // 自己剛寫的
+    if (!CJK.test(v) && !orig.has(n)) return;
+    if (skip(n.parentNode)) return;
+    orig.set(n, v); const t = tr(v); wrote.set(n, t); if (t !== v) n.nodeValue = t;
+  };
+  const doAttr = (el, a) => {
+    const v = el.getAttribute(a); if (v == null) return;
+    let o = aOrig.get(el); if (o && o[a] && o[a][1] === v) return;
+    if (!CJK.test(v)) return;
+    if (!o) aOrig.set(el, (o = {}));
+    const t = tr(v); o[a] = [v, t]; if (t !== v) el.setAttribute(a, t);
+  };
+  const walk = (root) => {
+    if (root.nodeType === 3) return doText(root);
+    if (root.nodeType !== 1 && root.nodeType !== 9 && root.nodeType !== 11) return;
+    if (root.nodeType === 1) { if (skip(root)) return; for (const a of ATTRS) if (root.hasAttribute(a)) doAttr(root, a); }
+    const it = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    let n; while ((n = it.nextNode())) { if (n.nodeType === 3) doText(n); else for (const a of ATTRS) if (n.hasAttribute(a)) doAttr(n, a); }
+  };
+  let obs = null;
+  const watch = () => {
+    if (obs || typeof MutationObserver === 'undefined') return;
+    obs = new MutationObserver((recs) => {
+      for (const r of recs) {
+        if (r.type === 'characterData') doText(r.target);
+        else if (r.type === 'attributes') doAttr(r.target, r.attributeName);
+        else for (const n of r.addedNodes) walk(n);
+      }
+    });
+    obs.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+  };
+  // 換語言：從記住的原文重翻整個畫面
+  const redo = () => {
+    const it = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    let n; while ((n = it.nextNode())) {
+      if (n.nodeType === 3) { const o = orig.get(n); if (o != null) { const t = tr(o); wrote.set(n, t); if (n.nodeValue !== t) n.nodeValue = t; } else doText(n); }
+      else { const o = aOrig.get(n); for (const a of ATTRS) { if (o && o[a]) { const t = tr(o[a][0]); o[a][1] = t; if (n.getAttribute(a) !== t) n.setAttribute(a, t); } else if (n.hasAttribute(a)) doAttr(n, a); } }
+    }
+  };
+  const FONT = { ja: 'Noto+Sans+JP', ko: 'Noto+Sans+KR' }, fontOn = {};
+  const setDocLang = () => {
+    try {
+      document.documentElement.lang = HTML_LANG[lang]; document.documentElement.dataset.lang = lang; document.title = tr('Splatoocat 貓咪遊樂園');
+      if (FONT[lang] && !fontOn[lang] && document.head) { fontOn[lang] = 1; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = `https://fonts.googleapis.com/css2?family=${FONT[lang]}:wght@500;700;900&display=swap`; document.head.append(l); } // 日文、韓文字型選了才載
+    } catch (e) {}
+  };
+
+  const i18n = {
+    LANGS, LABEL, miss, tr,
+    get lang() { return lang; },
+    set(l) {
+      if (!LANGS.includes(l) || l === lang) return;
+      lang = l; try { localStorage.setItem('sc-lang', l); } catch (e) {}
+      setDocLang(); redo(); (i18n.onChange || []).forEach((f) => { try { f(l); } catch (e) {} });
+    },
+    onChange: [],
+    // 畫在 canvas 上的字太長時縮小字體塞進寬度
+    fit(g, text, maxW, px, weight = 900, fam = '"Noto Sans TC", sans-serif') {
+      let s = px; g.font = `${weight} ${s}px ${fam}`; const w = g.measureText(text).width;
+      if (w > maxW) { s = Math.max(8, Math.floor((px * maxW) / w)); g.font = `${weight} ${s}px ${fam}`; }
+      return s;
+    },
+    start() { setDocLang(); walk(document.documentElement); watch(); },
+  };
+  SC.i18n = i18n; SC.tr = tr;
+  if (document.documentElement) i18n.start();
+})();
 
 // 音效以 WebAudio 即時合成；背景音樂由 02b_music.js 即時編曲合成（原創，無第三方取樣）。
 (() => {
@@ -2156,7 +2621,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     cat.setTag = (text, css, show) => {
       tag.visible = show; if (!show) return;
       const g = cv.getContext('2d'); g.clearRect(0, 0, 256, 96);
-      g.font = '900 44px "Noto Sans TC", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      text = SC.tr(text); SC.i18n.fit(g, text, 236, 44); g.textAlign = 'center'; g.textBaseline = 'middle'; // 名字太長就縮小
       g.lineJoin = 'round'; g.lineWidth = 12; g.strokeStyle = '#1b1430'; g.strokeText(text, 128, 50); g.fillStyle = css; g.fillText(text, 128, 50); tagTex.needsUpdate = true;
     };
     cat.setWeapon = (id) => { cat.weaponId = id; Object.keys(weapons).forEach((k) => (weapons[k].visible = k === id)); };
@@ -2786,8 +3251,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const bar = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
     bar.scale.set(7, 2.19, 1); bar.position.y = hy1 + 1.7; bar.renderOrder = 10; g.add(bar);
     const setHp = (k) => {
-      c2.clearRect(0, 0, 256, 80); c2.font = '900 30px "Noto Sans TC", sans-serif'; c2.textAlign = 'center'; c2.textBaseline = 'middle';
-      c2.lineJoin = 'round'; c2.lineWidth = 9; c2.strokeStyle = '#1b1430'; c2.strokeText(spec.name, 128, 24); c2.fillStyle = '#fff8eb'; c2.fillText(spec.name, 128, 24);
+      c2.clearRect(0, 0, 256, 80); const nm = SC.tr(spec.name); SC.i18n.fit(c2, nm, 240, 30); c2.textAlign = 'center'; c2.textBaseline = 'middle';
+      c2.lineJoin = 'round'; c2.lineWidth = 9; c2.strokeStyle = '#1b1430'; c2.strokeText(nm, 128, 24); c2.fillStyle = '#fff8eb'; c2.fillText(nm, 128, 24);
       c2.fillStyle = '#1b1430'; c2.fillRect(26, 50, 204, 20); c2.fillStyle = '#3d3552'; c2.fillRect(30, 54, 196, 12); c2.fillStyle = barCss; c2.fillRect(30, 54, 196 * Math.max(0, Math.min(1, k)), 12);
       tex.needsUpdate = true;
     };
@@ -2837,7 +3302,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     g.fillStyle = '#ff9646'; g.fillRect(0, 0, FW, 14); g.fillRect(0, FH - 14, FW, 14);
     g.fillStyle = '#fff6e4'; g.beginPath(); g.roundRect(8, 44, FW - 16, 64, 10); g.fill();
     g.fillStyle = '#ff7aa8'; g.beginPath(); g.ellipse(FW / 2 - 4, 68, 17, 9, 0, 0, 7); g.fill(); g.beginPath(); g.moveTo(FW / 2 + 10, 68); g.lineTo(FW / 2 + 24, 58); g.lineTo(FW / 2 + 24, 78); g.fill();
-    g.fillStyle = '#1b1430'; g.font = '900 15px "Noto Sans TC", sans-serif'; g.textAlign = 'center'; g.fillText('貓罐頭', FW / 2, 99);
+    g.fillStyle = '#1b1430'; SC.i18n.fit(g, SC.tr('貓罐頭'), FW - 24, 15); g.textAlign = 'center'; g.fillText(SC.tr('貓罐頭'), FW / 2, 99);
     g.fillStyle = 'rgba(120,130,150,.5)'; for (let y = 124; y < FH - 20; y += 9) g.fillRect(0, y, FW, 2);
   }
   function resetFace(f, enemyCss) {
@@ -2888,7 +3353,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   }
   function signTexture(text, fg, bg, w = 512, h = 128) {
     const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
-    g.fillStyle = bg; g.fillRect(0, 0, w, h); g.font = `900 ${Math.round(h * 0.62)}px "Noto Sans TC", sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    text = SC.tr(text); g.fillStyle = bg; g.fillRect(0, 0, w, h); SC.i18n.fit(g, text, w * 0.92, Math.round(h * 0.62)); g.textAlign = 'center'; g.textBaseline = 'middle';
     g.lineJoin = 'round'; g.lineWidth = h * 0.12; g.strokeStyle = '#281432'; g.strokeText(text, w / 2, h / 2 + 2); g.fillStyle = fg; g.fillText(text, w / 2, h / 2 + 2);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
   }
@@ -3006,7 +3471,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const gBase = new THREE.Mesh(new THREE.CylinderGeometry(4.6, 5.2, 1, 36), gGold); gBase.position.y = 0.5; gBase.castShadow = true; goal.add(gBase);
     goal.btnMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2, emissive: 0xffffff, emissiveIntensity: 1 });
     goal.btn = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.6, 1, 36), goal.btnMat); goal.btn.position.y = 1.4; goal.add(goal.btn);
-    const lc = document.createElement('canvas'); lc.width = lc.height = 256; const lg = lc.getContext('2d'); lg.fillStyle = '#1b1430'; lg.font = '900 96px "Noto Sans TC", sans-serif'; lg.textAlign = 'center'; lg.textBaseline = 'middle'; lg.fillText('通關', 128, 132);
+    const lc = document.createElement('canvas'); lc.width = lc.height = 256; const lg = lc.getContext('2d'); lg.fillStyle = '#1b1430'; SC.i18n.fit(lg, SC.tr('通關'), 236, 96); lg.textAlign = 'center'; lg.textBaseline = 'middle'; lg.fillText(SC.tr('通關'), 128, 132);
     const lt = new THREE.CanvasTexture(lc); lt.colorSpace = THREE.SRGBColorSpace; const lab = new THREE.Mesh(new THREE.CircleGeometry(3.2, 32), new THREE.MeshBasicMaterial({ map: lt, transparent: true })); lab.rotation.x = -Math.PI / 2; lab.position.y = 1.93; goal.add(lab); goal.lab = lab;
     goal.beam = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.4, 90, 24, 1, true), add(0xffffff, { side: THREE.DoubleSide, opacity: 0.22 })); goal.beam.position.y = 46; goal.add(goal.beam);
     goal.ring = new THREE.Mesh(new THREE.RingGeometry(5.6, 6.4, 48), add(0xffffff, { side: THREE.DoubleSide, opacity: 0.8 })); goal.ring.rotation.x = -Math.PI / 2; goal.ring.position.y = 0.15; goal.add(goal.ring);
@@ -8461,7 +8926,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
             </div>
           </div>
         </div>
-        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button></div>
+        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button><label class="btn lang-btn"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3.5 16h25M16 3.5c-4.6 4-4.6 21 0 25M16 3.5c4.6 4 4.6 21 0 25" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span id="lang-cur">${SC.i18n.LABEL[SC.i18n.lang]}</span><select id="pick-lang" aria-label="語言">${SC.i18n.LANGS.map((l) => `<option value="${l}"${l === SC.i18n.lang ? ' selected' : ''}>${SC.i18n.LABEL[l]}</option>`).join('')}</select></label></div>
       </div>
     </div>
 
@@ -8609,6 +9074,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     on('btn-quit', toMenu); on('btn-menu', () => { SC.net.leave(); toMenu(); });
     const help = (mode) => { els['help-list'].innerHTML = HELP[mode].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(''); $('tab-desk').classList.toggle('on', mode === 'desk'); $('tab-touch').classList.toggle('on', mode === 'touch'); };
     const openHelp = () => { help(SC.input.isTouch ? 'touch' : 'desk'); els['m-help'].hidden = false; };
+    $('pick-lang').addEventListener('change', (e) => { SC.i18n.set(e.target.value); $('lang-cur').textContent = SC.i18n.LABEL[SC.i18n.lang]; }); // 換語言：畫面上的字從原文重翻（01a_i18n.js）
     on('btn-help', openHelp); on('btn-help2', openHelp); on('btn-help-close', () => (els['m-help'].hidden = true));
     on('tab-desk', () => help('desk')); on('tab-touch', () => help('touch'));
     // 全螢幕：瀏覽器支援才顯示（iPhone 的 Safari 不開放網頁全螢幕）
