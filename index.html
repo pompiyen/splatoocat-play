@@ -510,6 +510,25 @@ html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw
 .h-chatbar:not([hidden]) ~ .h-chatfeed { top: calc(214px + var(--sat)); }
 .h-chatfeed > div { background: rgba(27, 20, 48, .78); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 14px; animation: chatIn .25s ease-out; }
 @keyframes chatIn { from { transform: translateX(-12px); opacity: 0; } }
+/* 魔王關排行榜（第 55 版）：前 5 名，進榜時那一行變成名字輸入框＋勾勾鈕 */
+.res-rank { background: var(--navy); border: 3px solid #fff; border-radius: 16px; padding: 8px 12px 6px; min-width: min(320px, 86vw); max-width: 92vw; display: grid; gap: 4px; }
+.rk-h { display: flex; align-items: center; gap: 6px; justify-content: center; } .rk-h svg { width: 22px; height: 22px; } .rk-h b { font: 400 18px/1 var(--f-display); }
+.rk-new { background: var(--sun); color: var(--navy); font: 400 14px/1 var(--f-display); padding: 4px 8px; border-radius: 99px; margin-left: 4px; animation: rkPop .6s ease-out infinite alternate; }
+@keyframes rkPop { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.12) rotate(3deg); } }
+.rk-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+.rk-row { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 8px; padding: 3px 6px; border-radius: 10px; }
+.rk-row.me { background: rgba(255, 210, 63, .22); outline: 2px solid var(--sun); }
+.rk-no { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 400 14px/1 var(--f-display); font-style: normal; color: var(--navy); background: #fff; border: 2px solid var(--navy); }
+.rk-name { font: 700 16px/1.2 var(--f-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rk-t { font: 400 18px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.rk-edit { display: flex; gap: 6px; align-items: center; min-width: 0; }
+.rk-edit input { flex: 1; min-width: 0; width: 8.5em; font: 700 17px/1 var(--f-body); padding: 7px 10px; border-radius: 10px; border: 3px solid var(--sun); background: #fff; color: var(--navy); }
+.rk-ok { flex: none; width: 44px; height: 40px; border-radius: 12px; border: 3px solid var(--navy); background: var(--sun); display: grid; place-items: center; padding: 0; cursor: pointer; box-shadow: 0 3px 0 var(--navy); }
+.rk-ok svg { width: 26px; height: 26px; } .rk-ok:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--navy); }
+.rk-empty, .rk-foot { margin: 0; text-align: center; font-size: 12px; color: var(--dim); }
+#pick-stage .rk-best { display: inline-flex; align-items: center; gap: 2px; font: 400 12px/1 var(--f-display); font-style: normal; color: var(--sun); }
+#pick-stage .cat-pick .rk-best svg { width: 13px; height: 13px; background: none; border: 0; padding: 0; border-radius: 0; grid-row: auto; }
+@media (max-height: 520px) { .res-rank { padding: 4px 10px; gap: 2px; } .rk-row { padding: 1px 6px; } .rk-foot { display: none; } .rk-h b { font-size: 15px; } }
 
 </style>
 <div id="app">
@@ -1025,6 +1044,17 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['每個人自己一隊，擊倒最多的人獲勝', 'everyone is their own team, most KOs wins', 'ひとりずつ別チーム、一番たくさんたおした人の勝ち', '각자 한 팀, 가장 많이 쓰러뜨린 사람이 승리'],
     ['每個人自己一隊，塗得最多的人獲勝', 'everyone is their own team, most paint wins', 'ひとりずつ別チーム、一番たくさん塗った人の勝ち', '각자 한 팀, 가장 많이 칠한 사람이 승리'],
   ]);
+  // 魔王關排行榜（Yen 2026-11-20 第 55 版）
+  add([
+    ['排行榜', 'Leaderboard', 'ランキング', '순위표'],
+    ['新紀錄！', 'New record!', '新記録！', '신기록!'],
+    ['進榜了！寫上名字', 'You made the board! Write your name', 'ランクイン！名前を書こう', '순위에 들었어요! 이름을 적어요'],
+    ['名字', 'Name', 'なまえ', '이름'],
+    ['存起來', 'Save', '保存', '저장'],
+    ['還沒有紀錄', 'No records yet', 'まだ記録がないよ', '아직 기록이 없어요'],
+    ['最快紀錄', 'Best time', '最速記録', '최고 기록'],
+    ['這台裝置的紀錄', 'Records on this device', 'この端末の記録', '이 기기의 기록'],
+  ]);
   // 第 N 名（英文要 1st 2nd 3rd）
   const ord = (n) => (n % 100 > 10 && n % 100 < 14 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
   P.find((p) => String(p[0]) === String(/^第 (\d+) 名$/))[1] = (m, li) => ['$1' + ord(+m[1]) + ' place', '$1位', '$1위'][li];
@@ -1034,7 +1064,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const orig = new WeakMap(); // 文字節點 → 原本的中文
   const wrote = new WeakMap(); // 文字節點 → 我們寫進去的字
   const aOrig = new WeakMap(); // 元素 → {屬性: [原文, 寫進去的字]}
-  const skip = (el) => el && (el.nodeName === 'SCRIPT' || el.nodeName === 'TITLE' || el.nodeName === 'STYLE' || el.nodeName === 'TEXTAREA' || el.nodeName === 'INPUT' || el.nodeName === 'OPTION');
+  // translate="no"：玩家自己打的名字（排行榜）不翻
+  const skip = (el) => el && (el.nodeName === 'SCRIPT' || el.nodeName === 'TITLE' || el.nodeName === 'STYLE' || el.nodeName === 'TEXTAREA' || el.nodeName === 'INPUT' || el.nodeName === 'OPTION' || (el.closest && !!el.closest('[translate="no"]')));
   const doText = (n) => {
     const v = n.nodeValue; if (!v) return;
     if (wrote.get(n) === v) return; // 自己剛寫的
@@ -9986,6 +10017,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       </div>
       <div class="res-bottom">
         <div class="res-stats" id="res-stats"></div>
+        <div class="res-rank" id="res-rank" hidden></div>
         <div class="actions"><button type="button" class="btn primary" id="btn-again">再來一場</button><button type="button" class="btn" id="btn-menu">回主選單</button></div>
       </div>
     </div>
@@ -10048,9 +10080,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
     // 選關：世界列 + 這個世界的五張魔王卡
     const worldOf = (st) => Math.ceil((+st || 1) / 5);
+    const best = (st) => { const l = rank.list(String(st)); return l.length ? `<em class="rk-best">${TROPHY}${rank.fmt(l[0].t)}</em>` : ''; }; // 選關卡片上的最快紀錄
     const renderStages = () => {
       const w = worldOf(sel.stage), all = SC.bossList(), faces = ui.bossFaces(), g = $('pick-stage'); let html = '';
-      for (let i = (w - 1) * 5; i < w * 5; i++) { if (!all[i]) continue; html += `<button type="button" class="pick cat-pick stage-pick${i % 5 === 4 ? ' stage-final' : ''}" data-v="${i + 1}" aria-label="第 ${i + 1} 關 ${all[i].name}">${faces[i]()}<b>第 ${i + 1} 關</b><small>${all[i].name}</small></button>`; }
+      for (let i = (w - 1) * 5; i < w * 5; i++) { if (!all[i]) continue; html += `<button type="button" class="pick cat-pick stage-pick${i % 5 === 4 ? ' stage-final' : ''}" data-v="${i + 1}" aria-label="第 ${i + 1} 關 ${all[i].name}">${faces[i]()}<b>第 ${i + 1} 關</b><small>${all[i].name}</small>${best(i + 1)}</button>`; }
       g.innerHTML = html; g.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === sel.stage));
       $('pick-world').querySelectorAll('.pick').forEach((b) => { const k = +b.dataset.v; b.hidden = !all.slice((k - 1) * 5, k * 5).some(Boolean); b.classList.toggle('on', k === w); });
     };
@@ -10071,6 +10104,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
     const on = (id, fn) => $(id).addEventListener('click', () => { click(); fn(); });
     const begin = () => {
+      rank.hide(); // 排行榜還沒按勾勾就再挑戰：用填好的名字存起來
       if (G().mode === 'net' && !G().demo) return toMenu(); // 連線對戰打完：回房間等房主開下一場
       if (sel.mode === 'net') return SC.net.start(); // 房主開始後，每個人都由 SC.net.onBegin 進場
       SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; G().start({ ...sel, demo: false });
@@ -10104,7 +10138,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     $('spec-next').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); click(); G().specNext(1); });
     // 絕招鈕：手機直接點；桌機按 F（游標鎖定時點不到這顆鈕）
     els['sp-btn'].addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); SC.input.sp = true; });
-    const toMenu = () => { SC.net.quit(); els['m-pause'].hidden = true; els['m-results'].hidden = true; els['m-title'].hidden = false; G().start({ demo: true }); modeSync(); };
+    const toMenu = () => { rank.hide(); renderStages(); SC.net.quit(); els['m-pause'].hidden = true; els['m-results'].hidden = true; els['m-title'].hidden = false; G().start({ demo: true }); modeSync(); };
     on('btn-quit', toMenu); on('btn-menu', () => { SC.net.leave(); toMenu(); });
     const help = (mode) => { els['help-list'].innerHTML = HELP[mode].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(''); $('tab-desk').classList.toggle('on', mode === 'desk'); $('tab-touch').classList.toggle('on', mode === 'touch'); };
     const openHelp = () => { help(SC.input.isTouch ? 'touch' : 'desk'); els['m-help'].hidden = false; };
@@ -10204,8 +10238,63 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.spReady = () => { els['sp-btn'].classList.add('full'); ui.tip(SC.input.isTouch ? '絕招準備好了！點發亮的星星鈕' : '絕招準備好了！按 F', 3); };
   ui.spUsed = () => { els['sp-btn'].classList.remove('full'); };
 
+  // ---------- 魔王關排行榜（Yen 2026-11-20：破時間紀錄可以輸入名字進排行榜）----------
+  // 每一關前 5 名，存在這台裝置（localStorage sc-boss-rank）。進榜時名字先填上次用的（沒有就用貓咪的名字），小朋友按勾勾就好；
+  // 沒按就離開也會用填好的名字存起來。名字是玩家自己打的字，只用 textContent 放進畫面，也不翻譯（translate="no"）。
+  const fmtT = (s) => { const t = Math.round(s * 10) / 10, m = Math.floor(t / 60); return m + ':' + (t - m * 60).toFixed(1).padStart(4, '0'); };
+  const CAT_NAME = { maomao: '毛毛', shuang: '雙雙', banban: '班班', taro: '太郎' };
+  const TROPHY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6"/><path d="M7 5H3q0 5 4.5 5M17 5h4q0 5-4.5 5" fill="none" stroke="#1b1430" stroke-width="1.6"/><path d="M10 13h4v4h3v3H7v-3h3z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6"/></svg>';
+  const MEDAL = ['#ffd23f', '#dfe6f2', '#e8a165'];
+  const rank = (() => {
+    const KEY = 'sc-boss-rank', MAX = 5; let pend = null;
+    const load = () => { try { const d = JSON.parse(localStorage.getItem(KEY) || '{}'); return d && typeof d === 'object' ? d : {}; } catch (e) { return {}; } };
+    const store = (d) => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) { /* 私密模式存不了也沒關係 */ } };
+    const list = (st) => { const l = load()[st]; return Array.isArray(l) ? l.filter((e) => e && typeof e.t === 'number' && isFinite(e.t)).slice(0, MAX) : []; };
+    const lastName = () => { try { return SC.net.clean(localStorage.getItem('sc-rank-name') || ''); } catch (e) { return ''; } };
+    const commit = () => { // 把等著的那一筆存起來
+      if (!pend) return; const p = pend; pend = null;
+      const nm = SC.net.clean(p.inp.value) || p.def, d = load(), l = list(p.st); l.push({ n: nm, t: p.t, d: Date.now() }); l.sort((a, b) => a.t - b.t); d[p.st] = l.slice(0, MAX); store(d);
+      try { localStorage.setItem('sc-rank-name', nm); } catch (e) { /* 存不了就算了 */ }
+      return nm;
+    };
+    const render = (st, rows, meAt, editing, def) => {
+      const box = $('res-rank'); box.textContent = ''; box.hidden = false;
+      const h = document.createElement('div'); h.className = 'rk-h'; h.innerHTML = TROPHY + '<b>排行榜</b>'; box.appendChild(h);
+      if (editing && meAt === 0) { const nb = document.createElement('div'); nb.className = 'rk-new'; nb.textContent = '新紀錄！'; h.appendChild(nb); }
+      const ol = document.createElement('ol'); ol.className = 'rk-list'; box.appendChild(ol);
+      rows.forEach((e, i) => {
+        const li = document.createElement('li'); li.className = 'rk-row' + (i === meAt ? ' me' : ''); ol.appendChild(li);
+        const m = document.createElement('i'); m.className = 'rk-no'; m.textContent = i + 1; if (i < 3) m.style.background = MEDAL[i]; li.appendChild(m);
+        if (i === meAt && editing) {
+          const f = document.createElement('div'); f.className = 'rk-edit'; li.appendChild(f);
+          const inp = document.createElement('input'); inp.type = 'text'; inp.maxLength = 8; inp.value = def; inp.placeholder = '名字'; inp.setAttribute('aria-label', '名字'); inp.autocomplete = 'off'; inp.spellcheck = false; f.appendChild(inp);
+          const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'rk-ok'; ok.setAttribute('aria-label', '存起來');
+          ok.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" fill="none" stroke="#1b1430" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'; f.appendChild(ok);
+          pend.inp = inp;
+          const go = () => { if (!pend) return; commit(); SC.audio.sfx.click && SC.audio.sfx.click(); show(st, null); };
+          ok.addEventListener('click', go); inp.addEventListener('keydown', (ev) => { ev.stopPropagation(); if (ev.key === 'Enter') go(); }); inp.addEventListener('keyup', (ev) => ev.stopPropagation());
+          if (!SC.input.isTouch) setTimeout(() => { try { inp.focus(); inp.select(); } catch (e) { /* 沒關係 */ } }, 400);
+        } else { const n = document.createElement('span'); n.className = 'rk-name'; n.setAttribute('translate', 'no'); n.textContent = e.n; li.appendChild(n); }
+        const t = document.createElement('b'); t.className = 'rk-t'; t.textContent = fmtT(e.t); li.appendChild(t);
+      });
+      if (!rows.length) { const p = document.createElement('p'); p.className = 'rk-empty'; p.textContent = '還沒有紀錄'; box.appendChild(p); }
+      const foot = document.createElement('p'); foot.className = 'rk-foot'; foot.textContent = '這台裝置的紀錄'; box.appendChild(foot);
+    };
+    // secs = null：只顯示（剛存好）；有 secs：看看有沒有進榜
+    const show = (st, secs, kind) => {
+      commit(); const l = list(st);
+      if (secs == null || !(secs > 0)) return render(st, l, -1, false);
+      let at = l.findIndex((e) => secs < e.t); if (at < 0) at = l.length;
+      if (at >= MAX) return render(st, l, -1, false);
+      const def = lastName() || CAT_NAME[kind] || '毛毛', rows = l.slice(); rows.splice(at, 0, { n: def, t: secs }); pend = { st, t: secs, def, inp: { value: def } };
+      render(st, rows.slice(0, MAX), at, true, def);
+    };
+    return { show, commit, hide: () => { commit(); $('res-rank').hidden = true; }, list, fmt: fmtT };
+  })();
+  ui.rank = rank;
+
   ui.onResults = () => {
-    const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['res-stats'].classList.remove('has-board');
+    const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
       if (r.fail) { // 三條命用完
@@ -10214,7 +10303,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0; SC.audio.music('toy'); return;
       }
       els.verdict.textContent = '挑戰成功！'; els.verdict.dataset.r = 'win'; $('btn-again').textContent = '再挑戰一次'; $('btn-menu').textContent = '回主選單';
-      els['res-stats'].innerHTML = `<div><span>通關時間</span><b>${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}</b></div><div><span>被擊倒</span><b>${r.splats} 次</b></div>`;
+      els['res-stats'].innerHTML = `<div><span>通關時間</span><b>${fmtT(r.seconds)}</b></div><div><span>被擊倒</span><b>${r.splats} 次</b></div>`;
+      rank.show(String(+g.opts.stage || 1), r.seconds, (g.player() || g.opts).kind);
       els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0; setTimeout(() => SC.audio.sfx.win(), 300); SC.audio.music('toy'); return;
     }
     const net = g.mode === 'net'; $('btn-again').textContent = net ? '回房間' : '再來一場'; $('btn-menu').textContent = net ? '離開房間' : '回主選單';
