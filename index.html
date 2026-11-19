@@ -7222,7 +7222,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     SC.ui.onPause(p);
   };
 
-  const onBase = (a) => { if (G.mode === 'boss') return false; const [u, v] = W.toLocal(a.team, a.pos.x, a.pos.z); return u < -W.baseIn && Math.abs(v) < 17 && a.pos.y > 5; };
+  // Yen 2026-11-19：站在自家出生台上也會被打倒（拿掉以前的出生台無敵）；剛重生的短暫保護（SPAWN_PROTECTION）照舊
   // ---------- 傷害與重生 ----------
   // ---------- 自由試玩的靶子 ----------
   function makeTargets() {
@@ -7283,7 +7283,6 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   }
   function damage(t, amount, from, cause) {
     if (!t.alive || G.state !== 'play' || G.time < t.protectUntil || t.spT != null) return false; // 放絕招的時候不會受傷
-    if (onBase(t)) return false; // 站在自家出生台上不會受傷，避免被堵在重生點
     t.hp -= amount; t.lastHitAt = G.time; if (from && from !== t && from.team !== t.team && t.dmgBy) t.dmgBy.set(from, G.time); // 助攻：倒下前 5 秒內打過他的人
     SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, from ? colors[from.team] : WHITE, 6, 14, 0.45); hitFx(t, from);
     knock(t, from, cause);
