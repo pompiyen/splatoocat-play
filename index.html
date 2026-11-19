@@ -534,8 +534,8 @@ SC.CFG = {
   W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, minRange: 85, maxRange: 150,
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
-  // 散彈槍（Yen 2026-11-19）：一次噴出 8 顆小墨彈成扇形，射程短；貼近時全中可以一發擊倒，遠一點只中幾顆
-  W04: { id: 'W04', name: '散彈槍', pellets: 8, spread: 0.26, damage: 13, ink: 100 / 26 / INK_LAST, range: 36, interval: 0.6, radius: 2.6, speed: 118, gravity: 105 },
+  // 散彈槍（Yen 2026-11-19）：一次噴出一把小墨彈成扇形；貼近全中一發擊倒，遠一點只中幾顆
+  W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 16, ink: 50, range: 52, interval: 0.7, radius: 3.6, speed: 125, gravity: 100 }, // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水
   // Yen 2026-11-19：丟更遠（初速 54→72，最遠約 26→47），落地後滾一小段（落地保留約 0.3 的水平速度、每秒衰減）再停住
   // Yen 2026-11-14：墨水彈加強。爆炸塗地半徑 6→7（再乘 PAINT），傷害範圍 8.4→11，中心 5 以內直接擊倒，外圈 60
   BOMB: { ink: 20 / INK_LAST, speed: 72, gravity: 105, fuse: 2, roll: 0.32, rollDrag: 3.6, armDelay: 1.05, radius: 9.5, damageRadius: 14.5, nearRadius: 6.5, near: 12, far: 66, holdFull: 0.9, damage: 60, nearDamage: 100, maxFlight: 3 },
@@ -914,10 +914,13 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const CH = [0, 1, 3]; // 第幾隊用哪個通道
   // 四隊以上（Yen 2026-11-19 四方以上大亂鬥）：改成 R＝墨水量、G＝哪一隊×40、B＝壓痕；著色器取周圍四格依墨水量混顏色
   let MULTI = false;
+  let rows = null, full = true; // rows：這一格畫面有改到的列，只上傳這些列（Yen 2026-11-20：五人連線會卡）
+  const mark = (z0, z1) => { for (let z = z0; z <= z1; z++) rows[z] = 1; };
   function alloc(ix, iz) {
     const w = Math.round((ix * 2) / C.CELL), h = Math.round((iz * 2) / C.CELL);
     if (tex && w === W && h === H) { IX = ix; IZ = iz; return; }
     IX = ix; IZ = iz; W = w; H = h; ink.W = W; ink.H = H;
+    rows = new Uint8Array(H); full = true;
     data = new Uint8Array(W * H * 4); owner = new Uint8Array(W * H); paintable = new Uint8Array(W * H); cellH = new Float32Array(W * H); // owner：0 無、1 A、2 B、3 C
     ink.owner = owner; ink.paintable = paintable; ink.data = data; dents.clear();
     if (tex) tex.dispose();
@@ -1025,7 +1028,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   // 幾隊：4 隊以上用多隊格式。cols：各隊顏色（THREE.Color）
   ink.setTeams = (n, cols) => { MULTI = ink.multi = n >= 4; ink.uniforms.uMulti.value = MULTI ? 1 : 0; (cols || []).forEach((c, i) => { if (i < 6) ink.uniforms.uCols.value[i].copy(c); }); };
   ink.reset = () => {
-    data.fill(0); owner.fill(0); dents.clear(); ink.counts.fill(0); tex.needsUpdate = true;
+    data.fill(0); owner.fill(0); dents.clear(); ink.counts.fill(0); tex.needsUpdate = true; full = true; rows.fill(0);
   };
 
   // 單一圓形筆刷。team 0 = A、1 = B、2 = C。y 用來避免把旁邊高台的頂面一起塗到。
@@ -1053,7 +1056,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       const now = data[p + own] >= 128 ? team + 1 : data[p + o1] >= 128 ? ((team + 1) % 3) + 1 : data[p + o2] >= 128 ? ((team + 2) % 3) + 1 : 0, was = owner[i];
       if (now !== was) { if (was) counts[was - 1]--; if (now) counts[now - 1]++; owner[i] = now; if (now === team + 1) gained++; }
     }
-    ink.dirty = true;
+    if (z1 >= z0) { mark(z0, z1); ink.dirty = true; }
     if (ink.onStamp) ink.onStamp(x, z, r); // 蓋掉潛墨軌跡線
     if (gained && ink.by && ink.by.team === team) ink.by.gain(gained); // 絕招量表：這一筆是誰塗的
     return gained;
@@ -1068,16 +1071,16 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       const i = cz * W + cx; if (!owner[i]) continue; const v = Math.round(255 * amt * (1 - d * d) * (1 - d * d)), p = i * 4;
       if (data[p + 2] < v) { data[p + 2] = v; dents.add(i); }
     }
-    ink.dirty = true;
+    if (z1 >= z0) { mark(z0, z1); ink.dirty = true; }
   };
   let dentT = 0;
   ink.dentTick = (dt) => { // 壓痕約 25 秒慢慢平復
     if (!dents.size || (dentT += dt) < 0.5) return; dentT = 0;
-    for (const i of dents) { const p = i * 4, v = data[p + 2] - 5; if (v <= 0) { data[p + 2] = 0; dents.delete(i); } else data[p + 2] = v; }
+    for (const i of dents) { const p = i * 4, v = data[p + 2] - 5; rows[(i / W) | 0] = 1; if (v <= 0) { data[p + 2] = 0; dents.delete(i); } else data[p + 2] = v; }
     ink.dirty = true;
   };
   ink.dentCount = () => dents.size;
-  ink.clearDents = () => { for (const i of dents) data[i * 4 + 2] = 0; dents.clear(); ink.dirty = true; };
+  ink.clearDents = () => { for (const i of dents) { data[i * 4 + 2] = 0; rows[(i / W) | 0] = 1; } dents.clear(); ink.dirty = true; };
 
   // 潑濺形狀：一個主體加上幾個往前甩出去的小墨滴。
   ink.splat = (team, x, y, z, r, dx = 0, dz = 0) => {
@@ -1091,7 +1094,19 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 
   // 回傳腳下是誰的墨水：0 無、1 A、2 B、-1 場外。
   ink.ownerAt = (x, z) => { const i = ink.cellIndex(x, z); return i < 0 ? -1 : owner[i]; };
-  ink.flush = () => { if (ink.dirty) { tex.needsUpdate = true; ink.dirty = false; } };
+  // 只把改過的列送進顯示卡（連在一起的幾段），不是每次整張 440×440 重傳；還沒上傳過或 WebGL 拿不到時整張重傳
+  ink.flush = () => {
+    if (!ink.dirty) return; ink.dirty = false;
+    const R = SC.debug && SC.debug.renderer, prop = R && !full && R.properties.get(tex), gt = prop && prop.__webglTexture;
+    if (!gt || prop.__version !== tex.version) { tex.needsUpdate = true; full = false; rows.fill(0); return; }
+    const gl = R.getContext(); let bound = false;
+    for (let z = 0; z < H; z++) {
+      if (!rows[z]) continue; let e = z; while (e + 1 < H && (rows[e + 1] || (e + 2 < H && rows[e + 2]))) e++; // 中間只隔一列就合併
+      if (!bound) { R.state.bindTexture(gl.TEXTURE_2D, gt); gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false); bound = true; }
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, z, W, e - z + 1, gl.RGBA, gl.UNSIGNED_BYTE, data.subarray(z * W * 4, (e + 1) * W * 4));
+      rows.fill(0, z, e + 1); z = e;
+    }
+  };
   ink.score = () => {
     const t = ink.total;
     return { a: ink.counts[0] / t, b: ink.counts[1] / t, c: ink.counts[2] / t, v: ink.counts.map((n) => n / t) };
@@ -1928,7 +1943,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const fm = D.fence.map((c) => plain(c, 0.5)), picket = new THREE.CapsuleGeometry(2.1, 9, 6, 12), capM = D.fenceCap != null ? plain(D.fenceCap, 0.85) : null;
     // 鏡頭跑到木樁後面時，擋在中間的木樁換成半透明（Yen 2026-11-19：靠近圍欄視角會被擋住）
     const ghost = (mt) => { const g = mt.clone(); g.transparent = true; g.opacity = 0.16; g.depthWrite = false; return g; }, fg = fm.map(ghost), capG = capM ? ghost(capM) : null, pickets = [];
-    const place = (x, z, i) => { const y = 4.5 + (i % 2) * 1.2, m = new THREE.Mesh(picket, fm[i % fm.length]); m.position.set(x, y, z); m.castShadow = !low0; root.add(m); const pk = { x, z, m, solid: m.material, ghost: fg[i % fg.length], c: null, on: false };
+    const place = (x, z, i) => { const y = 4.5 + (i % 2) * 1.2, m = new THREE.Mesh(picket, fm[i % fm.length]); m.position.set(x, y, z); m.castShadow = false; root.add(m); const pk = { x, z, m, solid: m.material, ghost: fg[i % fg.length], c: null, on: false };
       if (capM) { const c = new THREE.Mesh(new THREE.SphereGeometry(2.4, 12, 6, 0, 6.283, 0, Math.PI / 2), capM); c.position.set(x, y + 6, z); c.scale.y = 0.7; root.add(c); pk.c = c; }
       pickets.push(pk); };
     let n = 0;
@@ -1939,6 +1954,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     }
 
     D.outside(k);
+    { const _s = new THREE.Vector3(); root.traverse((o) => { if (!o.isMesh || !o.castShadow || !o.geometry) return; if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere(); o.getWorldScale(_s); if (o.geometry.boundingSphere.radius * Math.max(_s.x, _s.y, _s.z) < 1.1) o.castShadow = false; }); } // 小東西不投影子，少畫很多次（效能）
     return (built[key] = { root, prims, base: D.base || null, env, fog: new THREE.Fog(D.fog, 260, 620), rings, ticks, vic: D.vic, lim, ang, pickets, capM, capG, spawns, baseIn: D.baseIn || RECT.baseIn });
   }
 
@@ -1974,7 +1990,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     for (const k of m.pickets) {
       let on = false;
       if (fade) { const t = Math.max(-0.15, Math.min(1, ((k.x - cx) * dx + (k.z - cz) * dz) / L2)), ex = cx + dx * t - k.x, ez = cz + dz * t - k.z; const cx2 = k.x - cx, cz2 = k.z - cz; on = ex * ex + ez * ez < 4.2 * 4.2 || cx2 * cx2 + cz2 * cz2 < 13 * 13; } // 擋在中間的、或貼在鏡頭旁邊的
-      if (on !== k.on) { k.on = on; k.m.material = on ? k.ghost : k.solid; k.m.castShadow = !on && !low0; if (k.c) k.c.material = on ? m.capG : m.capM; }
+      if (on !== k.on) { k.on = on; k.m.material = on ? k.ghost : k.solid; if (k.c) k.c.material = on ? m.capG : m.capM; }
     }
   };
 
@@ -2214,6 +2230,13 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     };
     const hold = new THREE.Group(); body.add(hold); cat.hold = hold; // 抱東西的位置（身體座標）
     cat.setInk = (f) => { fill.scale.y = Math.max(0.02, f); fill.position.y = -0.75 * (1 - Math.max(0.02, f)); };
+    // 效能（Yen 2026-11-20：五人連線會卡）：一隻貓有一百多個小零件。只讓大零件投影子；離鏡頭遠時小零件（鬍鬚、眼睛亮點、扣子…）不畫。
+    // 用 layers 而不是 visible，才不會和其他動畫自己切換的顯示狀態打架
+    const details = [], _s = new THREE.Vector3();
+    root.traverse((o) => { if (!o.isMesh || !o.geometry) return; if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere(); o.getWorldScale(_s);
+      const r = o.geometry.boundingSphere.radius * Math.max(_s.x, _s.y, _s.z); if (r < 0.45) o.castShadow = false; if (r < 0.2) details.push(o); });
+    let far = false;
+    cat.lod = (d) => { const f = d > 55; if (f === far) return; far = f; details.forEach((o) => o.layers.set(f ? 1 : 0)); };
     return cat;
   };
 
@@ -3703,7 +3726,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     // 送出自己的狀態與最近的事件（觀戰的人不送）
     sendT -= dt;
     if (sendT <= 0 && !m.spec) {
-      sendT = 0.05; out = out.filter((e) => clock - e.at < 0.9);
+      sendT = m.players.length >= 5 ? 0.075 : m.players.length >= 4 ? 0.06 : 0.05; out = out.filter((e) => clock - e.at < 0.9);
       const patch = { mi: m.id, hb: (hb = (hb + 1) % 1e6), s: turn(g.netSnap(), S_FLIP, S_YAW, -1).map(r2), e: out.map((e) => e.d) };
       while (patch.e.length && JSON.stringify(patch).length > 3000) patch.e.shift(); // presence 上限 4 KiB
       if (N.referee) {
@@ -7222,7 +7245,9 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     SC.ui.onPause(p);
   };
 
-  // Yen 2026-11-19：站在自家出生台上也會被打倒（拿掉以前的出生台無敵）；剛重生的短暫保護（SPAWN_PROTECTION）照舊
+  // 出生台（家裡的圈圈）：Yen 2026-11-20 定的規則——塗地戰時站在上面不會被打倒，但也打不到別人；擊倒戰沒有這個保護
+  const onBase = (a) => { if (G.mode === 'boss' || !a || !a.pos) return false; const [u, v] = W.toLocal(a.team, a.pos.x, a.pos.z); return u < -W.baseIn && Math.abs(v) < 17 && a.pos.y > 5; };
+  const baseSafe = (t, from) => G.mode !== 'boss' && G.rule === 'turf' && (onBase(t) || onBase(from));
   // ---------- 傷害與重生 ----------
   // ---------- 自由試玩的靶子 ----------
   function makeTargets() {
@@ -7274,7 +7299,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (netOn()) {
       if (!from || from.remote) return false; // 別人的子彈由開槍的那一方判定
       if (t.remote) { // 打到別人：通知對方自己扣體力
-        if (!t.alive || G.state !== 'play' || G.time < t.protectUntil) return false;
+        if (!t.alive || G.state !== 'play' || G.time < t.protectUntil || baseSafe(t, from)) return false;
         SC.net.ev('h', t.idx, amount, CAUSES.indexOf(cause));
         SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, colors[from.team], 6, 14, 0.45); hitFx(t, from); A.sfx.hit(); A.sfx.metal(); SC.ui.hitMarker(false); return true;
       }
@@ -7283,6 +7308,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   }
   function damage(t, amount, from, cause) {
     if (!t.alive || G.state !== 'play' || G.time < t.protectUntil || t.spT != null) return false; // 放絕招的時候不會受傷
+    if (baseSafe(t, from)) return false;
     t.hp -= amount; t.lastHitAt = G.time; if (from && from !== t && from.team !== t.team && t.dmgBy) t.dmgBy.set(from, G.time); // 助攻：倒下前 5 秒內打過他的人
     SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, from ? colors[from.team] : WHITE, 6, 14, 0.45); hitFx(t, from);
     knock(t, from, cause);
@@ -7426,9 +7452,19 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     }
   }
 
+  // 狙擊槍從哪裡射出去：平常從槍口。玩家躲在牆邊時，槍口和準星之間可能卡到牆，但準星（鏡頭的視線）其實沒被擋——
+  // 這時改從鏡頭視線上、角色頭部附近射出，準星看得到的就打得到（Yen 2026-11-20）
+  function sniperRay(a, m, dir) {
+    muzzle(a, m); dir.copy(a.aim).sub(m); const d = dir.length(); dir.multiplyScalar(1 / (d || 1));
+    if (!a.isPlayer || G.demo || !cam.pos) return;
+    const hit = W.raycast(m.x, m.y, m.z, dir.x, dir.y, dir.z, d);
+    if (!hit || hit.t > d - 1.5) return;
+    m.copy(cam.pos).addScaledVector(viewDir, cam.dist + 1.2); dir.copy(a.aim).sub(m).normalize();
+  }
+  G.sniperRay = (m, dir) => sniperRay(player(), m, dir); // 測試用
   function fireSniper(a) {
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1);
-    const m = muzzle(a, t1).clone(), dir = t2.copy(a.aim).sub(m).normalize().clone(), boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
+    const m = new V3(), dir = new V3(); sniperRay(a, m, dir); const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
     if (netOn()) SC.net.ev('z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
   }
@@ -7796,7 +7832,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (a.charge < 0 || !a.alive) { if (a.sight) a.sight.visible = false; return; }
     if (!a.sight) { a.sight = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 6, 1, true), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.6, depthWrite: false })); scene.add(a.sight); }
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1), range = SC.lerp(w.minRange, w.maxRange, c);
-    const m = muzzle(a, t1), dir = t2.copy(a.aim).sub(m).normalize(), hit = W.raycast(m.x, m.y, m.z, dir.x, dir.y, dir.z, range), len = hit ? hit.t : range;
+    const m = t1, dir = t2; sniperRay(a, m, dir); const hit = W.raycast(m.x, m.y, m.z, dir.x, dir.y, dir.z, range), len = hit ? hit.t : range;
     a.sight.visible = true; a.sight.material.color.copy(colors[a.team]); a.sight.material.opacity = 0.35 + c * 0.5;
     a.sight.position.copy(m).addScaledVector(dir, len / 2); a.sight.quaternion.setFromUnitVectors(t3.set(0, 1, 0), dir); a.sight.scale.set(0.05 + c * 0.09, len, 0.05 + c * 0.09);
   }
@@ -7979,7 +8015,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     p.pitch = cam.pitch;
     // 準星瞄到的點：先看場景，再看有沒有對手擋在前面
     viewDir.set(s * Math.cos(cam.pitch), Math.sin(cam.pitch), c * Math.cos(cam.pitch));
-    const o = cam.pos, start = cam.dist + 2, hit = W.raycast(o.x + viewDir.x * start, o.y + viewDir.y * start, o.z + viewDir.z * start, viewDir.x, viewDir.y, viewDir.z, 190);
+    const o = cam.pos, start = cam.dist + 1.2, hit = W.raycast(o.x + viewDir.x * start, o.y + viewDir.y * start, o.z + viewDir.z * start, viewDir.x, viewDir.y, viewDir.z, 190);
     let tt = hit ? hit.t + start : 170, slow = 1;
     for (const e of G.hit) {
       if (e.team === p.team || !e.alive || e.submerged) continue;
@@ -8238,7 +8274,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         a.visY = a.onGround ? SC.damp(a.visY, a.pos.y, 22, dt) : a.pos.y;
         a.cat.group.position.set(a.pos.x, a.visY, a.pos.z); a.cat.group.rotation.y = a.yaw;
         a.cat.group.visible = (!(G.time < a.protectUntil && Math.floor(now * 14) % 2 === 0) || G.state !== 'play') && !(a.isPlayer && cam.zoom > 1.4);
-        a.cat.setInk(a.ink / 100);
+        a.cat.setInk(a.ink / 100); if (a.cat.lod) a.cat.lod(a.isPlayer ? 0 : camera.position.distanceTo(a.pos));
         a.cat.animate(dt, { speed: a.speed, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged, pitch: a.pitch, rolling: a.rolling && a.alive, charge: a.charge < 0 ? 0 : a.charge / C.W03.fullCharge, t: now });
         updateSight(a);
         if (a.submerged && a.onGround) SC.swimTrail.add(a, a.pos.x, a.pos.y, a.pos.z, colors[a.team]); else SC.swimTrail.cut(a);
