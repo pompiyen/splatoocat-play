@@ -5812,14 +5812,14 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     *attacks(K) {
       const { B } = K;
       yield* K.walk(B.phase >= 3 ? 0.6 : 1.1, 7, 22);
-      if (B.phase === 1) { yield* drumWaves(K, 3); yield* slam(K, 1, true); yield* notes(K, 4); yield* slam(K, 1, true); }
+      if (B.phase === 1) { yield* drumWaves(K, 3); yield* slamPair(K); yield* notes(K, 4); yield* slamPair(K); }
       else if (B.phase === 2) { yield* rhythm(K); yield* notes(K, 5); yield* drumWaves(K, 3); }
       else { yield* notes(K, 4, true); yield* drumWaves(K, 3); yield* notes(K, 4, true); yield* concert(K); yield* slam(K, 2, false); }
     },
 
     tricks: ['weak', 'jump', 'back'], // 每回合破解方法的圖示（09_ui.js 的 TRICK）
 
-    hints: ['鼓棒砸地以後會卡住，打鼓棒前端發光的地方！', '站進地上發光的圈圈，圈圈閃亮的時候跳起來！跳完三個大鼓就亂掉了！', '對飛過來的音符射墨水，把它打回去！打中三次！'],
+    hints: ['兩隻鼓棒都會砸地卡住！跳過震波，把兩隻鼓棒前端發光的地方都打掉！', '跑到發光的圈圈裡，圈圈閃亮的時候跳起來！節奏會越來越快，圈圈也會跑掉！', '對飛過來的音符射墨水，把它打回去！打中三次！'],
     interrupt(K) { if (K.mob.slam) K.mob.slam.hit = false; },
     reset(K) { if (K.mob) { K.mob.slam = null; K.mob.backHits = 0; } },
     onPhaseEnd(K) { K.mob.slam = null; K.mob.backHits = 0; },
@@ -5885,6 +5885,38 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       mob.slam = null;
     }
   }
+  // Yen 2026-11-19：第 1 回合鼓棒太容易打掉。改成左右兩隻鼓棒輪流砸地，兩隻都要打掉才會頭暈；
+  // 卡住的時候另一隻手繼續敲鼓放震波（要邊跳邊打），鼓棒前端比較硬、卡住的時間比較短。漏掉一隻，兩隻都重來。
+  function* slamOne(K, arm) {
+    const mob = K.mob, c = K.ctx;
+    yield* K.face(0.35); const side = arm ? 1 : -1, yaw = mob.yaw;
+    const sx = mob.pos.x + Math.cos(yaw) * side * 7.6, sz = mob.pos.z - Math.sin(yaw) * side * 7.6, len = 30;
+    const mark = K.stripe(sx, sz, yaw, len, 5.2); K.warn(true); K.say(arm ? '另一隻——咚！' : K.pick(['鼓棒——砸下去！', '看我的大鼓棒！']), 1.2);
+    const S = { x: sx, z: sz, a: yaw, len, arm, lift: 0.2, long: 1, hit: false }; mob.slam = S;
+    let t = 1.0; while (t > 0) { const dt = yield; t -= dt; mark.material.opacity = Math.floor(K.now * 10) % 2 ? 0.25 : 0.55; S.long = SC.lerp(S.long, 3.2, dt * 4); S.lift = 0.2 + Math.sin(K.now * 20) * 0.08; }
+    K.warn(false); K.untele(mark); S.long = 3.2;
+    t = 0; while (t < 0.12) { const dt = yield; t += dt; S.lift = SC.lerp(0.2, 1.93, t / 0.12); }
+    S.lift = 1.93; S.hit = true; c.sfx.bomb(); c.shake(0.9);
+    for (let d = 4; d < len; d += 4) { const x = sx + Math.sin(yaw) * d, z = sz + Math.cos(yaw) * d; if (Math.hypot(x, z) < R) { c.splat(x, z, 3.4); if (d % 8 === 0) c.burst(x, 1, z, c.colors[1], 6, 14, 0.4); } }
+    yield* K.wait(0.15); S.hit = false;
+    let hit = false; const tip = new THREE.Vector3(sx + Math.sin(yaw) * (len - 3), 1.6, sz + Math.cos(yaw) * (len - 3));
+    const w = K.weak({ at: [tip.x, tip.y, tip.z], r: 2, hp: 56, onBreak: () => { hit = true; } }); K.say(arm ? '又、又卡住了咚！' : '咦？鼓棒卡住了！', 1.2);
+    let tw = 2.8, wv = 0.5; // 卡住的時候另一隻手繼續敲鼓：震波
+    while (tw > 0 && !hit) { const dt = yield; tw -= dt; wv -= dt;
+      if (wv <= 0) { wv = 1.15; mob.beat = 1; mob.beatArm = 1 - arm; mob.squash = 0.8; c.sfx.bomb(); c.shake(0.25); K.wave(mob.pos.x, mob.pos.z, { sp: 16, color: 0xffc93c }); } }
+    K.unweak(w);
+    if (hit) { c.burst(tip.x, 2, tip.z, new THREE.Color(0xe8b46a), 24, 20, 0.5); c.sfx.koGot(); }
+    t = 0; while (t < 0.35) { const dt = yield; t += dt; S.lift = SC.lerp(1.93, 0, t / 0.35); S.long = SC.lerp(3.2, 1, t / 0.35); }
+    mob.slam = null; return hit;
+  }
+  function* slamPair(K) {
+    const a = yield* slamOne(K, 0);
+    if (!a) { K.say('嘿嘿，拔出來了～', 1.2); yield* K.wait(0.6); return; }
+    K.say('啊！一隻鼓棒！還有一隻——', 1.2); yield* K.wait(0.3);
+    const b = yield* slamOne(K, 1);
+    if (b) { K.stun(4.5, { dmg: 110, say: '兩、兩隻鼓棒都被打掉了——咚…' }); return; }
+    K.say('嘿嘿，換新的鼓棒～再來！', 1.3); yield* K.wait(0.6);
+  }
   function* concert(K) { // 第 3 回合的大合奏：一邊敲鼓放震波，一邊丟音符
     const mob = K.mob, c = K.ctx;
     K.say('大——合——奏！', 1.4); K.warn(true); yield* K.wait(0.7); K.warn(false);
@@ -5895,22 +5927,29 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       yield* K.wait(1.0); }
     yield* K.wait(0.8);
   }
-  function* rhythm(K) { // 第 2 回合：地上出現發光圈，跟著鼓聲一閃一閃。站在圈裡、閃亮的時候跳起來 → 圈變成我方顏色。三個都完成 → 大鼓亂了節奏
-    const mob = K.mob, c = K.ctx; let done = 0, t = 0, beat = 0;
+  // 第 2 回合：地上出現發光圈，跟著鼓聲一閃一閃。站在圈裡、閃亮的時候跳起來 → 圈變成我方顏色。三個都完成 → 大鼓亂了節奏。
+  // Yen 2026-11-19：有新意但沒挑戰。改成：圈圈出現在比較遠的地方（要跑過去）、閃三下沒跳到就換位置；
+  // 每成功一次節奏就變快、閃亮的時間變短；兩拍之間大鼓會敲一下放震波（也要跳）。
+  function* rhythm(K) {
+    const mob = K.mob, c = K.ctx; let done = 0, t = 0;
+    const BEAT = [1.25, 1.0, 0.82], LIT = [0.6, 0.48, 0.4];
     K.say('跟著節奏跳——一、二、咚！', 1.6);
-    while (done < 3 && t < 22) {
-      const p = c.player().pos, a = Math.random() * 6.283, v = K.clampIn(new THREE.Vector3(p.x + Math.cos(a) * 8, 0, p.z + Math.sin(a) * 8), 6);
+    while (done < 3 && t < 30) {
+      const p = c.player().pos, a = Math.random() * 6.283, d = 13 + Math.random() * 8, v = K.clampIn(new THREE.Vector3(p.x + Math.cos(a) * d, 0, p.z + Math.sin(a) * d), 7);
+      if (Math.hypot(v.x - mob.pos.x, v.z - mob.pos.z) < BODY_R + 6) { v.x = -v.x * 0.8; v.z = -v.z * 0.8; } // 不要出現在大鼓腳下
       const ring = K.ring(v.x, v.z, 3.6, 4.6, 0x4fb3ff), fill = K.disc(v.x, v.z, 3.6, 0x4fb3ff); fill.material.opacity = 0.15;
-      const ar = K.arrow(() => v, 1); let ok = false, lit = 0;
-      while (!ok && t < 22) { const dt = yield; t += dt; beat -= dt; lit = Math.max(0, lit - dt);
-        if (beat <= 0) { beat = 1.3; lit = 0.65; mob.beat = 1; mob.beatArm = (mob.beatArm + 1) % 2 || 0; c.sfx.bomb(); c.sfx.tick(); }
-        const on = lit > 0; ring.material.color.setHex(on ? 0xffffff : 0x4fb3ff); fill.material.opacity = on ? 0.5 : 0.15; ring.scale.setScalar(on ? 1 + lit * 0.25 : 1);
+      const ar = K.arrow(() => v, 1); let ok = false, lit = 0, beat = BEAT[done] * 0.9, half = true, flashes = 0;
+      while (!ok && t < 30 && flashes < 4) { const dt = yield; t += dt; beat -= dt; lit = Math.max(0, lit - dt);
+        if (beat <= BEAT[done] / 2 && half) { half = false; mob.beat = 1; mob.beatArm = 1; c.sfx.bomb(); K.wave(mob.pos.x, mob.pos.z, { sp: 15 + done * 2, color: 0xffc93c }); } // 兩拍之間：震波
+        if (beat <= 0) { beat = BEAT[done]; half = true; lit = LIT[done]; flashes++; mob.beat = 1; mob.beatArm = 0; c.sfx.tick(); }
+        const on = lit > 0; ring.material.color.setHex(on ? 0xffffff : 0x4fb3ff); fill.material.opacity = on ? 0.5 : 0.15; ring.scale.setScalar(on ? 1 + lit * 0.25 : 1 - Math.min(1, flashes / 4) * 0.12);
         const q = c.player().pos; if (on && q.y > 1.2 && Math.hypot(q.x - v.x, q.z - v.z) < 4.6) ok = true; }
       K.unarrow(ar);
       if (ok) { done++; ring.material.color.copy(c.colors[0]); fill.material.color.copy(c.colors[0]); fill.material.opacity = 0.6; c.sfx.koGot(); c.burst(v.x, 1, v.z, c.colors[0], 30, 20, 0.5); c.splat(v.x, v.z, 5, 0);
-        K.say(['好節奏！', '再一個！', '咚？咚咚？'][done - 1] || '', 1); mob.squash = 0.6; }
+        K.say(['好節奏！要變快囉！', '再一個！更快——！', '咚？咚咚？'][done - 1] || '', 1); mob.squash = 0.6; }
+      else { c.burst(v.x, 1, v.z, new THREE.Color(0x4fb3ff), 10, 10, 0.3); K.say(K.pick(['太慢了～咚！', '換這裡！']), 0.9); }
       K.after(0.6, () => { K.untele(ring); K.untele(fill); });
-      if (ok) yield* K.wait(0.6);
+      if (ok) yield* K.wait(0.5);
     }
     if (done >= 3) { K.stun(4.4, { dmg: 110, say: '節、節奏全亂了——咚咚…' }); return; }
     yield* K.wait(0.4);
