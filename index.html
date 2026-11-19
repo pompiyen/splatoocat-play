@@ -486,6 +486,31 @@ html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw
 .btn.net-quick { display: inline-flex; align-items: center; gap: 8px; font-size: 18px; background: var(--sun); color: var(--navy); border-color: var(--navy); }
 .btn.net-quick .dice { width: 30px; height: 30px; }
 
+/* 聊天（v53）：房間裡一個小聊天框；對戰中左上的對話鈕打開貼圖列，收到的訊息浮在左邊 */
+.chat { display: grid; gap: 6px; margin: 6px 0; }
+.chat-log { list-style: none; margin: 0; padding: 6px 8px; max-height: 110px; min-height: 34px; overflow-y: auto; background: rgba(255, 255, 255, .07); border-radius: 12px; font-size: 13px; display: grid; gap: 3px; align-content: start; }
+.chat-log li, .h-chatfeed > div { display: flex; align-items: baseline; gap: 6px; overflow-wrap: anywhere; }
+.chat-log b, .h-chatfeed b { color: var(--sun); flex: none; max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-log li.me b, .h-chatfeed .me b { color: #8fe6ff; }
+.chat-log i, .h-chatfeed i { font-style: normal; font-size: 18px; }
+.chat-stk { display: flex; gap: 5px; flex-wrap: wrap; }
+.chat-stk .stk { display: inline-flex; align-items: center; gap: 3px; padding: 4px 8px; border-radius: 12px; border: 2px solid #fff; background: var(--navy); color: var(--cream); font: inherit; font-size: 12px; cursor: pointer; pointer-events: auto; }
+.chat-stk .stk i { font-style: normal; font-size: 20px; line-height: 1; }
+.chat-stk .stk:active { transform: translateY(2px); }
+.chat-row { display: flex; gap: 6px; }
+.chat-row[hidden] { display: none; }
+.chat-row input { flex: 1; min-width: 0; padding: 6px 10px; border-radius: 10px; border: 2px solid #fff; background: var(--cream); color: var(--navy); font: inherit; font-size: 16px; }
+.h-chat { position: absolute; left: calc(var(--gl) + 104px); top: calc(10px + var(--sat)); width: 44px; height: 44px; border-radius: 14px 12px 16px 12px; border: 3px solid #fff; background: var(--navy); box-shadow: var(--pop); pointer-events: auto; display: none; align-items: center; justify-content: center; z-index: 6; padding: 0; }
+.h-chat svg { width: 26px; height: 26px; }
+#app.netmode .h-chat { display: flex; }
+#app.spec .h-chat { display: flex; }
+.h-chatbar { position: absolute; left: var(--gl); top: calc(62px + var(--sat)); max-width: min(420px, calc(100% - 2 * var(--gl))); padding: 8px; border-radius: 14px; background: rgba(27, 20, 48, .88); border: 3px solid #fff; pointer-events: auto; display: grid; gap: 6px; z-index: 6; }
+.h-chatbar[hidden] { display: none; }
+.h-chatfeed { position: absolute; left: var(--gl); top: calc(62px + var(--sat)); display: grid; gap: 4px; pointer-events: none; z-index: 5; max-width: 46%; }
+.h-chatbar:not([hidden]) ~ .h-chatfeed { top: calc(214px + var(--sat)); }
+.h-chatfeed > div { background: rgba(27, 20, 48, .78); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 14px; animation: chatIn .25s ease-out; }
+@keyframes chatIn { from { transform: translateX(-12px); opacity: 0; } }
+
 </style>
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
@@ -919,6 +944,17 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['把房號告訴朋友，等他們加入', 'Tell your friends the room number and wait for them', '部屋番号を友だちに教えて、入ってくるのを待とう', '친구에게 방 번호를 알려 주고 기다려요'],
     ['人到齊就按「開始對戰」', 'When everyone\'s here, press "Start Battle"', 'みんなそろったら「対戦スタート」をおしてね', '모두 모이면 "대전 시작"을 눌러요'],
     ['等房主按開始', 'Waiting for the host to start', 'ホストがスタートするのを待ってるよ', '방장이 시작하길 기다리는 중'],
+    ['聊天', 'Chat', 'チャット', '채팅'],
+    ['說點什麼…', 'Say something…', 'なにか話そう…', '무슨 말이든…'],
+    ['送出', 'Send', '送る', '보내기'],
+    ['嗨！', 'Hi!', 'やあ！', '안녕!'],
+    ['加油！', 'Go go!', 'がんばれ！', '힘내!'],
+    ['好球！', 'Nice shot!', 'ナイス！', '나이스!'],
+    ['好好玩！', 'So fun!', 'たのしい！', '재밌다!'],
+    ['哇！', 'Wow!', 'わあ！', '우와!'],
+    ['哭哭', 'Boo-hoo', 'えーん', '엉엉'],
+    ['再來一場！', 'One more!', 'もう一回！', '한 판 더!'],
+    ['謝謝！', 'Thanks!', 'ありがとう！', '고마워!'],
     ['隨機配對', 'Quick Match', 'ランダムマッチ', '랜덤 매칭'],
     ['正在找房間…', 'Looking for a room…', '部屋をさがしています…', '방을 찾는 중…'],
     ['找不到空房間，等一下再試一次', 'No open room found. Try again in a bit', 'あいている部屋がありません。少ししてからもう一度', '빈 방을 못 찾았어요. 잠시 후 다시 해 봐요'],
@@ -4765,6 +4801,21 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
   const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], g: [0, 2, 3, 5], S: [0, 2], X: [0, 2] }, YAW = { w: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
   const QROOMS = 16; let qT = null, qSent = null;
+  // 聊天（Yen 2026-11-20）：貼圖在每種房間都能用；自由打字只在用房號開的好友房（TEXT_IN = 'friend'），隨機配對房陌生人不能打字給小朋友看。
+  // 訊息放在 presence 的 cm 欄位：最近 15 秒內自己送的幾則，[流水號, 's' 貼圖編號 | 'x' 文字]；收的人用流水號去重。
+  const TEXT_IN = 'friend', CHAT_KEEP = 15, CHAT_MAX = 40; N.STICKERS = 8;
+  let chatSeq = 0, chatOut = [], chatAt = -9, chatPrune = 0, chatSeen = {};
+  N.chatLog = [];
+  N.canType = () => TEXT_IN === 'all' || (TEXT_IN === 'friend' && !N.quick);
+  N.cleanText = (t) => String(t == null ? '' : t).replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, CHAT_MAX);
+  const chatSend = () => send({ cm: chatOut.map((c) => c.d) });
+  N.chat = (type, v) => {
+    if (!room || N.state !== 'lobby' || clock - chatAt < 0.8) return false;
+    if (type === 'x') { if (!N.canType()) return false; v = N.cleanText(v); if (!v) return false; } else if (!(Number.isInteger(v) && v >= 0 && v < N.STICKERS)) return false;
+    chatAt = clock; chatOut.push({ at: clock, d: [++chatSeq, type, v] }); chatOut = chatOut.slice(-4); chatSend();
+    addChat({ me: true, peer: myPeer, type, v }); return true;
+  };
+  const addChat = (c) => { N.chatLog.push(c); if (N.chatLog.length > 40) N.chatLog.shift(); if (N.onChat) N.onChat(c); };
   let api = null, room = null, myPeer = null, clock = 0, joinAt = 0, prof = { n: '', k: 'maomao', w: 'W01' }, sig = '', seq = 0, out = [], sendT = 0, hostT = 0, hostSeen = '', rot = 0, rc = 1, rs = 0, nT = 2, g0 = 0, seen = new Map(), lastSeq = {}, missing = {}, heard = {}, hb = 0, done = new Set(); // done：自己已經打完或離開的場次，房主的狀態還沒更新時不要又被拉進去
   const r2 = (v) => Math.round(v * 100) / 100, r4 = (v) => Math.round(v * 10000) / 10000, G = () => SC.game;
   const changed = () => { if (N.onChange) N.onChange(); };
@@ -4801,6 +4852,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     attach(r, code, 0);
   };
   function attach(r, code, qi) {
+    chatOut = []; chatSeen = {}; N.chatLog = [];
     room = r; N.code = code; N.quick = qi; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
     if (qi) { N.rule = 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; }
     changed();
@@ -4920,7 +4972,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (clock - joinAt < 1.3) return;
       // 進房時間：一定排在已經在房間裡的人後面，不受各台裝置時鐘誤差影響
       let maxJ = 0; for (const p of peers) { const j = p.presence && p.presence.j; if (typeof j === 'number' && j > maxJ) maxJ = j; }
-      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick ? '' : prof.n, k: prof.k, w: prof.w, r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null });
+      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick ? '' : prof.n, k: prof.k, w: prof.w, r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null });
     }
     const list = [];
     for (const p of peers) {
@@ -4937,6 +4989,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!N.isHost && host && (host.q.mx === 'rand' || host.q.mx === 'pick')) N.mix = host.q.mx;
     if (!N.isHost && host && Array.isArray(host.q.as)) { const a = {}; host.q.as.forEach((e) => { if (Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] <= 2) a[e[0]] = e[1]; }); N.asg = a; }
     if (N.isHost && list.length && list.slice(0, 6).map((r) => r.peer).join() !== hostSeen) { hostSeen = list.slice(0, 6).map((r) => r.peer).join(); if (N.state === 'lobby') send(hostPatch()); } // 有人進出：把分隊再告訴大家
+    // 收聊天：每個人的 cm 裡比上次看過還新的訊息
+    list.forEach((r, i) => {
+      const cm = r.q.cm; if (r.isMe || !Array.isArray(cm)) return;
+      const last = chatSeen[r.peer] || 0; let top = last;
+      cm.slice(-4).forEach((d) => {
+        if (!Array.isArray(d) || !Number.isInteger(d[0]) || d[0] <= last) return;
+        top = Math.max(top, d[0]);
+        if (d[1] === 's' && Number.isInteger(d[2]) && d[2] >= 0 && d[2] < N.STICKERS) addChat({ peer: r.peer, i, type: 's', v: d[2] });
+        else if (d[1] === 'x' && N.canType() && typeof d[2] === 'string') { const t = N.cleanText(d[2]); if (t) addChat({ peer: r.peer, i, type: 'x', v: t }); }
+      });
+      chatSeen[r.peer] = top;
+    });
+    if (chatOut.length && clock - chatPrune > 1) { chatPrune = clock; const n0 = chatOut.length; chatOut = chatOut.filter((c) => clock - c.at < CHAT_KEEP); if (chatOut.length !== n0) chatSend(); }
     if (N.quick) { N.rule = 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.qs = N.isHost ? (qT == null ? null : Math.ceil(qT)) : host && Number.isInteger(host.q.qs) && host.q.qs >= 0 && host.q.qs <= 30 ? host.q.qs : null; }
     N.live = h && h.st === 'play' ? h.id : null;
     if (N.quick && N.state === 'lobby' && !N.live && (!m || m.over)) {
@@ -9659,6 +9724,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-ko" id="ko"><div class="ko-lives" id="ko-lives" hidden>${LIVES_HTML}</div><div class="ko-t" id="ko-t"></div><div class="ko-n" id="ko-n"></div></div>
       <button class="h-pause" id="btn-pause" type="button" aria-label="暫停"><i></i><i></i></button>
       <button class="h-full fs-btn" id="btn-full" type="button" aria-label="全螢幕" hidden><i></i></button>
+      <button class="h-chat" id="btn-chat" type="button" aria-label="聊天"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 7h22a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H14l-6 5v-5H5a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3z" fill="#fff"/><circle cx="10" cy="15.5" r="2" fill="#1b1430"/><circle cx="16" cy="15.5" r="2" fill="#1b1430"/><circle cx="22" cy="15.5" r="2" fill="#1b1430"/></svg></button>
+      <div class="h-chatbar" id="h-chatbar" hidden><div class="chat-stk" data-chat="stk"></div><div class="chat-row" data-chat="row"><input type="text" maxlength="40" placeholder="說點什麼…" autocomplete="off" enterkeyhint="send"><button type="button" class="btn small">送出</button></div></div>
+      <div class="h-chatfeed" id="h-chatfeed" aria-live="polite"></div>
     </div>
 
     <div class="menu" id="m-title">
@@ -9704,6 +9772,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             <div id="net-in" hidden>
               <div class="net-row"><span>房號</span><b class="net-code" id="net-room"></b><button type="button" class="btn small" id="net-leave">離開房間</button></div>
               <ul class="net-list" id="net-list"></ul>
+              <div class="chat" id="chat"><ul class="chat-log" id="chat-log" aria-live="polite"></ul><div class="chat-stk" data-chat="stk"></div><div class="chat-row" data-chat="row"><input type="text" maxlength="40" placeholder="說點什麼…" autocomplete="off" enterkeyhint="send" aria-label="聊天"><button type="button" class="btn small">送出</button></div></div>
               <div class="row" id="pick-mix"><button type="button" class="pick ros-pick" data-v="rand" aria-label="隨機分隊"><span class="vs"><svg class="dice" viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="5" width="30" height="30" rx="8" fill="#fff" stroke="#1b1430" stroke-width="3" transform="rotate(-10 20 20)"/><circle cx="13" cy="14" r="3" fill="#ff6b8b"/><circle cx="20" cy="20" r="3" fill="#4ecbff"/><circle cx="27" cy="26" r="3" fill="#ffc93c"/></svg></span><b>隨機分隊</b></button><button type="button" class="pick ros-pick" data-v="pick" aria-label="指定組隊"><span class="vs">${HEAD('a')}<svg class="swap-ic" viewBox="0 0 40 30" aria-hidden="true"><path d="M6 10h26l-6-6M34 20H8l6 6" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>${HEAD('b')}</span><b>指定組隊</b></button></div>
               <div class="row" id="pick-teams" hidden><button type="button" class="pick ros-pick" data-v="3" aria-label="三方對戰"><span class="vs">${HEAD('a')}${HEAD('b')}${HEAD('c')}</span><b>三方對戰</b></button><button type="button" class="pick ros-pick" data-v="2" aria-label="2 對 1"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i>${HEAD('b')}</span><b>2 對 1</b></button></div>
               <div class="row" id="pick-rule"><button type="button" class="pick" data-v="turf"><b>塗地戰</b><small>塗得多的贏</small></button><button type="button" class="pick" data-v="knockout"><b>擊倒戰</b><small>擊倒多的贏</small></button></div>
@@ -9839,7 +9908,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; G().start({ ...sel, demo: false });
     };
     on('btn-start', begin); on('btn-again', begin); on('btn-restart', begin);
-    SC.net.onChange = netSync;
+    // 聊天（Yen 2026-11-20）：貼圖大家都能按；打字只在好友房（SC.net.canType）。別人打的字一律用 textContent 放進畫面
+    const STK = [['👋', '嗨！'], ['👍', '加油！'], ['🎉', '好球！'], ['😄', '好好玩！'], ['😮', '哇！'], ['😭', '哭哭'], ['🔁', '再來一場！'], ['❤️', '謝謝！']];
+    const chatWho = (c) => { if (c.me) return '你'; const L = SC.net.list, i = L.findIndex((r) => r.peer === c.peer), r = L[i]; return (r && r.nick) || '玩家' + ((i >= 0 ? i : c.i || 0) + 1); };
+    const chatLine = (c, tag) => { const el = document.createElement(tag), b = document.createElement('b'), t = document.createElement('span'); b.textContent = chatWho(c); el.className = c.me ? 'me' : '';
+      if (c.type === 's') { const e = document.createElement('i'); e.textContent = STK[c.v][0]; t.textContent = STK[c.v][1]; el.append(b, e, t); } else { t.textContent = c.v; el.append(b, t); } return el; };
+    document.querySelectorAll('[data-chat="stk"]').forEach((box) => STK.forEach(([e, w], i) => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'stk'; bt.setAttribute('aria-label', w); bt.innerHTML = `<i>${e}</i><small>${w}</small>`; bt.addEventListener('click', () => { if (SC.net.chat('s', i)) click(); }); box.append(bt); }));
+    document.querySelectorAll('[data-chat="row"]').forEach((row) => { const inp = row.querySelector('input'), go = () => { if (SC.net.chat('x', inp.value)) { inp.value = ''; click(); } };
+      row.querySelector('button').addEventListener('click', go); inp.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') go(); }); inp.addEventListener('keyup', (e) => e.stopPropagation()); });
+    const chatSync = () => { const can = SC.net.canType(); document.querySelectorAll('[data-chat="row"]').forEach((r) => (r.hidden = !can)); const log = $('chat-log'); log.textContent = ''; SC.net.chatLog.slice(-20).forEach((c) => log.append(chatLine(c, 'li'))); log.scrollTop = log.scrollHeight; };
+    SC.net.onChat = (c) => { chatSync(); if (G().mode === 'net' && !G().demo) { const f = $('h-chatfeed'), el = chatLine(c, 'div'); f.append(el); while (f.children.length > 4) f.firstChild.remove(); setTimeout(() => el.remove(), 6000); } if (!c.me) SC.audio.sfx.ui(); };
+    on('btn-chat', () => { const bar = $('h-chatbar'); bar.hidden = !bar.hidden; chatSync(); });
+    SC.net.onChange = () => { netSync(); chatSync(); };
     SC.net.onBegin = (m) => { sel.mode = 'net'; $('pick-mode').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === 'net')); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; els['m-help'].hidden = true; G().start({ ...sel, mode: 'net', demo: false, net: m }); };
     on('net-quick', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.quickJoin(1); });
     on('net-create', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.create(); });
@@ -9902,6 +9982,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     els.hud.classList.toggle('on', !g.demo); els.ko.classList.remove('on'); els.banner.classList.remove('on'); feedItems.forEach((f) => f.el.remove()); feedItems = [];
     resultsT = -1; last = {}; hurtK = 0; els.tip.classList.remove('on');
     $('h-spec').hidden = true; app.classList.remove('spec');
+    document.getElementById('app').classList.toggle('netmode', g.mode === 'net' && !g.demo); $('h-chatbar').hidden = true; $('h-chatfeed').textContent = '';
     if (g.demo) return;
     const chip = (a) => `<div class="chip" id="chip-${a.id}">${ui.face(a.kind)}</div>`;
     els['roster-a'].innerHTML = g.actors.filter((a) => a.team === 0).map(chip).join(''); els['roster-b'].innerHTML = g.actors.filter((a) => a.team !== 0).sort((a, b) => a.team - b.team).map((a) => chip(a).replace('class="chip"', `class="chip t${a.team}" style="--tc:#${g.colors[a.team].getHexString()}"`)).join('');
