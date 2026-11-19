@@ -434,7 +434,15 @@ button { font: inherit; color: inherit; }
 .h-sp.full { color: #ffe14a; box-shadow: 0 0 0 4px rgba(255, 225, 74, .55), 0 0 22px 6px rgba(255, 225, 74, .7); animation: spReady .7s ease-in-out infinite alternate; }
 .h-sp.full .sp-ring { background: color-mix(in srgb, var(--a) 55%, var(--navy)); }
 @keyframes spReady { from { transform: scale(1); } to { transform: scale(1.12) rotate(-6deg); } }
-.h-sp, .h-pause, .h-full { z-index: 3; } /* 觸控層（.touch）排在 HUD 後面、會蓋住整個畫面；按鈕要浮在它上面，iPad 才按得到（Yen 2026-11-19 絕招按了沒反應） */
+.h-sp, .h-pause, .h-full { z-index: 3; }
+/* 觀戰（Yen 2026-11-19）：上方中間一條「觀戰中・名字」＋換人鈕；沒有自己的角色，所以藏起操作鈕 */
+.h-spec { position: absolute; left: 50%; top: calc(96px + var(--sat)); transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; background: var(--navy); border: 3px solid #fff; border-radius: 20px; box-shadow: var(--pop); color: #fff; font-weight: 800; white-space: nowrap; pointer-events: auto; }
+.h-spec[hidden] { display: none; }
+.h-spec > svg { width: 30px; height: 20px; } .h-spec .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; }
+.h-spec b { max-width: 9em; overflow: hidden; text-overflow: ellipsis; font: 400 18px/1 var(--f-display); }
+.spec-next { width: 44px; height: 44px; border-radius: 14px; border: 3px solid #fff; background: var(--sun); color: var(--navy); padding: 8px; cursor: pointer; touch-action: none; }
+.spec-next svg { width: 100%; height: 100%; }
+#app.spec .touch, #app.spec .h-sp, #app.spec .h-weapons, #app.spec .h-cross { display: none !important; } /* 觸控層（.touch）排在 HUD 後面、會蓋住整個畫面；按鈕要浮在它上面，iPad 才按得到（Yen 2026-11-19 絕招按了沒反應） */
 .is-touch .h-sp { left: auto; right: calc(232 * var(--u) + env(safe-area-inset-right, 0px)); bottom: calc(36 * var(--u) + var(--sab)); width: calc(78 * var(--u)); height: calc(78 * var(--u)); } /* 跟墨水彈鈕用同一個縮放單位，iPad 上才不會疊在一起（Yen 2026-11-18） */
 
 /* 破解方法圖示：回合開始時畫面中間一張大卡，之後魔王血條右邊一個小圖（打到「叮」會跳一下） */
@@ -1965,7 +1973,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const dx = px - cx, dz = pz - cz, L2 = dx * dx + dz * dz || 1;
     for (const k of m.pickets) {
       let on = false;
-      if (fade) { const t = Math.max(-0.15, Math.min(1, ((k.x - cx) * dx + (k.z - cz) * dz) / L2)), ex = cx + dx * t - k.x, ez = cz + dz * t - k.z; const cx2 = k.x - cx, cz2 = k.z - cz; on = ex * ex + ez * ez < 4.2 * 4.2 || cx2 * cx2 + cz2 * cz2 < 10 * 10; } // 擋在中間的、或貼在鏡頭旁邊的
+      if (fade) { const t = Math.max(-0.15, Math.min(1, ((k.x - cx) * dx + (k.z - cz) * dz) / L2)), ex = cx + dx * t - k.x, ez = cz + dz * t - k.z; const cx2 = k.x - cx, cz2 = k.z - cz; on = ex * ex + ez * ez < 4.2 * 4.2 || cx2 * cx2 + cz2 * cz2 < 13 * 13; } // 擋在中間的、或貼在鏡頭旁邊的
       if (on !== k.on) { k.on = on; k.m.material = on ? k.ghost : k.solid; k.m.castShadow = !on && !low0; if (k.c) k.c.material = on ? m.capG : m.capM; }
     }
   };
@@ -3611,17 +3619,18 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl } });
   };
 
-  function begin(h, list) {
-    const mine = h.pl.find((e) => e[0] === myPeer); nT = h.n >= 3 && h.n <= 6 ? h.n : 2; g0 = mine[1];
+  // spec：比賽開打後才進房的人（Yen 2026-11-19）只看不打，從房主那隊的角度看，不送任何資料
+  function begin(h, list, spec) {
+    const mine = spec ? null : h.pl.find((e) => e[0] === myPeer); nT = h.n >= 3 && h.n <= 6 ? h.n : 2; g0 = mine ? mine[1] : 0;
     // 兩隊、三隊：把場地轉到自己的出生台在左邊。四隊以上不轉（出生台不是平均分開），改由場地把隊伍編號換成自己這台的（world.teamOffset）
     rot = nT >= 4 ? 0 : (-g0 * 2 * PI) / nT; rc = Math.cos(rot); rs = nT === 2 ? 0 : Math.sin(rot); if (nT === 2 && g0) rc = -1; // 兩隊時剛好轉 180 度，用 -1 免得小數誤差
     const pal = SC.PALETTES[Math.abs(h.pal | 0) % SC.PALETTES.length], P = h.fp ? { a: pal.b, b: pal.a, c: pal.c } : pal, cols = toLocal(SC.teamInks(P, 6).slice(0, Math.max(nT, 3)).concat(SC.teamInks(P, 6).slice(Math.max(nT, 3))));
     const players = h.pl.map((e, idx) => {
       const r = list.find((x) => x.peer === e[0]);
       // 開打那一刻剛好沒收到某人的資料（公開中繼站可能漏訊息）也要把他算進來，不然整場都看不到他（Yen 2026-11-19：各玩各的）
-      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: e[0] === myPeer, gone: false };
+      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e[0] === myPeer, gone: false };
     });
-    N.match = { id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null };
+    N.match = { id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
     if (N.onBegin) N.onBegin(N.match);
   }
@@ -3675,7 +3684,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     N.live = h && h.st === 'play' ? h.id : null;
     const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer]).join('|') + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + (m ? m.id + m.over : '');
     if (s2 !== sig) { sig = s2; changed(); }
-    if (h && h.st === 'play' && (!m || m.id !== h.id) && !done.has(h.id) && myPeer && h.pl.some((e) => e[0] === myPeer)) return begin(h, list);
+    if (h && h.st === 'play' && (!m || m.id !== h.id) && !done.has(h.id) && myPeer) {
+      if (h.pl.some((e) => e[0] === myPeer)) return begin(h, list);
+      if (N.state === 'lobby' && !m) return begin(h, list, true); // 晚進來：直接觀戰
+    }
     const g = G(); if (!m || m.over || g.mode !== 'net') return;
 
     // 這場的裁判：名單裡排最前面、還在送資料的人
@@ -3688,9 +3700,9 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     }
     N.referee = !!ref && ref.isMe;
 
-    // 送出自己的狀態與最近的事件
+    // 送出自己的狀態與最近的事件（觀戰的人不送）
     sendT -= dt;
-    if (sendT <= 0) {
+    if (sendT <= 0 && !m.spec) {
       sendT = 0.05; out = out.filter((e) => clock - e.at < 0.9);
       const patch = { mi: m.id, hb: (hb = (hb + 1) % 1e6), s: turn(g.netSnap(), S_FLIP, S_YAW, -1).map(r2), e: out.map((e) => e.d) };
       while (patch.e.length && JSON.stringify(patch).length > 3000) patch.e.shift(); // presence 上限 4 KiB
@@ -7100,6 +7112,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const fwd = (yaw, out) => out.set(Math.sin(yaw), 0, Math.cos(yaw));
   const H = (x, z) => W.height(x, z);
   const player = () => G.actors.find((a) => a.isPlayer);
+  // 觀戰（Yen 2026-11-19）：沒有自己的角色，鏡頭跟著其中一位玩家；點畫面或按空白鍵換人
+  const watched = () => { if (!G.spec || !G.actors.length) return null; return G.actors[((G.watchI || 0) % G.actors.length + G.actors.length) % G.actors.length]; };
+  const viewer = () => player() || watched();
+  G.watched = watched;
+  G.specNext = (d = 1) => { if (!G.spec) return; const n = G.actors.length; for (let k = 1; k <= n; k++) { const i = (((G.watchI || 0) + d * k) % n + n) % n; if (!G.actors[i].gone) { G.watchI = i; break; } } cam.fp = null; SC.ui.onWatch && SC.ui.onWatch(); };
   const netOn = () => G.mode === 'net';
   const aiD = () => SC.DIFFICULTY[G.demo ? 'hard' : G.opts.difficulty] || SC.DIFFICULTY.normal; // 展示畫面用最強的電腦，看起來比較熱鬧
   G.player = player;
@@ -7152,7 +7169,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     // 對戰場地（Yen 2026-11-17 加到五張）：試玩靶場固定遊樂園，連線用房主選的，其他用選單選的（random＝隨機）
     // 三方對戰（連線 3 人，Yen 2026-11-19）固定用圓形場地的三個出生台版本
     // 四方以上（Yen 2026-11-19）：每人一隊，最多 6 隊，都在時鐘廣場
-    G.teams = net && net.teams >= 3 ? Math.min(6, net.teams) : 2;
+    G.teams = net && net.teams >= 3 ? Math.min(6, net.teams) : 2; G.spec = !!(net && net.spec); G.watchI = 0; specFire = true;
     const mapKey = G.mode === 'sandbox' ? 'park' : G.teams >= 3 ? 'round' + G.teams : net ? W.mapKey(net.map) : W.mapKey(G.opts.map || 'park'); G.map = mapKey;
     const bossMoved = BS.setActive(boss, scene) || off, mapMoved = !boss && W.setMap(mapKey);
     if (!boss) W.teamOffset(net && G.teams >= 4 ? net.off || 0 : 0);
@@ -7322,7 +7339,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const a = (Math.random() - 0.5) * 2 * yawJ, c = Math.cos(a), s = Math.sin(a), x = v.x * c - v.z * s, z = v.x * s + v.z * c;
     v.x = x; v.z = z; v.y += (Math.random() - 0.5) * 2 * pitchJ * v.length(); return v;
   };
-  const near = (a) => { const p = player(); if (!p || G.demo) return 0; const d = p.pos.distanceTo(a.pos || a); return a === p ? 1 : SC.clamp(1.1 - d / 90, 0, 0.7); };
+  const near = (a) => { const p = viewer(); if (!p || G.demo) return 0; const d = p.pos.distanceTo(a.pos || a); return a === p ? 1 : SC.clamp(1.1 - d / 90, 0, 0.7); };
   const paintBoost = (a) => (G.time - a.lastJumpAt < C.JUMP_PAINT_SECONDS ? C.JUMP_PAINT_RADIUS_MULT : 1);
 
   function fireW01(a) {
@@ -7933,6 +7950,13 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   G.netFinish = (res) => { if (netOn() && (G.state === 'play' || G.state === 'countdown')) finish(res); };
 
   // ---------- 玩家與鏡頭 ----------
+  let specFire = true;
+  function spectate(dt) {
+    if ((I.fire && !specFire) || I.jump || I.swap) G.specNext(I.swap < 0 ? -1 : 1); specFire = I.fire;
+    if (I.pause) G.setPaused(true);
+    let w = watched(); if (w && w.gone) { G.specNext(); w = watched(); } if (!w) return;
+    cam.yaw += SC.angDiff(cam.yaw, w.yaw) * Math.min(1, dt * 4); cam.pitch = SC.damp(cam.pitch, SC.clamp(w.pitch * 0.6, -0.6, 0.5) - 0.12, 4, dt);
+  }
   function controlPlayer(p, dt) {
     const ctl = p.ctl;
     cam.yaw -= I.lookX; cam.pitch = SC.clamp(cam.pitch - I.lookY, -1.2, 0.95);
@@ -7969,10 +7993,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   }
 
   function updateCamera(dt) {
-    const p = player(), aspect = camera.aspect;
+    const p = viewer(), aspect = camera.aspect;
     const baseFov = aspect < 1 ? 78 : 60;
     // 狙擊蓄力時放大：一按就先 1.8 倍，蓄滿到 SCOPE_ZOOM 倍；鏡頭移到貓咪頭部，角色不會擋住準星
-    const charging = p && !G.demo && p.alive && p.weapon === 'W03' && p.charge >= 0 && G.state === 'play';
+    const charging = p && p.isPlayer && !G.demo && p.alive && p.weapon === 'W03' && p.charge >= 0 && G.state === 'play';
     const ck = charging ? SC.clamp(p.charge / C.W03.fullCharge, 0, 1) : 0;
     cam.zoom = SC.damp(cam.zoom, charging ? 1.8 + (SCOPE_ZOOM - 1.8) * ck * (2 - ck) : 1, charging ? 14 : 10, dt);
     const scopeK = SC.clamp((cam.zoom - 1) / 0.8, 0, 1);
@@ -8204,7 +8228,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         }
         if (endT > (G.mode === 'boss' ? (G.bossResult && !G.bossResult.fail ? (hug ? 0.7 + HUG.LEN : 3.6) : 1.9) : vic ? VIC_AT + VIC_LEN : VIC_AT + 0.4) && !resultsShown) { resultsShown = true; SC.ui.onResults(); } }
       if (G.state !== 'ended') {
-        I.update(dt); if (p) { if (G.cine) { p.ctl.mx = p.ctl.mz = 0; p.ctl.fire = p.ctl.cat = false; } else controlPlayer(p, dt); }
+        I.update(dt); if (p) { if (G.cine) { p.ctl.mx = p.ctl.mz = 0; p.ctl.fire = p.ctl.cat = false; } else controlPlayer(p, dt); } else if (G.spec) spectate(dt);
         G.actors.forEach((a) => { if (a.ai && a.alive && G.state === 'play') think(a, dt); });
         G.actors.forEach((a) => updateActor(a, dt));
         updateProjectiles(dt); updateBombs(dt);
@@ -8340,6 +8364,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       <canvas class="h-map" id="minimap" width="110" height="62" aria-label="小地圖"></canvas>
       <button class="h-sp" id="sp-btn" type="button" aria-label="絕招"><span class="sp-ring"></span><svg class="sp-ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3l3 13 12-6-7 11 13 3-13 4 7 11-12-6-3 13-3-13-12 6 7-11-13-4 13-3-7-11 12 6z" fill="currentColor" stroke="#1b1430" stroke-width="2.4" stroke-linejoin="round"/><path d="M24 34V14M17 20l7-7 7 7" fill="none" stroke="#1b1430" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><kbd>F</kbd></button>
       <div class="h-feed" id="feed"></div>
+      <div class="h-spec" id="h-spec" hidden><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M2 16Q24-8 46 16 24 40 2 16z" fill="#fff" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="16" r="8" fill="#1b1430"/><circle cx="27" cy="13" r="2.6" fill="#fff"/></svg><span>觀戰中</span><i class="dot" id="spec-dot"></i><b id="spec-name"></b><button type="button" class="spec-next" id="spec-next" aria-label="換人看"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 6l14 10L8 26z" fill="currentColor"/><rect x="23" y="6" width="4" height="20" rx="2" fill="currentColor"/></svg></button></div>
       <div class="h-scope" id="scope"></div>
       <div class="h-cross" id="cross"><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div>
       <div class="h-weapons" id="weapons">
@@ -8542,6 +8567,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     $('pick-rule').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setRule(b.dataset.v); netSync(); } });
     on('btn-resume', () => G().setPaused(false));
     on('btn-pause', () => G().setPaused(true));
+    $('spec-next').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); click(); G().specNext(1); });
     // 絕招鈕：手機直接點；桌機按 F（游標鎖定時點不到這顆鈕）
     els['sp-btn'].addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); SC.input.sp = true; });
     const toMenu = () => { SC.net.quit(); els['m-pause'].hidden = true; els['m-results'].hidden = true; els['m-title'].hidden = false; G().start({ demo: true }); modeSync(); };
@@ -8578,6 +8604,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ui.toggleMute = () => { const m = !SC.audio.muted; SC.audio.setMuted(m); ['btn-mute', 'btn-mute2'].forEach((id) => ($(id).textContent = '音效：' + (m ? '關' : '開'))); };
   ui.onInputMode = () => {};
 
+  ui.onWatch = () => { const g = G(), w = g.watched && g.watched(); $('h-spec').hidden = !g.spec; document.getElementById('app').classList.toggle('spec', !!g.spec); if (!w) return; $('spec-name').textContent = w.name; $('spec-dot').style.background = '#' + g.colors[w.team].getHexString(); els['my-face'].innerHTML = ui.face(w.kind); };
   ui.onStart = () => {
     const g = G(), app = $('app');
     app.style.setProperty('--a', '#' + g.colors[0].getHexString()); app.style.setProperty('--b', '#' + g.colors[1].getHexString()); app.style.setProperty('--c', '#' + g.colors[2].getHexString());
@@ -8585,10 +8612,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const L = SC.world.lim, mw = 110, mh = Math.round((110 * L.z) / L.x); if (els.minimap.height !== mh) { els.minimap.height = mh; mapImg = null; } els.minimap.classList.toggle('round', !!L.r); // 小地圖跟著場地形狀
     els.hud.classList.toggle('on', !g.demo); els.ko.classList.remove('on'); els.banner.classList.remove('on'); feedItems.forEach((f) => f.el.remove()); feedItems = [];
     resultsT = -1; last = {}; hurtK = 0; els.tip.classList.remove('on');
+    $('h-spec').hidden = true; app.classList.remove('spec');
     if (g.demo) return;
     const chip = (a) => `<div class="chip" id="chip-${a.id}">${ui.face(a.kind)}</div>`;
     els['roster-a'].innerHTML = g.actors.filter((a) => a.team === 0).map(chip).join(''); els['roster-b'].innerHTML = g.actors.filter((a) => a.team !== 0).sort((a, b) => a.team - b.team).map((a) => chip(a).replace('class="chip"', `class="chip t${a.team}" style="--tc:#${g.colors[a.team].getHexString()}"`)).join('');
-    els['my-face'].innerHTML = ui.face((g.player() || g.opts).kind); ui.onWeapon(g.opts.weapon);
+    els['my-face'].innerHTML = ui.face((g.player() || g.opts).kind); ui.onWeapon(g.opts.weapon); if (g.spec) ui.onWatch();
     els.hud.classList.toggle('solo', g.mode === 'sandbox'); els.hud.classList.toggle('boss', g.mode === 'boss'); last.timer = null;
     els.lives.classList.remove('intro'); if (g.mode === 'boss') { void els.lives.offsetWidth; els.lives.classList.add('intro'); els.timer.classList.remove('final'); return; }
     if (g.mode === 'net') ui.tip(tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
@@ -8652,7 +8680,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0; setTimeout(() => SC.audio.sfx.win(), 300); SC.audio.music('toy'); return;
     }
     const net = g.mode === 'net'; $('btn-again').textContent = net ? '回房間' : '再來一場'; $('btn-menu').textContent = net ? '離開房間' : '回主選單';
-    els.verdict.textContent = w === 'tie' ? '平手！' : w === 0 ? '勝利！' : '惜敗…'; els.verdict.dataset.r = w === 'tie' ? 'tie' : w === 0 ? 'win' : 'lose';
+    els.verdict.textContent = g.spec ? '比賽結束！' : w === 'tie' ? '平手！' : w === 0 ? '勝利！' : '惜敗…'; els.verdict.dataset.r = g.spec || w === 'tie' ? 'tie' : w === 0 ? 'win' : 'lose';
     const mates = g.actors.filter((a) => a.team === 0), foes = g.actors.filter((a) => a.team !== 0), sum = (l, k) => l.reduce((n, a) => n + a[k], 0), kf = g.koFinal;
     // 結算表（Yen 2026-11-19）：每個人一行，擊倒／被擊倒／助攻／塗地，分數最高的戴皇冠當 MVP
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';'), rows = g.board();
@@ -8715,7 +8743,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       if (k < 1) els['m-results'].classList.remove('done');
     }
     if (g.demo) return;
-    const p = g.player(); if (!p) return;
+    const p = g.player() || (g.watched && g.watched()); if (!p) return;
     const left = Math.max(0, C.ROUND_SECONDS - g.time), secs = Math.ceil(left);
     if (g.mode === 'boss') {
       const b = g.bossMod(), t = Math.floor(b.time);
