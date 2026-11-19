@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><script>window.SC_PUBLIC = true;</script></head><body style="margin:0"><title>漆貓大作戰 SplaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><script>window.SC_PUBLIC = true;</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -515,7 +515,7 @@ html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
   <div id="ui"></div>
-  <div id="boot"><div class="logo"><span>Spla</span><span class="l2">Cat</span></div><div class="boot-sub">正在擠墨水…</div></div>
+  <div id="boot"><div class="logo"><span>Spala</span><span class="l2">Cat</span></div><div class="boot-sub">正在擠墨水…</div></div>
   <div id="fatal" hidden></div>
 </div>
 <script>console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
@@ -672,7 +672,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     // 開機、標題
     ['正在擠墨水…', 'Squeezing the ink…', 'インクをしぼってるよ…', '잉크 짜는 중…'],
     ['漆貓大作戰・網頁試玩版', 'Web Demo', 'ウェブ体験版', '웹 체험판'],
-    ['漆貓大作戰 SplaCat', 'SplaCat', 'SplaCat', 'SplaCat'],
+    ['漆貓大作戰 SpalaCat', 'SpalaCat', 'SpalaCat', 'SpalaCat'],
     ['模式', 'Mode', 'モード', '모드'],
     ['電腦對戰', 'vs Computer', 'CPUと対戦', '컴퓨터 대전'],
     ['三分鐘塗地', '3-min Turf War', '3分間ナワバリ', '3분 땅따먹기'],
@@ -754,10 +754,14 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['噴泉水池', 'the fountain', '噴水', '분수'],
     ['河', 'the river', '川', '강'],
     ['場地每次隨機挑一張。', 'A random stage each time.', 'ステージは毎回ランダム。', '경기장은 매번 랜덤이에요.'],
+    ['場地：貓咪遊樂園，好多層的高台、斜坡和城牆步道，爬到最高的貓窩上面看全場！', 'Stage: Cat Playground. Lots of levels, ramps and wall walkways. Climb to the top cat bed to see everything!', 'ステージ：ネコ遊園地。何段もの台、坂、城壁の道。いちばん上のネコベッドから全体を見わたそう！', '경기장: 고양이 놀이공원. 여러 층의 단, 비탈, 성벽 길이 있어요. 맨 위 고양이 침대에 올라가 전체를 내려다봐요!'],
     ['場地：貓咪遊樂園。', 'Stage: Cat Playground.', 'ステージ：ネコ遊園地。', '경기장: 고양이 놀이공원.'],
     ['場地：甜點廚房，小心巧克力河！', 'Stage: Sweets Kitchen. Watch out for the chocolate river!', 'ステージ：スイーツキッチン。チョコの川に気をつけて！', '경기장: 디저트 주방. 초콜릿 강 조심!'],
+    ['場地：海盜船，兩艘大船隔著大海。爬上船長室、跳下貨艙，走跳板、碼頭或踩礁石過去，小心別掉進海裡！', 'Stage: Pirate Ships. Two big ships across the sea. Climb the captain\'s cabin, drop into the cargo hold, and cross by planks, piers or rocks. Don\'t fall in the water!', 'ステージ：海賊船。海をはさんで大きな船が2そう。船長室に登ったり、船倉に飛びこんだり。板、さん橋、岩をわたって進もう。海に落ちないように！', '경기장: 해적선. 바다를 사이에 둔 큰 배 두 척. 선장실에 올라가고 화물칸에 뛰어들어요. 판자, 부두, 바위를 건너가요. 바다에 빠지지 않게 조심!'],
     ['場地：海盜船，兩艘船隔著大海，走跳板和碼頭過去，小心別掉進海裡！', 'Stage: Pirate Ships. Two ships across the sea. Cross the planks and piers, and don\'t fall in the water!', 'ステージ：海賊船。2そうの船の間は海。板とさん橋をわたってね。海に落ちないように！', '경기장: 해적선. 바다 사이에 배 두 척. 판자와 부두로 건너가요. 바다에 빠지지 마세요!'],
+    ['場地：歡樂遊樂場，是一座大山坡，旋轉木馬在山頂。從山腳往上衝，搶下山頂！', 'Stage: Happy Fun Fair. One big hill with the carousel on top. Run up from the bottom and take the hilltop!', 'ステージ：ハッピー遊園地。大きな坂で、てっぺんにメリーゴーラウンド。ふもとからかけ上がって、てっぺんをうばおう！', '경기장: 즐거운 놀이공원. 커다란 언덕 꼭대기에 회전목마가 있어요. 아래에서 뛰어올라 꼭대기를 차지해요!'],
     ['場地：歡樂遊樂場，有旋轉木馬、高高的雲霄飛車軌道和碰碰車坑。', 'Stage: Happy Fun Fair, with a carousel, a tall roller coaster track and a bumper car pit.', 'ステージ：わくわく遊園地。メリーゴーランド、高いジェットコースターのレール、ゴーカートの池があるよ。', '경기장: 신나는 놀이동산. 회전목마, 높은 롤러코스터 레일, 범퍼카 구덩이가 있어요.'],
+    ['場地：滑板場，橢圓形的大滑板場，外圈一整圈都是可以滑上去的碗邊，還有大碗池和 U 型滑道。', 'Stage: Skate Park. A big oval park with a curved rim all the way around that you can ride up, plus a big bowl and half-pipes.', 'ステージ：スケートパーク。大きなだ円形で、まわり一周がすべれるカーブのかべ。大きなボウルとハーフパイプもあるよ。', '경기장: 스케이트장. 커다란 타원형이고, 바깥 한 바퀴가 올라탈 수 있는 곡면 벽이에요. 큰 볼과 하프파이프도 있어요.'],
     ['場地：滑板場，有大碗池和 U 型滑道，跳上平台居高臨下。', 'Stage: Skate Park, with a big bowl and half-pipes. Jump on the platforms to look down on everyone.', 'ステージ：スケートパーク。大きなボウルとハーフパイプ。台に飛び乗って上からねらおう。', '경기장: 스케이트장. 큰 볼과 하프파이프가 있어요. 높은 곳에 올라가 내려다봐요.'],
     ['場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。', 'Stage: Cat Clock Plaza, a big round stage. A clock tower in the middle, a fountain ring around it with bridges and stepping stones, plus high decks, lookouts and hedges.', 'ステージ：ネコ時計広場。大きくて丸いステージ。まん中に時計台、まわりに噴水。橋や飛び石、高台、見はり台、植えこみもあるよ。', '경기장: 고양이 시계 광장. 크고 둥근 경기장. 가운데 시계탑, 둘레에 분수가 있고 다리, 징검돌, 높은 단, 전망대, 울타리 나무가 있어요.'],
     ['塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。', 'Turf War. Paint the stage in your team\'s color for 3 minutes. The team with more paint wins.', 'ナワバリバトル。3分間でステージを自分のチームの色に塗ろう。たくさん塗ったチームの勝ち。', '땅따먹기 대전. 3분 동안 경기장을 우리 팀 색으로 칠해요. 더 많이 칠한 팀이 이겨요.'],
@@ -1075,7 +1079,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const FONT = { ja: 'Noto+Sans+JP', ko: 'Noto+Sans+KR' }, fontOn = {};
   const setDocLang = () => {
     try {
-      document.documentElement.lang = HTML_LANG[lang]; document.documentElement.dataset.lang = lang; document.title = tr('漆貓大作戰 SplaCat');
+      document.documentElement.lang = HTML_LANG[lang]; document.documentElement.dataset.lang = lang; document.title = tr('漆貓大作戰 SpalaCat');
       if (FONT[lang] && !fontOn[lang] && document.head) { fontOn[lang] = 1; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = `https://fonts.googleapis.com/css2?family=${FONT[lang]}:wght@500;700;900&display=swap`; document.head.append(l); } // 日文、韓文字型選了才載
     } catch (e) {}
   };
@@ -2348,14 +2352,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const world = (SC.world = { prims: [], key: null });
 
   // 只寫 A 隊半場，B 隊半場用點對稱 (x,z) → (-x,-z) 產生。每張場地都有同樣的出生台和斜坡。
-  const BASE = [
-    { t: 'box', x0: -108, x1: -90, z0: -17, z1: 17, h: 6, look: 'base' },
-    { t: 'ramp', x0: -90, x1: -76, z0: -11, z1: 11, h0: 6, h1: 0, axis: 'x', look: 'base' },
+  // bx：出生台最後面的 x（一般場地 108；放大的場地自己給，Yen 2026-11-20 第 54 版）
+  const baseAt = (bx = 108) => [
+    { t: 'box', x0: -bx, x1: -bx + 18, z0: -17, z1: 17, h: 6, look: 'base' },
+    { t: 'ramp', x0: -bx + 18, x1: -bx + 32, z0: -11, z1: 11, h0: 6, h1: 0, axis: 'x', look: 'base' },
   ];
   const mirror = (p) => p.t === 'cyl' ? { ...p, x: -p.x, z: -p.z, team: 1 }
     : { ...p, x0: -p.x1, x1: -p.x0, z0: -p.z1, z1: -p.z0, h0: p.h1, h1: p.h0, team: 1 };
   const orient = (p) => (p.t === 'obox' || p.t === 'oramp' ? Object.assign(p, { c: Math.cos(p.a), s: Math.sin(p.a) }) : p);
-  const primsOf = (d) => { if (d.gen) return d.gen(d).map(orient); const out = []; BASE.concat(d.half).forEach((p) => { out.push({ ...p, team: 0 }); out.push(mirror(p)); }); d.center.forEach((p) => out.push({ ...p, team: -1 })); return out; };
+  const primsOf = (d) => { if (d.gen) return d.gen(d).map(orient); const out = []; baseAt(d.bx).concat(d.half).forEach((p) => { out.push({ ...p, team: 0 }); out.push(mirror(p)); }); d.center.forEach((p) => out.push({ ...p, team: -1 })); return out; };
 
   // 一般場地：A 隊在左（角度 π）、B 隊在右（角度 0）。圓形場地另外算（見 MAPS.round）。
   const RECT = { lim: { x: C.HX, z: C.HZ, r: 0 }, ang: [Math.PI, 0], baseIn: 90, spawns: [
@@ -2366,9 +2371,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 把座標轉到「這一隊在左邊」的角度看（出生台判定、電腦往前推進用）。回傳 [往前的距離, 側向]
   world.toLocal = (team, x, z) => { const d = Math.PI - (world.ang[team] != null ? world.ang[team] : Math.PI), c = Math.cos(d), s = Math.sin(d); return [x * c - z * s, x * s + z * c]; };
 
+  // 場地外面：圓形（r）、橢圓（e，半軸就是 x、z）或長方形
+  const outOf = (L, x, z, pad = 0) => (L.r ? x * x + z * z > (L.r + pad) * (L.r + pad) : L.e ? (x / (L.x + pad)) ** 2 + (z / (L.z + pad)) ** 2 > 1 : x < -L.x - pad || x > L.x + pad || z < -L.z - pad || z > L.z + pad);
+  world.outOf = outOf;
   world.height = (x, z) => {
     if (world.alt) return world.alt(x, z); // 魔王關卡用自己的高度函式
-    const L = world.lim; if (L.r ? x * x + z * z > L.r * L.r : x < -L.x || x > L.x || z < -L.z || z > L.z) return 60;
+    if (outOf(world.lim, x, z)) return 60;
     let h = world.base ? world.base(x, z) : x > -C.RIVER && x < C.RIVER ? -12 : 0; // 每張場地自己的地形（-12 是水）
     const prims = world.prims;
     for (let i = 0; i < prims.length; i++) {
@@ -2433,35 +2441,66 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // ---------- 五張場地 ----------
   const MAPS = {};
-  // 1. 貓咪遊樂園（原本的場地）
+  // 1. 貓咪遊樂園：Yen 2026-11-20「改為 3D 多層複雜地形」（第 54 版）。
+  // 高度函式沒辦法做上下重疊的樓層（墨水是從上往下看的一張圖），所以改成很多層高台、斜坡、階梯和高架步道疊出來的立體地形：
+  // 北邊三層貓爬架（5 → 10 → 15）接一條 10 高的城牆步道，跨過牛奶河變成高橋，直接衝到對面；
+  // 南邊紙箱階梯（3 → 6）爬上 9 高的貓窩平台，再從長斜坡滑下來；中間有凹下去的球池、坐墊台和兩層中央島。
   MAPS.park = {
-    name: '貓咪遊樂園', water: '牛奶河', vic: { x: -62, z: 40 },
+    name: '貓咪遊樂園', water: '牛奶河', vic: { x: -38, z: 18 }, lim: { x: 124, z: 70 }, bx: 122,
+    tgt: { high: { x: -86, z: 42 } }, // 自由試玩的靶子位置（沒寫的用預設）
+    base: sym((x, z) => {
+      if (x > -12) return -12; // 牛奶河
+      const px = Math.max(-56 - x, x + 34, -44 - z, z + 22); // 球池（x -56～-34、z -44～-22）凹下去 3
+      return -3 * smooth(-px / 2.5);
+    }),
+    tint: (x, z, h) => (h < -4 ? 0xeaf7ff : h < -0.3 ? 0xd8f0ff : 0xffffff),
     half: [
-      { t: 'box', x0: -64, x1: -44, z0: 16, z1: 40, h: 8, look: 'tower' },
-      { t: 'ramp', x0: -60, x1: -48, z0: 0, z1: 16, h0: 0, h1: 8, axis: 'z', look: 'tower' },
-      { t: 'box', x0: -64, x1: -53, z0: 29, z1: 40, h: 15, look: 'tower2' },
-      { t: 'box', x0: -32, x1: -18, z0: -38, z1: -20, h: 5, look: 'cushion' },
-      { t: 'ramp', x0: -46, x1: -32, z0: -35, z1: -23, h0: 0, h1: 5, axis: 'x', look: 'cushion' },
-      { t: 'box', x0: -36, x1: -29, z0: 5, z1: 12, h: 6, look: 'carton' },
-      { t: 'box', x0: -72, x1: -65, z0: -32, z1: -25, h: 6, look: 'carton' },
-      { t: 'box', x0: -24, x1: -17, z0: 22, z1: 29, h: 6, look: 'carton' },
-      { t: 'box', x0: -84, x1: -78, z0: 30, z1: 36, h: 4, look: 'carton' },
-      { t: 'box', x0: -50, x1: -47, z0: -50, z1: -26, h: 3.5, look: 'bolster' },
-      { t: 'cyl', x: -52, z: -10, r: 3.6, h: 6.4, look: 'yarn' },
-      { t: 'cyl', x: -28, z: -52, r: 3.2, h: 5.6, look: 'yarn' },
-      { t: 'cyl', x: -88, z: -44, r: 4, h: 7, look: 'yarn' },
-      { t: 'box', x0: -12, x1: 12, z0: 38, z1: 50, h: 0.6, look: 'bridge' },
+      // 北邊：三層貓爬架（坐墊台 5 → 紫色台 10 → 圓形貓窩 15）
+      { t: 'box', x0: -92, x1: -60, z0: 22, z1: 56, h: 5, look: 'tier1' },
+      { t: 'ramp', x0: -84, x1: -72, z0: 10, z1: 22, h0: 0, h1: 5, axis: 'z', look: 'tier1' },
+      { t: 'ramp', x0: -60, x1: -48, z0: 26, z1: 34, h0: 5, h1: 0, axis: 'x', look: 'tier1' },
+      { t: 'box', x0: -92, x1: -72, z0: 38, z1: 62, h: 10, look: 'tier2' },
+      { t: 'ramp', x0: -72, x1: -62, z0: 40, z1: 48, h0: 10, h1: 5, axis: 'x', look: 'tier2' },
+      { t: 'box', x0: -79, x1: -75, z0: 44, z1: 48, h: 12.5, look: 'tier3' },
+      { t: 'cyl', x: -84, z: 52, r: 5, h: 15, look: 'bed' },
+      // 10 高的城牆步道：從紫色台往河邊走，接到河上的高橋（高橋在 center）
+      { t: 'box', x0: -72, x1: -30, z0: 56, z1: 62, h: 10, look: 'wall' },
+      // 南邊：紙箱階梯（3、6）爬上高架貓窩平台（9），再從長斜坡衝下來
+      { t: 'box', x0: -104, x1: -96, z0: -62, z1: -48, h: 3, look: 'carton' },
+      { t: 'box', x0: -96, x1: -88, z0: -62, z1: -48, h: 6, look: 'carton' },
+      { t: 'box', x0: -88, x1: -68, z0: -64, z1: -44, h: 9, look: 'tier2' },
+      { t: 'ramp', x0: -68, x1: -56, z0: -58, z1: -50, h0: 9, h1: 0, axis: 'x', look: 'tier2' },
+      // 球池旁的坐墊台
+      { t: 'box', x0: -32, x1: -20, z0: -40, z1: -28, h: 5, look: 'cushion' },
+      { t: 'ramp', x0: -32, x1: -20, z0: -28, z1: -18, h0: 5, h1: 0, axis: 'z', look: 'cushion' },
+      // 掩體：紙箱、抱枕、毛線球
+      { t: 'box', x0: -40, x1: -33, z0: 4, z1: 11, h: 6, look: 'carton' },
+      { t: 'box', x0: -26, x1: -19, z0: 24, z1: 31, h: 6, look: 'carton' },
+      { t: 'box', x0: -106, x1: -100, z0: 28, z1: 34, h: 4, look: 'carton' },
+      { t: 'box', x0: -62, x1: -59, z0: -16, z1: 6, h: 3.5, look: 'bolster' },
+      { t: 'cyl', x: -50, z: 16, r: 3.6, h: 6.4, look: 'yarn' },
+      { t: 'cyl', x: -22, z: -8, r: 3.2, h: 5.6, look: 'yarn' },
+      { t: 'cyl', x: -100, z: 48, r: 4, h: 7, look: 'yarn' },
+      { t: 'cyl', x: -50, z: 66, r: 3, h: 5, look: 'yarn' },
+      // 河上的低橋
+      { t: 'box', x0: -12, x1: 12, z0: 34, z1: 44, h: 0.6, look: 'bridge' },
     ],
     center: [
-      { t: 'cyl', x: 0, z: 0, r: 10, h: 1.4, look: 'island' },
-      { t: 'cyl', x: 0, z: 0, r: 2.4, h: 15, look: 'post' },
+      { t: 'cyl', x: 0, z: 0, r: 11, h: 2, look: 'island' },
+      { t: 'cyl', x: 0, z: 0, r: 6.5, h: 5, look: 'island2' },
+      { t: 'cyl', x: 0, z: 0, r: 2.4, h: 16, look: 'post' },
       { t: 'cyl', x: 0, z: 23, r: 4.6, h: 0.8, look: 'pad' },
       { t: 'cyl', x: 0, z: -23, r: 4.6, h: 0.8, look: 'pad' },
+      // 河上的高橋（A 隊的城牆步道過河，到 B 隊那邊用斜坡下來；另一邊點對稱）
+      { t: 'box', x0: -30, x1: 16, z0: 56, z1: 62, h: 10, look: 'wall' },
+      { t: 'ramp', x0: 16, x1: 30, z0: 56, z1: 62, h0: 10, h1: 0, axis: 'x', look: 'wall' },
+      { t: 'box', x0: -16, x1: 30, z0: -62, z1: -56, h: 10, look: 'wall' },
+      { t: 'ramp', x0: -30, x1: -16, z0: -62, z1: -56, h0: 0, h1: 10, axis: 'x', look: 'wall' },
     ],
     sky: [0x3aa0ff, 0xa8e4ff, 0xfff3d6], fog: 0xcdeeff, hemi: [0xeaf6ff, 0xffe9c9],
     river: { color: 0xeaf7ff, rough: 0.06 },
-    look: { base: 0xffffff, tower: 0xb9a5ff, tower2: 0x8f7bea, cushion: 0x8fe3c0, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, post: 0xe9cfa3, pad: 0xffe08a },
-    rough: { carton: 0.85 },
+    look: { base: 0xffffff, tier1: 0x8fe3c0, tier2: 0xb9a5ff, tier3: 0xffb3c7, bed: 0xffb3c7, wall: 0xffd97a, cushion: 0x9be7ff, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, island2: 0xffd0e8, post: 0xe9cfa3, tower: 0xb9a5ff, pad: 0xffe08a },
+    rough: { carton: 0.85, ground: 0.75 },
     ground: (g) => {
       tiles(g, '#f3d9a8', ['#ffefcf', '#ffe4b3']);
       g.fillStyle = 'rgba(232,186,120,0.6)';
@@ -2478,6 +2517,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const tape = new THREE.Mesh(new THREE.BoxGeometry(w + 0.06, 0.9, d * 0.22), tm); tape.position.set(0, p.h - 1.4, 0); m.add(tape);
         const tape2 = new THREE.Mesh(new THREE.BoxGeometry(w * 0.22, 0.9, d + 0.06), tm); tape2.position.set(0, p.h - 1.4, 0); m.add(tape2);
       },
+      tier1: (p, k) => { if (p.t === 'ramp') return k.ramp(p); k.paws(k.box(p, { r: 1.4 }), p, 0x5fc49c); },
+      tier2: (p, k) => { if (p.t === 'ramp') return k.ramp(p); k.paws(k.box(p, { r: 1.4 }), p, 0x8f7bea); },
+      wall: (p, k) => { // 城牆步道和高橋：黃色磚牆、兩邊欄杆、下面一排拱門花紋
+        if (p.t === 'ramp') return k.ramp(p);
+        const m = k.rails(k.box(p, { r: 0.6 }), p, 0xff8fab), w = p.x1 - p.x0, d = p.z1 - p.z0, am = k.plain(0xe0b84f, 0.7);
+        for (let x = -w / 2 + 4; x < w / 2 - 2; x += 7) [-1, 1].forEach((s) => { const a = new THREE.Mesh(new THREE.CircleGeometry(2.2, 16, 0, Math.PI), am); a.position.set(x, 1.6, s * (d / 2 + 0.03)); a.scale.y = 1.4; if (s < 0) a.rotation.y = Math.PI; m.add(a); });
+      },
+      bed: (p, k) => { // 最上層的圓形貓窩：軟軟的一圈
+        k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r - 0.6, 0.9, 10, 36), k.plain(0xfff3f8, 0.8), p.x, p.h + 0.2, p.z); t.rotation.x = Math.PI / 2;
+        k.add(new THREE.SphereGeometry(1, 12, 8), k.plain(0xffd23f, 0.4), p.x + 1.5, p.h + 0.6, p.z - 1);
+      },
       bridge: (p, k) => k.rails(k.box(p, { bottom: -1.6 }), p, 0xff8fab),
       yarn: (p, k) => { // 毛線球
         const cols = [0xff7aa8, 0x6fd3ff, 0xffc94a];
@@ -2489,15 +2539,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       post: (p, k) => { // 中央貓抓柱
         const post = k.add(new THREE.CylinderGeometry(p.r, p.r, p.h + 1, 28), k.mat('post'), p.x, (p.h - 1) / 2, p.z);
         const rope = k.plain(0xcfa66f, 0.9);
-        for (let i = 0; i < 16; i++) { const t = new THREE.Mesh(new THREE.TorusGeometry(p.r + 0.05, 0.28, 6, 24), rope); t.rotation.x = Math.PI / 2; t.position.y = -p.h / 2 + 2.2 + i * 0.62; post.add(t); }
+        for (let i = 0; i < 14; i++) { const t = new THREE.Mesh(new THREE.TorusGeometry(p.r + 0.05, 0.28, 6, 24), rope); t.rotation.x = Math.PI / 2; t.position.y = -p.h / 2 + 5.6 + i * 0.62; post.add(t); }
         const cap = new THREE.Mesh(new THREE.CylinderGeometry(p.r + 1.3, p.r + 1.3, 0.8, 28), k.mat('tower')); cap.position.y = p.h / 2 + 0.2; cap.castShadow = true; post.add(cap);
       },
     },
-    outside: (k) => { // 大草地、巨大積木、氣球、雲
+    outside: (k) => { // 大草地、巨大積木、氣球、雲；球池裡的彩色小球
       k.floor(0x9fe08a);
       const toyCols = [0xff6b8b, 0x4ecbff, 0xffc93c, 0x8b6bff, 0x5fe0a0, 0xff9a4d], rnd = k.rnd;
+      for (const s of [1, -1]) for (let i = 0; i < 46; i++) { // 球池的球（只是裝飾，半顆露出地面）
+        const x = -54 + rnd() * 18, z = -42 + rnd() * 18, b = new THREE.Mesh(new THREE.SphereGeometry(0.75, 10, 8), k.plain(toyCols[i % 6], 0.3)); b.position.set(s * x, -2.6, s * z); k.root.add(b);
+      }
       for (let i = 0; i < 26; i++) {
-        const a = (i / 26) * Math.PI * 2 + rnd() * 0.2, rx = 175 + rnd() * 130, rz = 125 + rnd() * 130, sz = 16 + rnd() * 34, tm = k.plain(toyCols[i % 6], 0.45);
+        const a = (i / 26) * Math.PI * 2 + rnd() * 0.2, rx = 190 + rnd() * 130, rz = 135 + rnd() * 130, sz = 16 + rnd() * 34, tm = k.plain(toyCols[i % 6], 0.45);
         let m;
         if (i % 3 === 0) m = new THREE.Mesh(new THREE.SphereGeometry(sz * 0.6, 24, 16), tm);
         else if (i % 3 === 1) m = new THREE.Mesh(roundedBox(sz, sz, sz, 0, sz * 0.14, sz * 0.05), tm);
@@ -2507,7 +2560,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }
       const stringM = new THREE.MeshBasicMaterial({ color: 0xffffff });
       for (let i = 0; i < 14; i++) {
-        const a = rnd() * 6.283, r = 130 + rnd() * 110, b = new THREE.Mesh(new THREE.SphereGeometry(5 + rnd() * 3, 16, 12), k.plain(toyCols[(i + 2) % 6], 0.18));
+        const a = rnd() * 6.283, r = 140 + rnd() * 110, b = new THREE.Mesh(new THREE.SphereGeometry(5 + rnd() * 3, 16, 12), k.plain(toyCols[(i + 2) % 6], 0.18));
         b.scale.y = 1.2; b.position.set(Math.cos(a) * r * 1.3, 42 + rnd() * 60, Math.sin(a) * r);
         const s = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 22, 4), stringM); s.position.y = -15; b.add(s);
         k.bob(b, 3, 0.6);
@@ -2627,43 +2680,70 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 都是原創設計，沒有照任何遊戲的場地畫。
 
   // 3. 海盜船：兩隊各一艘船，四周都是海。中間三條路：船頭的跳板到寶藏島、上下兩條長碼頭。
-  const hullW = (x) => (x <= -62 ? 25 : x >= -16 ? -1 : 25 * Math.sqrt((x + 16) / -46)); // A 隊船身在 x 的半寬（船頭在 x=-16）
+  // Yen 2026-11-20 第 54 版「放大，結構組成更為複雜但合理有樂趣」：場地 280×160，船變大；
+  // 船上多了船長室（可以爬上屋頂）、兩側舷邊走道和大砲、往下凹的貨艙、救生艇；海裡有踏腳礁石，碼頭上有木箱和漁夫小屋，寶藏島中間是小岩山。
+  const hullW = (x) => (x <= -96 ? 30 : x >= -26 ? -1 : 30 * Math.sqrt((x + 26) / -70)); // A 隊船身在 x 的半寬（船頭在 x=-26）
   MAPS.ship = {
-    name: '海盜船', water: '大海', vic: { x: -74, z: 9 }, holeW: 0,
-    base: sym((x, z) => (Math.abs(z) <= hullW(x) ? 0 : -12)),
-    tint: (x, z, h) => (h < -4 ? 0x2f86c8 : 0xffffff),
+    name: '海盜船', water: '大海', vic: { x: -108, z: 14 }, holeW: 0, lim: { x: 140, z: 80 }, bx: 136,
+    tgt: { sprinkler: { x: -44, z: 12 }, small: { x: -82, z: -14 }, medium: { x: -54, z: -4 }, large: { x: -70, z: 14 }, far: { x: 12, z: -4 }, high: { x: -94, z: -5 } },
+    base: sym((x, z) => (Math.abs(z) > hullW(x) ? -12 : x >= -72 && x <= -60 && Math.abs(z) < 8 ? -3 : 0)),
+    tint: (x, z, h) => (h < -4 ? 0x2f86c8 : h < -1 ? 0xb98a5c : 0xffffff),
     half: [
-      // 船頭的高甲板和往寶藏島的斜跳板
-      { t: 'ramp', x0: -38, x1: -30, z0: -5, z1: 5, h0: 0, h1: 4, axis: 'x', look: 'fore' },
-      { t: 'box', x0: -30, x1: -20, z0: -6, z1: 6, h: 4, look: 'fore' },
-      { t: 'ramp', x0: -20, x1: -10, z0: -3.5, z1: 3.5, h0: 4, h1: 1, axis: 'x', look: 'plank' },
+      // 船長室（7 高，旁邊有木箱階梯可以爬上屋頂），屋頂上立著主桅杆
+      { t: 'box', x0: -98, x1: -84, z0: -9, z1: 9, h: 7, look: 'cabin' },
+      { t: 'box', x0: -84, x1: -80, z0: 3, z1: 9, h: 3.5, look: 'crate' },
+      { t: 'cyl', x: -91, z: 0, r: 2.2, h: 34, look: 'mast' },
+      // 兩側舷邊走道（3 高），走道外側擺大砲
+      { t: 'ramp', x0: -112, x1: -104, z0: 19, z1: 25, h0: 0, h1: 3, axis: 'x', look: 'walk' },
+      { t: 'box', x0: -104, x1: -80, z0: 19, z1: 25, h: 3, look: 'walk' },
+      { t: 'ramp', x0: -80, x1: -74, z0: 19, z1: 25, h0: 3, h1: 0, axis: 'x', look: 'walk' },
+      { t: 'ramp', x0: -112, x1: -104, z0: -25, z1: -19, h0: 0, h1: 3, axis: 'x', look: 'walk' },
+      { t: 'box', x0: -104, x1: -80, z0: -25, z1: -19, h: 3, look: 'walk' },
+      { t: 'ramp', x0: -80, x1: -74, z0: -25, z1: -19, h0: 3, h1: 0, axis: 'x', look: 'walk' },
+      { t: 'box', x0: -100, x1: -94, z0: 22, z1: 25, h: 5.6, look: 'cannon' },
+      { t: 'box', x0: -90, x1: -84, z0: 22, z1: 25, h: 5.6, look: 'cannon' },
+      { t: 'box', x0: -100, x1: -94, z0: -25, z1: -22, h: 5.6, look: 'cannon' },
+      { t: 'box', x0: -90, x1: -84, z0: -25, z1: -22, h: 5.6, look: 'cannon' },
+      // 貨艙（往下凹 3）和裡面的木桶
+      { t: 'cyl', x: -67, z: -3.5, r: 2.2, h: 0.8, y0: -3, look: 'barrel' },
+      { t: 'cyl', x: -64, z: 4, r: 2.2, h: 0.8, y0: -3, look: 'barrel' },
+      // 前桅杆、救生艇、木桶、木箱
+      { t: 'cyl', x: -50, z: 0, r: 1.7, h: 24, look: 'mast2' },
+      { t: 'box', x0: -58, x1: -48, z0: 10, z1: 15, h: 2.8, look: 'boat' },
+      { t: 'box', x0: -58, x1: -48, z0: -15, z1: -10, h: 2.8, look: 'boat' },
+      { t: 'cyl', x: -78, z: 13, r: 2.2, h: 4, look: 'barrel' },
+      { t: 'box', x0: -76, x1: -70, z0: -16, z1: -10, h: 4, look: 'crate' },
+      // 船頭樓（4 高）和往寶藏島的斜跳板
+      { t: 'ramp', x0: -46, x1: -40, z0: -6, z1: 6, h0: 0, h1: 4, axis: 'x', look: 'fore' },
+      { t: 'box', x0: -40, x1: -30, z0: -7, z1: 7, h: 4, look: 'fore' },
+      { t: 'ramp', x0: -30, x1: -17, z0: -3.5, z1: 3.5, h0: 4, h1: 1.2, axis: 'x', look: 'plank' },
       // 船身側邊到上下兩條碼頭的跳板
-      { t: 'box', x0: -50, x1: -44, z0: 18, z1: 41, h: 0.6, look: 'plank' },
-      { t: 'box', x0: -50, x1: -44, z0: -41, z1: -18, h: 0.6, look: 'plank' },
-      // 主桅杆、前桅杆
-      { t: 'cyl', x: -62, z: 0, r: 2.2, h: 28, look: 'mast' },
-      { t: 'cyl', x: -40, z: 0, r: 1.7, h: 21, look: 'mast2' },
-      // 兩側的大砲、木桶、貨箱
-      { t: 'box', x0: -80, x1: -73, z0: 19, z1: 23, h: 2.6, look: 'cannon' },
-      { t: 'box', x0: -80, x1: -73, z0: -23, z1: -19, h: 2.6, look: 'cannon' },
-      { t: 'box', x0: -60, x1: -53, z0: 18, z1: 22, h: 2.6, look: 'cannon' },
-      { t: 'box', x0: -60, x1: -53, z0: -22, z1: -18, h: 2.6, look: 'cannon' },
-      { t: 'cyl', x: -70, z: -7, r: 2.4, h: 4, look: 'barrel' },
-      { t: 'cyl', x: -48, z: 10, r: 2.4, h: 4, look: 'barrel' },
-      { t: 'cyl', x: -30, z: 44, r: 2.2, h: 3.6, look: 'barrel' },
-      { t: 'box', x0: -86, x1: -79, z0: -24, z1: -17, h: 5.5, look: 'crate' },
-      { t: 'box', x0: -52, x1: -46, z0: -13, z1: -7, h: 4, look: 'crate' },
-      { t: 'box', x0: -12, x1: -6, z0: 41, z1: 47, h: 3.4, look: 'crate' },
+      { t: 'box', x0: -66, x1: -58, z0: 18, z1: 54, h: 0.6, look: 'plank' },
+      { t: 'box', x0: -66, x1: -58, z0: -54, z1: -18, h: 0.6, look: 'plank' },
+      // 寶藏島到碼頭之間的踏腳礁石（要連跳）
+      { t: 'cyl', x: -8, z: 25, r: 2.6, h: 1.5, look: 'rock' },
+      { t: 'cyl', x: -12, z: 35, r: 2.6, h: 1.8, look: 'rock' },
+      { t: 'cyl', x: -16, z: 45, r: 2.6, h: 1.5, look: 'rock' },
     ],
     center: [
-      { t: 'cyl', x: 0, z: 0, r: 12, h: 1.2, look: 'island' },
-      { t: 'cyl', x: 0, z: 0, r: 3.2, h: 4.2, look: 'chest' },
-      { t: 'box', x0: -56, x1: 56, z0: 40, z1: 48, h: 0.6, look: 'pier' },
-      { t: 'box', x0: -56, x1: 56, z0: -48, z1: -40, h: 0.6, look: 'pier' },
+      { t: 'cyl', x: 0, z: 0, r: 18, h: 1.2, look: 'island' },
+      { t: 'cyl', x: 0, z: 0, r: 7, h: 4, look: 'hill' },
+      { t: 'cyl', x: 0, z: 0, r: 3.2, h: 7.6, y0: 4, look: 'chest' },
+      { t: 'cyl', x: -10, z: -9, r: 2.6, h: 3.6, look: 'rock' },
+      { t: 'cyl', x: 10, z: 9, r: 2.6, h: 3.6, look: 'rock' },
+      // 上下兩條長碼頭、碼頭上的木箱、碼頭後面的漁夫小屋（可以跳上屋頂）
+      { t: 'box', x0: -84, x1: 84, z0: 54, z1: 62, h: 0.6, look: 'pier' },
+      { t: 'box', x0: -84, x1: 84, z0: -62, z1: -54, h: 0.6, look: 'pier' },
+      { t: 'box', x0: -46, x1: -40, z0: 55, z1: 61, h: 3.4, look: 'crate' },
+      { t: 'box', x0: 40, x1: 46, z0: -61, z1: -55, h: 3.4, look: 'crate' },
+      { t: 'box', x0: 30, x1: 36, z0: 55, z1: 61, h: 3.4, look: 'crate' },
+      { t: 'box', x0: -36, x1: -30, z0: -61, z1: -55, h: 3.4, look: 'crate' },
+      { t: 'box', x0: -9, x1: 9, z0: 62, z1: 73, h: 6, look: 'shack' },
+      { t: 'box', x0: -9, x1: 9, z0: -73, z1: -62, h: 6, look: 'shack' },
     ],
     sky: [0x2f8cff, 0x9fdcff, 0xfff1d0], fog: 0xbfe6ff, hemi: [0xeaf6ff, 0xd9c3a0],
     river: { color: 0x2a9fe0, rough: 0.08 },
-    look: { base: 0xb07a4a, fore: 0xc48a52, plank: 0xd9a46a, mast: 0x8a5a36, mast2: 0x8a5a36, cannon: 0x3a3550, barrel: 0xb57a43, crate: 0xd1a160, island: 0xffe2a0, chest: 0xc77a32, pier: 0xc9955f },
+    look: { base: 0xb07a4a, fore: 0xc48a52, plank: 0xd9a46a, mast: 0x8a5a36, mast2: 0x8a5a36, cannon: 0x3a3550, barrel: 0xb57a43, crate: 0xd1a160, island: 0xffe2a0, chest: 0xc77a32, pier: 0xc9955f, cabin: 0xa86e42, walk: 0xc48a52, boat: 0xffffff, rock: 0x9aa3b5, hill: 0xb7a58a, shack: 0x7fc6e8 },
     rough: { cannon: 0.35, ground: 0.75 },
     ground: (g) => { // 甲板木板
       g.fillStyle = '#d8a468'; g.fillRect(0, 0, 512, 512);
@@ -2691,6 +2771,29 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         for (let s = -w / 2 + 1.5; s < w / 2; s += 1.5) { const g = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.06, d - 0.4), line); g.position.set(s, p.h + 0.02, 0); m.add(g); }
         for (let s = -w / 2 + 3; s < w / 2; s += 8) [-1, 1].forEach((sd) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.8, 9, 10), pile); c.position.set(s, -4, sd * (d / 2 - 0.6)); m.add(c); });
       },
+      cabin: (p, k) => { // 船長室：木頭小屋、亮亮的窗戶、圓門、屋頂欄杆
+        const m = k.box(p, { r: 0.6 }), w = p.x1 - p.x0, d = p.z1 - p.z0, win = k.plain(0xfff1b0, 0.3, { emissive: 0xffd36a, emissiveIntensity: 0.35 }), dark = k.plain(0x5a3a22, 0.7);
+        [-1, 1].forEach((s) => { [-4, 4].forEach((x) => { const g = new THREE.Mesh(new THREE.CircleGeometry(1.1, 16), win); g.position.set(x, p.h - 3, s * (d / 2 + 0.04)); if (s < 0) g.rotation.y = Math.PI; m.add(g); }); });
+        const door = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4, 3), dark); door.position.set(w / 2 + 0.05, 1, 0); m.add(door);
+        k.rails(m, p, 0x6b4426);
+      },
+      walk: (p, k) => { if (p.t === 'ramp') return k.ramp(p); const m = k.box(p, { r: 0.4 }), w = p.x1 - p.x0, d = p.z1 - p.z0, line = k.plain(0x9b6a3f, 0.7); for (let s = -w / 2 + 1.5; s < w / 2; s += 1.5) { const g = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.06, d - 0.4), line); g.position.set(s, p.h + 0.02, 0); m.add(g); } },
+      boat: (p, k) => { // 救生艇：白色小船倒扣在架子上，船底有紅色條紋
+        const w = p.x1 - p.x0, d = p.z1 - p.z0, cx = (p.x0 + p.x1) / 2, cz = (p.z0 + p.z1) / 2;
+        k.add(new THREE.BoxGeometry(w - 1, 1.2, d - 1), k.plain(0x8a5a36, 0.7), cx, 0.2, cz);
+        const hull = k.add(new THREE.CylinderGeometry(d / 2, d / 2, w, 18, 1, false, 0, Math.PI), k.mat('boat'), cx, p.h - d / 2 + 0.2, cz); hull.rotation.z = Math.PI / 2; hull.rotation.x = Math.PI / 2; hull.scale.set(1, 1, 0.9);
+        const band = k.add(new THREE.BoxGeometry(w + 0.1, 0.5, d + 0.05), k.plain(0xff4a5a, 0.4), cx, p.h - d / 2 + 0.4, cz); void band;
+      },
+      rock: (p, k) => { // 礁石：灰色石頭，上面平平的可以站
+        k.cyl(p); const rm = k.mat('rock'); for (let i = 0; i < 3; i++) { const a = i * 2.1 + p.x, r = new THREE.Mesh(new THREE.DodecahedronGeometry(p.r * 0.55, 0), rm); r.position.set(p.x + Math.cos(a) * p.r * 0.55, p.h - 0.4, p.z + Math.sin(a) * p.r * 0.55); r.scale.y = 0.45; r.castShadow = true; k.root.add(r); }
+      },
+      hill: (p, k) => { k.cyl(p); const gm = k.plain(0x6fcf6a, 0.8); for (let i = 0; i < 7; i++) { const a = (i / 7) * 6.283, b = k.add(new THREE.SphereGeometry(1.1, 10, 8), gm, p.x + Math.cos(a) * (p.r - 0.8), p.h + 0.2, p.z + Math.sin(a) * (p.r - 0.8)); b.scale.y = 0.6; } },
+      shack: (p, k) => { // 漁夫小屋：藍色木屋，屋簷是紅白條紋布（平的，站上去不會穿模）
+        const m = k.box(p, { r: 0.5 }), w = p.x1 - p.x0, d = p.z1 - p.z0, front = -Math.sign(p.z0 + p.z1);
+        const aw = new THREE.Mesh(new THREE.BoxGeometry(w + 1.4, 0.4, 2.6), new THREE.MeshStandardMaterial({ map: stripes(['#ff4a5a', '#ffffff'], 10), roughness: 0.6 })); aw.position.set(0, p.h - 1.6, front * (d / 2 + 1.1)); aw.rotation.x = front * 0.25; m.add(aw);
+        const door = new THREE.Mesh(new THREE.BoxGeometry(3, 3.6, 0.2), k.plain(0x5a3a22, 0.7)); door.position.set(0, 0.8, front * (d / 2 + 0.05)); m.add(door);
+        const net = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.25, 6, 16), k.plain(0xffc93c, 0.5)); net.position.set(-w / 2 + 2.5, p.h - 3.4, front * (d / 2 + 0.2)); m.add(net);
+      },
       mast: (p, k) => { // 桅杆＋兩張白帆（帆上有貓掌）＋瞭望台，帆不擋子彈；帆掛在 12 以上，站在甲板上看得到前面
         const pole = k.add(new THREE.CylinderGeometry(p.r * 0.8, p.r, p.h + 1, 16), k.mat(p.look), p.x, (p.h - 1) / 2, p.z);
         const sailTex = canvasTex((g, S) => { g.fillStyle = '#fffaf0'; g.fillRect(0, 0, S, S); g.fillStyle = '#ff6b8b'; g.fillRect(0, S * 0.08, S, S * 0.06); g.fillRect(0, S * 0.86, S, S * 0.06); g.fillStyle = '#1b1430';
@@ -2717,7 +2820,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.15, w * 0.95, 16), k.mat('cannon')); barrel.rotation.z = Math.PI / 2; barrel.rotation.y = Math.PI / 2; barrel.position.set(0, p.h + 0.6, out * 1.2); barrel.castShadow = true; m.add(barrel);
         [-1, 1].forEach((s) => { const wh = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.5, 14), k.plain(0x6b4426, 0.7)); wh.rotation.x = Math.PI / 2; wh.position.set(s * (w / 2 - 1), 0.2, out * (d / 2 + 0.2)); m.add(wh); });
       },
-      barrel: (p, k) => { const b = k.add(new THREE.CylinderGeometry(p.r * 0.92, p.r * 0.92, p.h + 1, 18), k.mat('barrel'), p.x, (p.h - 1) / 2, p.z); const bm = k.plain(0x4a4060, 0.4); [0.22, 0.78].forEach((f) => { const t = new THREE.Mesh(new THREE.TorusGeometry(p.r * 0.95, 0.16, 6, 24), bm); t.rotation.x = Math.PI / 2; t.position.y = -((p.h + 1) / 2) + (p.h + 1) * f; b.add(t); }); },
+      barrel: (p, k) => { const y0 = p.y0 != null ? p.y0 : -1, H = p.h - y0, b = k.add(new THREE.CylinderGeometry(p.r * 0.92, p.r * 0.92, H, 18), k.mat('barrel'), p.x, (p.h + y0) / 2, p.z); const bm = k.plain(0x4a4060, 0.4); [0.22, 0.78].forEach((f) => { const t = new THREE.Mesh(new THREE.TorusGeometry(p.r * 0.95, 0.16, 6, 24), bm); t.rotation.x = Math.PI / 2; t.position.y = -H / 2 + H * f; b.add(t); }); },
       crate: (p, k) => { const m = k.box(p, { r: 0.3 }), w = p.x1 - p.x0, d = p.z1 - p.z0, sm = k.plain(0x9b6a3f, 0.7); [[w + 0.1, 0.5, 0.5, 0, p.h - 0.6], [w + 0.1, 0.5, 0.5, 0, 0.4]].forEach(([a, b, c, x, y]) => { [-1, 1].forEach((s) => { const g = new THREE.Mesh(new THREE.BoxGeometry(a, b, c), sm); g.position.set(x, y, s * (d / 2 - 0.1)); m.add(g); }); }); },
       island: (p, k) => { // 沙灘小島：沙子、兩棵椰子樹（樹不擋人）
         k.cyl(p); const r = k.rnd;
@@ -2727,26 +2830,27 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         });
       },
       chest: (p, k) => { // 寶箱：箱子、圓蓋、金幣
-        const m = k.box({ x0: p.x - p.r, x1: p.x + p.r, z0: p.z - p.r * 0.7, z1: p.z + p.r * 0.7, h: p.h - 1.2, look: 'chest' }, { r: 0.4 });
+        const y0 = p.y0 != null ? p.y0 : -1, m = k.box({ x0: p.x - p.r, x1: p.x + p.r, z0: p.z - p.r * 0.7, z1: p.z + p.r * 0.7, h: p.h - 1.2, look: 'chest' }, { r: 0.4, bottom: y0 });
         const lid = new THREE.Mesh(new THREE.CylinderGeometry(p.r * 0.7, p.r * 0.7, p.r * 2, 16, 1, false, 0, Math.PI), k.mat('chest')); lid.rotation.z = Math.PI / 2; lid.position.y = p.h - 1.2; m.add(lid);
-        const gold = k.plain(0xffcf3a, 0.25, { metalness: 0.5 }); [[0, 0], [1, 0.2], [-1, -0.2], [0.5, -0.5]].forEach(([a, b]) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.2, 14), gold); c.position.set(p.r + 0.6 + a, 0.2, b * 2); c.rotation.x = 0.3; m.add(c); });
-        const band = new THREE.Mesh(new THREE.BoxGeometry(0.5, p.h, p.r * 1.45), gold); band.position.y = p.h / 2 - 0.4; m.add(band);
+        const gold = k.plain(0xffcf3a, 0.25, { metalness: 0.5 }); [[0, 0], [1, 0.2], [-1, -0.2], [0.5, -0.5]].forEach(([a, b]) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.2, 14), gold); c.position.set(p.r + 0.6 + a, y0 + 0.2, b * 2); c.rotation.x = 0.3; m.add(c); });
+        const band = new THREE.Mesh(new THREE.BoxGeometry(0.5, p.h - y0 - 0.6, p.r * 1.45), gold); band.position.y = (p.h + y0) / 2 - 0.4; m.add(band);
       },
     },
     outside: (k) => { // 海、兩艘船的船身、遠方小島、燈塔、海鷗
-      const X = C.HX, Z = C.HZ, sh = new THREE.Shape(); sh.absarc(0, 0, 680, 0, Math.PI * 2, false);
+      const X = k.lim.x, Z = k.lim.z, sh = new THREE.Shape(); sh.absarc(0, 0, 680, 0, Math.PI * 2, false);
       const hole = new THREE.Path(); [[-X - 3, -Z - 3], [X + 3, -Z - 3], [X + 3, Z + 3], [-X - 3, Z + 3]].forEach(([x, z], i) => (i ? hole.lineTo(x, z) : hole.moveTo(x, z))); hole.closePath(); sh.holes.push(hole);
       const sea = new THREE.Mesh(new THREE.ShapeGeometry(sh, 48), k.plain(0x2a9fe0, 0.08)); sea.rotation.x = -Math.PI / 2; sea.position.y = -5.5; k.root.add(sea);
       // 船身：照甲板的形狀往下長到海裡，木頭色，上面一圈欄杆
       const hullM = k.plain(0x8a5a36, 0.7), bandM = k.plain(0xffd36a, 0.4), railM = k.plain(0x6b4426, 0.6);
       [1, -1].forEach((s) => {
-        const pts = []; for (let x = -110; x <= -16; x += 2) pts.push([x, hullW(x) + 0.4]); pts.push([-15.4, 0]); for (let x = -16; x >= -110; x -= 2) pts.push([x, -hullW(x) - 0.4]);
+        const pts = []; for (let x = -142; x <= -26; x += 2) pts.push([x, hullW(x) + 0.4]); pts.push([-25.4, 0]); for (let x = -26; x >= -142; x -= 2) pts.push([x, -hullW(x) - 0.4]);
         const shp = new THREE.Shape(); pts.forEach(([x, z], i) => (i ? shp.lineTo(x * s, z * s) : shp.moveTo(x * s, z * s)));
+        const hold = new THREE.Path(); [[-72, -8], [-60, -8], [-60, 8], [-72, 8]].forEach(([x, z], i) => (i ? hold.lineTo(x * s, z * s) : hold.moveTo(x * s, z * s))); hold.closePath(); shp.holes.push(hold); // 貨艙的洞
         const g = new THREE.ExtrudeGeometry(shp, { depth: 11, bevelEnabled: false }); g.rotateX(Math.PI / 2); g.translate(0, -0.15, 0);
         const hull = new THREE.Mesh(g, hullM); hull.castShadow = hull.receiveShadow = true; k.root.add(hull);
         const g2 = new THREE.ExtrudeGeometry(shp, { depth: 1.2, bevelEnabled: false }); g2.rotateX(Math.PI / 2); g2.translate(0, -3.4, 0); g2.scale(1.004, 1, 1.02);
         k.root.add(new THREE.Mesh(g2, bandM));
-        for (let i = 4; i < pts.length - 4; i += 2) { if (Math.abs(pts[i][0]) > 104 || pts[i][0] > -24) continue; const [x, z] = pts[i]; if (Math.abs(z) > 17.5 && Math.abs(x + 47) < 4) continue; // 跳板的地方不放欄杆
+        for (let i = 4; i < pts.length - 4; i += 2) { if (Math.abs(pts[i][0]) > 138 || pts[i][0] > -32) continue; const [x, z] = pts[i]; if (Math.abs(z) > 16 && Math.abs(x + 62) < 5) continue; // 跳板的地方不放欄杆
           const post = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 1.6, 6), railM); post.position.set(x * s, 0.8, z * s); k.root.add(post); }
       });
       const r = k.rnd;
@@ -2766,43 +2870,56 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
   };
 
-  // 4. 歡樂遊樂場：中央旋轉木馬、上方高架雲霄飛車軌道、下方咖啡杯轉盤、中間凹下去的碰碰車坑、自由落體塔。沒有河。
+  // 4. 歡樂遊樂場：Yen 2026-11-20 第 54 版「放大，形狀為大斜坡」。場地 280×160。
+  // 兩隊公平，所以做成一座大山坡：兩邊出生台在山腳，一路往上爬到 18 高的山頂，旋轉木馬在山頂正中間（搶山頂）。
+  // 北邊雲霄飛車軌道沿著山坡爬到山頂車站；山腰有切進山坡的咖啡杯平台、碰碰車坑、溜滑梯和自由落體塔。
+  const FTOP = 18, fairSl = (x) => FTOP * smooth((-Math.abs(x) + 104) / 78); // 山坡高度：|x| ≥ 104 是 0，|x| ≤ 26 是山頂 18
+  const FPIT = fairSl(-56) - 1; // 碰碰車坑坑底
   MAPS.fair = {
-    name: '歡樂遊樂場', water: '水池', vic: { x: -62, z: 8 }, holeW: 0,
-    base: sym((x, z) => { // 碰碰車坑：凹下去 2.6，邊緣是緩坡
-      const px = Math.abs(x + 26) - 8, pz = Math.abs(z - 7) - 8, out = Math.max(px, pz);
-      return -2.6 * smooth(-out / 2.5);
-    }),
-    tint: (x, z, h) => (h < -0.4 ? 0x9fd8ff : 0xffffff),
+    name: '歡樂遊樂場', water: '水池', vic: { x: -104, z: 22 }, holeW: 0, lim: { x: 140, z: 80 }, bx: 138,
+    tgt: { sprinkler: { x: -70, z: 0 }, small: { x: -60, z: -18 }, medium: { x: -62, z: 10 }, large: { x: -74, z: 20 }, far: { x: 0, z: 30 }, high: { x: -57, z: -61 } },
+    base: sym((x, z) => (x >= -56 && x <= -36 && z >= -4 && z <= 16 ? FPIT : fairSl(x))),
+    tint: (x, z, h) => { const ax = Math.abs(x); if (ax >= 36 && ax <= 56 && (x < 0 ? z >= -4 && z <= 16 : z <= 4 && z >= -16)) return 0x9fd8ff; // 越高越粉紅，看得出是上坡
+      const k = Math.max(0, Math.min(1, h / FTOP)); return ((255) << 16) | ((255 - 40 * k) << 8) | (255 - 22 * k) | 0; },
     half: [
-      // 高架雲霄飛車軌道：爬坡、長長的高架、再滑下來
-      { t: 'ramp', x0: -84, x1: -70, z0: 30, z1: 38, h0: 0, h1: 7, axis: 'x', look: 'track' },
-      { t: 'box', x0: -70, x1: -28, z0: 30, z1: 38, h: 7, look: 'track' },
-      { t: 'ramp', x0: -28, x1: -16, z0: 30, z1: 38, h0: 7, h1: 0, axis: 'x', look: 'track' },
-      // 咖啡杯轉盤和三個大杯子
-      { t: 'cyl', x: -50, z: -32, r: 13, h: 0.8, look: 'teadisc' },
-      { t: 'cyl', x: -55, z: -36, r: 3.6, h: 3.4, look: 'cup' },
-      { t: 'cyl', x: -44, z: -27, r: 3.6, h: 3.4, look: 'cup' },
-      { t: 'cyl', x: -45, z: -40, r: 3.2, h: 3.4, look: 'cup' },
-      // 碰碰車（坑裡的掩體，坑底 -2.6）
-      { t: 'cyl', x: -31, z: 2, r: 2.6, h: -0.4, look: 'bumper' },
-      { t: 'cyl', x: -21, z: 12, r: 2.6, h: -0.4, look: 'bumper' },
-      { t: 'cyl', x: -22, z: 2, r: 2.6, h: -0.4, look: 'bumper' },
-      // 自由落體塔、售票亭、氣球攤
-      { t: 'cyl', x: -84, z: -42, r: 3.4, h: 20, look: 'drop' },
-      { t: 'box', x0: -66, x1: -58, z0: -12, z1: -6, h: 5, look: 'booth' },
-      { t: 'box', x0: -30, x1: -24, z0: -24, z1: -18, h: 4, look: 'booth' },
-      { t: 'cyl', x: -78, z: 46, r: 2.8, h: 3.6, look: 'balloons' },
+      // 雲霄飛車軌道：從山腳沿著北邊爬到山頂的車站（車站在 center）
+      { t: 'ramp', x0: -110, x1: -28, z0: 60, z1: 68, h0: 3, h1: 22, axis: 'x', look: 'track' },
+      // 咖啡杯平台（切進山坡的平台，前面有斜坡上去）和三個大杯子
+      { t: 'box', x0: -90, x1: -66, z0: -56, z1: -32, h: fairSl(-78), look: 'terrace' },
+      { t: 'ramp', x0: -98, x1: -90, z0: -48, z1: -40, h0: 0.2, h1: fairSl(-78), axis: 'x', look: 'terrace' },
+      { t: 'cyl', x: -78, z: -44, r: 10, h: fairSl(-78) + 0.8, look: 'teadisc' },
+      { t: 'cyl', x: -82, z: -48, r: 3.4, h: fairSl(-78) + 4.2, y0: fairSl(-78) + 0.8, look: 'cup' },
+      { t: 'cyl', x: -73, z: -40, r: 3.4, h: fairSl(-78) + 4.2, y0: fairSl(-78) + 0.8, look: 'cup' },
+      { t: 'cyl', x: -74, z: -50, r: 3, h: fairSl(-78) + 4.2, y0: fairSl(-78) + 0.8, look: 'cup' },
+      // 碰碰車坑（在地形裡，x -56～-36、z -4～16）裡的碰碰車
+      { t: 'cyl', x: -50, z: 2, r: 2.6, h: FPIT + 2.2, y0: FPIT, look: 'bumper' },
+      { t: 'cyl', x: -42, z: 10, r: 2.6, h: FPIT + 2.2, y0: FPIT, look: 'bumper' },
+      { t: 'cyl', x: -41, z: 0, r: 2.6, h: FPIT + 2.2, y0: FPIT, look: 'bumper' },
+      // 溜滑梯：從半山腰的高台一路滑到山腳
+      { t: 'box', x0: -62, x1: -52, z0: -66, z1: -56, h: fairSl(-52) + 4, look: 'slideTop' },
+      { t: 'ramp', x0: -96, x1: -62, z0: -64, z1: -58, h0: fairSl(-96) + 0.6, h1: fairSl(-52) + 4, axis: 'x', look: 'slide' },
+      // 自由落體塔、售票亭、氣球攤、棉花糖車、山腰的花圃矮牆
+      { t: 'cyl', x: -108, z: -62, r: 3.4, h: 20, look: 'drop' },
+      { t: 'box', x0: -84, x1: -76, z0: -12, z1: -6, h: fairSl(-80) + 5, look: 'booth' },
+      { t: 'box', x0: -30, x1: -24, z0: -32, z1: -26, h: FTOP + 4, look: 'booth' },
+      { t: 'cyl', x: -96, z: 46, r: 2.8, h: fairSl(-96) + 3.6, look: 'balloons' },
+      { t: 'cyl', x: -64, z: 32, r: 3, h: fairSl(-64) + 4, look: 'candy' },
+      { t: 'box', x0: -48, x1: -44, z0: 28, z1: 44, h: fairSl(-46) + 3, look: 'hedge' },
+      { t: 'box', x0: -84, x1: -80, z0: 14, z1: 26, h: fairSl(-82) + 3, look: 'hedge' },
+      { t: 'box', x0: -22, x1: -16, z0: 22, z1: 28, h: FTOP + 4, look: 'booth' },
     ],
     center: [
-      { t: 'cyl', x: 0, z: 0, r: 13, h: 2.2, look: 'carousel' },
-      { t: 'cyl', x: 0, z: 0, r: 2.6, h: 13, look: 'carpole' },
-      { t: 'cyl', x: 0, z: 46, r: 4.4, h: 0.8, look: 'pad' },
-      { t: 'cyl', x: 0, z: -46, r: 4.4, h: 0.8, look: 'pad' },
+      { t: 'cyl', x: 0, z: 0, r: 14, h: FTOP + 2.2, look: 'carousel' },
+      { t: 'cyl', x: 0, z: 0, r: 2.6, h: FTOP + 13, look: 'carpole' },
+      { t: 'cyl', x: 0, z: 44, r: 4.4, h: FTOP + 0.8, look: 'pad' },
+      { t: 'cyl', x: 0, z: -44, r: 4.4, h: FTOP + 0.8, look: 'pad' },
+      // 山頂兩端的雲霄飛車車站（22 高，可以從山頂跳上去）
+      { t: 'box', x0: -28, x1: 28, z0: 60, z1: 70, h: FTOP + 4, look: 'station' },
+      { t: 'box', x0: -28, x1: 28, z0: -70, z1: -60, h: FTOP + 4, look: 'station' },
     ],
     sky: [0x6d7bff, 0xffb8e0, 0xffe6c2], fog: 0xffe0ef, hemi: [0xfff0fa, 0xffe6d6],
     river: { color: 0x7fd3ff, rough: 0.1 },
-    look: { base: 0xff8fb8, track: 0xff5a7a, teadisc: 0xffe08a, cup: 0x8fd3ff, bumper: 0xffc93c, drop: 0x8b6bff, booth: 0xffffff, balloons: 0xffffff, carousel: 0xffd1e8, carpole: 0xffd23f, pad: 0x9be7d0 },
+    look: { base: 0xff8fb8, track: 0xff5a7a, teadisc: 0xffe08a, cup: 0x8fd3ff, bumper: 0xffc93c, drop: 0x8b6bff, booth: 0xffffff, balloons: 0xffffff, carousel: 0xffd1e8, carpole: 0xffd23f, pad: 0x9be7d0, terrace: 0xc9b5ff, slide: 0xffd23f, slideTop: 0x4ecbff, candy: 0xffc4e0, hedge: 0x5fc46c, station: 0xff8fb8 },
     rough: { track: 0.35, cup: 0.25, bumper: 0.3 },
     ground: (g) => { // 彩色地磚
       const cols = ['#fff3c9', '#ffe1ec', '#dff4ff', '#e6ffe0']; for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) { g.fillStyle = cols[(x + y * 3) % 4]; g.fillRect(x * 64, y * 64, 64, 64); g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 4; g.strokeRect(x * 64 + 2, y * 64 + 2, 60, 60); }
@@ -2822,14 +2939,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const g = new THREE.Group(); g.position.set(p.x, 0, p.z); k.root.add(g);
         const cols = [0x8fd3ff, 0xff9fc0, 0xb7f08a], col = cols[Math.abs(Math.round(p.x * 3 + p.z)) % 3];
         const cm = SC.ink.patch(new THREE.MeshStandardMaterial({ color: col, roughness: 0.25 }));
-        const body = new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r * 0.72, p.h + 1, 24), cm); body.position.y = (p.h - 1) / 2; body.castShadow = body.receiveShadow = true; g.add(body);
+        const y0 = p.y0 != null ? p.y0 : -1, body = new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r * 0.72, p.h - y0, 24), cm); body.position.y = (p.h + y0) / 2; body.castShadow = body.receiveShadow = true; g.add(body);
         const rim = new THREE.Mesh(new THREE.TorusGeometry(p.r, 0.35, 8, 28), k.plain(0xffffff, 0.3)); rim.rotation.x = Math.PI / 2; rim.position.y = p.h; g.add(rim);
-        const hd = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.35, 8, 16, Math.PI * 1.3), cm); hd.position.set(p.r + 0.4, p.h * 0.55, 0); hd.rotation.z = -Math.PI * 0.65; g.add(hd);
+        const hd = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.35, 8, 16, Math.PI * 1.3), cm); hd.position.set(p.r + 0.4, (p.h + y0) / 2 + 0.3, 0); hd.rotation.z = -Math.PI * 0.65; g.add(hd);
         const sp = 0.4 + (Math.abs(p.x) % 3) * 0.2; k.tick((t) => { g.rotation.y = t * sp; });
       },
       teadisc: (p, k) => { k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r, 0.5, 8, 48), k.plain(0xff6b8b, 0.3), p.x, p.h, p.z); t.rotation.x = Math.PI / 2; },
       bumper: (p, k) => { // 碰碰車：圓圓的車身、黑色防撞圈、後面一根天線
-        const y0 = -2.6, hh = p.h - y0, cols = [0xffc93c, 0xff6b8b, 0x4ecbff, 0x5fe0a0], cm = SC.ink.patch(new THREE.MeshStandardMaterial({ color: cols[Math.abs(Math.round(p.x + p.z * 2)) % 4], roughness: 0.3 }));
+        const y0 = p.y0 != null ? p.y0 : -2.6, hh = p.h - y0, cols = [0xffc93c, 0xff6b8b, 0x4ecbff, 0x5fe0a0], cm = SC.ink.patch(new THREE.MeshStandardMaterial({ color: cols[Math.abs(Math.round(p.x + p.z * 2)) % 4], roughness: 0.3 }));
         const body = k.add(new THREE.CylinderGeometry(p.r * 0.9, p.r, hh, 20), cm, p.x, y0 + hh / 2, p.z);
         const ring = k.add(new THREE.TorusGeometry(p.r, 0.45, 8, 24), k.plain(0x2a2540, 0.6), p.x, y0 + 0.5, p.z); ring.rotation.x = Math.PI / 2;
         k.add(new THREE.CylinderGeometry(0.12, 0.12, 6, 6), k.plain(0xdfe6f2, 0.3, { metalness: 0.5 }), p.x - 1, p.h + 3, p.z);
@@ -2852,6 +2969,22 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         k.cyl(p); const cols = [0xff6b8b, 0x4ecbff, 0xffc93c, 0x8b6bff, 0x5fe0a0], sm = new THREE.MeshBasicMaterial({ color: 0xffffff });
         for (let i = 0; i < 7; i++) { const a = (i / 7) * 6.283, b = new THREE.Mesh(new THREE.SphereGeometry(1.4, 12, 10), k.plain(cols[i % 5], 0.2)); b.scale.y = 1.2; b.position.set(p.x + Math.cos(a) * 1.8, p.h + 7 + (i % 3) * 1.2, p.z + Math.sin(a) * 1.8); k.root.add(b);
           const s = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 6, 4), sm); s.position.set(0, -3.6, 0); b.add(s); k.bob(b, 0.4, 1.2); }
+      },
+      terrace: (p, k) => (p.t === 'ramp' ? k.ramp(p) : k.rails(k.box(p, { r: 0.8 }), p, 0xffffff)),
+      station: (p, k) => { // 雲霄飛車車站：粉紅月台、條紋屋簷柱子、停著一台車廂
+        const m = k.box(p, { r: 0.8 }), w = p.x1 - p.x0, d = p.z1 - p.z0, out = Math.sign(p.z0 + p.z1), steel = k.plain(0xdfe6f2, 0.25, { metalness: 0.6 });
+        const car = new THREE.Mesh(roundedBox(10, 4, 2.4, 0, 0.9, 0.3), k.plain(0x4ecbff, 0.3)); car.position.set(0, p.h, out * (d / 2 - 2.6)); m.add(car);
+        [-1, 1].forEach((s) => { const r = new THREE.Mesh(new THREE.BoxGeometry(w, 0.35, 0.45), steel); r.position.set(0, p.h + 0.2, out * (d / 2 - 2.6) + s * 1.8); m.add(r); });
+        for (let x = -w / 2 + 4; x < w / 2; x += 12) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 7, 8), k.plain(0xffd23f, 0.4)); c.position.set(x, p.h + 3.5, out * (d / 2 - 0.6)); m.add(c); }
+        const aw = new THREE.Mesh(new THREE.BoxGeometry(w - 4, 0.5, 4), new THREE.MeshStandardMaterial({ map: stripes(['#ff6b8b', '#ffffff'], 16), roughness: 0.5 })); aw.position.set(0, p.h + 7.2, out * (d / 2 - 1.6)); m.add(aw);
+      },
+      slide: (p, k) => { const m = k.ramp(p), w = p.x1 - p.x0, d = p.z1 - p.z0, L = Math.hypot(w, p.h1 - p.h0), rm = k.plain(0xff6b8b, 0.35); [-1, 1].forEach((s) => { const r = new THREE.Mesh(new THREE.BoxGeometry(L, 1.2, 0.5), rm); r.position.set(0, (p.h0 + p.h1) / 2 + 0.6, s * (d / 2 - 0.25)); r.rotation.z = Math.atan2(p.h1 - p.h0, w); m.add(r); }); },
+      slideTop: (p, k) => k.rails(k.box(p, { r: 0.6 }), p, 0xffd23f),
+      hedge: (p, k) => { const m = k.box(p, { r: 0.8 }), lm = k.mat('hedge'), d = p.z1 - p.z0, w = p.x1 - p.x0, fl = [0xff6b8b, 0xffd23f, 0xffffff]; for (let v = -d / 2 + 1.4; v <= d / 2 - 1.2; v += 2.4) { const b = new THREE.Mesh(new THREE.SphereGeometry(1.3, 10, 8), lm); b.position.set(0, p.h - 0.2, v); b.scale.set(w / 3, 0.7, 1); m.add(b); const f = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 6), k.plain(fl[Math.abs(Math.round(v)) % 3], 0.5)); f.position.set(0.4, p.h + 0.55, v + 0.5); m.add(f); } },
+      candy: (p, k) => { // 棉花糖車：小推車＋一朵大棉花糖
+        k.cyl(p); const top = k.add(new THREE.SphereGeometry(p.r * 0.9, 16, 12), k.plain(0xffd1ec, 0.9), p.x, p.h + 2.2, p.z); top.scale.y = 0.8;
+        k.add(new THREE.CylinderGeometry(0.15, 0.15, 2.6, 6), k.plain(0xffffff, 0.4), p.x, p.h + 0.6, p.z);
+        [-1, 1].forEach((s) => { const wh = k.add(new THREE.TorusGeometry(1, 0.3, 6, 16), k.plain(0x2a2540, 0.6), p.x + s * (p.r - 0.4), p.h - 3.2, p.z + p.r + 0.1); void wh; });
       },
       carousel: (p, k) => { // 旋轉木馬：圓台、會轉的小馬（原創圓圓的小馬）、條紋大傘頂（傘頂不擋子彈）
         k.cyl(p); const spin = new THREE.Group(); spin.position.set(p.x, 0, p.z); k.root.add(spin);
@@ -2899,47 +3032,67 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
   };
 
-  // 5. 滑板場：中央大碗池（凹下去）、U 型半管、靠牆的四分之一管、跳箱、扶手、階梯和平台。沒有河。
-  const halfPipe = (x, z) => (x >= -72 && x <= -34 && z >= 25 && z <= 49 ? 6.5 * smooth((Math.abs(z - 37) - 4.5) / 7.5) : null);
+  // 5. 滑板場：Yen 2026-11-20 第 54 版「放大，形狀為橢圓形」。場地是 280×168 的橢圓，外圈一整圈往上翹的碗邊（像大碗的邊緣，可以滑上去）。
+  // 中央橢圓大碗池＋中間小土丘；北邊 U 型半管、南邊小碗池、跳箱、四面斜坡的金字塔、扶手、階梯、往碗池衝的小跳台、上下兩座觀眾台。
+  const SKA = 140, SKB = 84;
+  const halfPipe = (x, z) => (x >= -94 && x <= -46 && z >= 30 && z <= 58 ? 7 * smooth((Math.abs(z - 44) - 5) / 8) : null);
   MAPS.skate = {
-    name: '滑板場', water: '水池', vic: { x: -60, z: 13 }, holeW: 0,
+    name: '滑板場', water: '水池', vic: { x: -30, z: -16 }, holeW: 0, lim: { x: SKA, z: SKB, e: 1 }, bx: 130,
+    tgt: { sprinkler: { x: -60, z: 0 }, small: { x: -48, z: -24 }, medium: { x: -40, z: 10 }, large: { x: -56, z: 22 }, far: { x: 40, z: 0 }, high: { x: -70, z: 28 } },
     base: sym((x, z) => {
-      const d = Math.hypot(x, z);
-      if (d < 21) return -3.5 * smooth((21 - d) / 8) + bump(x, z, 0, 0, 5, 1.6); // 中央碗池，中間一個小土丘
-      const hp = halfPipe(x, z); if (hp != null) return hp;
-      if (x >= -84 && x <= -26 && z <= -52) return 5 * smooth((-52 - z) / 9); // 靠牆的四分之一管
-      return 0;
+      const bank = 7 * smooth((Math.hypot(x / SKA, z / SKB) - 0.86) / 0.11); // 外圈碗邊
+      const d = Math.hypot(x / 1.3, z); let h = 0;
+      if (d < 30) h = -4 * smooth((30 - d) / 10) + bump(x, z, 0, 0, 7, 2.2); // 中央橢圓大碗池，中間一個小土丘
+      else { const hp = halfPipe(x, z); if (hp != null) h = hp; else { const dm = Math.hypot(x + 64, z + 40); if (dm < 13) h = -3 * smooth((13 - dm) / 6); } } // 南邊小碗池
+      return Math.max(h, bank);
     }),
-    tint: (x, z, h) => { const d = Math.hypot(x, z); if (d < 21) return 0xa8dcff; if (halfPipe(x > 0 ? -x : x, x > 0 ? -z : z) != null) return 0xf2c48a; if (Math.abs(z) >= 52 && Math.abs(x) >= 26 && Math.abs(x) <= 84 && h > 0.05) return 0xffd0e0; return 0xffffff; },
+    tint: (x, z, h) => {
+      const ax = x > 0 ? -x : x, az = x > 0 ? -z : z;
+      if (Math.hypot(x / SKA, z / SKB) > 0.87) return 0xffd0e0;
+      if (Math.hypot(x / 1.3, z) < 30 || Math.hypot(ax + 64, az + 40) < 13) return 0xa8dcff;
+      if (halfPipe(ax, az) != null) return 0xf2c48a; return 0xffffff;
+    },
     half: [
-      // 半管兩邊頂上的平台
-      { t: 'box', x0: -72, x1: -34, z0: 49, z1: 53, h: 6.5, look: 'coping' },
-      { t: 'box', x0: -72, x1: -34, z0: 21, z1: 25, h: 6.5, look: 'coping' },
-      { t: 'ramp', x0: -80, x1: -72, z0: 21, z1: 25, h0: 0, h1: 6.5, axis: 'x', look: 'coping' },
+      // U 型半管兩邊頂上的平台（內側那條有斜坡上去）
+      { t: 'box', x0: -94, x1: -46, z0: 58, z1: 62, h: 7, look: 'coping' },
+      { t: 'box', x0: -94, x1: -46, z0: 26, z1: 30, h: 7, look: 'coping' },
+      { t: 'ramp', x0: -104, x1: -94, z0: 26, z1: 30, h0: 0, h1: 7, axis: 'x', look: 'coping' },
       // 跳箱：兩邊斜坡＋上面平台
-      { t: 'ramp', x0: -62, x1: -54, z0: -22, z1: -12, h0: 0, h1: 3, axis: 'x', look: 'fun' },
-      { t: 'box', x0: -54, x1: -44, z0: -22, z1: -12, h: 3, look: 'fun' },
-      { t: 'ramp', x0: -44, x1: -36, z0: -22, z1: -12, h0: 3, h1: 0, axis: 'x', look: 'fun' },
+      { t: 'ramp', x0: -80, x1: -70, z0: -18, z1: -6, h0: 0, h1: 3.5, axis: 'x', look: 'fun' },
+      { t: 'box', x0: -70, x1: -58, z0: -18, z1: -6, h: 3.5, look: 'fun' },
+      { t: 'ramp', x0: -58, x1: -48, z0: -18, z1: -6, h0: 3.5, h1: 0, axis: 'x', look: 'fun' },
+      // 金字塔：四面都是斜坡
+      { t: 'box', x0: -34, x1: -26, z0: -48, z1: -40, h: 3, look: 'pyr' },
+      { t: 'ramp', x0: -42, x1: -34, z0: -48, z1: -40, h0: 0, h1: 3, axis: 'x', look: 'pyr' },
+      { t: 'ramp', x0: -26, x1: -18, z0: -48, z1: -40, h0: 3, h1: 0, axis: 'x', look: 'pyr' },
+      { t: 'ramp', x0: -34, x1: -26, z0: -56, z1: -48, h0: 0, h1: 3, axis: 'z', look: 'pyr' },
+      { t: 'ramp', x0: -34, x1: -26, z0: -40, z1: -32, h0: 3, h1: 0, axis: 'z', look: 'pyr' },
       // 扶手（可以當掩體、跳上去）
-      { t: 'box', x0: -66, x1: -44, z0: 5, z1: 6, h: 1.5, look: 'rail' },
-      { t: 'box', x0: -30, x1: -22, z0: 28, z1: 29, h: 1.5, look: 'rail' },
+      { t: 'box', x0: -88, x1: -64, z0: 6, z1: 7, h: 1.5, look: 'rail' },
+      { t: 'box', x0: -40, x1: -28, z0: 30, z1: 31, h: 1.5, look: 'rail' },
       // 階梯和平台
-      { t: 'box', x0: -76, x1: -72, z0: -42, z1: -30, h: 1.3, look: 'stair' },
-      { t: 'box', x0: -80, x1: -76, z0: -42, z1: -30, h: 2.6, look: 'stair' },
-      { t: 'box', x0: -88, x1: -80, z0: -42, z1: -30, h: 3.9, look: 'stair' },
+      { t: 'box', x0: -96, x1: -92, z0: -36, z1: -24, h: 1.3, look: 'stair' },
+      { t: 'box', x0: -100, x1: -96, z0: -36, z1: -24, h: 2.6, look: 'stair' },
+      { t: 'box', x0: -110, x1: -100, z0: -36, z1: -24, h: 3.9, look: 'stair' },
       // 往碗池衝的小跳台、交通錐、噴漆牆
-      { t: 'ramp', x0: -32, x1: -24, z0: -4, z1: 4, h0: 0, h1: 2.4, axis: 'x', look: 'kicker' },
-      { t: 'cyl', x: -40, z: 14, r: 1.6, h: 3, look: 'cone' },
-      { t: 'cyl', x: -26, z: -36, r: 1.6, h: 3, look: 'cone' },
-      { t: 'box', x0: -98, x1: -96, z0: 26, z1: 44, h: 7, look: 'wall' },
+      { t: 'ramp', x0: -46, x1: -38, z0: -4, z1: 4, h0: 0, h1: 2.4, axis: 'x', look: 'kicker' },
+      { t: 'cyl', x: -50, z: 18, r: 1.6, h: 3, look: 'cone' },
+      { t: 'cyl', x: -20, z: -30, r: 1.6, h: 3, look: 'cone' },
+      { t: 'cyl', x: -96, z: -8, r: 1.6, h: 3, look: 'cone' },
+      { t: 'box', x0: -26, x1: -24, z0: 44, z1: 60, h: 7, look: 'wall' },
     ],
     center: [
-      { t: 'cyl', x: 0, z: 34, r: 4.4, h: 0.8, look: 'pad' },
-      { t: 'cyl', x: 0, z: -34, r: 4.4, h: 0.8, look: 'pad' },
+      { t: 'cyl', x: 0, z: 44, r: 4.4, h: 0.8, look: 'pad' },
+      { t: 'cyl', x: 0, z: -44, r: 4.4, h: 0.8, look: 'pad' },
+      // 上下兩座觀眾台（4 高，前面有斜坡）
+      { t: 'box', x0: -12, x1: 12, z0: 62, z1: 72, h: 4, look: 'deck' },
+      { t: 'ramp', x0: -12, x1: 12, z0: 54, z1: 62, h0: 0, h1: 4, axis: 'z', look: 'deck' },
+      { t: 'box', x0: -12, x1: 12, z0: -72, z1: -62, h: 4, look: 'deck' },
+      { t: 'ramp', x0: -12, x1: 12, z0: -62, z1: -54, h0: 4, h1: 0, axis: 'z', look: 'deck' },
     ],
     sky: [0x4a6dff, 0xffa8a0, 0xffe0b0], fog: 0xffd8c8, hemi: [0xfff0e8, 0xd8d0ff],
     river: { color: 0x7fd3ff, rough: 0.1 },
-    look: { base: 0x5fe0a0, coping: 0xf2c48a, fun: 0x8b6bff, rail: 0xdfe6f2, stair: 0xe0e0ea, kicker: 0xff9a4d, cone: 0xff7a2a, wall: 0xffffff, pad: 0xffd23f },
+    look: { base: 0x5fe0a0, coping: 0xf2c48a, fun: 0x8b6bff, pyr: 0x4ecbff, rail: 0xdfe6f2, stair: 0xe0e0ea, kicker: 0xff9a4d, cone: 0xff7a2a, wall: 0xffffff, pad: 0xffd23f, deck: 0xff9ebb },
     rough: { rail: 0.25, ground: 0.85 },
     ground: (g) => { // 水泥地＋接縫＋小小的噴漆
       g.fillStyle = '#d9d9e2'; g.fillRect(0, 0, 512, 512); const r = seeded(9);
@@ -2960,6 +3113,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const bar = k.add(new THREE.CylinderGeometry(0.35, 0.35, w, 10), steel, cx, p.h - 0.35, cz); bar.rotation.z = Math.PI / 2;
         for (let x = p.x0 + 1; x < p.x1; x += 5) k.add(new THREE.CylinderGeometry(0.22, 0.22, p.h, 6), steel, x, p.h / 2 - 0.35, cz);
       },
+      deck: (p, k) => { if (p.t === 'ramp') return k.ramp(p); const m = k.rails(k.box(p, { r: 0.6 }), p, 0xdfe6f2), w = p.x1 - p.x0, d = p.z1 - p.z0, back = Math.sign(p.z0 + p.z1), cols = [0xff6b8b, 0x4ecbff, 0xffc93c, 0x8b6bff];
+        for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(roundedBox(2.6, 2, 1.6, 0, 0.5, 0.2), k.plain(cols[i % 4], 0.4)); b.position.set(-w / 2 + 2.5 + i * ((w - 5) / 5), p.h, back * (d / 2 - 2)); m.add(b); } }, // 觀眾台上的彩色小椅子
       stair: (p, k) => { const m = k.box(p, { r: 0.2 }); const e = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, p.z1 - p.z0), k.plain(0xffd23f, 0.4)); e.position.set((p.x1 - p.x0) / 2 - 0.2, p.h + 0.01, 0); m.add(e); },
       cone: (p, k) => { const c = k.add(new THREE.ConeGeometry(p.r, p.h + 0.6, 14), k.mat('cone'), p.x, p.h / 2 - 0.3, p.z); const b = new THREE.Mesh(new THREE.CylinderGeometry(p.r * 0.62, p.r * 0.7, 0.5, 14), k.plain(0xffffff, 0.4)); b.position.y = 0.1; c.add(b); k.add(new THREE.BoxGeometry(p.r * 2.4, 0.3, p.r * 2.4), k.mat('cone'), p.x, 0.15, p.z); },
       wall: (p, k) => { // 噴漆牆：原創的貓咪塗鴉
@@ -3076,13 +3231,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const built = {};
   function build(key) {
     const D = MAPS[key], prims = primsOf(D), root = new THREE.Group(); root.visible = false; scene0.add(root);
-    const lim = D.lim || RECT.lim, ang = D.teams ? teamAng(D.teams) : RECT.ang, spawns = D.teams ? ringSpawns(ang) : RECT.spawns;
+    const lim = D.lim || RECT.lim, ang = D.teams ? teamAng(D.teams) : RECT.ang, bx = D.bx || 108;
+    const spawns = D.teams ? ringSpawns(ang) : [[{ x: -bx + 8, z: -7 }, { x: -bx + 8, z: 7 }], [{ x: bx - 8, z: 7 }, { x: bx - 8, z: -7 }]];
     const mats = {}, ticks = [], rnd = seeded(7);
     const plain = (c, r = 0.5, o) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: r }, o));
     const mat = (look) => mats[look] || (mats[look] = SC.ink.patch(new THREE.MeshStandardMaterial({ color: look === 'lightR' ? 0xff4a5a : D.look[look] != null ? D.look[look] : 0xffffff, roughness: (D.rough && D.rough[look]) || 0.62, metalness: 0 })));
     const add = (geo, m, x = 0, y = 0, z = 0) => { const mesh = new THREE.Mesh(geo, m); mesh.position.set(x, y, z); mesh.castShadow = mesh.receiveShadow = true; root.add(mesh); return mesh; };
     const k = {
-      root, add, mat, plain, rnd, low: low0,
+      root, add, mat, plain, rnd, low: low0, lim,
       tick: (f) => ticks.push(f),
       bob: (m, amp, sp) => { const y0 = m.position.y, ph = rnd() * 6; root.add(m); ticks.push((t) => { m.position.y = y0 + Math.sin(t * sp + ph) * amp; }); },
       box: (p, o = {}) => { const w = p.x1 - p.x0, d = p.z1 - p.z0; return add(roundedBox(w, d, p.h, o.bottom != null ? o.bottom : -1, o.r != null ? o.r : 1.1, o.bevel), mat(p.look), (p.x0 + p.x1) / 2, 0, (p.z0 + p.z1) / 2); },
@@ -3096,6 +3252,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         for (let i = 0; i < pos.count; i++) { const tx = pos.getX(i) / w + 0.5, tz = pos.getZ(i) / d + 0.5, t = p.axis === 'x' ? tx : tz; pos.setY(i, pos.getY(i) > 0 ? p.h0 + (p.h1 - p.h0) * t : -1); }
         g.computeVertexNormals(); return add(g, mat(p.look), (p.x0 + p.x1) / 2, 0, (p.z0 + p.z1) / 2);
       },
+      // 平台上面的貓掌印（多層場地用，讓每一層看起來不一樣）
+      paws: (m, p, col) => { const pm = plain(col, 0.6), w = p.x1 - p.x0, d = p.z1 - p.z0; for (let i = 0; i < Math.min(6, Math.floor((w * d) / 120)); i++) { const g = new THREE.Group(), px = (rnd() - 0.5) * (w - 6), pz = (rnd() - 0.5) * (d - 6); g.position.set(px, p.h + 0.03, pz); g.rotation.y = rnd() * 6.28; m.add(g);
+        const pad = new THREE.Mesh(new THREE.CircleGeometry(1, 14), pm); pad.rotation.x = -Math.PI / 2; pad.scale.set(1, 0.85, 1); g.add(pad); [[-1, -1.2], [-0.35, -1.75], [0.35, -1.75], [1, -1.2]].forEach(([a, b]) => { const t = new THREE.Mesh(new THREE.CircleGeometry(0.36, 10), pm); t.rotation.x = -Math.PI / 2; t.position.set(a, 0, b); g.add(t); }); } return m; },
       rails: (m, p, col) => { const rm = plain(col, 0.4), w = p.x1 - p.x0, d = p.z1 - p.z0; [-1, 1].forEach((s) => { const rail = new THREE.Mesh(new THREE.CapsuleGeometry(0.45, w - 2, 6, 12), rm); rail.rotation.z = Math.PI / 2; rail.position.set(0, p.h + 0.3, s * (d / 2 - 0.5)); rail.castShadow = true; m.add(rail); }); return m; },
       frosting: (p, col) => { const fm = plain(col, 0.35); const t = add(new THREE.TorusGeometry(p.r, 0.55, 10, 48), fm, p.x, p.h - 0.1, p.z); t.rotation.x = Math.PI / 2; for (let i = 0; i < 14; i++) { const a = (i / 14) * 6.283 + p.r, l = 0.8 + ((i * 7) % 5) * 0.25; add(new THREE.CapsuleGeometry(0.42, l, 4, 8), fm, p.x + Math.cos(a) * (p.r + 0.12), p.h - 0.4 - l / 2, p.z + Math.sin(a) * (p.r + 0.12)); } },
       floor: (col, rIn) => {
@@ -3103,6 +3262,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const hw = D.holeW != null ? D.holeW : C.RIVER + 1; // 河流穿出圍欄的地方挖空，看得到水
         const X = lim.x, Z = lim.z, hole = new THREE.Path();
         if (lim.r) hole.absarc(0, 0, lim.r + 1.5, 0, TAU, true); // 圓形場地：挖一個圓（外面的地面網格壓到草地下面）
+        else if (lim.e) hole.absellipse(0, 0, lim.x + 1.5, lim.z + 1.5, 0, TAU, true); // 橢圓形場地
         else if (D.base) { // 有自己地形的場地：整個場地都挖空（地面網格自己有高低和水），河流穿出圍欄的地方再多挖一點
           const pts = hw > 0 ? [[-X, -Z], [-hw, -Z], [-hw, -Z - 3], [hw, -Z - 3], [hw, -Z], [X, -Z], [X, Z], [hw, Z], [hw, Z + 3], [-hw, Z + 3], [-hw, Z], [-X, Z]] : [[-X, -Z], [X, -Z], [X, Z], [-X, Z]];
           pts.forEach(([x, z], i) => (i ? hole.lineTo(x, z) : hole.moveTo(x, z))); hole.closePath();
@@ -3130,7 +3290,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const hemi = new THREE.HemisphereLight(D.hemi[0], D.hemi[1], 1.0); root.add(hemi);
     const sun = new THREE.DirectionalLight(0xfff4e0, 1.55); sun.position.set(-35, 200, 120); sun.target.position.set(0, 0, 0);
     sun.castShadow = true; sun.shadow.mapSize.set(low0 ? 1024 : 2048, low0 ? 1024 : 2048);
-    const sc = sun.shadow.camera, sz = Math.max(95, lim.z + 33); sc.left = -135; sc.right = 135; sc.top = sz; sc.bottom = -sz; sc.near = 20; sc.far = 420;
+    const sc = sun.shadow.camera, sz = Math.max(95, lim.z + 33), sxx = Math.max(135, lim.x + 25); sc.left = -sxx; sc.right = sxx; sc.top = sz; sc.bottom = -sz; sc.near = 20; sc.far = 420;
     sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.35; sun.shadow.radius = 3;
     root.add(sun, sun.target);
 
@@ -3141,7 +3301,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const nx = lim.x * 2, nz = lim.z * 2, g = new THREE.PlaneGeometry(nx, nz, nx, nz); g.rotateX(-Math.PI / 2);
       const pos = g.attributes.position, uv = g.attributes.uv, col = new Float32Array(pos.count * 3), c = new THREE.Color();
       for (let i = 0; i < pos.count; i++) {
-        const x = pos.getX(i), z = pos.getZ(i), h = D.base(x, z), y = lim.r && x * x + z * z > (lim.r + 1.5) * (lim.r + 1.5) ? -3 : h < -4 ? -9 : h; pos.setY(i, y); uv.setXY(i, x, -z);
+        const x = pos.getX(i), z = pos.getZ(i), h = D.base(x, z), y = (lim.r || lim.e) && outOf(lim, x, z, 1.5) ? -3 : h < -4 ? -9 : h; pos.setY(i, y); uv.setXY(i, x, -z);
         c.setHex(D.tint ? D.tint(x, z, h) : 0xffffff); col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
       }
       g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.computeVertexNormals();
@@ -3174,14 +3334,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       pickets.push(pk); };
     let n = 0;
     if (lim.r) { const R2 = lim.r + 2.4, m = Math.round((TAU * R2) / 4.4); for (let i = 0; i < m; i++) place(Math.cos((i / m) * TAU) * R2, Math.sin((i / m) * TAU) * R2, i); } // 圓形場地：一圈木樁
-    else {
-      for (let x = -C.HX - 2; x <= C.HX + 2; x += 4.4) { place(x, -C.HZ - 2.4, n); place(x, C.HZ + 2.4, n + 2); n++; }
-      for (let z = -C.HZ + 2; z <= C.HZ - 2; z += 4.4) { place(-C.HX - 2.4, z, n); place(C.HX + 2.4, z, n + 2); n++; }
+    else if (lim.e) { // 橢圓形場地：沿著橢圓一圈，間隔大約一樣
+      const A = lim.x + 2.4, B = lim.z + 2.4, pts = []; let acc = 0, px = A, pz = 0;
+      for (let i = 1; i <= 2000; i++) { const t = (i / 2000) * TAU, x = Math.cos(t) * A, z = Math.sin(t) * B; acc += Math.hypot(x - px, z - pz); px = x; pz = z; if (acc >= 4.4) { pts.push([x, z]); acc = 0; } }
+      pts.forEach(([x, z], i) => place(x, z, i));
+    } else {
+      const HX = lim.x, HZ = lim.z;
+      for (let x = -HX - 2; x <= HX + 2; x += 4.4) { place(x, -HZ - 2.4, n); place(x, HZ + 2.4, n + 2); n++; }
+      for (let z = -HZ + 2; z <= HZ - 2; z += 4.4) { place(-HX - 2.4, z, n); place(HX + 2.4, z, n + 2); n++; }
     }
 
     D.outside(k);
     { const _s = new THREE.Vector3(); root.traverse((o) => { if (!o.isMesh || !o.castShadow || !o.geometry) return; if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere(); o.getWorldScale(_s); if (o.geometry.boundingSphere.radius * Math.max(_s.x, _s.y, _s.z) < 1.1) o.castShadow = false; }); } // 小東西不投影子，少畫很多次（效能）
-    return (built[key] = { root, prims, base: D.base || null, env, fog: new THREE.Fog(D.fog, 260, 620), rings, ticks, vic: D.vic, lim, ang, pickets, capM, capG, spawns, baseIn: D.baseIn || RECT.baseIn });
+    return (built[key] = { root, prims, base: D.base || null, env, fog: new THREE.Fog(D.fog, 260, 620), rings, ticks, vic: D.vic, lim, ang, pickets, capM, capG, spawns, baseIn: D.baseIn || (D.teams ? RECT.baseIn : bx - 18) });
   }
 
   world.build = (scene, renderer, low) => { scene0 = scene; renderer0 = renderer; low0 = low; world.setMap('park'); };
@@ -8501,7 +8666,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 三方對戰（連線 3 人，Yen 2026-11-19）固定用圓形場地的三個出生台版本
     // 四方以上（Yen 2026-11-19）：每人一隊，最多 6 隊，都在時鐘廣場
     G.teams = net && net.teams >= 3 ? Math.min(6, net.teams) : 2; G.spec = !!(net && net.spec); G.watchI = 0; specFire = true;
-    const mapKey = G.mode === 'sandbox' ? 'park' : G.teams >= 3 ? 'round' + G.teams : net ? W.mapKey(net.map) : W.mapKey(G.opts.map || 'park'); G.map = mapKey;
+    const mapKey = G.teams >= 3 ? 'round' + G.teams : net ? W.mapKey(net.map) : W.mapKey(G.opts.map || 'park'); G.map = mapKey;
     const bossMoved = BS.setActive(boss, scene) || off, mapMoved = !boss && W.setMap(mapKey);
     if (!boss) W.teamOffset(net && G.teams >= 4 ? net.off || 0 : 0);
     if (bossMoved || mapMoved) INK.build(W.height, boss ? 0 : W.lim.x, boss ? 0 : W.lim.z); // 換場地時重算可以塗的格子（圓形場地的格網比較大）
@@ -8560,8 +8725,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // ---------- 自由試玩的靶子 ----------
   function makeTargets() {
     G.targets = SC.TARGETS.list.map((spec, i) => {
-      const m = SC.makeTarget(spec, colors[1]), y = H(spec.x, spec.z); m.mesh.position.set(spec.x, y, spec.z); scene.add(m.mesh);
-      return { id: 't' + i, isTarget: true, spec, team: 1, name: spec.name, pos: new V3(spec.x, y, spec.z), hp: spec.hp, alive: true, respawnAt: 0, hitK: 0, lastSwing: -1, ...m };
+      // 每張場地的靶子位置不一樣（W.MAPS[key].tgt）；沒寫的用預設位置，落在水裡就往旁邊找陸地（Yen 2026-11-20：自由試玩可選場地）
+      let { x, z } = (W.MAPS[W.key].tgt || {})[spec.id] || spec;
+      for (let r = 2; H(x, z) < -3 && r < 40; r += 2) for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2, nx = x + Math.cos(a) * r, nz = z + Math.sin(a) * r, hh = H(nx, nz); if (hh > -3 && hh < 20) { x = nx; z = nz; break; } }
+      const m = SC.makeTarget(spec, colors[1]), y = H(x, z); m.mesh.position.set(x, y, z); scene.add(m.mesh);
+      return { id: 't' + i, isTarget: true, spec, team: 1, name: spec.name, pos: new V3(x, y, z), hp: spec.hp, alive: true, respawnAt: 0, hitK: 0, lastSwing: -1, ...m };
     });
     nextSprayAt = 1; spraySerial = 0;
   }
@@ -9153,9 +9321,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function pickTarget(a) {
     let best = null, bs = -9; const L = W.lim;
     for (let i = 0; i < 16; i++) {
-      const x = SC.rand(-L.x + 6, L.x - 6), z = SC.rand(-L.z + 6, L.z - 6), h = H(x, z); if (h < -3 || h > 9) continue;
+      const x = SC.rand(-L.x + 6, L.x - 6), z = SC.rand(-L.z + 6, L.z - 6), h = H(x, z); if (h < -3 || h > 17) continue; // 多層場地：高台上也會去塗
       const [u, v] = W.toLocal(a.team, x, z); // u：往對手那邊推進的距離
-      if (u > 74 && Math.abs(v) < 24) continue; // 不去堵對手的出生台
+      if (u > W.baseIn - 16 && Math.abs(v) < 24) continue; // 不去堵對手的出生台
       const o = INK.ownerAt(x, z), s = (o === a.team + 1 ? 0.1 : o > 0 ? 1.5 : 1.0) - Math.hypot(x - a.pos.x, z - a.pos.z) * 0.007 + u * 0.0016 + Math.random() * 0.3;
       if (s > bs) { bs = s; best = { x, z }; }
     }
@@ -9732,7 +9900,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     <div class="menu" id="m-title">
       <div class="title-card">
         <div class="logo-wrap">
-          <div class="logo"><span>Spla</span><span class="l2">Cat</span></div>
+          <div class="logo"><span>Spala</span><span class="l2">Cat</span></div>
           <div class="logo-sub">漆貓大作戰・網頁試玩版</div>
           <p class="lede" id="lede"></p>
         </div>
@@ -9830,7 +9998,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       'boss-phase', 'boss-fill', 'boss-pips', 'm-title', 'm-pause', 'm-help', 'm-results', 'verdict', 'res-a', 'res-b', 'res-c', 'res-bar-a', 'res-bar-b', 'res-bar-c', 'res-stats', 'help-list', 'say', 'say-t', 'flash', 'dim', 'inkcover', 'lives', 'ko-lives', 'sp-btn', 'trick-badge', 'trick-card'].forEach((id) => (els[id] = $(id)));
     mapCtx = els.minimap.getContext('2d'); mapImg = null;
 
-    const MAP_LEDE = { random: '場地每次隨機挑一張。', park: '場地：貓咪遊樂園。', candy: '場地：甜點廚房，小心巧克力河！', ship: '場地：海盜船，兩艘船隔著大海，走跳板和碼頭過去，小心別掉進海裡！', fair: '場地：歡樂遊樂場，有旋轉木馬、高高的雲霄飛車軌道和碰碰車坑。', skate: '場地：滑板場，有大碗池和 U 型滑道，跳上平台居高臨下。', round: '場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。' };
+    const MAP_LEDE = { random: '場地每次隨機挑一張。', park: '場地：貓咪遊樂園，好多層的高台、斜坡和城牆步道，爬到最高的貓窩上面看全場！', candy: '場地：甜點廚房，小心巧克力河！', ship: '場地：海盜船，兩艘大船隔著大海。爬上船長室、跳下貨艙，走跳板、碼頭或踩礁石過去，小心別掉進海裡！', fair: '場地：歡樂遊樂場，是一座大山坡，旋轉木馬在山頂。從山腳往上衝，搶下山頂！', skate: '場地：滑板場，橢圓形的大滑板場，外圈一整圈都是可以滑上去的碗邊，還有大碗池和 U 型滑道。', round: '場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。' };
     const LEDE = { versus: () => `${sel.roster === '1v1' ? '1 對 1' : '2 對 2'} 塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。${MAP_LEDE[sel.map] || ''}`,
       sandbox: () => '一個人不限時自由練習。場上有氣球靶和會噴對手墨水的灑水器，打壞了過幾秒會再出現。',
       boss: () => ({ 2: '魔王關卡 2：胖嘟嘟魔王。躲開地上的紅色預告，魔王累到冒星星的時候用力打。身上沾滿墨水就會爆開，打完三個回合就過關。',
@@ -9841,7 +10009,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 場地選單：電腦對戰用自己選的；連線時在房間裡才出現，只有房主能改，其他人看到房主選的
     const mapSync = () => {
       const n = SC.net, net = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', cur = net ? n.map : sel.map;
-      $('map-opt').hidden = !(sel.mode === 'versus' || (net && inRoom && !n.triOn() && !n.quick)); // 三方對戰固定在時鐘廣場
+      $('map-opt').hidden = !(sel.mode === 'versus' || sel.mode === 'sandbox' || (net && inRoom && !n.triOn() && !n.quick)); // 三方對戰固定在時鐘廣場
       $('pick-map').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === cur); b.disabled = net && !n.isHost; });
     };
     // 連線房間畫面。暱稱是別人打的字，一律用 textContent 放進畫面。
@@ -9978,7 +10146,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const g = G(), app = $('app');
     app.style.setProperty('--a', '#' + g.colors[0].getHexString()); app.style.setProperty('--b', '#' + g.colors[1].getHexString()); app.style.setProperty('--c', '#' + g.colors[2].getHexString());
     const tri = g.teams >= 3; els.hud.classList.toggle('tri', tri); els['m-results'].classList.toggle('tri', tri);
-    const L = SC.world.lim, mw = 110, mh = Math.round((110 * L.z) / L.x); if (els.minimap.height !== mh) { els.minimap.height = mh; mapImg = null; } els.minimap.classList.toggle('round', !!L.r); // 小地圖跟著場地形狀
+    const L = SC.world.lim, mw = 110, mh = Math.round((110 * L.z) / L.x); if (els.minimap.height !== mh) { els.minimap.height = mh; mapImg = null; } els.minimap.classList.toggle('round', !!(L.r || L.e)); // 小地圖跟著場地形狀
     els.hud.classList.toggle('on', !g.demo); els.ko.classList.remove('on'); els.banner.classList.remove('on'); feedItems.forEach((f) => f.el.remove()); feedItems = [];
     resultsT = -1; last = {}; hurtK = 0; els.tip.classList.remove('on');
     $('h-spec').hidden = true; app.classList.remove('spec');
@@ -10083,7 +10251,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const rgb = [[250, 240, 222], ...g.colors.map(hex)], sx = (L.x * 2) / mw, sz = (L.z * 2) / mh;
     for (let y = 0; y < mh; y++) for (let x = 0; x < mw; x++) {
       const i = SC.ink.cellIndex(-L.x + (x + 0.5) * sx, -L.z + (y + 0.5) * sz), p = (y * mw + x) * 4, c = i >= 0 && pt[i] ? rgb[own[i]] : null;
-      d[p] = c ? c[0] : 190; d[p + 1] = c ? c[1] : 228; d[p + 2] = c ? c[2] : 250; d[p + 3] = c || !L.r ? 240 : 0; // 圓形場地外面透明
+      d[p] = c ? c[0] : 190; d[p + 1] = c ? c[1] : 228; d[p + 2] = c ? c[2] : 250; d[p + 3] = c || !(L.r || L.e) ? 240 : 0; // 圓形場地外面透明
     }
     mapCtx.putImageData(mapImg, 0, 0);
     const mx = (x) => ((x + L.x) / (L.x * 2)) * mw, my = (z) => ((z + L.z) / (L.z * 2)) * mh;
@@ -10165,7 +10333,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const resize = () => { const w = app.clientWidth, h = app.clientHeight; renderer.setPixelRatio(ratio); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); app.classList.toggle('portrait', h > w); };
     window.addEventListener('resize', resize); window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 
-    SC.world.build(scene, renderer, low); SC.ink.build(SC.world.height); SC.fx.init(scene);
+    SC.world.build(scene, renderer, low); SC.ink.build(SC.world.height, SC.world.lim.x, SC.world.lim.z); SC.fx.init(scene);
     SC.ui.build(); SC.input.init(canvas); SC.game.init(scene, camera, renderer); SC.net.init();
     resize(); SC.game.start({ demo: true });
     document.getElementById('boot').classList.add('done');
