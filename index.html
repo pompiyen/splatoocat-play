@@ -59,7 +59,7 @@ button { font: inherit; color: inherit; }
 .h-score b { font-weight: 400; min-width: 50px; } .h-score #pct-a { text-align: right; color: color-mix(in srgb, var(--a) 55%, #fff); } .h-score #pct-b { color: color-mix(in srgb, var(--b) 55%, #fff); }
 #pct-c, #res-c { display: none; color: color-mix(in srgb, var(--c) 55%, #fff); } .hud.tri #pct-c, .menu.tri #res-c { display: block; } /* 三方對戰：第三隊的分數 */
 .h-bar i.mid { background: var(--c); border-right: 2px solid var(--navy); width: 0; display: none; } .hud.tri .h-bar i.mid, .menu.tri .h-bar i.mid { display: block; }
-#roster-b .chip.t2 { background: var(--c); }
+#roster-b .chip.t2 { background: var(--c); } #roster-b .chip.t3, #roster-b .chip.t4, #roster-b .chip.t5 { background: var(--tc); }
 .h-map.round { border-radius: 50%; background: transparent; }
 .h-bar { position: relative; width: clamp(150px, 26vw, 300px); height: 14px; border-radius: 9px; background: rgba(255, 247, 232, .92); border: 3px solid var(--navy); overflow: hidden; box-shadow: 0 3px 0 var(--navy); }
 .h-bar i { position: absolute; top: 0; bottom: 0; width: 0; transition: width .3s ease; }
@@ -316,7 +316,7 @@ button { font: inherit; color: inherit; }
 .net-msg { margin: 0; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--cream); min-height: 1.5em; }
 .net-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
 .net-list li { display: flex; align-items: center; gap: 8px; background: var(--navy); border-radius: 10px; padding: 4px 8px; border-left: 6px solid var(--dim); font-size: 15px; }
-.net-list li.t0 { border-left-color: var(--sun); } .net-list li.t1 { border-left-color: var(--mint); } .net-list li.t2 { border-left-color: var(--pink); } .net-list li.tr { border-left-color: #fff; }
+.net-list li.t0 { border-left-color: var(--sun); } .net-list li.t1 { border-left-color: var(--mint); } .net-list li.t2 { border-left-color: var(--pink); } .net-list li.t3 { border-left-color: #4e7bff; } .net-list li.t4 { border-left-color: #ff8a14; } .net-list li.t5 { border-left-color: #7fe01a; } .net-list li.tr { border-left-color: #fff; }
 .net-swap { margin-left: 6px; flex: none; width: 40px; height: 34px; border-radius: 10px; border: 3px solid #fff; background: var(--a); color: #fff; font: 900 20px/1 var(--f-body); cursor: pointer; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); }
 .net-swap:active { transform: translateY(2px); box-shadow: none; }
 #pick-mix .dice { width: 32px; height: 32px; } #pick-mix .swap-ic { width: 22px; height: 18px; } .net-list li.wait { opacity: .7; }
@@ -535,6 +535,10 @@ SC.PALETTES = [
 // 玩家在主選單挑的墨水顏色：自己隊用那個顏色，對手用同一組的另一個顏色（Yen 11/14）
 SC.inkPair = (v) => { const h = parseInt(v, 10); if (!(h >= 0)) return null; for (const p of SC.PALETTES) { if (p.a.hex === h) return { a: p.a, b: p.b, c: p.c }; if (p.b.hex === h) return { a: p.b, b: p.a, c: p.c }; } return null; };
 // 三方對戰的第三種顏色：每一組配一個跟這兩色都差很多的顏色（Yen 2026-11-19）
+// 大亂鬥各隊顏色：先用這組的兩色和第三色，再從下面依序補（盡量跟前面差很多）
+SC.INK_ORDER = [0xff2f86, 0x12d6c0, 0xf2d600, 0x2f5bff, 0xff8a14, 0x7fe01a, 0x7b3dff, 0xd62bd0];
+SC.teamInks = (pal, n) => { const all = SC.PALETTES.flatMap((p) => [p.a, p.b]), out = [pal.a, pal.b, pal.c || SC.thirdInk(pal)];
+  for (const h of SC.INK_ORDER) { if (out.length >= n) break; if (!out.some((c) => c.hex === h)) out.push(all.find((c) => c.hex === h)); } return out.slice(0, Math.max(n, 2)); };
 SC.thirdInk = (pal) => { for (const p of SC.PALETTES) if ((p.a.hex === pal.a.hex && p.b.hex === pal.b.hex) || (p.a.hex === pal.b.hex && p.b.hex === pal.a.hex)) return p.c; return SC.PALETTES[0].c; };
 
 // Yen 2026-11-14：電腦太強，調了兩輪。第二輪：把當時的「輕鬆」當成 10 分放到「認真」，「普通」6 分、「輕鬆」3 分。
@@ -876,9 +880,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   // 格網大小跟著場地（圓形大場地比較大，2026-11-19）：IX、IZ 是半寬，ink.build 換場地時重新配置。
   // 貼圖四個通道：R＝A 隊、G＝B 隊、B＝潛墨壓痕、A＝C 隊（三方對戰才用到）
   let IX = C.HX, IZ = C.HZ, W = 0, H = 0, data, owner, paintable, cellH, tex;
-  const ink = (SC.ink = { W, H, counts: [0, 0, 0], total: 1, dirty: false });
+  const ink = (SC.ink = { W, H, counts: [0, 0, 0, 0, 0, 0], total: 1, dirty: false, multi: false });
   const dents = new Set(); // 有壓痕的格子
   const CH = [0, 1, 3]; // 第幾隊用哪個通道
+  // 四隊以上（Yen 2026-11-19 四方以上大亂鬥）：改成 R＝墨水量、G＝哪一隊×40、B＝壓痕；著色器取周圍四格依墨水量混顏色
+  let MULTI = false;
   function alloc(ix, iz) {
     const w = Math.round((ix * 2) / C.CELL), h = Math.round((iz * 2) / C.CELL);
     if (tex && w === W && h === H) { IX = ix; IZ = iz; return; }
@@ -915,6 +921,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ink.uniforms = {
     uInk: { value: tex }, uNoise: { value: noiseTex },
     uColA: { value: new THREE.Color(0xff2f86) }, uColB: { value: new THREE.Color(0x12d6c0) }, uColC: { value: new THREE.Color(0xf2d600) },
+    uMulti: { value: 0 }, uCols: { value: [0, 1, 2, 3, 4, 5].map(() => new THREE.Color()) },
     uInkRect: { value: new THREE.Vector4(-IX, -IZ, 1 / (IX * 2), 1 / (IZ * 2)) },
     uInkTexel: { value: new THREE.Vector2(1 / W, 1 / H) },
   };
@@ -928,7 +935,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         .replace('#include <project_vertex>', '#include <project_vertex>\nvInkW = (modelMatrix * vec4(transformed, 1.0)).xyz; vInkN = normalize(mat3(modelMatrix) * objectNormal);');
       sh.fragmentShader = sh.fragmentShader
         .replace('#include <common>', `#include <common>
-          uniform sampler2D uInk; uniform sampler2D uNoise; uniform vec3 uColA; uniform vec3 uColB; uniform vec3 uColC;
+          uniform sampler2D uInk; uniform sampler2D uNoise; uniform vec3 uColA; uniform vec3 uColB; uniform vec3 uColC; uniform float uMulti; uniform vec3 uCols[6];
+          vec3 inkTeamCol(float g) { float id = floor(g * 255.0 / 40.0 + 0.5); vec3 c = uCols[0]; if (id > 0.5) c = uCols[1]; if (id > 1.5) c = uCols[2]; if (id > 2.5) c = uCols[3]; if (id > 3.5) c = uCols[4]; if (id > 4.5) c = uCols[5]; return c; }
           uniform vec4 uInkRect; uniform vec2 uInkTexel; varying vec3 vInkW; varying vec3 vInkN;`)
         .replace('#include <color_fragment>', `#include <color_fragment>
           float inkUp = smoothstep(0.5, 0.8, vInkN.y);
@@ -939,6 +947,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
           vec4 ik = texture2D(uInk, iuv);
           vec4 ikx = texture2D(uInk, iuv + vec2(uInkTexel.x * 1.5, 0.0));
           vec4 ikz = texture2D(uInk, iuv + vec2(0.0, uInkTexel.y * 1.5));
+          if (uMulti > 0.5) { ik.g = 0.0; ik.a = 0.0; ikx.g = 0.0; ikx.a = 0.0; ikz.g = 0.0; ikz.a = 0.0; } // 多隊：只有 R 是墨水量
           float f0 = max(max(ik.r, ik.g), ik.a);
           float field = f0 + wob * smoothstep(0.02, 0.3, f0);
           float inkMask = smoothstep(0.46, 0.54, field) * inkUp;
@@ -947,6 +956,12 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
           vec2 inkGrad = vec2(max(max(ikx.r, ikx.g), ikx.a) - ikx.b * 0.42 - hgt0, max(max(ikz.r, ikz.g), ikz.a) - ikz.b * 0.42 - hgt0);
           float inkEdge = 1.0 - smoothstep(0.54, 0.86, field);
           vec3 inkCol = mix(mix(uColB, uColA, smoothstep(-0.05, 0.05, ik.r - ik.g)), uColC, smoothstep(-0.05, 0.05, ik.a - max(ik.r, ik.g)));
+          if (uMulti > 0.5) {
+            vec2 tp = iuv / uInkTexel - 0.5, b0 = floor(tp), fr = tp - b0; vec3 acc = vec3(0.0); float ws = 0.0;
+            for (int j = 0; j < 4; j++) { vec2 o = vec2(mod(float(j), 2.0), floor(float(j) / 2.0)); vec4 sm = texture2D(uInk, (b0 + o + 0.5) * uInkTexel);
+              float w = mix(1.0 - fr.x, fr.x, o.x) * mix(1.0 - fr.y, fr.y, o.y) * sm.r + 1e-5; acc += inkTeamCol(sm.g) * w; ws += w; }
+            inkCol = acc / ws;
+          }
           inkCol *= mix(1.0, 0.72, inkEdge) * (0.93 + 0.14 * nz2) * (1.0 - 0.06 * ik.b);
           float inkShadow = smoothstep(0.26, 0.46, field) * (1.0 - smoothstep(0.46, 0.54, field)) * inkUp;
           diffuseColor.rgb *= 1.0 - 0.3 * inkShadow;
@@ -978,8 +993,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ink.total = total; ink.reset();
   };
 
+  // 幾隊：4 隊以上用多隊格式。cols：各隊顏色（THREE.Color）
+  ink.setTeams = (n, cols) => { MULTI = ink.multi = n >= 4; ink.uniforms.uMulti.value = MULTI ? 1 : 0; (cols || []).forEach((c, i) => { if (i < 6) ink.uniforms.uCols.value[i].copy(c); }); };
   ink.reset = () => {
-    data.fill(0); owner.fill(0); dents.clear(); ink.counts[0] = ink.counts[1] = ink.counts[2] = 0; tex.needsUpdate = true;
+    data.fill(0); owner.fill(0); dents.clear(); ink.counts.fill(0); tex.needsUpdate = true;
   };
 
   // 單一圓形筆刷。team 0 = A、1 = B、2 = C。y 用來避免把旁邊高台的頂面一起塗到。
@@ -987,15 +1004,21 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const cr = r / C.CELL, fx = (x + IX) / C.CELL, fz = (z + IZ) / C.CELL;
     const x0 = Math.max(0, Math.floor(fx - cr)), x1 = Math.min(W - 1, Math.ceil(fx + cr));
     const z0 = Math.max(0, Math.floor(fz - cr)), z1 = Math.min(H - 1, Math.ceil(fz + cr));
-    const own = CH[team], o1 = CH[(team + 1) % 3], o2 = CH[(team + 2) % 3], counts = ink.counts; let gained = 0;
+    const own = CH[team], o1 = CH[(team + 1) % 3], o2 = CH[(team + 2) % 3], counts = ink.counts, tg = team * 40; let gained = 0;
     for (let cz = z0; cz <= z1; cz++) for (let cx = x0; cx <= x1; cx++) {
       const dx = cx + 0.5 - fx, dz = cz + 0.5 - fz, d = Math.sqrt(dx * dx + dz * dz) / cr;
       if (d >= 1) continue;
       const i = cz * W + cx;
       if (!paintable[i] || Math.abs(cellH[i] - y) > 3.2) continue;
       const v = d < 0.62 ? 255 : Math.round(255 * (1 - (d - 0.62) / 0.38)), p = i * 4;
-      if (data[p + own] < v) data[p + own] = v;
       if (data[p + 2] && v > 120) { data[p + 2] = 0; dents.delete(i); } // 噴到墨水，壓痕被蓋掉
+      if (MULTI) { // 多隊：同一隊就加厚；別隊的墨水被夠濃（或比較濃）的一筆蓋掉
+        if (!data[p] || data[p + 1] === tg) { if (data[p] < v) data[p] = v; data[p + 1] = tg; } else if (v >= 128 || v > data[p]) { data[p] = v; data[p + 1] = tg; }
+        const now = data[p] >= 128 ? data[p + 1] / 40 + 1 : 0, was = owner[i];
+        if (now !== was) { if (was) counts[was - 1]--; if (now) counts[now - 1]++; owner[i] = now; if (now === team + 1) gained++; }
+        continue;
+      }
+      if (data[p + own] < v) data[p + own] = v;
       if (data[p + o1] > 255 - v) data[p + o1] = 255 - v;
       if (data[p + o2] > 255 - v) data[p + o2] = 255 - v;
       const now = data[p + own] >= 128 ? team + 1 : data[p + o1] >= 128 ? ((team + 1) % 3) + 1 : data[p + o2] >= 128 ? ((team + 2) % 3) + 1 : 0, was = owner[i];
@@ -1042,7 +1065,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ink.flush = () => { if (ink.dirty) { tex.needsUpdate = true; ink.dirty = false; } };
   ink.score = () => {
     const t = ink.total;
-    return { a: ink.counts[0] / t, b: ink.counts[1] / t, c: ink.counts[2] / t };
+    return { a: ink.counts[0] / t, b: ink.counts[1] / t, c: ink.counts[2] / t, v: ink.counts.map((n) => n / t) };
   };
 })();
 
@@ -1695,7 +1718,9 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   // 中間是鐘塔舞台，外面一圈噴泉水池（六座橋＋踏腳石），中圈六座有斜坡的高台、毛線球和矮牆，外圈是出生台、瞭望台、樹籬和木箱。
   const RR = 106, TAU = Math.PI * 2, SIX = Math.PI / 3;
   const pol = (r, a) => [Math.cos(a) * r, Math.sin(a) * r];
-  const teamAng = (n) => Array.from({ length: n }, (_, t) => (Math.PI + (t * TAU) / n) % TAU); // 第 0 隊永遠在左邊（角度 π）
+  // 各隊出生台在哪一根輻條（每 60 度一根）：第 0 隊永遠在左邊（角度 π）。2、3、6 隊平均分開；4 隊時每隊左右鄰居一個近一個遠；5 隊空一根
+  const SPOKES = { 2: [3, 0], 3: [3, 5, 1], 4: [3, 4, 0, 1], 5: [3, 4, 5, 0, 1], 6: [3, 4, 5, 0, 1, 2] };
+  const teamAng = (n) => (SPOKES[n] || SPOKES[2]).map((k) => k * SIX);
   const ringSpawns = (ang) => ang.map((f) => { const d = f - Math.PI, c = Math.cos(d), s = Math.sin(d); return [[-96, -7], [-96, 7]].map(([x, z]) => ({ x: x * c - z * s, z: x * s + z * c })); });
   MAPS.round = {
     name: '貓咪時鐘廣場', water: '噴泉水池', teams: 2, holeW: 0, lim: { x: 110, z: 110, r: RR }, baseIn: 88,
@@ -1768,6 +1793,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     },
   };
   MAPS.round3 = { ...MAPS.round, teams: 3 }; // 三方對戰用：三個出生台每隔 120 度
+  [4, 5, 6].forEach((n) => { MAPS['round' + n] = { ...MAPS.round, teams: n }; }); // 四方以上大亂鬥
 
   world.MAPS = MAPS;
   world.MAP_KEYS = ['park', 'candy', 'ship', 'fair', 'skate', 'round'];
@@ -1893,14 +1919,19 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     Object.keys(built).forEach((k2) => { built[k2].root.visible = k2 === key; });
     // 名字放在 water（river 是水面的材質設定；之前兩個同名，掉水訊息會變成 [object Object]）
     world.key = key; world.riverName = MAPS[key].water; world.root = m.root; world.prims = m.prims; world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
-    world.lim = m.lim; world.ang = m.ang; world.spawns = m.spawns; world.baseIn = m.baseIn; world.teams = m.ang.length;
+    world.lim = m.lim; world.ang = m.ang; world.spawns = m.spawns; world.baseIn = m.baseIn; world.teams = m.ang.length; world.cur = m;
     scene0.environment = m.env; scene0.fog = m.fog;
     return true;
   };
+  // 四隊以上連線時不轉場地，改成把「第幾隊」換成自己這台的編號：自己這隊（房主排的第 off 隊）當第 0 隊
+  world.teamOffset = (off) => {
+    const m = world.cur; if (!m) return; const n = m.ang.length, f = (a) => (a ? Array.from({ length: n }, (_, k) => a[(off + k) % n]) : a);
+    world.ang = f(m.ang); world.spawns = f(m.spawns); world.rings = f(m.rings);
+  };
 
-  world.setTeamColors = (ca, cb, cc) => {
+  world.setTeamColors = (...cols) => {
     if (!world.rings) return;
-    [ca, cb, cc].forEach((c, i) => { if (!c) return; const r = world.rings[i]; if (r) { r.material.color.copy(c); r.material.emissive.copy(c).multiplyScalar(0.5); } });
+    cols.forEach((c, i) => { if (!c) return; const r = world.rings[i]; if (r) { r.material.color.copy(c); r.material.emissive.copy(c).multiplyScalar(0.5); } });
   };
 
   world.update = (t) => { if (world.ticks && world.root.visible) world.ticks.forEach((f) => f(t)); };
@@ -3440,7 +3471,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 // - 三方對戰（Yen 2026-11-19）：房間剛好 3 人時，房主可以選「三方」，每人一隊、三種顏色，場地固定是圓形的時鐘廣場。
 // 限制：只有登入 Claude、而且被邀請看這個頁面的人連得進來；只拿公開連結的人不行。
 (() => {
-  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: true, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false });
+  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: null, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false });
   const KINDS = ['maomao', 'shuang'], PI = Math.PI;
   // 事件欄位裡要跟著場地翻轉的 x／z 分量，以及面向角
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
@@ -3452,7 +3483,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   N.clock = () => clock;
   N.played = (id) => done.has(id);
   N.clean = (s) => String(s == null ? '' : s).replace(/[^\p{L}\p{N} _-]/gu, '').trim().slice(0, 8);
-  const validH = (h) => (h && typeof h === 'object' && typeof h.id === 'string' && Array.isArray(h.pl) && h.pl.length >= 1 && h.pl.length <= 4 && (h.n == null || h.n === 2 || (h.n === 3 && h.pl.length === 3))
+  const validH = (h) => (h && typeof h === 'object' && typeof h.id === 'string' && Array.isArray(h.pl) && h.pl.length >= 1 && h.pl.length <= 6 && (h.n == null || (h.n === 2 && h.pl.length <= 4) || (h.n >= 3 && h.n <= 6 && h.pl.length === h.n))
     && h.pl.every((e) => Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] < (h.n || 2) && (e[2] === 0 || e[2] === 1)) ? h : null);
   // 場地座標換算：dir 1＝收到的（大家共用的座標→自己畫面），-1＝送出去的。轉 rot 角度，面向角跟著減
   const turn = (a, idx, yaw, dir) => {
@@ -3495,10 +3526,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     prof = { n, k, w: p.w }; if (N.state === 'lobby') send({ n, k, w: p.w });
   };
   // 分隊（Yen 2026-11-19）：mix 'rand'＝開打時隨機分隊，'pick'＝房主指定（點玩家換隊，沒指定的照進房順序輪流）。asg：peer → 隊伍
-  const hostPatch = () => ({ r: N.rule, mp: N.map, tm: N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 4).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
+  const hostPatch = () => ({ r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
   // 這場要上場的人分到哪一隊：回傳 [{ peer, team }]。兩隊每隊最多 2 人、兩隊都要有人；三方對戰每人一隊
   N.lineup = (rand) => {
-    const tri = N.triOn(), n = tri ? 3 : 2, cap = tri ? 1 : 2, who = N.list.slice(0, tri ? 3 : 4).map((r, i) => ({ peer: r.peer, i, team: rand ? -1 : N.asg[r.peer] }));
+    const tri = N.triOn(), n = N.nTeams(), cap = tri ? 1 : 2, who = N.list.slice(0, tri ? n : 4).map((r, i) => ({ peer: r.peer, i, team: rand ? -1 : N.asg[r.peer] }));
     if (rand) for (let i = who.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [who[i], who[j]] = [who[j], who[i]]; }
     const cnt = new Array(n).fill(0);
     who.forEach((w) => { if (!(w.team >= 0 && w.team < n) || cnt[w.team] >= cap) w.team = -1; else cnt[w.team]++; });
@@ -3510,7 +3541,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   // 房主點一個玩家：換到下一隊；那一隊滿了就跟那隊的人對調
   N.swap = (peer) => {
     if (!N.isHost || N.mix !== 'pick') return; const L = N.lineup(false), me = L.find((w) => w.peer === peer); if (!me) return;
-    const n = N.triOn() ? 3 : 2, cap = n === 3 ? 1 : 2, to = (me.team + 1) % n, there = L.filter((w) => w.team === to);
+    const n = N.nTeams(), cap = N.triOn() ? 1 : 2, to = (me.team + 1) % n, there = L.filter((w) => w.team === to);
     const asg = {}; L.forEach((w) => (asg[w.peer] = w.team)); asg[peer] = to; if (there.length >= cap) asg[there[there.length - 1].peer] = me.team;
     N.asg = asg; send(hostPatch()); sig = '';
   };
@@ -3518,25 +3549,29 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const okMap = (v) => v === 'random' || (SC.world.MAPS && !!SC.world.MAPS[v]);
   N.setMap = (v) => { if (!N.isHost || !okMap(v)) return; N.map = v; send(hostPatch()); sig = ''; }; // 房主選場地（Yen 2026-11-17）
   N.setTri = (on) => { if (!N.isHost) return; N.tri = !!on; send(hostPatch()); sig = ''; }; // 3 人時：三方對戰或 2 對 1
-  N.triOn = () => N.tri && N.list.length === 3;
+  // tri＝每人一隊（3～6 人；Yen 2026-11-19 先要三方、再要四方以上）。兩隊模式最多 4 人
+  N.triOn = () => N.list.length >= 3 && (N.tri != null ? N.tri : N.list.length !== 4); // 沒選過：3 人三方、4 人 2 對 2、5～6 人大亂鬥
+  N.nTeams = () => (N.triOn() ? Math.min(6, N.list.length) : 2);
+  N.cap = () => (N.triOn() ? 6 : 4);
 
   // 房主按開始：照進房順序輪流分到兩隊，最多 4 人；剛好 3 人又選了三方對戰，就每人一隊
   N.start = () => {
     if (!room || !N.isHost || N.list.length < 2 || N.live) return;
-    const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
-    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round3' : SC.world.mapKey(N.map), n: tri ? 3 : 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl } });
+    const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
+    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl } });
   };
 
   function begin(h, list) {
-    const mine = h.pl.find((e) => e[0] === myPeer); nT = h.n === 3 ? 3 : 2; g0 = mine[1];
-    rot = (-g0 * 2 * PI) / nT; rc = Math.cos(rot); rs = nT === 2 ? 0 : Math.sin(rot); if (nT === 2 && g0) rc = -1; // 兩隊時剛好轉 180 度，用 -1 免得小數誤差
-    const pal = SC.PALETTES[Math.abs(h.pal | 0) % SC.PALETTES.length], P = h.fp ? { a: pal.b, b: pal.a, c: pal.c } : pal, cols = toLocal([P.a, P.b, P.c].slice(0, nT));
+    const mine = h.pl.find((e) => e[0] === myPeer); nT = h.n >= 3 && h.n <= 6 ? h.n : 2; g0 = mine[1];
+    // 兩隊、三隊：把場地轉到自己的出生台在左邊。四隊以上不轉（出生台不是平均分開），改由場地把隊伍編號換成自己這台的（world.teamOffset）
+    rot = nT >= 4 ? 0 : (-g0 * 2 * PI) / nT; rc = Math.cos(rot); rs = nT === 2 ? 0 : Math.sin(rot); if (nT === 2 && g0) rc = -1; // 兩隊時剛好轉 180 度，用 -1 免得小數誤差
+    const pal = SC.PALETTES[Math.abs(h.pal | 0) % SC.PALETTES.length], P = h.fp ? { a: pal.b, b: pal.a, c: pal.c } : pal, cols = toLocal(SC.teamInks(P, 6).slice(0, Math.max(nT, 3)).concat(SC.teamInks(P, 6).slice(Math.max(nT, 3))));
     const players = h.pl.map((e, idx) => {
       const r = list.find((x) => x.peer === e[0]);
       // 開打那一刻剛好沒收到某人的資料（公開中繼站可能漏訊息）也要把他算進來，不然整場都看不到他（Yen 2026-11-19：各玩各的）
       return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: e[0] === myPeer, gone: false };
     });
-    N.match = { id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT === 3 ? 'round3' : okMap(h.map) && h.map !== 'random' ? h.map : 'park', players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c }, over: false, score: null };
+    N.match = { id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
     if (N.onBegin) N.onBegin(N.match);
   }
@@ -3552,7 +3587,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   N.end = (res) => {
     const m = N.match; if (!m || m.over) return; m.over = true; done.add(m.id);
     const patch = { s: null, e: null };
-    if (N.referee) patch.res = [m.id, ...toGlobal([res.a, res.b, res.c || 0]).map(r4), ...toGlobal(res.ko)];
+    if (N.referee) patch.res = [m.id, ...toGlobal(res.v || [res.a, res.b, res.c || 0]).map(r4), ...toGlobal(res.ko)];
     if (N.isHost) patch.h = { ...m.h, st: 'end' };
     send(patch);
   };
@@ -3583,10 +3618,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     N.list = list; N.isHost = !!host && host.isMe; N.online = room.connected ? room.connected() : true;
     if (!N.isHost && host && (host.q.r === 'turf' || host.q.r === 'knockout')) N.rule = host.q.r;
     if (!N.isHost && host && okMap(host.q.mp)) N.map = host.q.mp;
-    if (!N.isHost && host && (host.q.tm === 2 || host.q.tm === 3)) N.tri = host.q.tm === 3;
+    if (!N.isHost && host && (host.q.tm === 0 || host.q.tm === 2 || host.q.tm === 3)) N.tri = host.q.tm ? host.q.tm === 3 : null;
     if (!N.isHost && host && (host.q.mx === 'rand' || host.q.mx === 'pick')) N.mix = host.q.mx;
     if (!N.isHost && host && Array.isArray(host.q.as)) { const a = {}; host.q.as.forEach((e) => { if (Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] <= 2) a[e[0]] = e[1]; }); N.asg = a; }
-    if (N.isHost && list.length && list.slice(0, 4).map((r) => r.peer).join() !== hostSeen) { hostSeen = list.slice(0, 4).map((r) => r.peer).join(); if (N.state === 'lobby') send(hostPatch()); } // 有人進出：把分隊再告訴大家
+    if (N.isHost && list.length && list.slice(0, 6).map((r) => r.peer).join() !== hostSeen) { hostSeen = list.slice(0, 6).map((r) => r.peer).join(); if (N.state === 'lobby') send(hostPatch()); } // 有人進出：把分隊再告訴大家
     N.live = h && h.st === 'play' ? h.id : null;
     const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer]).join('|') + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + (m ? m.id + m.over : '');
     if (s2 !== sig) { sig = s2; changed(); }
@@ -3611,7 +3646,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       while (patch.e.length && JSON.stringify(patch).length > 3000) patch.e.shift(); // presence 上限 4 KiB
       if (N.referee) {
         hostT -= 0.05;
-        if (hostT <= 0) { hostT = 0.5; const sc = g.netScore(); patch.sc = [m.id, ...toGlobal([sc.a, sc.b, sc.c || 0]).map(r4)]; }
+        if (hostT <= 0) { hostT = 0.5; const sc = g.netScore(); patch.sc = [m.id, ...toGlobal(sc.v || [sc.a, sc.b, sc.c || 0]).map(r4)]; }
       }
       if (N.isHost && (!h || h.id !== m.id)) patch.h = { ...m.h, st: 'play' }; // 原本的房主離開了：接手房間，讓晚進來的人知道還在打
       send(patch);
@@ -3632,10 +3667,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     }
     if (N.match !== m || m.over) return;
     // 分數與結果以裁判為準。任何一位已經宣布這場結果的人都算數（例如原本的裁判回來前，接手的人已經宣布了）。
-    if (!N.referee && ref) { const p = peers.find((x) => x.peer === ref.peer), sc = p && p.presence.sc; if (Array.isArray(sc) && sc.length === nT + 1 && sc[0] === m.id && sc.slice(1).every(Number.isFinite)) { const v = toLocal(sc.slice(1)); m.score = { a: v[0], b: v[1], c: v[2] || 0 }; } }
+    if (!N.referee && ref) { const p = peers.find((x) => x.peer === ref.peer), sc = p && p.presence.sc; if (Array.isArray(sc) && sc.length === nT + 1 && sc[0] === m.id && sc.slice(1).every(Number.isFinite)) { const v = toLocal(sc.slice(1)); m.score = { a: v[0], b: v[1], c: v[2] || 0, v }; } }
     for (const pl of m.players) {
       if (pl.isMe) continue; const p = peers.find((x) => x.peer === pl.peer), r = p && p.presence.res;
-      if (Array.isArray(r) && r.length === 1 + nT * 2 && r[0] === m.id && r.slice(1).every(Number.isFinite)) { const v = toLocal(r.slice(1, 1 + nT)); return g.netFinish({ a: v[0], b: v[1], c: v[2] || 0, ko: toLocal(r.slice(1 + nT)) }); }
+      if (Array.isArray(r) && r.length === 1 + nT * 2 && r[0] === m.id && r.slice(1).every(Number.isFinite)) { const v = toLocal(r.slice(1, 1 + nT)); return g.netFinish({ a: v[0], b: v[1], c: v[2] || 0, v, ko: toLocal(r.slice(1 + nT)) }); }
     }
     if (!N.isHost && h && h.id === m.id && h.st === 'end') g.netFinish(null); // 房主已經結束這場但沒收到結果：用自己這邊的分數結算
   };
@@ -7003,7 +7038,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const C = SC.CFG, W = SC.world, INK = SC.ink, V3 = THREE.Vector3;
   const G = (SC.game = { state: 'boot', actors: [], time: 0, paused: false, opts: { kind: 'maomao', weapon: 'W01', difficulty: 'normal', mode: 'versus', roster: '2v2' }, demo: true, mode: 'versus', targets: [], hit: [], menu: false });
   let scene, camera, renderer, I, A;
-  const projectiles = [], bombs = [], bombMeshes = [], colors = [new THREE.Color(), new THREE.Color(), new THREE.Color()], WHITE = new THREE.Color(0xffffff);
+  const projectiles = [], bombs = [], bombMeshes = [], colors = [0, 1, 2, 3, 4, 5].map(() => new THREE.Color()), WHITE = new THREE.Color(0xffffff);
   const cam = { yaw: Math.PI / 2, pitch: -0.14, dist: 15, shake: 0, pos: new V3(), orbit: 0, zoom: 1, fp: null };
   const SCOPE_ZOOM = 4; // 狙擊鏡最大倍率（Yen 2026-11-14：放大距離要夠）
   const V0 = Math.sqrt(2 * C.GRAVITY * C.GROUND_JUMP_HEIGHT), V1 = Math.sqrt(2 * C.GRAVITY * C.AIR_JUMP_HEIGHT);
@@ -7066,16 +7101,19 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const all = SC.bossList(); BS = (boss && all[(+G.opts.stage || 1) - 1]) || SC.boss; let off = false; all.forEach((m) => { if (m && m !== BS && m.setActive(false, scene)) off = true; });
     // 對戰場地（Yen 2026-11-17 加到五張）：試玩靶場固定遊樂園，連線用房主選的，其他用選單選的（random＝隨機）
     // 三方對戰（連線 3 人，Yen 2026-11-19）固定用圓形場地的三個出生台版本
-    G.teams = net && net.teams === 3 ? 3 : 2;
-    const mapKey = G.mode === 'sandbox' ? 'park' : G.teams === 3 ? 'round3' : net ? W.mapKey(net.map) : W.mapKey(G.opts.map || 'park'); G.map = mapKey;
+    // 四方以上（Yen 2026-11-19）：每人一隊，最多 6 隊，都在時鐘廣場
+    G.teams = net && net.teams >= 3 ? Math.min(6, net.teams) : 2;
+    const mapKey = G.mode === 'sandbox' ? 'park' : G.teams >= 3 ? 'round' + G.teams : net ? W.mapKey(net.map) : W.mapKey(G.opts.map || 'park'); G.map = mapKey;
     const bossMoved = BS.setActive(boss, scene) || off, mapMoved = !boss && W.setMap(mapKey);
+    if (!boss) W.teamOffset(net && G.teams >= 4 ? net.off || 0 : 0);
     if (bossMoved || mapMoved) INK.build(W.height, boss ? 0 : W.lim.x, boss ? 0 : W.lim.z); // 換場地時重算可以塗的格子（圓形場地的格網比較大）
     const pal = SC.PALETTES[(Math.random() * SC.PALETTES.length) | 0], flip = Math.random() < 0.5;
     G.palette = net ? net.palette : flip ? { a: pal.b, b: pal.a } : pal;
     const mine = !G.demo && SC.inkPair(G.opts.ink); if (mine) G.palette = mine; // 主選單挑的顏色（連線時只影響自己這台的畫面）
-    colors[0].setHex(G.palette.a.hex); colors[1].setHex(G.palette.b.hex); colors[2].setHex((G.palette.c || SC.thirdInk(G.palette)).hex);
-    INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]);
-    W.setTeamColors(colors[0], colors[1], G.teams === 3 ? colors[2] : null); INK.reset();
+    const inks = mine ? SC.teamInks(mine, 6) : G.palette.list || SC.teamInks(G.palette, 6);
+    colors.forEach((c, i) => c.setHex(inks[i % inks.length].hex));
+    INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
+    W.setTeamColors(...colors.slice(0, G.teams)); INK.reset();
     G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); }); SC.swimTrail.clear();
     projectiles.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false));
     const other = G.opts.kind === 'maomao' ? 'shuang' : 'maomao';
@@ -7730,11 +7768,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   // ---------- 連線對戰（傳輸與規則說明在 07d_net.js）----------
   G.netActor = (idx) => G.actors.find((a) => a.idx === idx);
   // 各隊擊倒數＝對方被擊倒的次數（自己掉河不算）。三方對戰看不出是誰打倒的，改用每個人的擊倒數加起來
-  const koScore = () => (G.teams === 3 ? [0, 1, 2].map((T) => G.actors.reduce((n, a) => n + (a.team === T ? a.kos : 0), 0))
+  const koScore = () => (G.teams >= 3 ? Array.from({ length: G.teams }, (_, T) => T).map((T) => G.actors.reduce((n, a) => n + (a.team === T ? a.kos : 0), 0))
     : [0, 1].map((T) => G.actors.reduce((n, a) => n + (a.team !== T ? a.credited || 0 : 0), 0)));
   G.koScore = koScore;
-  G.netScore = () => INK.score();
-  G.netResult = () => { const s = INK.score(); return { a: s.a, b: s.b, c: s.c, ko: koScore() }; };
+  G.netScore = () => { const s = INK.score(); return { ...s, v: s.v.slice(0, G.teams) }; };
+  G.netResult = () => { const s = G.netScore(); return { a: s.a, b: s.b, c: s.c, v: s.v, ko: koScore() }; };
   // 自己的狀態：位置、速度、面向、旗標、武器、蓄力、體力、墨水、被擊倒次數
   G.netSnap = () => {
     const p = player();
@@ -7979,13 +8017,13 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 
   function finish(res) { // res：連線對戰時房主公布的結果
     G.state = 'ended'; endT = 0; I.active = false; I.release(); if (document.pointerLockElement) document.exitPointerLock(); if (G.menu) { G.menu = false; SC.ui.onPause(false); }
-    const s = res || INK.score(); G.final = { a: s.a, b: s.b, c: G.teams === 3 ? s.c || 0 : 0 };
+    const s = res || INK.score(), fv = (s.v || [s.a, s.b, s.c || 0]).slice(0, G.teams); G.final = { a: fv[0], b: fv[1], c: G.teams >= 3 ? fv[2] || 0 : 0, v: fv };
     // 最高的那隊贏；前兩名差不到 0.05% 算平手（三方對戰也一樣）
     const top = (v, eps) => { const o = v.map((x, i) => [x, i]).sort((p, q) => q[0] - p[0]); return o.length > 1 && o[0][0] - o[1][0] <= eps ? 'tie' : o[0][1]; };
-    G.winner = top(G.teams === 3 ? [G.final.a, G.final.b, G.final.c] : [G.final.a, G.final.b], 0.0005);
+    G.winner = top(fv, 0.0005);
     if (netOn()) {
       const ko = (res && res.ko) || koScore(); G.koFinal = ko; if (G.rule === 'knockout') G.winner = top(ko, 0);
-      SC.net.end({ a: s.a, b: s.b, c: G.final.c, ko });
+      SC.net.end({ a: fv[0], b: fv[1], c: G.final.c, v: fv, ko });
     }
     projectiles.length = 0; bombs.forEach((b) => (b.mesh.visible = false)); bombs.length = 0;
     G.actors.forEach((a) => { a.charge = -1; if (a.sight) a.sight.visible = false; a.cat.setTag('', '', false); });
@@ -7995,7 +8033,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   // ---------- 結算後的小劇場：贏的隊伍從天而降，把輸的隊伍壓成貓餅，在他們身上蹦蹦跳 ----------
   const VIC_AT = 3.4, VIC_LEN = 3.4; let VIC = { x: -62, z: 40 }; // 每張場地有自己的小劇場位置（W.vic）
   function victoryStart() {
-    const live = G.actors.filter((a) => !a.gone), win = live.filter((a) => a.team === G.winner), lose = live.filter((a) => a.team !== G.winner);
+    const live = G.actors.filter((a) => !a.gone), win = live.filter((a) => a.team === G.winner), lose = live.filter((a) => a.team !== G.winner).slice(0, 3); // 大亂鬥時最多壓三隻
     if (G.winner === 'tie' || !win.length || !lose.length) return;
     VIC = W.vic || VIC; const gy = H(VIC.x, VIC.z); vic = { t: 0, win, lose, gy, hit: false, bounce: -1, camP: camera.position.clone(), camQ: camera.quaternion.clone() };
     const place = (a, x, y, yaw) => { a.alive = true; a.pos.set(x, y, VIC.z); a.vel.set(0, 0, 0); a.visY = y; a.yaw = yaw; a.pitch = 0; a.form = 'biped'; a.submerged = false; a.rolling = false; a.speed = 0; a.protectUntil = 0; a.cat.group.visible = true; a.cat.group.scale.setScalar(1); a.cat.group.rotation.z = 0; };
@@ -8049,8 +8087,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         if (G.mode !== 'boss') {
           if (!judged && endT > 1.7) { // 先宣布地圖塗布的勝負
             judged = true; const f = G.final, ko = G.koFinal, byKo = netOn() && G.rule === 'knockout';
-            const tri = G.teams === 3, nums = byKo ? ko.map(String) : (tri ? [f.a, f.b, f.c] : [f.a, f.b]).map((v) => (v * 100).toFixed(1) + '%');
-            SC.ui.banner((byKo ? '擊倒 ' : '塗地 ') + nums.join(' 比 ') + (camera.aspect < 1 ? '\n' : '　') + (G.winner === 'tie' ? '平手！' : G.winner === 0 ? (tri ? '你獲勝！' : '我方獲勝！') : '對手獲勝…'), 1.9);
+            const tri = G.teams >= 3, nums = byKo ? ko.map(String) : f.v.map((v) => (v * 100).toFixed(1) + '%');
+            SC.ui.banner((G.teams >= 4 ? (G.winner === 'tie' ? '' : '第 ' + (f.v.filter((x, i) => (byKo ? ko[i] > ko[0] : x > f.v[0])).length + 1) + ' 名') : (byKo ? '擊倒 ' : '塗地 ') + nums.join(' 比 ')) + (camera.aspect < 1 ? '\n' : '　') + (G.winner === 'tie' ? '平手！' : G.winner === 0 ? (tri ? '你獲勝！' : '我方獲勝！') : '對手獲勝…'), 1.9);
             if (G.winner !== 'tie') (G.winner === 0 ? A.sfx.win : A.sfx.lose)();
           }
           if (!vic && endT > VIC_AT && !resultsShown) victoryStart();
@@ -8311,7 +8349,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         3: '魔王關卡 3：氣球小豬船長。把綁著船長的氣球一顆顆打破，他摔下來冒星星的時候用力打。',
         4: '魔王關卡 4：鑽地兔工頭。土堆追過來時快跑開；對滾過來的泥球射墨水，把它打回去撞工頭。',
         5: '魔王關卡 5：狐狸大王機甲。最後的大魔王！跳過地上的光圈、躲開雷射，機甲冒煙的時候用力打。' })[sel.stage] || ((SC.bossList()[sel.stage - 1] || {}).lede) || '魔王關卡 1：喵抓抓大王。把罐頭側面塗成自己的顏色，變墨貓爬上去，連跳到機頂射紅色按鈕，打完三個階段就過關。',
-      net: () => (window.SC_PUBLIC ? '和朋友連線對戰，2 到 4 人，剛好 3 人可以三方對戰。一個人開房間，把房號告訴朋友，朋友打開同一個網址輸入房號就能加入，不用登入。' : '和朋友連線對戰，2 到 4 人，剛好 3 人可以三方對戰。一個人開房間，把房號告訴朋友。每個人都要登入 Claude，而且被邀請看這個頁面才連得進來。') };
+      net: () => (window.SC_PUBLIC ? '和朋友連線對戰，2 到 6 人。兩隊對戰最多 4 人；3 人以上可以每人一隊大亂鬥。一個人開房間，把房號告訴朋友，朋友打開同一個網址輸入房號就能加入，不用登入。' : '和朋友連線對戰，2 到 6 人。兩隊對戰最多 4 人；3 人以上可以每人一隊大亂鬥。一個人開房間，把房號告訴朋友。每個人都要登入 Claude，而且被邀請看這個頁面才連得進來。') };
     // 場地選單：電腦對戰用自己選的；連線時在房間裡才出現，只有房主能改，其他人看到房主選的
     const mapSync = () => {
       const n = SC.net, net = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', cur = net ? n.map : sel.map;
@@ -8339,10 +8377,13 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
         ul.append(li);
       });
       $('pick-mix').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.mix); b.disabled = !n.isHost; });
-      $('pick-teams').hidden = n.list.length !== 3; $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.tri ? '3' : '2')); b.disabled = !n.isHost; });
+      $('pick-teams').hidden = n.list.length < 3; { const k = Math.min(6, n.list.length), b3 = $('pick-teams').querySelector('[data-v="3"]'), b2 = $('pick-teams').querySelector('[data-v="2"]');
+        b3.querySelector('b').textContent = k === 3 ? '三方對戰' : k + ' 方大亂鬥'; b3.querySelector('.vs').innerHTML = [HEAD('a'), HEAD('b'), HEAD('c')].concat(k > 3 ? ['<i>+' + (k - 3) + '</i>'] : []).join('');
+        b2.querySelector('b').textContent = k === 3 ? '2 對 1' : '兩隊對戰'; } // 3 人以上：每人一隊或兩隊
+      $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.triOn() ? '3' : '2')); b.disabled = !n.isHost; });
       $('pick-rule').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.rule); b.disabled = !n.isHost; });
       mapSync();
-      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > 4 ? '一場最多 4 人，後面的人等下一場。' : '') + '人到齊就按「開始對戰」' : '等房主按開始';
+      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
     };
     const modeSync = () => {
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
@@ -8431,17 +8472,17 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ui.onStart = () => {
     const g = G(), app = $('app');
     app.style.setProperty('--a', '#' + g.colors[0].getHexString()); app.style.setProperty('--b', '#' + g.colors[1].getHexString()); app.style.setProperty('--c', '#' + g.colors[2].getHexString());
-    const tri = g.teams === 3; els.hud.classList.toggle('tri', tri); els['m-results'].classList.toggle('tri', tri);
+    const tri = g.teams >= 3; els.hud.classList.toggle('tri', tri); els['m-results'].classList.toggle('tri', tri);
     const L = SC.world.lim, mw = 110, mh = Math.round((110 * L.z) / L.x); if (els.minimap.height !== mh) { els.minimap.height = mh; mapImg = null; } els.minimap.classList.toggle('round', !!L.r); // 小地圖跟著場地形狀
     els.hud.classList.toggle('on', !g.demo); els.ko.classList.remove('on'); els.banner.classList.remove('on'); feedItems.forEach((f) => f.el.remove()); feedItems = [];
     resultsT = -1; last = {}; hurtK = 0; els.tip.classList.remove('on');
     if (g.demo) return;
     const chip = (a) => `<div class="chip" id="chip-${a.id}">${ui.face(a.kind)}</div>`;
-    els['roster-a'].innerHTML = g.actors.filter((a) => a.team === 0).map(chip).join(''); els['roster-b'].innerHTML = g.actors.filter((a) => a.team !== 0).sort((a, b) => a.team - b.team).map((a) => chip(a).replace('class="chip"', `class="chip t${a.team}"`)).join('');
+    els['roster-a'].innerHTML = g.actors.filter((a) => a.team === 0).map(chip).join(''); els['roster-b'].innerHTML = g.actors.filter((a) => a.team !== 0).sort((a, b) => a.team - b.team).map((a) => chip(a).replace('class="chip"', `class="chip t${a.team}" style="--tc:#${g.colors[a.team].getHexString()}"`)).join('');
     els['my-face'].innerHTML = ui.face((g.player() || g.opts).kind); ui.onWeapon(g.opts.weapon);
     els.hud.classList.toggle('solo', g.mode === 'sandbox'); els.hud.classList.toggle('boss', g.mode === 'boss'); last.timer = null;
     els.lives.classList.remove('intro'); if (g.mode === 'boss') { void els.lives.offsetWidth; els.lives.classList.add('intro'); els.timer.classList.remove('final'); return; }
-    if (g.mode === 'net') ui.tip(tri ? (g.rule === 'knockout' ? '三方擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : '三方塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
+    if (g.mode === 'net') ui.tip(tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
     if (g.mode === 'net') return;
     if (g.mode === 'sandbox') { els.timer.textContent = '不限時'; els.timer.classList.remove('final'); ui.banner('自由試玩', 1.4); ui.tip('打破氣球靶、擊毀灑水器，想練什麼就練什麼。按暫停可以回主選單', 7); return; }
     ui.tip(SC.input.isTouch ? '把地面塗成你們隊的顏色！按住左下的「墨貓」可以在自己的墨水裡快速移動、補墨水；射擊鈕短點是跳' : '把地面塗成你們隊的顏色！按住 Q 可以在自己的墨水裡快速移動、補墨水', 7);
@@ -8504,24 +8545,30 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const net = g.mode === 'net'; $('btn-again').textContent = net ? '回房間' : '再來一場'; $('btn-menu').textContent = net ? '離開房間' : '回主選單';
     els.verdict.textContent = w === 'tie' ? '平手！' : w === 0 ? '勝利！' : '惜敗…'; els.verdict.dataset.r = w === 'tie' ? 'tie' : w === 0 ? 'win' : 'lose';
     const mates = g.actors.filter((a) => a.team === 0), foes = g.actors.filter((a) => a.team !== 0), sum = (l, k) => l.reduce((n, a) => n + a[k], 0), kf = g.koFinal;
-    els['res-stats'].innerHTML = `<div><span>你的擊倒</span><b>${p.kos}</b></div><div><span>你被擊倒</span><b>${p.deaths}</b></div>` + (g.teams === 3 ? '' : `<div><span>全隊擊倒</span><b>${net ? kf[0] : sum(mates, 'kos')}</b></div>`) + `<div><span>對手擊倒</span><b>${net ? kf.slice(1).reduce((x, y) => x + y, 0) : sum(foes, 'kos')}</b></div>`
+    els['res-stats'].innerHTML = `<div><span>你的擊倒</span><b>${p.kos}</b></div><div><span>你被擊倒</span><b>${p.deaths}</b></div>` + (g.teams >= 3 ? '' : `<div><span>全隊擊倒</span><b>${net ? kf[0] : sum(mates, 'kos')}</b></div>`) + `<div><span>對手擊倒</span><b>${net ? kf.slice(1).reduce((x, y) => x + y, 0) : sum(foes, 'kos')}</b></div>`
       + (net ? `<div><span>規則</span><b>${g.rule === 'knockout' ? '擊倒戰' : '塗地戰'}</b></div>` : '');
     els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0;
     SC.audio.music('toy');
   };
 
   // 上方分數條和結算條：各隊的比例（0～1）和文字。三方對戰時中間多一段 C 隊
+  // 四隊以上：中間多幾段（自己第 0 隊在最左、第 1 隊在最右，其他隊依序排中間），文字只寫自己的和名次
   function bars(pre, v, txt) {
-    const id = (k) => els[(pre ? pre + '-' : '') + k], tri = G().teams === 3, w = (x) => Math.max(0, x) * 100 + '%';
+    const g = G(), n = g.teams || 2, id = (k) => els[(pre ? pre + '-' : '') + k], w = (x) => Math.max(0, x || 0) * 100 + '%';
     id('bar-a').style.width = w(v[0]); id('bar-b').style.width = w(v[1]);
-    const c = id('bar-c'); c.style.left = w(v[0]); c.style.width = tri ? w(v[2] || 0) : '0%';
-    (pre ? els['res-a'] : els['pct-a']).textContent = txt[0]; (pre ? els['res-b'] : els['pct-b']).textContent = txt[1]; (pre ? els['res-c'] : els['pct-c']).textContent = tri ? txt[2] || '' : '';
+    const box = id('bar-a').parentNode, mids = [id('bar-c')];
+    while (box.querySelectorAll('i.mid').length < Math.max(1, n - 2)) { const e = document.createElement('i'); e.className = 'mid'; box.insertBefore(e, id('bar-b')); }
+    box.querySelectorAll('i.mid').forEach((e, k) => { if (k) mids.push(e); });
+    let x = v[0] || 0; mids.forEach((e, k) => { const t = k + 2, on = t < n; e.style.display = on ? '' : 'none'; if (!on) return; e.style.left = w(x); e.style.width = w(v[t]); e.style.background = '#' + g.colors[t].getHexString(); x += v[t] || 0; });
+    const ta = pre ? els['res-a'] : els['pct-a'], tb = pre ? els['res-b'] : els['pct-b'], tc = pre ? els['res-c'] : els['pct-c'];
+    if (n >= 4) { const rank = v.filter((y) => y > v[0]).length + 1; ta.textContent = txt[0]; tb.textContent = ''; tc.textContent = '第 ' + rank + ' 名'; tc.style.color = '#fff'; return; }
+    tc.style.color = ''; ta.textContent = txt[0]; tb.textContent = txt[1]; tc.textContent = n === 3 ? txt[2] || '' : '';
   }
   function drawMap(g) {
     const L = SC.world.lim, mw = els.minimap.width, mh = els.minimap.height;
     if (!mapImg || mapImg.width !== mw || mapImg.height !== mh) mapImg = mapCtx.createImageData(mw, mh);
     const d = mapImg.data, own = SC.ink.owner, pt = SC.ink.paintable, hex = (c) => [c.getHex() >> 16, (c.getHex() >> 8) & 255, c.getHex() & 255];
-    const rgb = [[250, 240, 222], hex(g.colors[0]), hex(g.colors[1]), hex(g.colors[2])], sx = (L.x * 2) / mw, sz = (L.z * 2) / mh;
+    const rgb = [[250, 240, 222], ...g.colors.map(hex)], sx = (L.x * 2) / mw, sz = (L.z * 2) / mh;
     for (let y = 0; y < mh; y++) for (let x = 0; x < mw; x++) {
       const i = SC.ink.cellIndex(-L.x + (x + 0.5) * sx, -L.z + (y + 0.5) * sz), p = (y * mw + x) * 4, c = i >= 0 && pt[i] ? rgb[own[i]] : null;
       d[p] = c ? c[0] : 190; d[p + 1] = c ? c[1] : 228; d[p + 2] = c ? c[2] : 250; d[p + 3] = c || !L.r ? 240 : 0; // 圓形場地外面透明
@@ -8549,7 +8596,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       if (g.mode === 'net' && g.rule === 'knockout' && g.koFinal) { // 擊倒戰的結算條顯示擊倒數
         const ko = g.koFinal, sum = ko.reduce((x, y) => x + y, 0) || 1;
         bars('res', ko.map((v) => (v / sum) * e), ko.map((v) => Math.round(v * e) + ' 擊倒'));
-      } else bars('res', [s.a, s.b, s.c || 0].map((v) => v * e), [s.a, s.b, s.c || 0].map((v) => (v * 100 * e).toFixed(1) + '%'));
+      } else { const sv = s.v || [s.a, s.b, s.c || 0]; bars('res', sv.map((v) => v * e), sv.map((v) => (v * 100 * e).toFixed(1) + '%')); }
       if (k >= 1 && !els['m-results'].classList.contains('done')) els['m-results'].classList.add('done');
       if (k < 1) els['m-results'].classList.remove('done');
     }
@@ -8567,7 +8614,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       const k = g.koScore(), sum = k.reduce((x, y) => x + y, 0) || 1;
       set('pa', 'k' + k.join('/'), () => bars('', k.map((v) => v / sum), k.map(String)));
     } else {
-      const v = [s.a, s.b, s.c || 0];
+      const v = (s.v || [s.a, s.b, s.c || 0]).slice(0, Math.max(3, g.teams));
       set('pa', v.map((x) => Math.round(x * 1000)).join('/'), () => bars('', v, v.map((x) => (x * 100).toFixed(1) + '%')));
     }
     set('hp', Math.round(p.hp), (v) => { els['hp-fill'].style.width = v + '%'; });
