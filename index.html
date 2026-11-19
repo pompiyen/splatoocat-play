@@ -599,6 +599,10 @@ SC.CFG = {
      minRadius: 2.2, maxRadius: 3.6 },
   // 散彈槍（Yen 2026-11-19）：一次噴出一把小墨彈成扇形；貼近全中一發擊倒，遠一點只中幾顆
   W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 16, ink: 50, range: 52, interval: 0.7, radius: 3.6, speed: 125, gravity: 100 }, // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水
+  // 墨刀（Yen 2026-11-20，第 56 版）：近身武器，不會射出東西。按住連續砍（右橫砍→左橫砍→往下直劈），每一刀把前面一片扇形塗成自己的顏色、砍到人；
+  // 跳起來後再按一下：往前衝刺斬一段（約 16），一路塗地，碰到的對手直接擊倒，每次跳起來只能衝一次
+  W05: { id: 'W05', name: '墨刀', slashInk: 3.5 / INK_LAST, slashInterval: 0.26, comboGap: 0.6, reach: 7.5, arc: 1.15, overReach: 9.5, overArc: 0.32,
+    slashDamage: [55, 55, 80], slashRadius: 2.6, dashInk: 16 / INK_LAST, dashDist: 16, dashTime: 0.2, dashDamage: 100, dashRadius: 3.2, speed: 1.12 },
   // Yen 2026-11-19：丟更遠（初速 54→72，最遠約 26→47），落地後滾一小段（落地保留約 0.3 的水平速度、每秒衰減）再停住
   // Yen 2026-11-14：墨水彈加強。爆炸塗地半徑 6→7（再乘 PAINT），傷害範圍 8.4→11，中心 5 以內直接擊倒，外圈 60
   BOMB: { ink: 20 / INK_LAST, speed: 72, gravity: 105, fuse: 2, roll: 0.32, rollDrag: 3.6, armDelay: 1.05, radius: 9.5, damageRadius: 14.5, nearRadius: 6.5, near: 12, far: 66, holdFull: 0.9, damage: 60, nearDamage: 100, maxFlight: 3 },
@@ -835,6 +839,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['滾刷', 'Roller', 'ローラー', '롤러'],
     ['狙擊槍', 'Sniper', 'スナイパー', '저격총'],
     ['散彈槍', 'Shotgun', 'ショットガン', '산탄총'],
+    ['墨刀', 'Ink Blade', 'インク刀', '잉크 칼'],
     ['墨水彈', 'Ink Bomb', 'インクボム', '잉크 폭탄'],
     ['墨貓', 'Ink Cat', 'インクネコ', '잉크 고양이'],
     ['絕招', 'Special', 'ひっさつわざ', '필살기'],
@@ -851,6 +856,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['G／右鍵（按住）', 'G / Right click (hold)', 'G／右クリック（長おし）', 'G / 오른쪽 클릭 (꾹)'],
     ['丟墨水彈：短按丟近，按越久丟越遠', 'Throw an ink bomb: tap for near, hold longer to throw farther', 'インクボムを投げる：短くおすと近く、長くおすほど遠く', '잉크 폭탄 던지기: 짧게 누르면 가까이, 오래 누를수록 멀리'],
     ['1 2 3 4／滾輪', '1 2 3 4 / Wheel', '1 2 3 4／ホイール', '1 2 3 4 / 휠'],
+    ['1 2 3 4 5／滾輪', '1 2 3 4 5 / Wheel', '1 2 3 4 5／ホイール', '1 2 3 4 5 / 휠'],
+    ['切換武器（4 是散彈槍：近距離很強；5 是墨刀：按住連砍，跳起來再按一下往前衝刺斬）', 'Switch weapon (4 is the shotgun: strong up close; 5 is the ink blade: hold to slash, press again in the air to dash-slash)', '武器を切りかえ（4はショットガン：近くでとても強い／5はインク刀：おしっぱなしで連続切り、ジャンプ中にもう一度おすと突進切り）', '무기 바꾸기 (4는 산탄총: 가까이에서 아주 강해요 / 5는 잉크 칼: 누르고 있으면 연속 베기, 점프 중에 한 번 더 누르면 돌진 베기)'],
+    ['按住射擊鈕連續砍；跳起來後按住射擊鈕＝往前衝刺斬', 'Hold the fire button to keep slashing; after jumping, hold it to dash-slash forward', '発射ボタンをおしっぱなしで連続切り。ジャンプしてからおしっぱなしで前へ突進切り', '발사 버튼을 누르고 있으면 계속 베요. 점프한 뒤 누르고 있으면 앞으로 돌진 베기'],
+    ['點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍、墨刀', 'Tap a weapon picture to switch between Ink Blaster, Roller, Sniper, Shotgun and Ink Blade', '武器の絵をタップで、インク銃・ローラー・スナイパー・ショットガン・インク刀を切りかえ', '무기 그림을 눌러 잉크 총, 롤러, 저격총, 산탄총, 잉크 칼로 바꿔요'],
     ['切換武器（4 是散彈槍：近距離很強）', 'Switch weapon (4 is the shotgun: strong up close)', '武器を切りかえ（4はショットガン：近くでとても強い）', '무기 바꾸기 (4는 산탄총: 가까이에서 아주 강해요)'],
     ['Esc／P', 'Esc / P', 'Esc／P', 'Esc / P'],
     ['暫停', 'Pause', 'ポーズ', '일시정지'],
@@ -1023,7 +1032,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   pat(/^(\d+) 方大亂鬥$/, ['$1-Way Free-for-All', '$1人バトルロイヤル', '$1인 난투']);
   pat(/^(\d+) 方(塗地戰|擊倒戰)：每個人自己一隊，(.+)$/, (m, li) => ['$1-way $2: ', '$1人$2：', '$1인 $2: '][li] + tr('每個人自己一隊，' + m[3]));
   pat(/^三方(塗地戰|擊倒戰)：每個人自己一隊，(.+)$/, (m, li) => ['3-way $1: ', '三つどもえ$1：', '3팀 $1: '][li] + tr('每個人自己一隊，' + m[2]));
-  pat(/^被(.+)的(漆彈槍|滾刷|狙擊槍|散彈槍|墨水彈|絕招|掉進河裡|被喵抓抓大王擊倒)擊倒了！$/, ["Splatted by $1's $2!", '$1の$2でやられた！', '$1의 $2에 당했다!']);
+  pat(/^被(.+)的(漆彈槍|滾刷|狙擊槍|散彈槍|墨刀|墨水彈|絕招|掉進河裡|被喵抓抓大王擊倒)擊倒了！$/, ["Splatted by $1's $2!", '$1の$2でやられた！', '$1의 $2에 당했다!']);
   pat(/^被(.+)擊倒了！$/, ['KO\'d by $1!', '$1にやられた！', '$1에게 당했다!']);
   pat(/^掉進(.+?)(！?)$/, ['Fell into $1$2', '$1に落ちた$2', '$1에 빠졌다$2']);
   add([['！', '!', '！', '!']]);
@@ -1054,6 +1063,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['還沒有紀錄', 'No records yet', 'まだ記録がないよ', '아직 기록이 없어요'],
     ['最快紀錄', 'Best time', '最速記録', '최고 기록'],
     ['這台裝置的紀錄', 'Records on this device', 'この端末の記録', '이 기기의 기록'],
+    ['大家的紀錄', "Everyone's records", 'みんなの記録', '모두의 기록'],
   ]);
   // 第 N 名（英文要 1st 2nd 3rd）
   const ord = (n) => (n % 100 > 10 && n % 100 < 14 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
@@ -1932,6 +1942,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     surface() { tone('sine', 160, 600, 0.14, 0.2); noise(0.12, 0.14, 500, 1800, 1.4); },
     swim() { noise(0.09, 0.07, 700 + Math.random() * 500, 300, 2.5); },
     empty() { tone('square', 150, 110, 0.07, 0.12); },
+    slash(vol = 1, kind = 0) { // 墨刀：快速的「咻」破風聲＋一點點金屬亮音；直劈低一點重一點，衝刺斬拉長
+      const v = Math.min(1, vol);
+      if (kind === 3) { noise(0.3, 0.42 * v, 900, 5200, 1.2); tone('sawtooth', 260, 900, 0.22, 0.1 * v); tone('sine', 1800, 2600, 0.12, 0.06 * v, 0.03); return; }
+      noise(0.14, 0.36 * v, kind === 2 ? 700 : 1500, kind === 2 ? 2600 : 4800, 1.4); tone('triangle', kind === 2 ? 220 : 340, kind === 2 ? 90 : 160, 0.12, 0.16 * v); tone('sine', 2400 + kind * 300, 2100, 0.07, 0.04 * v, 0.02);
+    },
     swing() { noise(0.2, 0.34, 500, 2400, 0.9); tone('sine', 190, 80, 0.16, 0.22); },
     roll() { noise(0.1, 0.1, 380, 300, 1.6); },
     chargeTick(c) { tone('sine', 400 + c * 900, 430 + c * 950, 0.05, 0.07); },
@@ -3461,6 +3476,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       g.add(mesh(S(0.34, 14, 10), std(0xffffff, 0.08, { transparent: true, opacity: 0.55 }), 0, 0.5, 0.15)); g.add(mesh(S(0.22, 12, 8), teamMat, 0, 0.47, 0.15));
       g.add(mesh(new THREE.BoxGeometry(0.26, 0.6, 0.32), dark, 0, -0.42, 0.02));
       g.userData.muzzle = 1.75;
+    } else if (id === 'W05') { // 墨刀（第 56 版）：深色刀柄、隊色貓掌護手（三顆肉球）、白邊包著亮亮的隊色刀身，微微往上翹的刀尖
+      const grip = mesh(new THREE.CylinderGeometry(0.15, 0.17, 0.85, 10), dark, 0, 0, 0.05); grip.rotation.x = Math.PI / 2; g.add(grip);
+      g.add(mesh(S(0.2, 10, 8), dark, 0, 0, -0.42));
+      g.add(mesh(S(0.36, 14, 10), teamMat, 0, 0, 0.55, 1.25, 1, 0.5));
+      [-0.2, 0, 0.2].forEach((x) => g.add(mesh(S(0.1, 8, 6), std(0xff9db0, 0.5), x, 0.24 - Math.abs(x) * 0.4, 0.62)));
+      const sh = (k) => { const L = 2.5 + (k - 1) * 0.5, h = 0.32 * k, sp = new THREE.Shape(); sp.moveTo(0, -h); sp.lineTo(L - 0.7, -h); sp.quadraticCurveTo(L - 0.05, -h * 0.8, L, 0.42); sp.quadraticCurveTo(L - 0.6, h + 0.03, 0, h); return sp; };
+      const blade = (k, depth, mat) => { const geo = new THREE.ExtrudeGeometry(sh(k), { depth, bevelEnabled: false }); geo.translate(0, 0, -depth / 2); geo.rotateY(-Math.PI / 2); const m = mesh(geo, mat, 0, 0, 0.75); return m; };
+      g.add(blade(1.25, 0.08, std(0xffffff, 0.15, { emissive: 0xffffff, emissiveIntensity: 0.25 })));
+      const core = blade(0.8, 0.13, teamMat); core.scale.set(1, 1, 0.93); g.add(core);
+      g.userData.muzzle = 2.6;
     } else {
       const body = mesh(new THREE.CapsuleGeometry(0.26, 1.1, 6, 12), teamMat, 0, 0, 0.3); body.rotation.x = Math.PI / 2; g.add(body);
       const bar = mesh(new THREE.CylinderGeometry(0.11, 0.13, 2.6, 10), white, 0, 0.02, 2.1); bar.rotation.x = Math.PI / 2; g.add(bar);
@@ -3544,7 +3569,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     // 武器（接在右手）
     const hand = new THREE.Group(); hand.position.set(-0.85, 2.3, 0.95); body.add(hand);
-    const weapons = { W01: weaponModel('W01', mTeam), W02: weaponModel('W02', mTeam), W03: weaponModel('W03', mTeam), W04: weaponModel('W04', mTeam) };
+    const weapons = { W01: weaponModel('W01', mTeam), W02: weaponModel('W02', mTeam), W03: weaponModel('W03', mTeam), W04: weaponModel('W04', mTeam), W05: weaponModel('W05', mTeamGloss) };
     Object.values(weapons).forEach((w) => { w.visible = false; hand.add(w); });
 
     // 墨貓形態（原創「魷魚貓」，Yen 2026-11-17：要更像魷魚）：往上尖尖的魷魚身體、頂端兩片三角形的鰭（做成貓耳朵的樣子，裡面粉紅色），
@@ -3647,6 +3672,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }
       armR.rotation.x = aim + 0.25; hand.rotation.x = hx;
       hand.position.z = 0.95 - (roller ? 0 : cat.recoil * 0.3);
+      if (cat.weaponId === 'W05') { // 墨刀：0 從右往左橫砍、1 從左往右、2 舉高往下劈、3 往前刺（衝刺斬）
+        cat.slash = Math.max(0, (cat.slash || 0) - dt / 0.2);
+        let ry = 0.2, kx = -0.55 - s.pitch * 0.5, px = -0.85, pz = 0.95;
+        if (cat.slash > 0) {
+          const u = 1 - cat.slash, e = 1 - Math.pow(1 - u, 3), k = cat.slashKind;
+          if (k === 0) { ry = SC.lerp(-1.5, 1.3, e); kx = 0.2; px = SC.lerp(-1.1, -0.1, e); }
+          else if (k === 1) { ry = SC.lerp(1.3, -1.5, e); kx = 0.2; px = SC.lerp(-0.1, -1.1, e); }
+          else if (k === 2) { ry = 0.15; kx = SC.lerp(-2.3, 0.75, e); px = -0.45; armR.rotation.x = SC.lerp(-2.9, -1.1, e); }
+          else { ry = 0; kx = 0.05; pz = 0.95 + Math.sin(u * Math.PI) * 0.9; }
+        }
+        hand.rotation.y = ry; hand.rotation.x = kx; hand.position.x = px; hand.position.z = pz;
+      } else if (hand.rotation.y) { hand.rotation.y = 0; hand.position.x = -0.85; }
       if (s.rolling && weapons.W02.userData.roller) weapons.W02.userData.roller.rotation.x += dt * s.speed * 1.6;
       const sq = cat.squash, stretch = air ? SC.clamp(s.vy * 0.004, -0.1, 0.14) : 0;
       body.scale.set(1 + sq * 0.22 - stretch * 0.5, 1 - sq * 0.25 + stretch, 1 + sq * 0.22 - stretch * 0.5);
@@ -3758,6 +3795,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         case 'Digit2': I.select = 'W02'; break;
         case 'Digit3': I.select = 'W03'; break;
         case 'Digit4': I.select = 'W04'; break;
+        case 'Digit5': I.select = 'W05'; break;
         case 'Escape': case 'KeyP': I.pause = true; break;
         case 'KeyM': SC.ui.toggleMute(); break;
         case 'ArrowUp': case 'ArrowDown': e.preventDefault(); break;
@@ -3800,7 +3838,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <button class="t-btn t-fire" id="t-fire" data-act="fire" type="button" aria-label="點一下跳躍，按住射擊"><i class="ic ic-fire"></i><small>點＝跳<br>按住＝射擊</small></button>
       <button class="t-btn t-cat" id="t-cat" data-act="cat" type="button" aria-label="按住變墨貓"><i class="ic ic-cat"></i><span>墨貓</span><small>按住</small></button>
       <button class="t-btn t-bomb" id="t-bomb" data-act="bomb" type="button" aria-label="墨水彈">${SC.ui.icon('BOMB')}<small>墨水彈</small></button>
-      <div class="t-wpns" id="t-wpns">${['W01', 'W02', 'W03', 'W04'].map((w) => `<button class="t-btn t-w" data-act="pick" data-w="${w}" type="button" aria-label="${SC.CFG[w].name}">${SC.ui.icon(w)}<small>${SC.CFG[w].name}</small></button>`).join('')}</div>`;
+      <div class="t-wpns" id="t-wpns">${['W01', 'W02', 'W03', 'W04', 'W05'].map((w) => `<button class="t-btn t-w" data-act="pick" data-w="${w}" type="button" aria-label="${SC.CFG[w].name}">${SC.ui.icon(w)}<small>${SC.CFG[w].name}</small></button>`).join('')}</div>`;
     ui.appendChild(layer);
     stickEl = layer.querySelector('#t-stick'); nubEl = layer.querySelector('#t-nub');
     const zone = layer.querySelector('#t-zone');
@@ -3902,7 +3940,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 (() => {
   const fx = (SC.fx = {});
   const NP = 900, NB = 200;
-  let parts, blobs, pList = [], pNext = 0, beams = [], ghosts = [], rings = [], pops = [], popNext = 0, scene;
+  let parts, blobs, pList = [], pNext = 0, beams = [], ghosts = [], rings = [], pops = [], popNext = 0, arcs = [], scene;
+  const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), QA = new THREE.Quaternion(), QB = new THREE.Quaternion();
   const dummy = new THREE.Object3D(), col = new THREE.Color(), up = new THREE.Vector3(0, 0, 1), dir = new THREE.Vector3();
 
   fx.init = (sc) => {
@@ -3924,6 +3963,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.35, 'rgba(255,255,255,.85)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
     const popTex = new THREE.CanvasTexture(c);
     for (let i = 0; i < 24; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: popTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })); sp.visible = false; sp.renderOrder = 6; scene.add(sp); pops.push({ sp, life: 0 }); }
+    // 墨刀揮過去的一道彎月形刀光（第 56 版）
+    const ag = new THREE.RingGeometry(0.42, 1, 40, 1, -1.2, 2.4); ag.rotateZ(Math.PI / 2); // 弧的中間朝 +y，等一下轉成朝前
+    for (let i = 0; i < 6; i++) { const m = new THREE.Mesh(ag, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.visible = false; m.renderOrder = 5; scene.add(m); arcs.push({ m, life: 0 }); }
     for (let i = 0; i < 8; i++) {
       const m = new THREE.Mesh(new THREE.RingGeometry(0.72, 1, 48), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
       m.rotation.x = -Math.PI / 2; m.visible = false; m.renderOrder = 4; scene.add(m); rings.push({ m, life: 0 });
@@ -3936,6 +3978,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     s.m.position.set(x, y + 0.25, z); s.m.material.color.copy(color); s.m.visible = true; s.life = s.max = life; s.r = radius;
   };
 
+  // 墨刀刀光：yaw 是往前的方向；kind 0／1 橫砍（左右）、2 直劈、3 衝刺斬（細長）
+  const WHITE3 = new THREE.Color(0xffffff);
+  fx.slash = (x, y, z, yaw, reach, color, kind) => {
+    const s = arcs.find((q) => q.life <= 0) || arcs[0], m = s.m; m.position.set(x, y, z);
+    // 圓弧原本在 XY 平面、中間朝 +y。橫砍：轉到水平、中間朝前（Ry(yaw)·Rx(π/2)）；直劈：先轉成直立的面，再往前倒（Ry(yaw)·Rx(α)·Ry(-π/2)）
+    if (kind === 2) m.quaternion.setFromAxisAngle(Y, yaw).multiply(QA.setFromAxisAngle(X, Math.PI / 2 - 0.55)).multiply(QB.setFromAxisAngle(Y, -Math.PI / 2));
+    else m.quaternion.setFromAxisAngle(Y, yaw).multiply(QA.setFromAxisAngle(X, Math.PI / 2 + (kind === 1 ? 0.32 : kind === 0 ? -0.32 : 0)));
+    m.material.color.copy(color).lerp(WHITE3, 0.3); m.visible = true; s.life = s.max = kind === 3 ? 0.28 : 0.24; s.r = reach; s.k = kind; m.scale.set(reach * (kind === 3 ? 0.35 : 1), reach * (kind === 3 ? 1.3 : 1), reach);
+  };
   // life、grav：粒子壽命與重力的倍率（煙火用長壽命、低重力）
   fx.burst = (x, y, z, color, n = 10, speed = 16, size = 0.5, upBias = 0.6, life = 1, grav = 1) => {
     for (let i = 0; i < n; i++) {
@@ -3982,6 +4033,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     parts.instanceMatrix.needsUpdate = true;
     beams.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = Math.max(0, s.life / s.max); s.m.material.opacity = k; s.m.scale.x = s.m.scale.z = s.w * (0.3 + k); if (s.life <= 0) s.m.visible = false; });
     pops.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = Math.max(0, s.life / s.max); s.sp.scale.setScalar(s.size * (0.6 + 0.6 * (1 - k))); s.sp.material.opacity = k; if (s.life <= 0) s.sp.visible = false; });
+    arcs.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = 1 - Math.max(0, s.life / s.max); s.m.material.opacity = 0.9 * (1 - k * k); const g = s.r * (0.85 + 0.25 * k); s.m.scale.set(g * (s.k === 3 ? 0.35 : 1), g * (s.k === 3 ? 1.3 : 1), g); if (s.life <= 0) s.m.visible = false; });
     rings.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = 1 - Math.max(0, s.life / s.max), e = 1 - (1 - k) * (1 - k); s.m.scale.setScalar(s.r * (0.15 + 0.85 * e)); s.m.material.opacity = 0.85 * (1 - k); if (s.life <= 0) s.m.visible = false; });
     ghosts.forEach((s) => {
       if (s.life <= 0) return; s.life -= dt; s.g.position.y += dt * 5.5; s.g.position.x += Math.sin(s.life * 5) * dt * 1.5;
@@ -4240,7 +4292,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 打法：罐頭落地時沾滿對手墨水 → 把罐頭側面塗成自己的顏色 → 變墨貓爬上去 → 連跳到機頂 → 射紅色按鈕。
 (() => {
   const HALF = 48, DECK = 13, CAB = 12, CAB_TOP = 52, DECK_TOP = 54, BTN = 2.75, BTN_H = 0.9, CAN = 5, CAN_H = 22, CARRIAGE_Y = 74;
-  const PHASE_HP = 450, DMG = { W01: 10, W03: 60, W04: 9, roller: 30, bomb: 50 }, DECK_GRACE = 6, SHAKE_WARN = 1.2, CARRIAGE_SPEED = 46;
+  const PHASE_HP = 450, DMG = { W01: 10, W03: 60, W04: 9, W05: 18, roller: 30, bomb: 50 }, DECK_GRACE = 6, SHAKE_WARN = 1.2, CARRIAGE_SPEED = 46;
   // Yen 2026-11-18：第 3 階段對五歲小孩太難，調慢：招式間休息變長、預警時間跟前兩階段一樣、罐頭倒數變長、可以在機頂待久一點
   const MAX_CANS = [2, 3, 3], FUSE = 16, CAN_KEEP = 22, REST = [1.4, 1.1, 1.3], P3_DECK_GRACE = 9;
   const PHASE_NAMES = ['第 1 階段・夾子砸地', '第 2 階段・掃臂與毛線球', '第 3 階段・大王生氣了！'];
@@ -4778,7 +4830,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   const onButton = (x, y, z, e) => Math.abs(x) <= BTN + e && Math.abs(z) <= BTN + e && y >= DECK_TOP - e && y <= DECK_TOP + BTN_H + e;
   // 戰鬥事件：子彈或狙擊打到紅鈕、滾刷在紅鈕旁揮擊、墨水彈在紅鈕旁爆炸
-  B.onImpact = (x, y, z, cause) => (B.on && (cause === 'W01' || cause === 'W03' || cause === 'W04') && onButton(x, y, z, 0.6) ? damage(DMG[cause]) : false);
+  B.onImpact = (x, y, z, cause) => (B.on && (cause === 'W01' || cause === 'W03' || cause === 'W04' || cause === 'W05') && onButton(x, y, z, 0.6) ? damage(DMG[cause]) : false);
   B.onRoller = (pos) => (B.on && Math.hypot(pos.x, pos.z) <= 6.5 && Math.abs(pos.y - DECK_TOP) <= 3 ? damage(DMG.roller) : false);
   B.special = (x, y, z, r) => (B.on && Math.hypot(x, z) <= r + 6 && Math.abs(y - DECK_TOP) <= 6 ? damage(DMG.bomb * 2) : false); // 在機頂放絕招：紅鈕大傷害
   B.onBomb = (x, y, z) => (B.on && Math.hypot(x, y - (DECK_TOP + BTN_H / 2), z) <= 5.5 ? damage(DMG.bomb) : false);
@@ -4977,7 +5029,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       leave: async () => { if (left) return; left = true; clearInterval(beat); clearTimeout(timer); links.forEach((l) => { if (l.c && l.c.ok()) { l.c.pub(base + me, '', true); const c = l.c; setTimeout(() => c.close(), 50); } }); },
     };
   }
-  SC.relay = { use: async (n) => (n === 'room' ? { join } : null) };
+  // 魔王關排行榜（Yen 2026-11-20，第 56 版：公開版也大家共用）：每一關一則 retain 訊息 `<APP>/rank/s<關>`，內容是前 10 名 { l: [...] }。
+  // 同時連上所有中繼站，收到哪一個都交給 onList；誰都能改這則訊息，所以收到後由 09_ui.js 檢查內容、跟自己這台的紀錄合併，缺了就補發回去。
+  function board(onList) {
+    const base = APP + '/rank/', links = [];
+    const onMsg = (topic, text) => { if (!topic.startsWith(base) || !text || text.length > 4000) return; const st = topic.slice(base.length); if (!/^s\d{1,2}$/.test(st)) return; let m; try { m = JSON.parse(text); } catch (e) { return; } onList(st.slice(1), m && Array.isArray(m.l) ? m.l : []); };
+    BROKERS().forEach((url) => { const l = { c: null }; links.push(l);
+      const go = () => open(url, base + 'w', onMsg, () => { l.c = null; setTimeout(go, 5000); }).then((c) => { l.c = c; c.sub(base + '+'); }).catch(() => setTimeout(go, 20000));
+      go(); });
+    return { pub: (st, list) => { const text = JSON.stringify({ l: list }); links.forEach((l) => { if (l.c && l.c.ok()) l.c.pub(base + 's' + st, text, true); }); }, up: () => links.some((l) => l.c && l.c.ok()) };
+  }
+  SC.relay = { use: async (n) => (n === 'room' ? { join } : null), board };
 })();
 
 // 連線對戰：用 Claude Artifact 的 room 能力，只靠 presence 同步（每個進房的人都能送，不需要編輯權限）。
@@ -4995,7 +5057,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const KINDS = ['maomao', 'shuang', 'banban', 'taro'], PI = Math.PI;
   // 事件欄位裡要跟著場地翻轉的 x／z 分量，以及面向角
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
-  const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], g: [0, 2, 3, 5], S: [0, 2], X: [0, 2] }, YAW = { w: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
+  const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], g: [0, 2, 3, 5], S: [0, 2], X: [0, 2], m: [0, 2], n: [0, 1, 2, 3] }, YAW = { w: 3, m: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
   const QROOMS = 16; let qT = null, qSent = null;
   // 聊天（Yen 2026-11-20）：貼圖在每種房間都能用；自由打字只在用房號開的好友房（TEXT_IN = 'friend'），隨機配對房陌生人不能打字給小朋友看。
   // 訊息放在 presence 的 cm 欄位：最近 15 秒內自己送的幾則，[流水號, 's' 貼圖編號 | 'x' 文字]；收的人用流水號去重。
@@ -5298,7 +5360,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   SC.arenaBoss = (D) => {
     // Yen 2026-11-17：魔王先初步變弱：每回合血量約八成、整體動作（含預告和飛行物）慢 15%（PACE）
     const PACE = D.pace || 0.85;
-    const R = D.R || 46, PHASE_HP = Math.round((D.phaseHP || 360) * 0.82), DMG = D.dmg || { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
+    const R = D.R || 46, PHASE_HP = Math.round((D.phaseHP || 360) * 0.82), DMG = D.dmg || { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
     const BODY_R = D.bodyR, TOP = D.top, NAMES = D.phaseNames;
     const CH0 = 0.05, CH1 = 2.7, BOOM = 2.82, CINE_END = BOOM + 0.42;
     const B = { name: D.name, face: D.face, lede: D.lede, spawn: D.spawn || { x: 0, z: -32 }, on: false, phase: 1, health: PHASE_HP, maxHealth: PHASE_HP, state: 'idle', phaseName: NAMES[0], time: 0, clearSeconds: 0, tired: false };
@@ -6041,7 +6103,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 招式：丟西瓜炸彈（地上紅圈）、墨水大砲（三連發）、第 3 回合會繞著場地下西瓜雨（只有紅圈外面安全）。
 (() => {
   const R = 46, BODY_R = 4.6, TOP = 12, FLY = 10, BALLOONS = 5, BALLOON_HP = 24;
-  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
   const balloons = []; let basketMat, ropeMat, glowI = 0, glowAt = 0;
   const COLORS = [0xff5d8f, 0x58c7ff, 0xffd23f, 0x7be36b, 0xb07bff];
 
@@ -6275,7 +6337,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 第 3 回合場上有三顆大石頭，站在石頭前面引他的鑽頭衝過來，撞到石頭就卡住。
 (() => {
   const R = 46, BODY_R = 5.4, TOP = 15, UNDER = -17, BALL_HP = 12, BALL_R = 2.4;
-  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
   const balls = [], holes = [], rocks = []; let dirt, vestMat;
 
   const B4 = SC.boss4 = SC.arenaBoss({
@@ -7364,7 +7426,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 破解（飄在天上打不到）：第 1 回合把雷球射回去打他；第 2 回合打散繞著他轉的四朵小烏雲，沒電就掉下來；第 3 回合兩顆雷球都要射回去。
 (() => {
   const R = 46, BODY_R = 7, TOP = 13, FLY = 11, BALL_HP = 12, BALL_R = 2;
-  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
   const balls = [], bolts = []; let cloudMat;
 
   const B9 = SC.boss9 = SC.arenaBoss({
@@ -8632,7 +8694,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const SCOPE_ZOOM = 4; // 狙擊鏡最大倍率（Yen 2026-11-14：放大距離要夠）
   const V0 = Math.sqrt(2 * C.GRAVITY * C.GROUND_JUMP_HEIGHT), V1 = Math.sqrt(2 * C.GRAVITY * C.AIR_JUMP_HEIGHT);
   const t1 = new V3(), t2 = new V3(), t3 = new V3(), viewDir = new V3();
-  const WEAPONS = ['W01', 'W02', 'W03', 'W04'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special', 'W04'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
+  const WEAPONS = ['W01', 'W02', 'W03', 'W04', 'W05'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special', 'W04', 'W05'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
   let slowT = 0, slowK = 0.35, countdownT = 0, endT = 0, lastCount = 0, finalOn = false, swingSeq = 0, vic = null, judged = false, splatSfxAt = 0, resultsShown = false, nextSprayAt = 0, spraySerial = 0;
   G.cam = cam; G.colors = colors;
 
@@ -8668,7 +8730,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const boss = G.mode === 'boss', s = boss ? BS.spawn : W.spawns[a.team][a.slot];
     a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
-    a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false;
+    a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
     a.protectUntil = G.time + C.SPAWN_PROTECTION; a.cat.group.visible = true; a.nextShotAt = 0; a.cat.setInk(1);
     if (a.ai) { a.ai.target = null; a.ai.enemy = null; a.ai.refill = false; a.ai.lastOwn = null; }
     if (a.isPlayer) { cam.yaw = a.yaw; cam.pitch = -0.14; I.clearLatch(); }
@@ -8831,14 +8893,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!G.demo && near(t) > 0.1) { SC.fx.pop(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 2.4, 0.07); SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 3, 18, 0.28); }
   }
   // 被打到往後退一點（在被打的人自己那台算，連線時位置照常同步）。漆彈槍一下退一點點，滾刷、墨水彈退比較多
-  const KNOCK = { W01: 1.8, W02: 6, W04: 1.3, bomb: 9, sp: 0 };
+  const KNOCK = { W01: 1.8, W02: 6, W04: 1.3, W05: 3, bomb: 9, sp: 0 };
   function knock(t, from, cause) {
     const k = KNOCK[cause] || 0; if (!k || !from || !from.pos || t.spT != null) return;
     const dx = t.pos.x - from.pos.x, dz = t.pos.z - from.pos.z, d = Math.hypot(dx, dz); if (d < 0.01) return;
     t.kx = (t.kx || 0) + (dx / d) * k; t.kz = (t.kz || 0) + (dz / d) * k; const m = Math.hypot(t.kx, t.kz); if (m > 11) { t.kx *= 11 / m; t.kz *= 11 / m; }
   }
   function ko(t, from, cause, helpers) {
-    t.alive = false; t.hp = 0; t.deaths++; t.respawnAt = G.time + C.RESPAWN_SECONDS; t.cat.group.visible = false; t.charge = -1; t.rolling = false;
+    t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.respawnAt = G.time + C.RESPAWN_SECONDS; t.cat.group.visible = false; t.charge = -1; t.rolling = false;
     if (t.sight) t.sight.visible = false;
     if (!helpers) { helpers = []; if (t.dmgBy) t.dmgBy.forEach((at, e) => { if (e !== from && G.time - at < 5 && e.team !== t.team && !e.gone) helpers.push(e); }); }
     if (t.dmgBy) t.dmgBy.clear(); helpers.forEach((e) => e.ast++);
@@ -8901,6 +8963,80 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       projectiles.push({ x: mx, y: my, z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
         dmg: w.damage * dmgK, r: w.radius * C.PAINT * boost, range: w.range * (0.85 + rnd() * 0.3), g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.6, flash: k === 0, color: colors[a.team], cause: 'W04' });
     }
+  }
+
+  // ---------- 墨刀（第 56 版）----------
+  // 地上按住：右橫砍 → 左橫砍 → 往下直劈，一直循環；停太久（comboGap）就從第一刀重來。
+  function slash(a) {
+    const w = C.W05, now = G.time;
+    if (a.ink < w.slashInk) { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } return; }
+    a.combo = now - (a.lastSlashAt ?? -9) > w.comboGap + w.slashInterval ? 0 : ((a.combo ?? -1) + 1) % 3; a.lastSlashAt = now;
+    const yaw = a.isPlayer ? cam.yaw : a.yaw, boost = paintBoost(a);
+    a.ink -= w.slashInk; a.lastShotAt = now; a.nextShotAt = now + w.slashInterval * (a.combo === 2 ? 1.25 : 1);
+    slashAt(a, a.pos.x, a.pos.y, a.pos.z, yaw, a.combo, boost, true);
+    if (netOn()) SC.net.ev('m', a.pos.x, a.pos.y, a.pos.z, yaw, a.combo, boost);
+  }
+  // 一刀：前面一片扇形塗成自己的顏色；judge 時判定砍到誰（連線時別人的刀只畫刀光和塗地）
+  function slashAt(a, x, y, z, yaw, kind, boost, judge) {
+    const w = C.W05, over = kind === 2, reach = over ? w.overReach : w.reach, arc = over ? w.overArc : w.arc, r = w.slashRadius * C.PAINT * boost, col = colors[a.team];
+    const fx = Math.sin(yaw), fz = Math.cos(yaw);
+    if (kind !== 3) {
+      INK.by = judge ? a : null;
+      for (const f of over ? [0.35, 0.62, 0.9] : [0.42, 0.78]) for (let i = -3; i <= 3; i++) {
+        const an = yaw + (i / 3) * arc * (over ? 1.6 : 0.9), d = reach * f, px = x + Math.sin(an) * d, pz = z + Math.cos(an) * d, gy = H(px, pz);
+        if (gy > -4 && gy > y - 6 && gy < y + 3) INK.stamp(a.team, px, gy, pz, r * (over ? 0.85 : 0.75));
+      }
+      INK.by = null;
+      SC.fx.slash(x + fx * 1.2, y + (over ? 2.4 : 2.2), z + fz * 1.2, yaw, reach * 0.9, col, kind);
+      if (near(a) > 0.1) { SC.fx.burst(x + fx * reach * 0.7, y + 1, z + fz * reach * 0.7, col, over ? 10 : 6, 14, 0.4, 0.3); if (over) SC.fx.ring(x + fx * reach * 0.6, Math.max(H(x + fx * reach * 0.6, z + fz * reach * 0.6), y - 6), z + fz * reach * 0.6, col, 4.5, 0.25); }
+    } else SC.fx.slash(x, y + 2.4, z, yaw, 6, col, 3);
+    if (near(a) > 0.05) A.sfx.slash(near(a), kind);
+    a.cat.slash = 1; a.cat.slashKind = kind;
+    if (!judge || kind === 3) return;
+    if (G.mode === 'boss') { // 喵抓抓大王的按鈕這種「打到某個點」的機關
+      outer: for (const f of [0.5, 0.85]) for (let i = -2; i <= 2; i++) { const an = yaw + (i / 2) * arc, d = reach * f; for (const dy of [1.2, 2.6, 4]) if (BS.onImpact(x + Math.sin(an) * d, y + dy, z + Math.cos(an) * d, 'W05')) break outer; }
+    }
+    const dmg = w.slashDamage[kind] * (a.ai ? aiD().dmg : 1);
+    for (const e of G.hit) {
+      if (e === a || e.team === a.team || !e.alive) continue;
+      const dy = e.pos.y - y; if (dy + bodyTop(e) < -1 || dy + bodyBot(e) > 6) continue;
+      const dx = e.pos.x - x, dz = e.pos.z - z, d = Math.hypot(dx, dz); if (d > reach + bodyR(e)) continue;
+      if (d > bodyR(e) + 1 && Math.abs(SC.angDiff(yaw, Math.atan2(dx, dz))) > arc + Math.atan2(bodyR(e), d)) continue;
+      hurt(e, dmg, a, 'W05');
+    }
+  }
+  // 空中按一下：往準星方向衝刺斬（每次跳起來一次）
+  function bladeDash(a) {
+    const w = C.W05;
+    if (a.ink < w.dashInk) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } return; }
+    const yaw = a.isPlayer ? cam.yaw : a.yaw;
+    a.ink -= w.dashInk; a.lastShotAt = G.time; a.dashUsed = true; a.nextShotAt = G.time + w.dashTime + 0.12;
+    const ax = a.aim.x - a.pos.x, az = a.aim.z - a.pos.z, pitch = SC.clamp(Math.atan2(a.aim.y - (a.pos.y + 2.5), Math.hypot(ax, az)), -0.75, 0.15); // 往準星的方向衝，可以斜斜往下砍到地上的人
+    a.dash = { t: 0, yaw, pitch, px: a.pos.x, pz: a.pos.z, nx: a.pos.x, nz: a.pos.z, hit: new Set() }; a.yaw = yaw;
+    slashAt(a, a.pos.x, a.pos.y, a.pos.z, yaw, 3, 1, true);
+    if (a.isPlayer) cam.shake = Math.min(1, cam.shake + 0.25);
+    if (netOn()) SC.net.ev('m', a.pos.x, a.pos.y, a.pos.z, yaw, 3, 1);
+  }
+  // 衝刺中每一格：固定往前飛、不往下掉，把經過的地面塗掉，碰到的對手直接擊倒
+  function dashStep(a, dt) {
+    const w = C.W05, D = a.dash, v = w.dashDist / w.dashTime;
+    D.t += dt; const ch = Math.cos(D.pitch) * v; a.vel.x = Math.sin(D.yaw) * ch; a.vel.z = Math.cos(D.yaw) * ch; a.vel.y = Math.sin(D.pitch) * v; a.launchT = 0;
+    const r = w.slashRadius * C.PAINT * 0.8;
+    INK.by = a; dashPaint(a.team, D.px, D.pz, a.pos.x, a.pos.z, a.pos.y, r); INK.by = null; D.px = a.pos.x; D.pz = a.pos.z;
+    if (near(a) > 0.1) SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, colors[a.team], 3, 8, 0.4, 0.1);
+    for (const e of G.hit) {
+      if (e === a || e.team === a.team || !e.alive || D.hit.has(e)) continue;
+      const dy = e.pos.y - a.pos.y; if (dy + bodyTop(e) < -2.5 || dy + bodyBot(e) > 5.5) continue;
+      if (Math.hypot(e.pos.x - a.pos.x, e.pos.z - a.pos.z) < w.dashRadius + bodyR(e)) { D.hit.add(e); hurt(e, w.dashDamage * (a.ai ? aiD().dmg : 1), a, 'W05'); }
+    }
+    const end = D.t >= w.dashTime || a.onGround;
+    if (netOn() && (end || Math.hypot(a.pos.x - D.nx, a.pos.z - D.nz) > 7)) { SC.net.ev('n', D.nx, D.nz, a.pos.x, a.pos.z, a.pos.y, r); D.nx = a.pos.x; D.nz = a.pos.z; }
+    if (end) { a.dash = null; a.vel.x *= 0.35; a.vel.z *= 0.35; }
+  }
+  // 衝刺斬塗地：沿路每一點塗在正下方的地面上（太高的懸空處就不塗）
+  function dashPaint(team, x0, z0, x1, z1, y, r) {
+    const L = Math.hypot(x1 - x0, z1 - z0), n = Math.max(1, Math.ceil(L / 1.4));
+    for (let i = 1; i <= n; i++) { const k = i / n, x = x0 + (x1 - x0) * k, z = z0 + (z1 - z0) * k, gy = H(x, z); if (gy > -4 && gy > y - 14 && gy < y + 3) INK.stamp(team, x, gy, z, r); }
   }
 
   function swing(a) {
@@ -9153,7 +9289,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   function setWeapon(a, id) {
     if (a.weapon === id || !a.alive) return;
-    a.weapon = id; a.switchUntil = G.time + C.SWITCH_DELAY; a.charge = -1; a.rolling = false; a.cat.setWeapon(id);
+    a.weapon = id; a.switchUntil = G.time + C.SWITCH_DELAY; a.charge = -1; a.rolling = false; a.dash = null; a.cat.setWeapon(id);
     if (a.isPlayer) { A.sfx.swap(); SC.ui.onWeapon(id); }
   }
 
@@ -9177,6 +9313,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.submerged !== wasSub && a.onGround) SC.fx.burst(a.pos.x, a.pos.y + 0.3, a.pos.z, colors[a.team], 7, 11, 0.4);
 
     const climbing = G.mode === 'boss' && a.isPlayer && bossClimb(a, ctl, wantCat, dt);
+    if (climbing) a.dash = null;
     if (!climbing) {
     // 速度
     let sp = C.WALK_SPEED;
@@ -9185,6 +9322,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (a.ground === 'air') sp = Math.min(a.airSpeed, C.WALK_SPEED * 1.25);
     if (a.charge >= 0) sp *= 0.55; if (a.rolling) sp *= SC.lerp(C.W02.rollSpeedMin, C.W02.rollSpeedMax, a.rollK); // 滾刷越推越快
     if (a.ai) sp *= aiD().speed;
+    if (a.weapon === 'W05' && a.form === 'biped') sp *= C.W05.speed; // 拿刀跑比較快
     if (a.onGround) a.airSpeed = Math.max(C.WALK_SPEED, sp);
     const len = Math.hypot(ctl.mx, ctl.mz), k = len > 1 ? 1 / len : 1, acc = a.onGround ? 13 : 4;
     if (a.launchT > 0) a.launchT -= dt; // 被機頂甩出去的瞬間不能煞車
@@ -9197,6 +9335,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       SC.fx.burst(a.pos.x, a.pos.y + 0.2, a.pos.z, a.jumps > 1 || a.ground === 'own' ? colors[a.team] : WHITE, a.jumps > 1 ? 6 : 4, 9, 0.32, 0.1);
     }
     if (!a.onGround) a.vel.y -= C.GRAVITY * dt;
+    if (a.dash) dashStep(a, dt);
     const nx = a.pos.x + a.vel.x * dt; if (blocked(a, nx, a.pos.z)) a.vel.x = 0; else a.pos.x = nx;
     const nz = a.pos.z + a.vel.z * dt; if (blocked(a, a.pos.x, nz)) a.vel.z = 0; else a.pos.z = nz;
     if (a.kx || a.kz) { const kx = a.pos.x + a.kx * dt, kz = a.pos.z + a.kz * dt; if (!blocked(a, kx, a.pos.z)) a.pos.x = kx; if (!blocked(a, a.pos.x, kz)) a.pos.z = kz; const f = Math.exp(-7 * dt); a.kx *= f; a.kz *= f; if (Math.hypot(a.kx, a.kz) < 0.2) a.kx = a.kz = 0; } // 被打退
@@ -9233,6 +9372,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (ctl.fire && canAct && now >= a.nextShotAt) {
         if (a.ink >= C.W04.ink) { fireW04(a); a.nextShotAt = now + C.W04.interval; }
         else { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
+      }
+    } else if (a.weapon === 'W05') {
+      if (a.onGround) a.dashUsed = false;
+      if (!a.dash && canAct) {
+        if (ctl.fire && !a.prevFire && !a.onGround && !ctl.jump && !a.dashUsed) bladeDash(a); // 空中再按一下：衝刺斬（點一下跳的那一下不算）
+        else if (ctl.fire && now >= a.nextShotAt) slash(a);
       }
     } else if (a.weapon === 'W02') {
       if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= C.W02.swingInk) swing(a); else if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
@@ -9287,7 +9432,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.spRing.material.color.copy(colors[a.team]); a.spRing.userData.fill.material.color.copy(colors[a.team]); return a.spRing;
   }
   function startSpecial(a) {
-    a.spT = 0; a.sp = 0; a.sp0 = { x: a.pos.x, y: a.pos.y, z: a.pos.z, g: H(a.pos.x, a.pos.z) }; a.form = 'biped'; a.submerged = false; a.charge = -1; a.rolling = false; if (a.rollPt) rollEnd(a);
+    a.spT = 0; a.sp = 0; a.dash = null; a.sp0 = { x: a.pos.x, y: a.pos.y, z: a.pos.z, g: H(a.pos.x, a.pos.z) }; a.form = 'biped'; a.submerged = false; a.charge = -1; a.rolling = false; if (a.rollPt) rollEnd(a);
     a.vel.set(0, 0, 0); a.onGround = false; a.protectUntil = 0; a.cat.squash = -0.8;
     if (a.isPlayer) { a.spPitch = cam.pitch; SC.ui.spUsed(); }
     if (near(a) > 0.05 && !G.demo) A.sfx.spUp(near(a));
@@ -9475,6 +9620,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (type === 'r') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 12) { rollPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 8)); SC.fx.burst(d[2], d[4] + 0.4, d[3], colors[a.team], 2, 9, 0.35); } }
     else if (type === 'z') { const dir = new V3(d[3], d[4], d[5]); if (dir.lengthSq() > 0.5) sniperShot(a, new V3(d[0], d[1], d[2]), dir.normalize(), SC.clamp(d[6], 0, 1), SC.clamp(d[7], 1, 1.2), { len: d[8], hit: d[9] }); }
     else if (type === 'g') { const l = Math.hypot(d[3], d[4], d[5]); if (l > 0.5 && projectiles.length < 500) { pellets(a, d[0], d[1], d[2], d[3] / l, d[4] / l, d[5] / l, SC.clamp(d[6], 1, 1.2), d[7], 0); a.cat.recoil = 1.8; A.sfx.shotgun(near(a)); } }
+    else if (type === 'm') { const k = Math.round(d[4]); if (k >= 0 && k <= 3) slashAt(a, d[0], d[1], d[2], d[3], k, SC.clamp(d[5], 1, 1.2), false); }
+    else if (type === 'n') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 20) dashPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 8)); }
     else if (type === 'b') spawnBomb(a, d[0], d[1], d[2], d[3], d[4], d[5]);
     else if (type === 'S') { a.cat.squash = -0.8; if (near(a) > 0.05) A.sfx.spUp(near(a)); SC.fx.burst(d[0], d[1] + 0.5, d[2], colors[a.team], 30, 24, 0.6); }
     else if (type === 'X') spImpact(a, d[0], d[1], d[2], false);
@@ -9837,6 +9984,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     W02: `<path d="M8 59q12-6 24-1t26-2v6H8z" fill="${WC}"/><path d="M12 8l20 26" stroke="#1b1430" stroke-width="8" stroke-linecap="round"/><path d="M12 8l20 26" stroke="#39324a" stroke-width="4" stroke-linecap="round"/><rect x="13" y="32" width="42" height="18" rx="7" fill="#fff" ${ST}/><rect x="9" y="30" width="8" height="22" rx="3" fill="${WC}" ${ST}/><rect x="51" y="30" width="8" height="22" rx="3" fill="${WC}" ${ST}/><path d="M22 37v8M30 37v8M38 37v8M46 37v8" stroke="#d9d4ea" stroke-width="2.4" stroke-linecap="round"/>`,
     W03: `<path d="M13 40l-4 14h9l4-14z" fill="#39324a" ${ST}/><rect x="4" y="29" width="26" height="13" rx="6.5" fill="${WC}" ${ST}/><rect x="28" y="32" width="28" height="7" rx="3.5" fill="#fff" ${ST}/><rect x="54" y="30" width="7" height="11" rx="2" fill="#39324a" ${ST}/><rect x="10" y="18" width="18" height="8" rx="4" fill="#39324a" ${ST}/><circle cx="27" cy="22" r="3" fill="#9fe8ff"/><path d="M34 22h24" stroke="${WC}" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 6"/>`,
     W04: `<path d="M17 40l-5 14h10l4-14z" fill="#39324a" ${ST}/><rect x="6" y="26" width="30" height="17" rx="8" fill="${WC}" ${ST}/><rect x="32" y="24" width="16" height="9" rx="3" fill="#fff" ${ST}/><rect x="32" y="35" width="16" height="9" rx="3" fill="#fff" ${ST}/><path d="M47 22l6-3v14l-6-2zM47 33l6-2v15l-6-3z" fill="#39324a" ${ST}/><circle cx="20" cy="20" r="6" fill="#bff1ff" ${ST}/><circle cx="20" cy="21" r="3" fill="${WC}"/><circle cx="59" cy="22" r="2.4" fill="${WC}"/><circle cx="61" cy="33" r="2.4" fill="${WC}"/><circle cx="59" cy="44" r="2.4" fill="${WC}"/>`,
+    W05: `<g transform="rotate(-38 32 32)"><path d="M22 25H50Q58 25 63 20Q61 35 50 39H22z" fill="#fff" ${ST}/><path d="M25 29H50Q55 29 58 26Q55 33 49 35H25z" fill="${WC}"/><rect x="3" y="28" width="15" height="8" rx="3" fill="#39324a" ${ST}/><circle cx="4" cy="32" r="4" fill="#39324a" ${ST}/><ellipse cx="19" cy="32" rx="5" ry="10" fill="${WC}" ${ST}/><circle cx="22" cy="25.5" r="1.8" fill="#ff9db0"/><circle cx="23" cy="32" r="1.8" fill="#ff9db0"/><circle cx="22" cy="38.5" r="1.8" fill="#ff9db0"/></g>`,
     BOMB: `<path d="M32 9L8 45 30 57z" fill="${WC}" ${ST}/><path d="M32 9L56 45 30 57z" fill="${WC}" ${ST}/><path d="M32 9L56 45 30 57z" fill="#1b1430" opacity=".22"/><path d="M27 17L15 39" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/><circle cx="21" cy="42" r="2.4" fill="#1b1430"/><circle cx="29" cy="44" r="2.4" fill="#1b1430"/><circle cx="32" cy="9" r="5.4" fill="#ffd23f" ${ST}/><circle cx="8" cy="45" r="5.4" fill="#ffd23f" ${ST}/><circle cx="56" cy="45" r="5.4" fill="#ffd23f" ${ST}/><circle cx="30" cy="57" r="5.4" fill="#ffd23f" ${ST}/>`,
     CAT: `<path d="M8 50q0-22 24-22t24 22q0 6-6 6H14q-6 0-6-6z" fill="${WC}" ${ST}/><path d="M14 34l2-14 10 9zM50 34l-2-14-10 9z" fill="${WC}" ${ST}/><ellipse cx="25" cy="42" rx="3.4" ry="4.4" fill="#fff"/><ellipse cx="39" cy="42" rx="3.4" ry="4.4" fill="#fff"/><path d="M4 60q14-5 28-1t28-1" fill="none" stroke="${WC}" stroke-width="4" stroke-linecap="round" opacity=".8"/>`,
   };
@@ -9883,8 +10031,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.trickIcon = (k) => TRICK[k] || '';
 
   const HELP = {
-    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍按住蓄力會放大，放開發射'], ['Q（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['G／右鍵（按住）', '丟墨水彈：短按丟近，按越久丟越遠'], ['1 2 3 4／滾輪', '切換武器（4 是散彈槍：近距離很強）'], ['Esc／P', '暫停'], ['M', '靜音']],
-    touch: [['左半邊', '按住拖曳出搖桿來移動'], ['墨貓鈕（左下）', '按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動'], ['射擊鈕', '短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準'], ['狙擊槍', '按住射擊鈕蓄力會放大，放開發射，一發擊倒'], ['按著墨貓＋點射擊鈕', '墨貓跳，落地前都維持墨貓'], ['右半邊', '拖曳轉動視角瞄準'], ['墨水彈', '朝準星的方向丟：短按丟近，按越久丟越遠'], ['切換', '點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍']],
+    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍按住蓄力會放大，放開發射'], ['Q（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['G／右鍵（按住）', '丟墨水彈：短按丟近，按越久丟越遠'], ['1 2 3 4 5／滾輪', '切換武器（4 是散彈槍：近距離很強；5 是墨刀：按住連砍，跳起來再按一下往前衝刺斬）'], ['Esc／P', '暫停'], ['M', '靜音']],
+    touch: [['左半邊', '按住拖曳出搖桿來移動'], ['墨貓鈕（左下）', '按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動'], ['射擊鈕', '短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準'], ['狙擊槍', '按住射擊鈕蓄力會放大，放開發射，一發擊倒'], ['按著墨貓＋點射擊鈕', '墨貓跳，落地前都維持墨貓'], ['右半邊', '拖曳轉動視角瞄準'], ['墨水彈', '朝準星的方向丟：短按丟近，按越久丟越遠'], ['墨刀', '按住射擊鈕連續砍；跳起來後按住射擊鈕＝往前衝刺斬'], ['切換', '點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍、墨刀']],
   };
 
   ui.build = () => {
@@ -9914,7 +10062,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-scope" id="scope"></div>
       <div class="h-cross" id="cross"><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div>
       <div class="h-weapons" id="weapons">
-        ${['W01', 'W02', 'W03', 'W04'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>G</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Q</kbd><b>墨貓</b></span></div>
+        ${['W01', 'W02', 'W03', 'W04', 'W05'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>G</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Q</kbd><b>墨貓</b></span></div>
       </div>
       <div class="h-tip" id="tip"></div>
       <div class="h-trick" id="trick-card"></div>
@@ -10215,7 +10363,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.tip = (text, dur) => { els.tip.textContent = text; els.tip.classList.add('on'); tipT = dur; };
   ui.lowInk = () => { const t = performance.now() / 1000; if (t - lowInkAt < 4) return; lowInkAt = t; ui.tip(SC.input.isTouch ? '墨水不夠了！按住「墨貓」潛進自己的墨水補充' : '墨水不夠了！按住 Q 潛進自己的墨水補充', 3); };
   const fallTxt = () => (G().mode === 'boss' ? '掉下去了' : '掉進' + (SC.world.riverName || '河')); // 每張場地的河不一樣（牛奶河、巧克力河、大海…）
-  const CAUSE = { W01: '漆彈槍', W02: '滾刷', W03: '狙擊槍', W04: '散彈槍', bomb: '墨水彈', fall: '掉進河裡', boss: '被喵抓抓大王擊倒', special: '絕招' };
+  const CAUSE = { W01: '漆彈槍', W02: '滾刷', W03: '狙擊槍', W04: '散彈槍', W05: '墨刀', bomb: '墨水彈', fall: '掉進河裡', boss: '被喵抓抓大王擊倒', special: '絕招' };
   ui.feed = (from, t, cause) => {
     const el = document.createElement('div'); el.className = 'feed-item';
     const tag = (a) => `<span class="${['ta', 'tb', 'tc'][a.team] || 'tb'}">${a.isPlayer ? '你' : a.name}</span>`;
@@ -10245,16 +10393,51 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const CAT_NAME = { maomao: '毛毛', shuang: '雙雙', banban: '班班', taro: '太郎' };
   const TROPHY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6"/><path d="M7 5H3q0 5 4.5 5M17 5h4q0 5-4.5 5" fill="none" stroke="#1b1430" stroke-width="1.6"/><path d="M10 13h4v4h3v3H7v-3h3z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6"/></svg>';
   const MEDAL = ['#ffd23f', '#dfe6f2', '#e8a165'];
+  // 第 56 版（Yen 選「公開版也全網共用」）：排行榜大家共用。Claude 版存在這個頁面的共用資料（db），公開版存在公開中繼站的 retain 訊息（07d0_relay.js）。
+  // 兩邊各是一份。共用的連不上時照樣用這台裝置的紀錄；連上後把這台的紀錄合併上去。別人送來的資料先檢查（名字只留字母數字、時間要合理）。
   const rank = (() => {
-    const KEY = 'sc-boss-rank', MAX = 5; let pend = null;
+    const KEY = 'sc-boss-rank', MAX = 5, MAXS = 10; let pend = null, shown = null;
     const load = () => { try { const d = JSON.parse(localStorage.getItem(KEY) || '{}'); return d && typeof d === 'object' ? d : {}; } catch (e) { return {}; } };
     const store = (d) => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) { /* 私密模式存不了也沒關係 */ } };
-    const list = (st) => { const l = load()[st]; return Array.isArray(l) ? l.filter((e) => e && typeof e.t === 'number' && isFinite(e.t)).slice(0, MAX) : []; };
+    const valid = (e) => { if (!e || typeof e !== 'object' || !Number.isFinite(e.t) || e.t < 20 || e.t > 7200) return null; const n = SC.net.clean(e.n); return { n: n || '?', t: Math.round(e.t * 10) / 10, d: Number.isFinite(e.d) ? Math.round(e.d) : 0 }; };
+    const merge = (...ls) => { const seen = new Set(), out = []; ls.forEach((l) => (Array.isArray(l) ? l : []).slice(0, 40).forEach((e) => { const v = valid(e); if (!v) return; const k = v.n + '|' + v.t + '|' + v.d; if (seen.has(k)) return; seen.add(k); out.push(v); })); return out.sort((x, y) => x.t - y.t || x.d - y.d).slice(0, MAXS); };
+    const mine = (st) => { const l = load()[st]; return Array.isArray(l) ? l.filter((e) => e && typeof e.t === 'number' && isFinite(e.t)).slice(0, MAX) : []; };
+    const shared = { ready: false, api: null, lists: {}, wait: {} };
+    const list = (st) => (shared.ready ? merge(shared.lists[st], mine(st)) : mine(st)).slice(0, MAX);
+    const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const push = (st) => { if (!shared.api || shared.wait[st]) return; shared.wait[st] = setTimeout(() => { shared.wait[st] = 0; shared.api.push(st, shared.lists[st] || []); }, 1200); }; // 等一下再送，同時收到好幾份時只送一次
+    let redraw = 0;
+    const changed = () => { if (redraw) return; redraw = setTimeout(() => { redraw = 0; if (shown && !pend && !$('res-rank').hidden) show(shown, null); if (!els['m-title'].hidden && ui.renderStages) ui.renderStages(); }, 150); };
+    const got = (st, remote) => { // 收到一關的共用排行榜
+      const m = merge(remote, shared.lists[st], mine(st)); shared.lists[st] = m; shared.ready = true;
+      if (!same(m, merge(remote))) push(st); // 共用的少了我們知道的紀錄（或格式不對）：合併後送回去
+      changed();
+    };
+    const seed = () => Object.keys(load()).forEach((st) => { if (/^\d{1,2}$/.test(st) && !shared.lists[st] && mine(st).length) got(st, []); }); // 共用的還沒有這一關：把這台的紀錄放上去
+    setTimeout(async () => { // 等頁面開好再連（Claude 的 claude.use 可能晚一點才有）
+      try {
+        for (let i = 0; i < 20 && !window.SC_PUBLIC && !(window.claude && window.claude.use); i++) await new Promise((r) => setTimeout(r, 250));
+        if (window.SC_PUBLIC) {
+          if (!SC.relay || !SC.relay.board) return;
+          const b = SC.relay.board(got); shared.api = { push: (st, l) => b.pub(st, l) };
+          setTimeout(() => { if (b.up()) { shared.ready = true; seed(); changed(); } }, 6000);
+        } else {
+          const db = window.claude && window.claude.use ? await window.claude.use('db') : null; if (!db) return;
+          const col = db.collection('rank'); let first = true;
+          shared.api = { push: (st, l) => col.doc('s' + st).set({ l }).catch(() => { /* 只能看不能寫的人：只是寫不上去 */ }) };
+          col.onSnapshot((snap) => {
+            snap.docs.forEach((d) => { const m = /^s(\d{1,2})$/.exec(d.id); if (m) { const l = (d.data() || {}).l; if (!same(merge(l), shared.lists[m[1]] || [])) got(m[1], l); } });
+            if (first && !snap.metadata.fromCache) { first = false; shared.ready = true; seed(); changed(); }
+          }, () => { /* 共用資料不能用：繼續用這台裝置的紀錄 */ });
+        }
+      } catch (e) { /* 連不上就只用這台裝置的 */ }
+    }, 300);
     const lastName = () => { try { return SC.net.clean(localStorage.getItem('sc-rank-name') || ''); } catch (e) { return ''; } };
     const commit = () => { // 把等著的那一筆存起來
       if (!pend) return; const p = pend; pend = null;
-      const nm = SC.net.clean(p.inp.value) || p.def, d = load(), l = list(p.st); l.push({ n: nm, t: p.t, d: Date.now() }); l.sort((a, b) => a.t - b.t); d[p.st] = l.slice(0, MAX); store(d);
+      const nm = SC.net.clean(p.inp.value) || p.def, d = load(), l = mine(p.st), e = { n: nm, t: Math.round(p.t * 10) / 10, d: Date.now() }; l.push(e); l.sort((a, b) => a.t - b.t); d[p.st] = l.slice(0, MAX); store(d);
       try { localStorage.setItem('sc-rank-name', nm); } catch (e) { /* 存不了就算了 */ }
+      if (shared.api) { shared.lists[p.st] = merge(shared.lists[p.st], [e]); push(p.st); }
       return nm;
     };
     const render = (st, rows, meAt, editing, def) => {
@@ -10278,11 +10461,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const t = document.createElement('b'); t.className = 'rk-t'; t.textContent = fmtT(e.t); li.appendChild(t);
       });
       if (!rows.length) { const p = document.createElement('p'); p.className = 'rk-empty'; p.textContent = '還沒有紀錄'; box.appendChild(p); }
-      const foot = document.createElement('p'); foot.className = 'rk-foot'; foot.textContent = '這台裝置的紀錄'; box.appendChild(foot);
+      const foot = document.createElement('p'); foot.className = 'rk-foot'; foot.textContent = shared.ready ? '大家的紀錄' : '這台裝置的紀錄'; box.appendChild(foot);
     };
     // secs = null：只顯示（剛存好）；有 secs：看看有沒有進榜
     const show = (st, secs, kind) => {
-      commit(); const l = list(st);
+      commit(); shown = st; const l = list(st);
       if (secs == null || !(secs > 0)) return render(st, l, -1, false);
       let at = l.findIndex((e) => secs < e.t); if (at < 0) at = l.length;
       if (at >= MAX) return render(st, l, -1, false);
