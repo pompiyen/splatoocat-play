@@ -3188,8 +3188,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 // 不靠 Claude 的 room，改走免費的公開 MQTT 中繼站（WebSocket）。對 07d_net.js 提供跟 room 一樣的介面：
 //   SC.relay.use('room') → { join(name) } → { presence(patch), peers(), connected(), leave() }
 // 做法：每個人把自己的 presence 發到 `<APP>/<房名>/p/<自己的 id>`（retain，新進來的人馬上拿得到），
-// 斷線時中繼站幫忙發一則空的 retain（last will）把自己清掉；每 2.5 秒重送一次當心跳，9 秒沒聽到就當作離開。
-// 中繼站照順序試，第一個連得上的就用（同一房的人通常會連到同一個）。裡面是極簡的 MQTT 3.1.1（只用 QoS 0）。
+// 斷線時中繼站幫忙發一則空的 retain（last will）把自己清掉；至少每秒重送一次當心跳，12 秒沒聽到就當作離開。
+// 同時連上所有中繼站（見 join 的說明）。裡面是極簡的 MQTT 3.1.1（只用 QoS 0）。
 (() => {
   const APP = 'splatoocat-p1';
   const BROKERS = () => window.SC_BROKERS || ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
@@ -3231,37 +3231,60 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     });
   }
 
+  // Yen 2026-11-19：真的跟朋友連線時變成各玩各的（對戰中的資料沒有送到，4 秒後對方就被當成離開）。
+  // 公開中繼站對「很頻繁的 retain 訊息」可能會限速或丟掉，兩台也可能連到不同中繼站。所以改成：
+  // 同時連上所有中繼站、每則都發到每一個連上的（收到時用流水號 q 去掉重複和舊的）；
+  // 對戰中快速的更新不用 retain，只有每 2 秒的心跳用 retain（給新進來的人）；每秒最多送約 12 次。
   async function join(name) {
     const me = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6), base = APP + '/' + name + '/p/', others = new Map();
-    let mine = {}, snap = null, left = false, timer = null, client = null, url = null;
+    let mine = {}, snap = null, left = false, timer = null, q = 0, lastSent = 0, lastRetain = 0;
+    const links = []; // { url, c }
+    const st = (SC.relay.stats = { up: [], got: 0, sent: 0 });
     const onMsg = (topic, text) => {
       if (!topic.startsWith(base)) return; const id = topic.slice(base.length); if (id === me || !id) return;
       if (!text) { others.delete(id); snap = null; return; }
       let m; try { m = JSON.parse(text); } catch (e) { return; }
-      if (!m || typeof m !== 'object' || typeof m.p !== 'object' || !m.p || Date.now() - (m.t || 0) > 60000) return; // 很久以前留下來的就不算
-      others.set(id, { peer: id, by: null, isMe: false, sameTab: false, kind: 'viewer', guest: true, presence: Object.freeze(m.p), updatedAt: Date.now(), heard: performance.now() }); snap = null;
+      if (!m || typeof m !== 'object' || typeof m.p !== 'object' || !m.p || typeof m.q !== 'number') return;
+      const o = others.get(id);
+      if (o) { if (m.q <= o.q) { if (m.q === o.q) o.heard = performance.now(); return; } } // 別的中繼站送來的同一則或舊的
+      else if (Math.abs(Date.now() - (m.t || 0)) > 120000) return; // 很久以前留下來的 retain（兩台時鐘可能差很多，給寬一點）
+      st.got++; const pj = JSON.stringify(m.p);
+      if (o && o.pj === pj) { o.q = m.q; o.heard = performance.now(); return; } // 只是心跳（內容沒變）：不換新的 presence，對方畫面凍結時才看得出來
+      others.set(id, { pj,  peer: id, by: null, isMe: false, sameTab: false, kind: 'viewer', guest: true, presence: Object.freeze(m.p), updatedAt: Date.now(), heard: performance.now(), q: m.q }); snap = null;
     };
-    const flush = () => { timer = null; if (client && client.ok() && !left) client.pub(base + me, JSON.stringify({ t: Date.now(), p: mine }), true); };
-    const connect = async (list) => {
-      for (const u of list) { try { client = await open(u, base + me, onMsg, onDrop); url = u; client.sub(base + '+'); if (Object.keys(mine).length) flush(); return true; } catch (e) { client = null; } }
-      return false;
+    const flush = () => {
+      timer = null; if (left) return; lastSent = performance.now();
+      const retain = lastSent - lastRetain > 2000; if (retain) lastRetain = lastSent;
+      const text = JSON.stringify({ t: Date.now(), q: ++q, p: mine }); st.sent++;
+      links.forEach((l) => { if (l.c && l.c.ok()) l.c.pub(base + me, text, retain); });
     };
-    const onDrop = () => { if (left) return; setTimeout(() => { if (!left) connect([url]).then((ok) => { if (!ok && !left) onDrop(); }); }, 1500); }; // 斷線：同一個中繼站重連
-    if (!(await connect(BROKERS()))) { const e = new Error('連不上中繼站'); e.code = 'network'; throw e; }
-    const beat = setInterval(() => { if (Object.keys(mine).length) flush(); }, 2500);
+    const want = () => { if (timer) return; const wait = Math.max(0, 80 - (performance.now() - lastSent)); timer = setTimeout(flush, wait); };
+    const link = (url) => { const l = { url, c: null }; links.push(l);
+      const go = () => open(url, base + me, onMsg, () => { l.c = null; if (!left) setTimeout(go, 1500); }) // 斷線：重連同一個
+        .then((c) => { if (left) { c.close(); return; } l.c = c; c.sub(base + '+'); lastRetain = 0; if (Object.keys(mine).length) want(); })
+        .catch(() => { if (!left) setTimeout(go, l.everUp ? 1500 : 8000); });
+      return new Promise((res) => { const t0 = performance.now(), chk = setInterval(() => { if (l.c || performance.now() - t0 > 6500) { clearInterval(chk); if (l.c) l.everUp = true; res(!!l.c); } }, 50); go(); });
+    };
+    // 第一個中繼站連上就開始（其他的在背景繼續連）；全部 6.5 秒內都連不上才算失敗
+    const ps = BROKERS().map(link);
+    await new Promise((res) => { let n = ps.length; ps.forEach((p) => p.then((ok) => { if (ok) setTimeout(res, 300); else if (--n === 0) res(); })); });
+    const oks = links.map((l) => !!l.c);
+    st.up = links.filter((l) => l.c).map((l) => l.url.replace(/^wss?:\/\//, '').split(/[:/]/)[0]);
+    if (!oks.some(Boolean)) { left = true; links.forEach((l) => l.c && l.c.close()); const e = new Error('連不上中繼站'); e.code = 'network'; throw e; }
+    const beat = setInterval(() => { st.up = links.filter((l) => l.c && l.c.ok()).map((l) => l.url.replace(/^wss?:\/\//, '').split(/[:/]/)[0]); if (Object.keys(mine).length && performance.now() - lastSent > 1000) want(); }, 1000);
     return {
       name,
       presence: async (patch) => {
         const next = { ...mine }; for (const k of Object.keys(patch)) { if (patch[k] === null) delete next[k]; else next[k] = patch[k]; }
-        mine = next; snap = null; if (!timer) timer = setTimeout(flush, 40);
+        mine = next; snap = null; want();
       },
       peers: () => {
-        const now = performance.now(); for (const [id, p] of others) if (now - p.heard > 9000) { others.delete(id); snap = null; }
+        const now = performance.now(); for (const [id, p] of others) if (now - p.heard > 12000) { others.delete(id); snap = null; }
         return snap || (snap = Object.freeze([Object.freeze({ peer: me, by: null, isMe: true, sameTab: true, kind: 'viewer', guest: true, presence: Object.freeze({ ...mine }), updatedAt: Date.now() }), ...[...others.values()].map((p) => Object.freeze({ ...p }))]));
       },
       onPeers: () => () => {}, onConnection: () => () => {},
-      connected: () => !!(client && client.ok()),
-      leave: async () => { if (left) return; clearInterval(beat); if (client && client.ok()) client.pub(base + me, '', true); left = true; if (client) setTimeout(() => client.close(), 50); },
+      connected: () => links.some((l) => l.c && l.c.ok()),
+      leave: async () => { if (left) return; left = true; clearInterval(beat); clearTimeout(timer); links.forEach((l) => { if (l.c && l.c.ok()) { l.c.pub(base + me, '', true); const c = l.c; setTimeout(() => c.close(), 50); } }); },
     };
   }
   SC.relay = { use: async (n) => (n === 'room' ? { join } : null) };
@@ -3338,8 +3361,9 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const pal = SC.PALETTES[Math.abs(h.pal | 0) % SC.PALETTES.length], P = h.fp ? { a: pal.b, b: pal.a } : pal;
     const players = h.pl.map((e, idx) => {
       const r = list.find((x) => x.peer === e[0]);
-      return r ? { idx, peer: e[0], team: flip ? 1 - e[1] : e[1], slot: e[2], kind: e[1] === 0 ? 'maomao' : 'shuang', nick: r.nick || '玩家' + (idx + 1), isMe: e[0] === myPeer, gone: false } : null;
-    }).filter(Boolean);
+      // 開打那一刻剛好沒收到某人的資料（公開中繼站可能漏訊息）也要把他算進來，不然整場都看不到他（Yen 2026-11-19：各玩各的）
+      return { idx, peer: e[0], team: flip ? 1 - e[1] : e[1], slot: e[2], kind: e[1] === 0 ? 'maomao' : 'shuang', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: e[0] === myPeer, gone: false };
+    });
     N.match = { id: h.id, h, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: okMap(h.map) && h.map !== 'random' ? h.map : 'park', players, palette: flip ? { a: P.b, b: P.a } : P, over: false, score: null };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
     if (N.onBegin) N.onBegin(N.match);
@@ -3399,7 +3423,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       if (pl.isMe) { ref = pl; break; }
       const p = peers.find((x) => x.peer === pl.peer), q = p && p.presence;
       if (q && seen.get(pl.peer) !== q) heard[pl.peer] = clock;
-      if (!pl.gone && q && q.mi === m.id && clock - (heard[pl.peer] == null ? m.at : heard[pl.peer]) < 3) { ref = pl; break; }
+      if (!pl.gone && q && q.mi === m.id && clock - (heard[pl.peer] == null ? m.at : heard[pl.peer]) < (window.SC_PUBLIC ? 5 : 3)) { ref = pl; break; }
     }
     N.referee = !!ref && ref.isMe;
 
@@ -3421,7 +3445,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     for (const pl of m.players) {
       if (pl.isMe || pl.gone) continue;
       const p = peers.find((x) => x.peer === pl.peer), q = p && p.presence;
-      if (!q || q.mi !== m.id) { if ((missing[pl.peer] = (missing[pl.peer] || 0) + dt) > 4) { pl.gone = true; g.netGone(pl.idx); if (N.match !== m || m.over) return; } continue; }
+      if (!q || q.mi !== m.id) { if ((missing[pl.peer] = (missing[pl.peer] || 0) + dt) > (window.SC_PUBLIC ? 8 : 4)) { pl.gone = true; g.netGone(pl.idx); if (N.match !== m || m.over) return; } continue; }
       missing[pl.peer] = 0; if (seen.get(pl.peer) === q) continue; seen.set(pl.peer, q); heard[pl.peer] = clock;
       if (Array.isArray(q.e)) for (const ev of q.e) {
         if (!Array.isArray(ev) || !(ev[0] > (lastSeq[pl.peer] || 0)) || typeof ev[1] !== 'string') continue;
@@ -8052,7 +8076,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       const n = SC.net, on = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', start = $('btn-start');
       $('net-opts').hidden = !on; els['m-title'].classList.toggle('net-on', on); start.disabled = false; mapSync(); if (!on) return; // 連線對戰不用先選武器，對戰中隨時切換
       $('net-out').hidden = inRoom; $('net-in').hidden = !inRoom;
-      $('net-msg').textContent = n.state === 'check' ? '正在檢查能不能連線…' : n.state === 'none' ? window.SC_PUBLIC ? '這台裝置現在不能連線。' : '這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。' : n.msg;
+      $('net-msg').textContent = n.state === 'check' ? '正在檢查能不能連線…' : n.state === 'none' ? window.SC_PUBLIC ? '這台裝置現在不能連線。' : '這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。' : n.msg || (window.SC_PUBLIC && SC.relay.stats && n.code ? '中繼站：' + (SC.relay.stats.up.join('、') || '重新連線中') : '');
       ['net-create', 'net-join', 'net-code'].forEach((id) => ($(id).disabled = n.state !== 'idle' || n.busy));
       const me = n.list.find((r) => r.isMe), waiting = n.live && !n.played(n.live), ready = n.state === 'lobby' && me && n.isHost && n.list.length >= 2 && !n.live;
       start.disabled = !ready; start.textContent = !inRoom ? '先開房間或加入房間' : n.isHost || !me ? '開始對戰' : '等房主開始';
