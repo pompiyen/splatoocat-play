@@ -316,7 +316,10 @@ button { font: inherit; color: inherit; }
 .net-msg { margin: 0; font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--cream); min-height: 1.5em; }
 .net-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
 .net-list li { display: flex; align-items: center; gap: 8px; background: var(--navy); border-radius: 10px; padding: 4px 8px; border-left: 6px solid var(--dim); font-size: 15px; }
-.net-list li.t0 { border-left-color: var(--sun); } .net-list li.t1 { border-left-color: var(--mint); } .net-list li.t2 { border-left-color: var(--pink); } .net-list li.wait { opacity: .7; }
+.net-list li.t0 { border-left-color: var(--sun); } .net-list li.t1 { border-left-color: var(--mint); } .net-list li.t2 { border-left-color: var(--pink); } .net-list li.tr { border-left-color: #fff; }
+.net-swap { margin-left: 6px; flex: none; width: 40px; height: 34px; border-radius: 10px; border: 3px solid #fff; background: var(--a); color: #fff; font: 900 20px/1 var(--f-body); cursor: pointer; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); }
+.net-swap:active { transform: translateY(2px); box-shadow: none; }
+#pick-mix .dice { width: 32px; height: 32px; } #pick-mix .swap-ic { width: 22px; height: 18px; } .net-list li.wait { opacity: .7; }
 .net-list b { font-weight: 900; overflow-wrap: anywhere; } .net-list small { margin-left: auto; color: var(--dim); font-size: 12px; font-weight: 700; white-space: nowrap; }
 .net-face { width: 28px; height: 28px; flex: none; } .net-face svg { width: 100%; height: 100%; display: block; }
 .btn:disabled, .pick:disabled { opacity: .55; cursor: default; }
@@ -3437,12 +3440,12 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 // - 三方對戰（Yen 2026-11-19）：房間剛好 3 人時，房主可以選「三方」，每人一隊、三種顏色，場地固定是圓形的時鐘廣場。
 // 限制：只有登入 Claude、而且被邀請看這個頁面的人連得進來；只拿公開連結的人不行。
 (() => {
-  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: true, match: null, msg: '', busy: false, live: null, online: true, referee: false });
+  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: true, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false });
   const KINDS = ['maomao', 'shuang'], PI = Math.PI;
   // 事件欄位裡要跟著場地翻轉的 x／z 分量，以及面向角
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
   const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], S: [0, 2], X: [0, 2] }, YAW = { w: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
-  let api = null, room = null, myPeer = null, clock = 0, joinAt = 0, prof = { n: '', k: 'maomao', w: 'W01' }, sig = '', seq = 0, out = [], sendT = 0, hostT = 0, rot = 0, rc = 1, rs = 0, nT = 2, g0 = 0, seen = new Map(), lastSeq = {}, missing = {}, heard = {}, hb = 0, done = new Set(); // done：自己已經打完或離開的場次，房主的狀態還沒更新時不要又被拉進去
+  let api = null, room = null, myPeer = null, clock = 0, joinAt = 0, prof = { n: '', k: 'maomao', w: 'W01' }, sig = '', seq = 0, out = [], sendT = 0, hostT = 0, hostSeen = '', rot = 0, rc = 1, rs = 0, nT = 2, g0 = 0, seen = new Map(), lastSeq = {}, missing = {}, heard = {}, hb = 0, done = new Set(); // done：自己已經打完或離開的場次，房主的狀態還沒更新時不要又被拉進去
   const r2 = (v) => Math.round(v * 100) / 100, r4 = (v) => Math.round(v * 10000) / 10000, G = () => SC.game;
   const changed = () => { if (N.onChange) N.onChange(); };
   const send = (patch) => { if (room) room.presence(patch).catch(() => {}); };
@@ -3491,7 +3494,26 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (n === prof.n && k === prof.k && p.w === prof.w) return;
     prof = { n, k, w: p.w }; if (N.state === 'lobby') send({ n, k, w: p.w });
   };
-  const hostPatch = () => ({ r: N.rule, mp: N.map, tm: N.tri ? 3 : 2 });
+  // 分隊（Yen 2026-11-19）：mix 'rand'＝開打時隨機分隊，'pick'＝房主指定（點玩家換隊，沒指定的照進房順序輪流）。asg：peer → 隊伍
+  const hostPatch = () => ({ r: N.rule, mp: N.map, tm: N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 4).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
+  // 這場要上場的人分到哪一隊：回傳 [{ peer, team }]。兩隊每隊最多 2 人、兩隊都要有人；三方對戰每人一隊
+  N.lineup = (rand) => {
+    const tri = N.triOn(), n = tri ? 3 : 2, cap = tri ? 1 : 2, who = N.list.slice(0, tri ? 3 : 4).map((r, i) => ({ peer: r.peer, i, team: rand ? -1 : N.asg[r.peer] }));
+    if (rand) for (let i = who.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [who[i], who[j]] = [who[j], who[i]]; }
+    const cnt = new Array(n).fill(0);
+    who.forEach((w) => { if (!(w.team >= 0 && w.team < n) || cnt[w.team] >= cap) w.team = -1; else cnt[w.team]++; });
+    who.forEach((w, k) => { if (w.team >= 0) return; let t = rand ? k % n : w.i % n; if (cnt[t] >= cap) t = cnt.findIndex((c) => c < cap); w.team = t; cnt[t]++; });
+    if (who.length >= 2 && cnt.filter(Boolean).length < 2) { const w = who[who.length - 1]; cnt[w.team]--; w.team = (w.team + 1) % n; cnt[w.team]++; } // 兩隊都要有人
+    return who.sort((a, b) => a.i - b.i);
+  };
+  N.setMix = (v) => { if (!N.isHost) return; N.mix = v === 'rand' ? 'rand' : 'pick'; send(hostPatch()); sig = ''; };
+  // 房主點一個玩家：換到下一隊；那一隊滿了就跟那隊的人對調
+  N.swap = (peer) => {
+    if (!N.isHost || N.mix !== 'pick') return; const L = N.lineup(false), me = L.find((w) => w.peer === peer); if (!me) return;
+    const n = N.triOn() ? 3 : 2, cap = n === 3 ? 1 : 2, to = (me.team + 1) % n, there = L.filter((w) => w.team === to);
+    const asg = {}; L.forEach((w) => (asg[w.peer] = w.team)); asg[peer] = to; if (there.length >= cap) asg[there[there.length - 1].peer] = me.team;
+    N.asg = asg; send(hostPatch()); sig = '';
+  };
   N.setRule = (rule) => { if (!N.isHost) return; N.rule = rule === 'knockout' ? 'knockout' : 'turf'; send(hostPatch()); sig = ''; };
   const okMap = (v) => v === 'random' || (SC.world.MAPS && !!SC.world.MAPS[v]);
   N.setMap = (v) => { if (!N.isHost || !okMap(v)) return; N.map = v; send(hostPatch()); sig = ''; }; // 房主選場地（Yen 2026-11-17）
@@ -3501,7 +3523,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   // 房主按開始：照進房順序輪流分到兩隊，最多 4 人；剛好 3 人又選了三方對戰，就每人一隊
   N.start = () => {
     if (!room || !N.isHost || N.list.length < 2 || N.live) return;
-    const tri = N.triOn(), pl = tri ? N.list.slice(0, 3).map((r, i) => [r.peer, i, 0]) : N.list.slice(0, 4).map((r, i) => [r.peer, i % 2, i >> 1]);
+    const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
     send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round3' : SC.world.mapKey(N.map), n: tri ? 3 : 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl } });
   };
 
@@ -3562,8 +3584,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     if (!N.isHost && host && (host.q.r === 'turf' || host.q.r === 'knockout')) N.rule = host.q.r;
     if (!N.isHost && host && okMap(host.q.mp)) N.map = host.q.mp;
     if (!N.isHost && host && (host.q.tm === 2 || host.q.tm === 3)) N.tri = host.q.tm === 3;
+    if (!N.isHost && host && (host.q.mx === 'rand' || host.q.mx === 'pick')) N.mix = host.q.mx;
+    if (!N.isHost && host && Array.isArray(host.q.as)) { const a = {}; host.q.as.forEach((e) => { if (Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] <= 2) a[e[0]] = e[1]; }); N.asg = a; }
+    if (N.isHost && list.length && list.slice(0, 4).map((r) => r.peer).join() !== hostSeen) { hostSeen = list.slice(0, 4).map((r) => r.peer).join(); if (N.state === 'lobby') send(hostPatch()); } // 有人進出：把分隊再告訴大家
     N.live = h && h.st === 'play' ? h.id : null;
-    const s2 = list.map((r) => r.peer + r.kind + r.nick).join('|') + N.rule + N.map + N.tri + N.live + N.state + N.online + (m ? m.id + m.over : '');
+    const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer]).join('|') + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + (m ? m.id + m.over : '');
     if (s2 !== sig) { sig = s2; changed(); }
     if (h && h.st === 'play' && (!m || m.id !== h.id) && !done.has(h.id) && myPeer && h.pl.some((e) => e[0] === myPeer)) return begin(h, list);
     const g = G(); if (!m || m.over || g.mode !== 'net') return;
@@ -8222,6 +8247,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
             <div id="net-in" hidden>
               <div class="net-row"><span>房號</span><b class="net-code" id="net-room"></b><button type="button" class="btn small" id="net-leave">離開房間</button></div>
               <ul class="net-list" id="net-list"></ul>
+              <div class="row" id="pick-mix"><button type="button" class="pick ros-pick" data-v="rand" aria-label="隨機分隊"><span class="vs"><svg class="dice" viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="5" width="30" height="30" rx="8" fill="#fff" stroke="#1b1430" stroke-width="3" transform="rotate(-10 20 20)"/><circle cx="13" cy="14" r="3" fill="#ff6b8b"/><circle cx="20" cy="20" r="3" fill="#4ecbff"/><circle cx="27" cy="26" r="3" fill="#ffc93c"/></svg></span><b>隨機分隊</b></button><button type="button" class="pick ros-pick" data-v="pick" aria-label="指定組隊"><span class="vs">${HEAD('a')}<svg class="swap-ic" viewBox="0 0 40 30" aria-hidden="true"><path d="M6 10h26l-6-6M34 20H8l6 6" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>${HEAD('b')}</span><b>指定組隊</b></button></div>
               <div class="row" id="pick-teams" hidden><button type="button" class="pick ros-pick" data-v="3" aria-label="三方對戰"><span class="vs">${HEAD('a')}${HEAD('b')}${HEAD('c')}</span><b>三方對戰</b></button><button type="button" class="pick ros-pick" data-v="2" aria-label="2 對 1"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i>${HEAD('b')}</span><b>2 對 1</b></button></div>
               <div class="row" id="pick-rule"><button type="button" class="pick" data-v="turf"><b>塗地戰</b><small>塗得多的贏</small></button><button type="button" class="pick" data-v="knockout"><b>擊倒戰</b><small>擊倒多的贏</small></button></div>
               <p class="net-msg" id="net-msg2" role="status"></p>
@@ -8304,12 +8330,15 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       if (!inRoom) return;
       $('net-room').textContent = n.code;
       const ul = $('net-list'); ul.textContent = '';
-      const tri = n.triOn();
+      const tri = n.triOn(), rand = n.mix === 'rand', L = n.lineup(false);
       n.list.forEach((r, i) => {
-        const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'), t = tri ? i : i % 2;
+        const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'), w = L.find((x) => x.peer === r.peer), t = w ? w.team : -1;
         f.className = 'net-face'; f.innerHTML = ui.face(t === 1 ? 'shuang' : 'maomao'); name.textContent = (r.nick || '玩家' + (i + 1)) + (r.isMe ? '（你）' : '');
-        tag.textContent = (i === 0 ? '房主・' : '') + (i < 4 ? `第 ${t + 1} 隊` : '等下一場'); li.className = i < 4 ? 't' + t : 'wait'; li.append(f, name, tag); ul.append(li);
+        tag.textContent = (i === 0 ? '房主・' : '') + (!w ? '等下一場' : rand ? '開打時抽籤' : `第 ${t + 1} 隊`); li.className = !w ? 'wait' : rand ? 'tr' : 't' + t; li.append(f, name, tag);
+        if (w && !rand && n.isHost) { const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'net-swap'; sw.dataset.peer = r.peer; sw.setAttribute('aria-label', '換隊'); sw.textContent = '⇄'; li.append(sw); } // 房主點這顆換隊
+        ul.append(li);
       });
+      $('pick-mix').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.mix); b.disabled = !n.isHost; });
       $('pick-teams').hidden = n.list.length !== 3; $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.tri ? '3' : '2')); b.disabled = !n.isHost; });
       $('pick-rule').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.rule); b.disabled = !n.isHost; });
       mapSync();
@@ -8357,6 +8386,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     on('net-leave', () => SC.net.leave());
     $('net-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('net-join').click(); });
     $('net-nick').addEventListener('input', (e) => { nick = SC.net.clean(e.target.value); save(); });
+    $('pick-mix').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setMix(b.dataset.v); netSync(); } });
+    $('net-list').addEventListener('click', (e) => { const b = e.target.closest('.net-swap'); if (b && SC.net.isHost) { click(); SC.net.swap(b.dataset.peer); netSync(); } });
     $('pick-teams').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setTri(b.dataset.v === '3'); netSync(); } });
     $('pick-rule').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setRule(b.dataset.v); netSync(); } });
     on('btn-resume', () => G().setPaused(false));
