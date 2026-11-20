@@ -9879,6 +9879,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const ox = a.pos.x, oy = a.pos.y + 4, oz = a.pos.z; t3.set(e.pos.x - ox, e.pos.y + 2.5 - oy, e.pos.z - oz); const d = t3.length(); t3.multiplyScalar(1 / d);
     return !W.raycast(ox, oy, oz, t3.x, t3.y, t3.z, d - 1);
   }
+  function huntOf(a) { // 擊倒戰找人：最近、看得到形體（沒潛在墨水裡）、不在他自己出生台上的對手
+    let best = null, bd = 1e9;
+    for (const e of G.actors) { if (e.team === a.team || !e.alive || e.gone || e.submerged || e.invisUntil > G.time) continue;
+      const [u, v] = W.toLocal(a.team, e.pos.x, e.pos.z); if (u > W.baseIn - 16 && Math.abs(v) < 24) continue;
+      const d = Math.hypot(e.pos.x - a.pos.x, e.pos.z - a.pos.z); if (d < bd) { bd = d; best = e; } }
+    return best ? { x: best.pos.x, z: best.pos.z } : null;
+  }
   function pickTarget(a) {
     let best = null, bs = -9; const L = W.lim;
     for (let i = 0; i < 16; i++) {
@@ -9892,11 +9899,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   function think(a, dt) {
-    const ai = a.ai, ctl = a.ctl, D = aiD(), now = G.time;
+    const ai = a.ai, ctl = a.ctl, D = aiD(), now = G.time, KO = G.rule === 'knockout' && !G.demo; // 第 80 版（Yen）：擊倒戰的電腦主動找人打，不再忙著塗地
     ctl.fire = false; ctl.cat = false; ctl.mx = ctl.mz = 0;
     ai.senseT -= dt;
     if (ai.senseT <= 0) {
-      ai.senseT = 0.16; let best = null, bd = D.engage + 12;
+      ai.senseT = 0.16; let best = null, bd = D.engage * (KO ? 1.5 : 1) + 12;
       for (const e of G.actors) { if (e.team === a.team || !e.alive || e.submerged) continue; const d = e.pos.distanceTo(a.pos); if (e.invisUntil > now && d > 12) continue; if (d < bd && visible(a, e)) { bd = d; best = e; } }
       if (best !== ai.enemy) { ai.enemy = best; ai.seeAt = now; }
     }
@@ -9910,7 +9917,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (now > ai.errAt) { ai.errAt = now + 0.3; ai.err.set((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 0.6, (Math.random() - 0.5) * 2).multiplyScalar(D.aimErr * d); }
       const lead = (d / C.W01.speed) * 0.7; a.aim.set(e.pos.x + e.vel.x * lead + ai.err.x, e.pos.y + (e.form === 'cat' ? 0.6 : 2.6) + ai.err.y, e.pos.z + e.vel.z * lead + ai.err.z);
       if (now > ai.strafeAt) { ai.strafeAt = now + SC.rand(0.7, 1.6); ai.strafe = Math.random() < 0.5 ? -1 : 1; }
-      const radial = a.hp < 38 || ai.refill ? -1 : d > 36 ? 0.8 : d < 17 ? -0.7 : 0;
+      const radial = a.hp < (KO ? 25 : 38) || ai.refill ? -1 : d > (KO ? 22 : 36) ? (KO ? 1 : 0.8) : d < (KO ? 11 : 17) ? -0.6 : 0; // 擊倒戰：靠近一點打、比較不退
       mx = ux * radial - uz * ai.strafe * 0.8; mz = uz * radial + ux * ai.strafe * 0.8;
       const ready = now - ai.seeAt > D.react;
       if (ai.refill) ctl.cat = a.ground === 'own';
@@ -9919,6 +9926,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (D.special && a.sp >= 100 && e && (d < C.SP_R + 1 || (now - ai.spFull > 10 && d < 26)) && !ai.refill && a.onGround) ctl.sp = true; // 電腦的絕招：對手夠近才放（存太久就早一點放）
       if (D.bombGap && ready && !ai.refill && now > ai.nextBomb && a.ink > 55 && d < 30 && d > 9) { ctl.bomb = true; ai.nextBomb = now + SC.rand(7, 12) * D.bombGap; }
     } else {
+      if (KO && !ai.refill && now > (ai.huntAt || 0)) { ai.huntAt = now + 0.5; const h = huntOf(a); if (h) { ai.target = h; ai.retargetAt = now + 0.8; } } // 擊倒戰：往最近的對手走（不進對手出生台）
       if (!ai.target || now > ai.retargetAt || Math.hypot(ai.target.x - a.pos.x, ai.target.z - a.pos.z) < 6) pickTarget(a);
       let tx = ai.target.x, tz = ai.target.z;
       if (ai.refill) { ctl.cat = true; if (a.ground === 'own') { tx = a.pos.x; tz = a.pos.z; } else if (ai.lastOwn && a.ground !== 'air') { tx = ai.lastOwn.x; tz = ai.lastOwn.z; if (Math.hypot(tx - a.pos.x, tz - a.pos.z) < 1.5) { ai.refill = a.ink < 3; ai.lastOwn = null; } } else if (!ai.lastOwn) ctl.cat = a.ground === 'neutral'; }
@@ -9927,7 +9935,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const yaw = Math.atan2(ai.target.x - a.pos.x, ai.target.z - a.pos.z) + Math.sin(now * 2.3 + a.id * 1.7) * 0.75, ad = 11 + 13 * (0.5 + 0.5 * Math.sin(now * 1.4 + a.id * 2.1));
       const ax = a.pos.x + Math.sin(yaw) * ad, az = a.pos.z + Math.cos(yaw) * ad; a.aim.set(ax, Math.max(H(ax, az), a.pos.y - 6), az); if (a.aim.y > a.pos.y + 8) a.aim.y = a.pos.y + 2;
       if (!ai.refill) {
-        ctl.fire = (now * 0.9 + a.id * 0.37) % 1 < D.fireDuty && a.ink >= 1;
+        ctl.fire = (now * 0.9 + a.id * 0.37) % 1 < D.fireDuty * (KO ? 0.4 : 1) && a.ink >= (KO ? 45 : 1); // 擊倒戰：找人的路上少塗一點，留墨水打人
         if (a.ground === 'own' && d > 34 && a.ink < 60 && INK.ownerAt(a.pos.x + mx * 5, a.pos.z + mz * 5) === a.team + 1) { ctl.cat = true; ctl.fire = false; }
       }
     }
