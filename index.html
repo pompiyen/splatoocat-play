@@ -5317,9 +5317,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!r) { N.msg = why === 'not_permitted' || why === 'not_granted' ? '這個帳號不能連線，要請房主先邀請你看這個頁面' : window.SC_PUBLIC ? '連不上連線中繼站，檢查一下網路，等一下再試一次' : '連不上房間，等一下再試一次'; return changed(); }
     attach(r, code, 0);
   };
-  function attach(r, code, qi) {
+  function attach(r, code, qi, ranked) {
     chatOut = []; chatSeen = {}; N.chatLog = [];
-    room = r; N.code = code; N.quick = qi; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
+    room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
     if (qi) { N.rule = 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; } N.vc = false;
     changed();
   }
@@ -5327,16 +5327,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 配對房固定兩隊塗地、隨機分隊、隨機場地，房主那台在人到了以後倒數自動開打，打完回房間再倒數。
   // 給小朋友玩，陌生人之間不送暱稱、也不顯示暱稱，畫面上只寫「玩家 1、2…」。
   const wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
-  N.quickJoin = async (from) => {
+  // 積分賽（Yen 2026-11-20）：跟隨機配對一樣，只是房間在 sc-r1、sc-r2…，打完會算牌位積分（09y_ranked.js）
+  N.quickJoin = async (from, ranked) => {
     if (!api || N.busy || room) return;
     N.busy = true; N.msg = '正在找房間…'; changed();
     for (let i = from || 1; i <= QROOMS; i++) {
-      let r = null; try { r = await api.join('sc-q' + i); } catch (e) { r = null; }
+      let r = null; try { r = await api.join((ranked ? 'sc-r' : 'sc-q') + i); } catch (e) { r = null; }
       if (!r) continue;
       await wait(1500);
       const ps = (r.peers ? r.peers() : []).filter((p) => !(p.isMe && p.sameTab) && p.presence && p.presence.v === 1 && typeof p.presence.j === 'number').sort((a, b) => a.presence.j - b.presence.j);
       const h = ps.length ? validH(ps[0].presence.h) : null;
-      if (ps.length < 4 && !(h && h.st === 'play')) { N.busy = false; return attach(r, 'Q' + i, i); }
+      if (ps.length < 4 && !(h && h.st === 'play')) { N.busy = false; return attach(r, (ranked ? 'R' : 'Q') + i, i, ranked); }
       try { r.leave().catch(() => {}); } catch (e) {}
     }
     N.busy = false; N.msg = '找不到空房間，等一下再試一次'; changed();
@@ -5345,7 +5346,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   N.leave = () => {
     if (!room) return;
-    const r = room; room = null; N.match = null; N.list = []; N.isHost = false; N.live = null; N.state = 'idle'; N.code = ''; sig = ''; N.quick = 0; N.qs = null; qT = null;
+    const r = room; room = null; N.match = null; N.list = []; N.isHost = false; N.live = null; N.state = 'idle'; N.code = ''; sig = ''; N.quick = 0; N.ranked = false; N.qs = null; qT = null;
     try { r.leave().catch(() => {}); } catch (e) {}
     changed();
   };
@@ -5483,7 +5484,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     N.live = h && h.st === 'play' ? h.id : null;
     if (N.quick && N.state === 'lobby' && !N.live && (!m || m.over)) {
       const i = list.findIndex((r) => r.isMe);
-      if (i >= 4) { const q = N.quick; N.leave(); N.quickJoin(q + 1); return; } // 擠進來第 5 個：換下一間
+      if (i >= 4) { const q = N.quick, rk = N.ranked; N.leave(); N.quickJoin(q + 1, rk); return; } // 擠進來第 5 個：換下一間
       if (N.isHost) { // 房主倒數自動開打：2 人等 15 秒，4 人到齊 4 秒
         if (list.length < 2) qT = null; else { if (qT == null) qT = 15; if (list.length >= 4) qT = Math.min(qT, 4); qT -= dt; }
         const qs = qT == null ? null : Math.max(0, Math.ceil(qT)); if (qs !== qSent) { qSent = qs; send({ qs }); }
@@ -10444,6 +10445,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     sandbox: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><circle cx="26" cy="23" r="17" fill="#fff" stroke="#1b1430" stroke-width="2.6"/><circle cx="26" cy="23" r="11" fill="#ff4a6a"/><circle cx="26" cy="23" r="5" fill="#fff"/><ellipse cx="51" cy="15" rx="8" ry="10" fill="#ffd23f" stroke="#1b1430" stroke-width="2.4"/><path d="M51 25q-3 6 1 14" stroke="#1b1430" stroke-width="2" fill="none"/></svg>`,
     boss: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><path d="M12 34l-4-24 13 10 11-16 11 16 13-10-4 24z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.8" stroke-linejoin="round"/><circle cx="32" cy="26" r="4" fill="#ff4a6a" stroke="#1b1430" stroke-width="2"/><rect x="12" y="34" width="40" height="6" rx="2" fill="#ffb21f" stroke="#1b1430" stroke-width="2.6"/></svg>`,
     net: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><rect x="5" y="12" width="18" height="28" rx="4" fill="#2fb8ff" stroke="#1b1430" stroke-width="2.6"/><rect x="41" y="12" width="18" height="28" rx="4" fill="#ff7ab0" stroke="#1b1430" stroke-width="2.6"/><path d="M22 10q10-9 20 0M26 15q6-5 12 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="32" cy="20" r="2.6" fill="#fff"/></svg>`,
+    ranked: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><path d="M20 6h24v8q0 13-12 15-12-2-12-15z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><path d="M20 10h-7q0 10 9 12M44 10h7q0 10-9 12" fill="none" stroke="#1b1430" stroke-width="2.6" stroke-linecap="round"/><path d="M32 29v6M23 40h18l-2-5H25z" fill="#ff9a3c" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 11l2 4 4.4.6-3.2 3 .8 4.4-4-2.2-4 2.2.8-4.4-3.2-3 4.4-.6z" fill="#fff" stroke="#1b1430" stroke-width="1.4" stroke-linejoin="round"/></svg>`, // 積分賽（Yen 2026-11-20）
   };
   const FACE_TABBY = {
     banban: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 26 12 6l14 10zM56 26 52 6 38 16z" fill="#8f6f48" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><ellipse cx="32" cy="36" rx="26" ry="22" fill="#a8865a" stroke="#1b1430" stroke-width="3"/><ellipse cx="32" cy="47" rx="13" ry="8" fill="#f1e4c8"/><path d="M22 24l3-8 4 6 3-7 3 7 4-6 3 8" fill="none" stroke="#3f2c1d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 38h8M8 44l8-2M57 38h-8M56 44l-8-2" stroke="#3f2c1d" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="21" cy="35" rx="5" ry="5.5" fill="#a6c83a" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="43" cy="35" rx="5" ry="5.5" fill="#a6c83a" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="21" cy="35" rx="1.8" ry="4" fill="#1b1430"/><ellipse cx="43" cy="35" rx="1.8" ry="4" fill="#1b1430"/><path d="M29 43h6l-3 3z" fill="#ff8fa3"/><path d="M27 50q2.5 3 5 0q2.5 3 5 0" fill="none" stroke="#1b1430" stroke-width="2.5" stroke-linecap="round"/></svg>`,
@@ -10565,7 +10567,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             <button type="button" class="pick ico-pick" data-v="versus">${ICON.versus}<b>電腦對戰</b><small>三分鐘塗地</small></button>
             <button type="button" class="pick ico-pick" data-v="sandbox">${ICON.sandbox}<b>自由試玩</b><small>不限時靶場</small></button>
             <button type="button" class="pick ico-pick" data-v="boss">${ICON.boss}<b>魔王關卡</b><small>十五隻大魔王</small></button>
-            <button type="button" class="pick ico-pick" data-v="net">${ICON.net}<b>連線對戰</b><small>和朋友開房間</small></button></div></div>
+            <button type="button" class="pick ico-pick" data-v="net">${ICON.net}<b>連線對戰</b><small>和朋友開房間</small></button>
+            <button type="button" class="pick ico-pick" data-v="ranked">${ICON.ranked}<b>積分賽</b><small>配對拿積分升牌位</small></button></div></div>
           <div class="opt" id="stage-opt" hidden><h3>選魔王</h3><div class="row" id="pick-world">${WORLDS.map((w, i) => `<button type="button" class="pick ico-pick world-pick w${i + 1}" data-v="${i + 1}" aria-label="世界 ${i + 1} ${w.name}">${w.icon}<b>世界 ${i + 1}</b><small>${w.name}</small></button>`).join('')}</div><div class="row" id="pick-stage"></div></div>
           <div class="opt" id="kind-opt"><h3>選貓咪</h3><div class="row" id="pick-kind">
             <button type="button" class="pick cat-pick" data-v="maomao">${ui.face('maomao')}<b>毛毛</b><small>金吉拉・臭臉擔當</small></button>
@@ -10672,7 +10675,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ui.fitNames = fitNames;
 
     const MAP_LEDE = { random: '場地每次隨機挑一張。', park: '場地：貓咪遊樂園，好多層的高台、斜坡和城牆步道，爬到最高的貓窩上面看全場！', candy: '場地：甜點廚房，小心巧克力河！', ship: '場地：海盜船，兩艘大船隔著大海。爬上船長室、跳下貨艙，走跳板、碼頭或踩礁石過去，小心別掉進海裡！', fair: '場地：歡樂遊樂場，是一座大山坡，旋轉木馬在山頂。從山腳往上衝，搶下山頂！', skate: '場地：滑板場，橢圓形的大滑板場，外圈一整圈都是可以滑上去的碗邊，還有大碗池和 U 型滑道。', round: '場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。' };
+    const modeKey = () => (sel.mode === 'net' && sel.rk ? 'ranked' : sel.mode);
     const LEDE = { versus: () => `${sel.roster === '1v1' ? '1 對 1' : '2 對 2'} ${sel.vrule === 'knockout' ? '擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。' : '塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。'}${MAP_LEDE[sel.map] || ''}`,
+      ranked: () => '積分賽：自動配對其他玩家 2 到 4 人塗地對戰。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。' + (SC.account && SC.account.needed ? '要先登入才能玩。' : ''),
       sandbox: () => '一個人不限時自由練習。場上有氣球靶和會噴對手墨水的灑水器，打壞了過幾秒會再出現。',
       boss: () => ({ 2: '魔王關卡 2：胖嘟嘟魔王。躲開地上的紅色預告，魔王累到冒星星的時候用力打。身上沾滿墨水就會爆開，打完三個回合就過關。',
         3: '魔王關卡 3：氣球小豬船長。把綁著船長的氣球一顆顆打破，他摔下來冒星星的時候用力打。',
@@ -10690,12 +10695,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const n = SC.net, on = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', start = $('btn-start');
       $('net-opts').hidden = !on; els['m-title'].classList.toggle('net-on', on); start.disabled = false; mapSync(); if (!on) return; // 連線對戰不用先選武器，對戰中隨時切換
       $('net-out').hidden = inRoom; $('net-in').hidden = !inRoom;
+      { const rk = !!sel.rk, lock = rk && SC.account && SC.account.needed && !SC.account.user, q = $('net-quick'); // 積分賽：只有「開始配對」，沒有開房間和房號
+        $('net-create').parentNode.hidden = rk; $('net-nick').parentNode.hidden = rk; q.classList.toggle('rk', rk); q.querySelector('b').textContent = lock ? '登入後開始' : rk ? '開始配對' : '隨機配對'; els['m-title'].querySelector('#net-opts h3').textContent = rk ? '積分賽' : '連線房間'; }
       $('net-msg').textContent = n.state === 'check' ? '正在檢查能不能連線…' : n.state === 'none' ? window.SC_PUBLIC ? '這台裝置現在不能連線。' : '這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。' : n.msg || (window.SC_PUBLIC && SC.relay.stats && n.code ? '中繼站：' + (SC.relay.stats.up.join('、') || '重新連線中') : '');
       ['net-create', 'net-join', 'net-code', 'net-quick'].forEach((id) => ($(id).disabled = n.state !== 'idle' || n.busy));
       const me = n.list.find((r) => r.isMe), waiting = n.live && !n.played(n.live), ready = n.state === 'lobby' && me && n.isHost && n.list.length >= 2 && !n.live;
-      start.disabled = !ready; start.textContent = !inRoom ? '先開房間或加入房間' : n.isHost || !me ? '開始對戰' : '等房主開始';
+      start.disabled = !ready; start.textContent = !inRoom ? (sel.rk ? '先按開始配對' : '先開房間或加入房間') : n.isHost || !me ? '開始對戰' : '等房主開始';
       if (!inRoom) return;
-      $('net-room').textContent = n.quick ? '隨機配對' : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
+      $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? '隨機配對' : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
       const tri = n.triOn(), vc = !!n.vc, rand = n.mix === 'rand' && !vc, L = n.lineup(false);
       n.list.forEach((r, i) => {
@@ -10720,7 +10727,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
-      $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[sel.mode](); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
+      $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
       SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); netSync();
     };
     // 選關：世界列 + 這個世界的五張魔王卡
@@ -10738,10 +10745,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     $('pick-wpn').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; sel.loadout = [b.dataset.v, ...sel.loadout.filter((w) => w !== b.dataset.v)].slice(0, 2); wpnSync(); click(); save(); });
     ui.wpnSync = wpnSync;
     const pick = (groupId, key) => {
-      const g = $(groupId), sync = () => g.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === sel[key]));
-      g.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; sel[key] = b.dataset.v; sync(); modeSync(); click(); }); sync();
+      const g = $(groupId), sync = () => g.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === (key === 'mode' ? modeKey() : sel[key])));
+      g.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return;
+        if (key === 'mode') { const rk = b.dataset.v === 'ranked'; if (sel.mode === 'net' && !!sel.rk !== rk && SC.net.code) SC.net.leave(); sel.rk = rk; sel[key] = rk ? 'net' : b.dataset.v; } // 積分賽＝連線對戰＋積分房（換模式就離開原本的房間）
+        else sel[key] = b.dataset.v; sync(); modeSync(); click(); }); sync();
     };
     const click = () => { SC.audio.init(); SC.audio.sfx.ui(); };
+    ui.modeSyncPicks = () => $('pick-mode').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === modeKey()));
     ['kind', 'difficulty', 'mode', 'roster', 'vrule', 'ink', 'stage'].forEach((k) => pick('pick-' + k, k)); // 武器不在選單選，進場後再換
     $('pick-world').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; const w = +b.dataset.v; if (worldOf(sel.stage) !== w) { const all = SC.bossList(); let i = (w - 1) * 5; while (i < w * 5 - 1 && !all[i]) i++; sel.stage = String(i + 1); } renderStages(); modeSync(); click(); });
     renderStages();
@@ -10778,13 +10788,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     SC.net.onChat = (c) => { chatSync(); if (G().mode === 'net' && !G().demo) { const f = $('h-chatfeed'), el = chatLine(c, 'div'); f.append(el); while (f.children.length > 4) f.firstChild.remove(); setTimeout(() => el.remove(), 6000); } if (!c.me) SC.audio.sfx.ui(); };
     on('btn-chat', () => { const bar = $('h-chatbar'); bar.hidden = !bar.hidden; chatSync(); });
     SC.net.onChange = () => { netSync(); chatSync(); };
-    SC.net.onBegin = (m) => { sel.mode = 'net'; $('pick-mode').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === 'net')); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; els['m-help'].hidden = true; G().start({ ...sel, mode: 'net', demo: false, net: m }); };
-    on('net-quick', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.quickJoin(1); });
+    if (SC.account && SC.account.onChange) SC.account.onChange(() => modeSync()); // 登入／登出：積分賽按鈕和說明跟著變
+    SC.net.onBegin = (m) => { sel.mode = 'net'; sel.rk = !!SC.net.ranked; ui.modeSyncPicks(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; els['m-help'].hidden = true; G().start({ ...sel, mode: 'net', demo: false, net: m }); };
+    on('net-quick', () => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.quickJoin(1, !!sel.rk); }); // 積分賽要先登入（公開版）
     on('net-create', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.create(); });
     on('net-join', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.open($('net-code').value); });
     on('net-leave', () => SC.net.leave());
     // 好友模式（09z_account.js）：一鍵加入朋友所在的房間。Q 開頭是配對房，其他是 4 位數房號
-    SC.net.joinFriend = (code) => { const b = $('pick-mode').querySelector('.pick[data-v="net"]'); if (b && sel.mode !== 'net') b.click(); if (SC.net.code) SC.net.leave(); SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); const q = /^Q(\d+)$/.exec(code); if (q) SC.net.quickJoin(+q[1]); else SC.net.open(code); };
+    SC.net.joinFriend = (code) => { const b = $('pick-mode').querySelector('.pick[data-v="net"]'); if (b && modeKey() !== 'net') b.click(); if (SC.net.code) SC.net.leave(); SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); const q = /^Q(\d+)$/.exec(code); if (q) SC.net.quickJoin(+q[1]); else SC.net.open(code); };
     $('net-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('net-join').click(); });
     $('net-nick').addEventListener('input', (e) => { nick = SC.net.clean(e.target.value); save(); });
     $('pick-mix').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setMix(b.dataset.v); netSync(); } });
@@ -11129,6 +11140,185 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
 })();
 
+// 積分制（牌位）。Yen 2026-11-20：「加入 APEX 遊戲的積分制」。
+// 借的是一般「排位天梯」的想法（每場依名次、擊倒加分，扣一點入場費，分數夠了升牌位），
+// 牌位名字和圖示都是漆貓自己的：毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹。給五歲小朋友看，所以用圖示和星星，字很少。
+// - Yen 2026-11-20 13:58：分成「電腦對戰」「一般連線對戰」「積分賽對戰」三種，只有積分賽算分。
+//   積分賽＝自動配對的連線房（07d_net.js 的 sc-r1、sc-r2…，SC.net.ranked），公開版要先登入；中途離開、觀戰不算。
+// - 每個牌位 300 分、三顆星（每 100 分一顆）；彩虹是最高，只顯示分數。
+// - 小朋友友善：不會掉回上一個牌位（只會停在這個牌位的 0 分）。
+// - 存在這台裝置的 localStorage 'sc-ranked'；登入後跟著雲端存檔走（09z_account.js 的 SAVE_KEYS，合併時取比較多場的那份）。
+//   分數是玩家自己的裝置算的，有心人改得掉；沒有公開的牌位排行榜，所以不影響別人。
+(() => {
+  const KEY = 'sc-ranked', STEP = 100, PER = 300;
+  const TIERS = [
+    { n: '毛線球', c: '#ff8fb8' }, { n: '小魚乾', c: '#7cc6ff' }, { n: '鈴鐺', c: '#ffd23f' },
+    { n: '肉球', c: '#b98cff' }, { n: '皇冠', c: '#ff9a3c' }, { n: '彩虹', c: '#5be3b0' },
+  ];
+  const TOP = TIERS.length - 1, ENTRY = [0, 3, 6, 10, 14, 18];
+  const PLACE2 = { win: 25, tie: 12, lose: 5 }, PLACEN = [25, 15, 8, 4, 2, 1], KO = 3, AST = 1, KO_CAP = 18, MVP = 5;
+
+  const load = () => { try { const o = JSON.parse(localStorage.getItem(KEY) || 'null'); if (o && Number.isFinite(o.p)) return { p: Math.max(0, o.p | 0), m: o.m | 0, w: o.w | 0 }; } catch (e) {} return { p: 0, m: 0, w: 0 }; };
+  const save = (s) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
+  const tierOf = (p) => Math.min(TOP, Math.floor(p / PER));
+  const starsOf = (p) => (tierOf(p) >= TOP ? 0 : Math.floor((p % PER) / STEP)); // 這個牌位已經拿到幾顆星（0～2，第三顆滿了就升牌位）
+  const tr = (s) => (SC.tr ? SC.tr(s) : s);
+
+  if (SC.i18n && SC.i18n.add) SC.i18n.add([
+    ['毛線球', 'Yarn Ball', '毛糸玉', '털실 뭉치'], ['小魚乾', 'Fish Snack', '小魚', '멸치'], ['鈴鐺', 'Bell', '鈴', '방울'],
+    ['肉球', 'Paw', '肉球', '발바닥'], ['皇冠', 'Crown', '王冠', '왕관'], ['彩虹', 'Rainbow', '虹', '무지개'],
+    ['牌位', 'Rank', 'ランク', '랭크'], ['積分', 'Points', 'ポイント', '포인트'], ['升級！', 'Rank up!', 'ランクアップ！', '랭크 업!'],
+    ['怎麼拿分', 'How to score', 'ポイントのもらい方', '포인트 얻는 법'], ['贏', 'Win', '勝ち', '승리'], ['輸', 'Lose', '負け', '패배'], ['平手', 'Tie', '引き分け', '무승부'],
+    ['擊倒', 'KO', 'たおした', '처치'], ['助攻', 'Assist', 'アシスト', '어시스트'], ['入場費', 'Entry', '参加費', '참가비'],
+    ['只有積分賽算分', 'Only ranked matches give points', 'ランク戦だけポイントがもらえる', '랭크전만 포인트를 받아요'],
+    ['不會掉牌位', "You never drop a rank", 'ランクは下がらない', '랭크는 내려가지 않아요'],
+    ['第一名', '1st place', '1位', '1등'], ['名次', 'Place', '順位', '순위'], ['場', 'matches', '試合', '판'], ['關閉', 'Close', '閉じる', '닫기'],
+    ['積分賽', 'Ranked', 'ランク戦', '랭크전'],
+    ['配對拿積分升牌位', 'Match, score, rank up', 'マッチしてランクアップ', '매칭하고 랭크 업'],
+    ['開始配對', 'Find match', 'マッチング開始', '매칭 시작'],
+    ['登入後開始', 'Sign in to play', 'ログインしてね', '로그인하고 시작'],
+    ['積分賽：自動配對其他玩家 2 到 4 人塗地對戰。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。', 'Ranked: auto-matched turf battles with 2 to 4 players. Win, KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow).', 'ランク戦：ほかのプレイヤー2〜4人と自動マッチングでナワバリ対戦。勝つ、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。', '랭크전: 다른 플레이어 2~4명과 자동 매칭으로 땅따먹기 대전. 이기고, 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개).'],
+    ['積分賽：自動配對其他玩家 2 到 4 人塗地對戰。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。要先登入才能玩。', 'Ranked: auto-matched turf battles with 2 to 4 players. Win, KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow). Sign in first.', 'ランク戦：ほかのプレイヤー2〜4人と自動マッチングでナワバリ対戦。勝つ、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。ログインが必要です。', '랭크전: 다른 플레이어 2~4명과 자동 매칭으로 땅따먹기 대전. 이기고, 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개). 먼저 로그인하세요.'],
+    ['先按開始配對', 'Tap Find match first', 'まずマッチング開始を押してね', '먼저 매칭 시작을 눌러요'],
+    ['這場不算積分', 'This match gives no points', 'この試合はポイントなし', '이 경기는 포인트 없음'],
+  ]);
+
+  // 牌位徽章：彩色圓章＋圖案（全部原創的簡單圖形）
+  const EMB = [
+    '<circle cx="24" cy="24" r="11" fill="#fff" stroke="#1b1430" stroke-width="2.4"/><path d="M15 20q9-5 18 2M14 26q10-6 20 1M17 32q7-4 14 0M20 14q-3 10 1 20M28 14q3 9-1 20" fill="none" stroke="#ff5c9a" stroke-width="2"/><path d="M34 31q5 3 3 8" fill="none" stroke="#1b1430" stroke-width="2.4" stroke-linecap="round"/>',
+    '<path d="M11 24q7-9 17-6 5-4 9-5-2 6 0 11-2 5 0 11-4-1-9-5-10 3-17-6z" fill="#fff" stroke="#1b1430" stroke-width="2.4" stroke-linejoin="round"/><circle cx="17" cy="22.5" r="2" fill="#1b1430"/><path d="M23 19q2 5 0 10" fill="none" stroke="#7cc6ff" stroke-width="2"/>',
+    '<path d="M24 11q9 0 10 11l2 9H12l2-9q1-11 10-11z" fill="#fff" stroke="#1b1430" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 31h24" stroke="#1b1430" stroke-width="2.4"/><circle cx="24" cy="35" r="3.2" fill="#ffd23f" stroke="#1b1430" stroke-width="2.2"/><circle cx="24" cy="9.5" r="2" fill="#1b1430"/>',
+    '<ellipse cx="24" cy="29" rx="8.5" ry="7" fill="#fff" stroke="#1b1430" stroke-width="2.4"/><circle cx="14" cy="21" r="3.6" fill="#fff" stroke="#1b1430" stroke-width="2.2"/><circle cx="20" cy="15" r="3.6" fill="#fff" stroke="#1b1430" stroke-width="2.2"/><circle cx="28" cy="15" r="3.6" fill="#fff" stroke="#1b1430" stroke-width="2.2"/><circle cx="34" cy="21" r="3.6" fill="#fff" stroke="#1b1430" stroke-width="2.2"/>',
+    '<path d="M11 33l-2-17 8 7 7-11 7 11 8-7-2 17z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.4" stroke-linejoin="round"/><circle cx="24" cy="27" r="2.6" fill="#ff5c9a" stroke="#1b1430" stroke-width="1.6"/><path d="M11 33h26" stroke="#1b1430" stroke-width="2.4"/>',
+    '<path d="M9 32a15 15 0 0 1 30 0" fill="none" stroke="#ff5c5c" stroke-width="4"/><path d="M13 32a11 11 0 0 1 22 0" fill="none" stroke="#ffd23f" stroke-width="4"/><path d="M17 32a7 7 0 0 1 14 0" fill="none" stroke="#3cc8ff" stroke-width="4"/><path d="M7 33q3-4 7 0 3-3 6 0zM28 33q3-4 7 0 3-3 6 0z" fill="#fff" stroke="#1b1430" stroke-width="2"/>',
+  ];
+  const icon = (t, cls = '') => `<svg class="rkd-ic ${cls}" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21.5" fill="${TIERS[t].c}" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="24" r="17.5" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.6" stroke-dasharray="3 3"/>${EMB[t]}</svg>`;
+  const STAR = (on) => `<svg class="rkd-st${on ? ' on' : ''}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5-4.9-4.5 6.6-.8z" fill="${on ? '#ffd23f' : 'rgba(255,255,255,.2)'}" stroke="#1b1430" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+  const stars = (p) => (tierOf(p) >= TOP ? '' : `<span class="rkd-stars">${[0, 1, 2].map((i) => STAR(i < starsOf(p))).join('')}</span>`);
+  const frac = (p) => (tierOf(p) >= TOP ? 1 : (p % STEP) / STEP); // 下一顆星的進度
+
+  const css = `
+.rkd-ic{width:100%;height:100%;display:block}
+.rkd-badge{position:absolute;top:calc(10px + var(--sat,0px));right:calc(10px + var(--gr,0px));z-index:3;display:flex;align-items:center;gap:6px;background:var(--navy);border:3px solid #fff;border-radius:999px;padding:3px 12px 3px 3px;box-shadow:var(--pop);color:var(--cream);font:400 16px/1 var(--f-display);cursor:pointer}
+.rkd-badge .rkd-i{width:40px;height:40px}.rkd-badge .rkd-stars{display:flex;gap:1px}.rkd-st{width:15px;height:15px}
+.rkd-badge:active{transform:translateY(2px);box-shadow:none}
+.ac-bar .rkd-badge{position:static;height:48px;box-sizing:border-box;padding:1px 12px 1px 1px}
+@media (max-width:620px){.rkd-badge,.ac-bar .rkd-badge{padding:1px}.rkd-badge>:not(.rkd-i){display:none}}
+.rkd-res{display:flex;align-items:center;gap:10px;background:var(--navy);border:3px solid #fff;border-radius:18px;padding:6px 14px 6px 6px;box-shadow:var(--pop);max-width:calc(100vw - 24px)}
+.rkd-res .rkd-i{width:58px;height:58px;flex:none;position:relative}.rkd-res .rkd-i.pop{animation:rkdPop .7s cubic-bezier(.3,1.6,.5,1)}
+.rkd-mid{display:grid;gap:5px;min-width:0}.rkd-mid .rkd-stars{display:flex;gap:2px}.rkd-mid .rkd-st{width:20px;height:20px}
+.rkd-bar{width:min(150px,30vw);height:12px;border-radius:99px;background:rgba(255,255,255,.18);border:2px solid #1b1430;overflow:hidden}
+.rkd-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd23f,#ff9a3c);border-radius:99px;transition:width .9s ease-out}
+.rkd-chips{display:flex;gap:4px;flex-wrap:wrap}.rkd-chips span{font:700 12px/1 var(--f-body);background:rgba(255,255,255,.12);border-radius:99px;padding:3px 7px;white-space:nowrap}
+.rkd-chips span.neg{color:#ffb3b3}
+.rkd-gain{font:400 34px/1 var(--f-display);color:#ffd23f;text-shadow:0 3px 0 #1b1430;min-width:2.4em;text-align:center}.rkd-gain.neg{color:#ffb3b3}
+.rkd-up{position:absolute;left:50%;top:-14px;transform:translateX(-50%) rotate(-6deg);background:#ff5c9a;border:2px solid #1b1430;border-radius:10px;padding:3px 8px;font:400 14px/1 var(--f-display);white-space:nowrap;animation:rkdPop .7s cubic-bezier(.3,1.6,.5,1)}
+.rkd-none{font-size:13px;color:var(--dim);padding:4px 10px}
+@keyframes rkdPop{0%{transform:scale(.3) rotate(-30deg)}100%{transform:scale(1)}}
+.rkd-up{animation:none}
+.rkd-ov{position:fixed;inset:0;z-index:60;background:rgba(10,6,24,.72);display:flex;align-items:center;justify-content:center;padding:12px}
+.rkd-ov[hidden]{display:none}
+.rkd-pn{background:var(--navy-2);border:4px solid #fff;border-radius:22px;box-shadow:0 6px 0 #000;width:min(560px,100%);max-height:100%;overflow:auto;padding:14px;position:relative;color:var(--cream)}
+.rkd-x{position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:50%;border:3px solid #fff;background:var(--navy);color:#fff;font:400 22px/1 var(--f-display);cursor:pointer}
+.rkd-head{display:flex;align-items:center;gap:12px;margin:0 44px 10px 0}.rkd-head .rkd-i{width:76px;height:76px;flex:none}
+.rkd-head b{font:400 26px/1.1 var(--f-display);display:block}.rkd-head small{font-size:14px;color:var(--dim)}
+.rkd-head .rkd-stars{display:flex;gap:3px;margin-top:4px}.rkd-head .rkd-st{width:24px;height:24px}
+.rkd-lad{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:6px 0 12px}
+.rkd-lad div{display:grid;justify-items:center;gap:3px;padding:6px 2px;border-radius:14px;font-size:11px;text-align:center;opacity:.55}
+.rkd-lad div.done{opacity:.85}.rkd-lad div.me{opacity:1;background:rgba(255,255,255,.14);outline:3px solid #ffd23f}
+.rkd-lad .rkd-i{width:100%;max-width:52px;aspect-ratio:1}
+.rkd-how{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px}
+.rkd-how div{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border-radius:12px;padding:6px 8px;font-size:13px}
+.rkd-how em{font:400 20px/1 var(--f-display);font-style:normal;flex:none}.rkd-how b{margin-left:auto;font:400 16px/1 var(--f-display);color:#ffd23f}.rkd-how b.neg{color:#ffb3b3}
+.rkd-h{font:400 16px/1 var(--f-display);margin:4px 0 6px}
+.rkd-foot{font-size:12px;color:var(--dim);margin:10px 0 0;display:flex;flex-wrap:wrap;gap:4px 12px}
+@media (max-width:520px){.rkd-lad{grid-template-columns:repeat(3,1fr)}.rkd-res{padding-right:10px}.rkd-gain{font-size:28px;min-width:2em}}
+`;
+
+  // 一場比賽的分數。回傳 null＝這場不算
+  const score = (g) => {
+    if (!g || g.demo || g.spec) return null;
+    if (g.mode !== 'net' || !SC.net || !SC.net.ranked) return null; // 只有積分賽
+    const p = g.player && g.player(); if (!p || g.actors.some((a) => a.cpu)) return null;
+    let place, win = false, label;
+    if ((g.teams || 2) >= 3) {
+      const v = g.rule === 'knockout' ? g.koFinal || [] : (g.final && g.final.v) || [], mine = v[p.team] || 0;
+      const rank = v.filter((x) => x > mine).length + 1; place = PLACEN[Math.min(rank, PLACEN.length) - 1]; win = rank === 1; label = rank === 1 ? '第一名' : '名次';
+    } else { const r = g.winner === 'tie' ? 'tie' : g.winner === p.team ? 'win' : 'lose'; place = PLACE2[r]; win = r === 'win'; label = r === 'win' ? '贏' : r === 'tie' ? '平手' : '輸'; }
+    const row = (g.board ? g.board() : []).find((r) => r.me), mvp = row && row.mvp ? MVP : 0;
+    const kos = Math.min(KO_CAP, (p.kos | 0) * KO + (p.ast | 0) * AST);
+    const before = load(), t0 = tierOf(before.p), entry = ENTRY[t0], gain = place + kos + mvp;
+    const after = { p: Math.max(t0 * PER, before.p + gain - entry), m: before.m + 1, w: before.w + (win ? 1 : 0) };
+    return { before, after, place, kos, mvp, entry, gain, label, delta: after.p - before.p };
+  };
+
+  let badge = null, ov = null, styled = false;
+  const style = () => { if (styled) return; styled = true; const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); };
+  const paintBadge = () => {
+    if (!badge) return; const s = load(), t = tierOf(s.p);
+    badge.innerHTML = `<span class="rkd-i">${icon(t)}</span>${t >= TOP ? `<span>${s.p}</span>` : stars(s.p)}`;
+    badge.setAttribute('aria-label', tr('牌位') + ' ' + tr(TIERS[t].n));
+  };
+  const openPanel = () => {
+    style(); const s = load(), t = tierOf(s.p);
+    if (!ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
+    const nxt = t >= TOP ? '' : ` / ${(t + 1) * PER}`;
+    ov.innerHTML = `<div class="rkd-pn" role="dialog" aria-label="${tr('牌位')}"><button type="button" class="rkd-x" aria-label="${tr('關閉')}">×</button>
+      <div class="rkd-head"><span class="rkd-i">${icon(t)}</span><div><b>${tr(TIERS[t].n)}</b>${stars(s.p)}<small>${tr('積分')} ${s.p}${nxt}　·　${s.m} ${tr('場')}</small></div></div>
+      <div class="rkd-lad">${TIERS.map((x, i) => `<div class="${i === t ? 'me' : i < t ? 'done' : ''}"><span class="rkd-i">${icon(i)}</span><span>${tr(x.n)}</span><span>${i * PER}</span></div>`).join('')}</div>
+      <div class="rkd-h">${tr('怎麼拿分')}</div>
+      <div class="rkd-how">
+        <div><em>🏆</em>${tr('贏')}<b>+${PLACE2.win}</b></div><div><em>🤝</em>${tr('平手')}<b>+${PLACE2.tie}</b></div><div><em>🙂</em>${tr('輸')}<b>+${PLACE2.lose}</b></div>
+        <div><em>💥</em>${tr('擊倒')}<b>+${KO}</b></div><div><em>✋</em>${tr('助攻')}<b>+${AST}</b></div><div><em>👑</em>MVP<b>+${MVP}</b></div>
+        <div><em>🎟️</em>${tr('入場費')}<b class="neg">−${ENTRY[t]}</b></div>
+      </div>
+      <p class="rkd-foot"><span>🏅 ${tr('只有積分賽算分')}</span><span>🛡️ ${tr('不會掉牌位')}</span></p></div>`;
+    ov.hidden = false;
+  };
+  const close = () => { if (ov) ov.hidden = true; };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && ov && !ov.hidden) close(); });
+
+  const showResult = (r) => {
+    const box = document.querySelector('#m-results .res-bottom'); if (!box) return; style();
+    let el = box.querySelector('.rkd-res'); if (!el) { el = document.createElement('div'); el.className = 'rkd-res'; box.insertBefore(el, box.querySelector('.actions')); }
+    if (!r) { el.innerHTML = `<span class="rkd-none">${tr('這場不算積分')}</span>`; el.hidden = true; return; }
+    el.hidden = false;
+    const t0 = tierOf(r.before.p), t1 = tierOf(r.after.p), up = t1 > t0;
+    const chips = [`🏆+${r.place}`, r.kos ? `💥+${r.kos}` : '', r.mvp ? `👑+${r.mvp}` : '', r.entry ? `<span class="neg">🎟️−${r.entry}</span>` : ''].filter(Boolean).map((c) => (c.startsWith('<') ? c : `<span>${c}</span>`)).join('');
+    el.innerHTML = `<span class="rkd-i">${icon(t0)}</span><div class="rkd-mid">${stars(r.before.p) || `<span>${r.before.p}</span>`}<div class="rkd-bar"><i style="width:${frac(r.before.p) * 100}%"></i></div><div class="rkd-chips">${chips}</div></div><b class="rkd-gain${r.delta < 0 ? ' neg' : ''}">${r.delta >= 0 ? '+' : ''}${r.delta}</b>`;
+    setTimeout(() => { // 進度條和星星慢慢長上去；升牌位時換徽章、跳一下
+      const bar = el.querySelector('.rkd-bar i'), mid = el.querySelector('.rkd-mid'), ic = el.querySelector('.rkd-i'); if (!bar) return;
+      const starsUp = t1 > t0 || starsOf(r.after.p) > starsOf(r.before.p);
+      bar.style.width = (starsUp ? 100 : frac(r.after.p) * 100) + '%';
+      setTimeout(() => {
+        if (starsUp) { bar.style.transition = 'none'; bar.style.width = '0%'; void bar.offsetWidth; bar.style.transition = ''; bar.style.width = frac(r.after.p) * 100 + '%'; }
+        const s0 = mid.querySelector('.rkd-stars, span'); if (s0) s0.outerHTML = stars(r.after.p) || `<span>${r.after.p}</span>`;
+        if (up) { ic.innerHTML = icon(t1); ic.classList.add('pop'); const b = document.createElement('i'); b.className = 'rkd-up'; b.textContent = tr('升級！'); ic.appendChild(b); SC.audio && SC.audio.sfx && SC.audio.sfx.koGot && SC.audio.sfx.koGot(); }
+        else if (starsUp && SC.audio && SC.audio.sfx && SC.audio.sfx.ding) SC.audio.sfx.ding();
+      }, 950);
+    }, 400);
+  };
+
+  const hook = () => {
+    if (!SC.ui || !SC.ui.onResults) return setTimeout(hook, 300);
+    const orig = SC.ui.onResults;
+    SC.ui.onResults = (...a) => {
+      orig(...a);
+      let r = null; try { r = score(SC.game); if (r) save(r.after); } catch (e) { r = null; }
+      try { showResult(r); paintBadge(); } catch (e) { /* 畫不出來就算了，分數已經存好 */ }
+      if (r && SC.account && SC.account.cloud) SC.account.cloud();
+    };
+  };
+  const mount = () => {
+    const title = document.getElementById('m-title'); if (!title) return setTimeout(mount, 300);
+    style(); badge = document.createElement('button'); badge.type = 'button'; badge.className = 'rkd-badge'; badge.setAttribute('translate', 'no'); badge.onclick = openPanel; title.appendChild(badge); paintBadge();
+    let tries = 0; const dock = () => { const bar = title.querySelector('.ac-bar'); if (bar) bar.prepend(badge); else if (++tries < 20) setTimeout(dock, 250); }; dock(); // 公開版：排在愛心和帳號按鈕左邊
+    window.addEventListener('storage', (e) => { if (e.key === KEY) paintBadge(); });
+  };
+  hook(); mount();
+  SC.ranked = { load, score, tierOf, TIERS, open: openPanel, paint: paintBadge, _show: showResult };
+})();
+
 // 帳號登入（Google / Facebook）、雲端存檔、排行榜署名、贊助按鈕
 // Yen 2026-11-20：「導入 fb ig google 賬號等登入方式，串接贊助金流」；登入用途選「雲端存檔加排行榜署名」；
 // 不要家長區（之後要開放給大家用），按鈕直接放在標題畫面右上角。Firebase 專案叫 spalacat。
@@ -11167,7 +11357,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     xsolla: null, // 例：{ projectId: 123456, loginId: 'xxxxxxxx-xxxx-…', sandbox: true, items: [{ sku: 'donate_100', name: '贊助 NT$100' }] }
   };
   const FB_VER = '10.12.2', STAGES = 15, TOP = 5;
-  const SAVE_KEYS = ['splatoocat-web', 'sc-lang', 'sc-boss-rank', 'sc-rank-name'];
+  const SAVE_KEYS = ['splatoocat-web', 'sc-lang', 'sc-boss-rank', 'sc-rank-name', 'sc-ranked']; // sc-ranked：積分賽牌位（09y_ranked.js）
   const demo = /[?&]sc-account-demo\b/.test(location.search); // 本機預覽：沒有設定也顯示按鈕（贊助用假連結）
   if (demo && window.SC_TEST_FIREBASE !== undefined) CONFIG.firebase = window.SC_TEST_FIREBASE, CONFIG.providers = ['google', 'facebook']; // 自動測試用
   if (demo && window.SC_TEST_XSOLLA) CONFIG.xsolla = window.SC_TEST_XSOLLA; // 自動測試用
@@ -11232,7 +11422,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     onChange: (cb) => (listeners.add(cb), () => listeners.delete(cb)),
     name: () => (account.user ? (SC.net && SC.net.clean ? SC.net.clean(account.user.name) : account.user.name.slice(0, 8)) || 'Player' : ''),
   };
-  SC.account = account;
+  SC.account = account; account.needed = useFb; // 公開版有 Firebase：積分賽要登入才能玩
   const emit = () => listeners.forEach((cb) => { try { cb(account.user); } catch (e) {} });
 
   // ---------- Firebase ----------
@@ -11246,6 +11436,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       account.ready = true; emit(); paint();
       if (u) { cloud.start(u.uid); friends.start(u.uid); } else { cloud.stop(); friends.stop(); }
       if (frBtn) frBtn.hidden = !u;
+      if (u) setTimeout(() => SC.ranked && SC.ranked.paint && SC.ranked.paint(), 1500);
     });
     return { auth, A, db, F };
   })());
@@ -11263,6 +11454,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
     return JSON.stringify(out);
   };
+  const moreGames = (a, b) => { const m = (x) => { try { const o = JSON.parse(x || 'null'); return o ? (o.m | 0) * 1e6 + (o.p | 0) : -1; } catch (e) { return -1; } }; return m(b) > m(a) ? b : a; }; // 牌位：取打比較多場的那份
   const cloud = (() => {
     let uid = null, last = '', timer = 0;
     const push = async () => {
@@ -11274,7 +11466,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       try {
         const { db, F } = await load(); const snap = await F.getDoc(F.doc(db, 'saves', id));
         const here = readLocal(), there = (snap.exists() && snap.data().data) || {}, merged = { ...here };
-        SAVE_KEYS.forEach((k) => { if (k === 'sc-boss-rank') { if (here[k] != null || there[k] != null) merged[k] = mergeRank(here[k], there[k]); } else if (typeof there[k] === 'string') merged[k] = there[k]; });
+        SAVE_KEYS.forEach((k) => { if (k === 'sc-ranked') { if (here[k] != null || there[k] != null) merged[k] = moreGames(here[k], there[k]); } else if (k === 'sc-boss-rank') { if (here[k] != null || there[k] != null) merged[k] = mergeRank(here[k], there[k]); } else if (typeof there[k] === 'string') merged[k] = there[k]; });
         const changed = SAVE_KEYS.some((k) => merged[k] !== here[k]);
         writeLocal(merged); await push();
         let again = false; try { again = sessionStorage.getItem('sc-cloud-reload') === id; sessionStorage.setItem('sc-cloud-reload', id); } catch (e) {}
@@ -11491,6 +11683,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const badge = () => { if (!frBtn) return; const n = fr.list.filter((f) => f.on).length; let b = frBtn.querySelector('.ac-dot'); if (!n) { if (b) b.remove(); return; } if (!b) { b = document.createElement('i'); b.className = 'ac-dot'; frBtn.appendChild(b); } b.textContent = n > 9 ? '9+' : String(n); };
 
   const close = () => { if (wrap) { if (view === 'friends') friends.watch(false); wrap.remove(); wrap = null; view = ''; } };
+  account.open = (v) => open(v || 'acc'); account.cloud = () => cloud.push();
   const open = (v) => {
     close(); view = v; err = ''; fr.msg = ''; if (v === 'friends') friends.watch(true);
     wrap = document.createElement('div'); wrap.className = 'ac-wrap';
