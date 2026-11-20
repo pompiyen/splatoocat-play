@@ -10751,6 +10751,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       { name: '自由金額', price: '自訂', url: '' },
     ],
     donateUrl: 'https://p.ecpay.com.tw/FDC2624', // 綠界實況主收款的贊助網址（一個網址、贊助者自己輸入金額）：各方案沒有自己的 url 時都連到這裡
+    paypal: 'https://paypal.me/pompiyen', // 國外贊助用的 PayPal.Me 連結（例：'https://paypal.me/xxx'），填了才出現
     donateNote: '遊戲免費遊玩，贊助用於支持開發與營運。幣別：新台幣。付款方式：信用卡、ATM 轉帳、超商代碼（綠界科技）。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。',
     // Xsolla（Yen 2026-11-20：先備用串接，以後可能開付費選項）。不用自己的伺服器：
     //   Firebase 用 Google/Facebook 登入時拿到的存取權杖 → Xsolla Login「用社群權杖登入」換成 Xsolla 使用者 JWT
@@ -10786,6 +10787,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['登入後也可以用 Xsolla 付款：', 'Sign in to pay with Xsolla:', 'ログインすると Xsolla で支払えます：', '로그인하면 Xsolla로 결제할 수 있어요:'],
     ['聯絡我們', 'Contact', 'お問い合わせ', '문의'],
     ['贊助方案', 'Support plans', '応援プラン', '후원 플랜'],
+    ['國外贊助（信用卡或 PayPal）：', 'From outside Taiwan (card or PayPal):', '海外から（カードまたは PayPal）：', '해외에서 (카드 또는 PayPal):'],
     ['即將開放', 'Coming soon', '準備中', '준비 중'],
     ['小魚乾贊助', 'Dried-fish tip', '小魚の応援', '멸치 후원'],
     ['罐罐贊助', 'Cat-can tip', 'ネコ缶の応援', '캔 후원'],
@@ -10950,6 +10952,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .ac-me{display:flex;align-items:center;gap:12px;margin:10px 0}.ac-me img{width:52px;height:52px;border-radius:50%}
 .ac-err{color:#c2185b}
 .ac-row .tier{justify-content:space-between;padding:0 16px}.ac-row .tier b{color:#e5306b;font-size:19px}.ac-row .tier small{font-size:12px;color:#7a6f96;font-weight:700}.ac-row .tier:disabled{cursor:default;opacity:1;background:#fff8d6}
+.ac-row .pp{background:#ffc439}
 .ac-note{font-size:12.5px!important;color:#5b4f7a;margin-top:10px!important}
 .ac-contact button{background:none;border:0;color:#ffd52e;font:inherit;text-decoration:underline;cursor:pointer;padding:0;margin-left:10px}
 .ac-contact{margin-top:12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.75)}.ac-contact a{color:inherit}
@@ -10981,7 +10984,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       else h += `<p>登入後，設定和魔王關紀錄會存在雲端，換手機也不會不見，還能用帳號名字上排行榜。不登入也能照常玩。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}${P.includes('facebook') ? `<button type="button" class="f" data-a="facebook">${I_F}用 Facebook 登入</button>` : ''}</div><p>在 LINE、Messenger 裡面打開時可能登不進去，請改用 Safari 或 Chrome 打開。</p>`;
       if (err) h += `<p class="ac-err">${esc(err)}</p>`;
     } else {
-      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: d.url || CONFIG.donateUrl }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
+      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: d.url || CONFIG.donateUrl }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>${CONFIG.paypal ? `<p>國外贊助（信用卡或 PayPal）：</p><div class="ac-row"><a class="d pp" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}PayPal</a></div>` : ''}${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
         if (err) h += `<p class="ac-err">${esc(err)}</p>`;
