@@ -696,6 +696,7 @@ SC.CFG = {
   SP_PER_CELL: 100 / 18000, SP_BLADE_K: 2.2, SP_KO_BONUS: 25, // 第 65 版（Yen）：墨刀塗得少，絕招量累積乘 2.2；擊倒對手額外加 25
   SUB_STILL_V: 3, SUB_STILL_T: 0.25, // 第 71 版（Yen）：潛墨時速度低於 3 超過 0.25 秒＝不動，對手看不到
   TOWER_TAKE: 0.1, TOWER_DEAL: 0.2, // 第 75 版（Yen）：時鐘廣場鐘塔頂上，受到的傷害 1/10、打出去的傷害 1/5（塗地戰）
+  ROLL_WIDE: 2.2, ROLL_WIDE_T: 5, // 第 82 版（Yen）：滾刷絕招改成刷頭寬度 2.2 倍、5 秒（原本是隱形）
   BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
   SPRAY_DMG: 24, SPRAY_SLOW: 0.6, // 第 69 版：散彈槍絕招每顆 24（原本 40），連射時移動速度 0.6 倍
   SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 16, POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
@@ -801,6 +802,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['世界', 'World', 'ワールド', '월드'],
     ['選貓咪', 'Pick a Cat', 'ネコをえらぶ', '고양이 고르기'],
     ['帶兩把武器', 'Bring 2 Weapons', 'ぶきを2つ持っていく', '무기 2개 챙기기'],
+    ['滾刷變超寬 5 秒！', 'Super-wide roller for 5 s!', '5秒間ローラーが超ワイド！', '5초 동안 롤러가 엄청 넓어져요!'],
     ['隱形 6 秒！對手看不到你', 'Invisible for 6 s! Rivals can\'t see you', '6秒間とうめい！相手から見えない', '6초 동안 투명! 상대가 못 봐요'],
     ['透視 8 秒！牆後面的對手會變成紅色', 'X-ray for 8 s! Rivals behind walls turn red', '8秒間すけて見える！カベの向こうの相手が赤くなる', '8초 동안 투시! 벽 뒤 상대가 빨갛게 보여요'],
     ['四面八方亂掃射！', 'Spin and spray everywhere!', '全方向にうちまくれ！', '사방으로 마구 쏴라!'],
@@ -3618,8 +3620,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     } else if (id === 'W02') {
       const pole = mesh(new THREE.CapsuleGeometry(0.13, 2.6, 4, 8), dark, 0, -0.55, 1.1); pole.rotation.x = 1.05; g.add(pole);
       const roll = mesh(new THREE.CylinderGeometry(0.62, 0.62, 3.4, 20), white, 0, -1.35, 2.35); roll.rotation.z = Math.PI / 2; g.add(roll);
-      [-1, 1].forEach((s) => { const cap = mesh(new THREE.CylinderGeometry(0.66, 0.66, 0.3, 20), teamMat, s * 1.75, -1.35, 2.35); cap.rotation.z = Math.PI / 2; g.add(cap); });
-      g.userData.roller = roll; g.userData.muzzle = 2.4;
+      const caps = [-1, 1].map((s) => { const cap = mesh(new THREE.CylinderGeometry(0.66, 0.66, 0.3, 20), teamMat, s * 1.75, -1.35, 2.35); cap.rotation.z = Math.PI / 2; g.add(cap); return cap; });
+      g.userData.caps = caps; g.userData.roller = roll; g.userData.muzzle = 2.4;
     } else if (id === 'W04') { // 散彈槍：胖胖的隊色槍身、兩根並排的短槍管（喇叭口），上面一顆透明墨水罐
       const body = mesh(new THREE.CapsuleGeometry(0.4, 0.7, 6, 12), teamMat, 0, 0, 0.3); body.rotation.x = Math.PI / 2; g.add(body);
       [-0.2, 0.2].forEach((x) => { const b = mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.9, 10), white, x, 0.05, 1.05); b.rotation.x = Math.PI / 2; g.add(b);
@@ -3911,6 +3913,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       root.traverse((o) => { const ms = o.isMesh ? (Array.isArray(o.material) ? o.material : [o.material]) : []; ms.forEach((m) => {
         if (!m.userData.g0) m.userData.g0 = { t: m.transparent, o: m.opacity, d: m.depthWrite };
         const g0 = m.userData.g0; m.transparent = on || g0.t; m.opacity = on ? Math.min(g0.o, 0.3) : g0.o; m.depthWrite = on ? false : g0.d; m.needsUpdate = true; }); });
+    };
+    let wideNow = 1; cat.setWide = (k) => { // 第 82 版：滾刷絕招時刷頭變寬（慢慢撐開／縮回）
+      const R = weapons.W02 && weapons.W02.userData; if (!R || !R.roller) return; wideNow += (k - wideNow) * 0.25; if (Math.abs(wideNow - k) < 0.01) wideNow = k;
+      R.roller.scale.y = wideNow; R.caps.forEach((c, i) => (c.position.x = (i ? 1 : -1) * 1.75 * wideNow));
     };
     cat.setInk = (f) => { fill.scale.y = Math.max(0.02, f); fill.position.y = -0.75 * (1 - Math.max(0.02, f)); };
     // 效能（Yen 2026-11-20：五人連線會卡）：一隻貓有一百多個小零件。只讓大零件投影子；離鏡頭遠時小零件（鬍鬚、眼睛亮點、扣子…）不畫。
@@ -8966,7 +8972,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
     a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; bladeAimHide(a); a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
-    a.invisUntil = a.xrayUntil = a.sprayUntil = 0; a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.inWater = false; a.poolCd = 0;
+    a.invisUntil = a.xrayUntil = a.sprayUntil = a.wideUntil = 0; a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.inWater = false; a.poolCd = 0;
     a.protectUntil = G.time + C.SPAWN_PROTECTION; a.cat.group.visible = true; a.nextShotAt = 0; a.cat.setInk(1);
     if (a.ai) { a.ai.target = null; a.ai.enemy = null; a.ai.refill = false; a.ai.lastOwn = null; }
     a.ctl.fire = a.ctl.jump = a.ctl.bomb = a.ctl.sp = false; a.holdBlock = !!(a.isPlayer && I.fire); // 倒下前按的絕招／墨水彈／射擊不會在重生時直接放出來，要放開再按（Yen 2026-11-20 第 60 版）
@@ -9153,7 +9159,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function ko(t, from, cause, helpers) {
     const pk = t.predKo; t.predKo = 0; t.pred = null;
-    t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.invisUntil = t.sprayUntil = t.xrayUntil = 0; t.spKind = null; t.respawnAt = G.time + C.RESPAWN_SECONDS; t.cat.group.visible = false; if (t.subArr) t.subArr.visible = false; t.charge = -1; t.rolling = false;
+    t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.invisUntil = t.sprayUntil = t.xrayUntil = t.wideUntil = 0; t.spKind = null; t.respawnAt = G.time + C.RESPAWN_SECONDS; t.cat.group.visible = false; if (t.subArr) t.subArr.visible = false; t.charge = -1; t.rolling = false;
     if (t.sight) t.sight.visible = false;
     if (!helpers) { helpers = []; if (t.dmgBy) t.dmgBy.forEach((at, e) => { if (e !== from && G.time - at < 5 && e.team !== t.team && !e.gone) helpers.push(e); }); }
     if (t.dmgBy) t.dmgBy.clear(); helpers.forEach((e) => e.ast++);
@@ -9322,7 +9328,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const cost = Math.min(d, 6) * w.rollInk;
     if (a.ink < cost) { a.rollPt.x = fx; a.rollPt.z = fz; a.rolling = false; if (a.isPlayer) SC.ui.lowInk(); return; }
     a.ink -= cost; a.lastShotAt = G.time;
-    const r = w.rollRadius * C.PAINT * paintBoost(a), x0 = d > 8 ? fx : a.rollPt.x, z0 = d > 8 ? fz : a.rollPt.z; // 瞬間移動太遠（重生）就不要拉一條線
+    const r = w.rollRadius * C.PAINT * paintBoost(a) * wideK(a), x0 = d > 8 ? fx : a.rollPt.x, z0 = d > 8 ? fz : a.rollPt.z; // 瞬間移動太遠（重生）就不要拉一條線
     INK.by = a; rollPaint(a.team, x0, z0, fx, fz, a.pos.y, r); INK.by = null;
     if (netOn()) { // 連線時每 0.1 秒把這段路送出去一次
       const n = a.rollNet || (a.rollNet = { x: x0, z: z0, at: G.time });
@@ -9334,11 +9340,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.isPlayer && (a.rollSfx -= d) <= 0) { a.rollSfx = 3.2; A.sfx.roll(); }
     G.hit.forEach((e) => {
       if (e.team === a.team || !e.alive || Math.abs(e.pos.y - a.pos.y) > 4) return;
-      if (Math.hypot(e.pos.x - fx, e.pos.z - fz) < 2.8 + bodyR(e) && G.time - (a.rollHit[e.id] || -9) > w.rollHitInterval) { a.rollHit[e.id] = G.time; hurt(e, w.rollDamage, a, 'W02'); }
+      if (Math.hypot(e.pos.x - fx, e.pos.z - fz) < 2.8 * wideK(a) + bodyR(e) && G.time - (a.rollHit[e.id] || -9) > w.rollHitInterval) { a.rollHit[e.id] = G.time; hurt(e, w.rollDamage, a, 'W02'); }
     });
   }
   function rollEnd(a) {
-    if (netOn() && a.isPlayer && a.rollNet && Math.hypot(a.rollPt.x - a.rollNet.x, a.rollPt.z - a.rollNet.z) > 0.3) nev(a, 'r', a.rollNet.x, a.rollNet.z, a.rollPt.x, a.rollPt.z, a.pos.y, C.W02.rollRadius * C.PAINT);
+    if (netOn() && a.isPlayer && a.rollNet && Math.hypot(a.rollPt.x - a.rollNet.x, a.rollPt.z - a.rollNet.z) > 0.3) nev(a, 'r', a.rollNet.x, a.rollNet.z, a.rollPt.x, a.rollPt.z, a.pos.y, C.W02.rollRadius * C.PAINT * wideK(a));
     a.rollPt = a.rollNet = null;
   }
   // 沿著 (x0,z0)→(x1,z1) 塗一條寬帶：中間一排、左右各一排
@@ -9704,7 +9710,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   // ---------- 第 63 版：每把武器自己的絕招（魔王關和電腦還是用砸地） ----------
   // 漆彈槍：砸地。滾刷：隱形 6 秒。狙擊槍：透視 8 秒（牆後的對手變紅色）。散彈槍：原地轉圈往四面八方亂射約 3 秒。墨刀：往前劃一條墨水直線，再沿著線衝殺過去。
-  const SP_KIND = { W02: 'invis', W03: 'xray', W04: 'spray', W05: 'blade' }, SP_KINDS = ['slam', 'invis', 'xray', 'spray', 'blade'];
+  const wideK = (a) => (a.wideUntil > G.time ? C.ROLL_WIDE : 1); // 滾刷絕招：刷頭變寬
+  const SP_KIND = { W02: 'wide', W03: 'xray', W04: 'spray', W05: 'blade' }, SP_KINDS = ['slam', 'invis', 'xray', 'spray', 'blade', 'wide'];
   const XRAY_MAT = new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false });
   // 狙擊槍絕招（第 64 版，Yen）：整個場地變灰階、半透明，人（貓咪）保留顏色，更顯眼。場地材質加一段灰階 shader（同一個 uniform），開場時先編好
   const GRAY = { value: 0 }, grayLists = new Map(); let grayF = 0, grayRoot = null;
@@ -9758,6 +9765,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, col, 30, 24, 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.2, a.pos.z, col, 6, 0.35);
     if (n > 0.05 && !G.demo) A.sfx.spUp(n * 0.7);
     if (kind === 'invis') { a.invisUntil = now + 6; if (a.isPlayer) SC.ui.tip('隱形 6 秒！對手看不到你', 2.4); }
+    else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬 5 秒！', 2.4); }
     else if (kind === 'xray') { a.xrayUntil = now + 8; if (a.isPlayer) { SC.ui.tip('透視 8 秒！牆後面的對手會變成紅色', 2.4); SC.ui.flash('rgba(255,40,40,.35)', 0.3); } }
     else if (kind === 'spray') { a.sprayUntil = now + 3; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('四面八方亂掃射！', 2); }
     else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
@@ -9985,7 +9993,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 自己的狀態：位置、速度、面向、旗標、武器、蓄力、體力、墨水、被擊倒次數
   G.netSnap = (p = player()) => {
     return [p.pos.x, p.pos.y, p.pos.z, p.vel.x, p.onGround ? 0 : p.vel.y, p.vel.z, p.yaw, p.pitch,
-      (p.alive ? 1 : 0) | (p.form === 'cat' ? 2 : 0) | (p.submerged ? 4 : 0) | (p.onGround ? 8 : 0) | (p.rolling ? 16 : 0) | (G.time < p.protectUntil ? 32 : 0) | (G.time < p.invisUntil ? 64 : 0),
+      (p.alive ? 1 : 0) | (p.form === 'cat' ? 2 : 0) | (p.submerged ? 4 : 0) | (p.onGround ? 8 : 0) | (p.rolling ? 16 : 0) | (G.time < p.protectUntil ? 32 : 0) | (G.time < p.invisUntil ? 64 : 0) | (G.time < p.wideUntil ? 128 : 0),
       WEAPONS.indexOf(p.weapon), p.charge < 0 ? -1 : p.charge, p.hp, p.ink, p.deaths, p.credited, p.ast, p.paint, p.kos];
   };
   G.netCpuSnaps = () => G.actors.filter((a) => a.cpu).map((a) => G.netSnap(a));
@@ -9998,7 +10006,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   G.netState = (idx, s, at) => {
     const a = G.netActor(idx); if (!a || !a.remote || a.gone) return; const f = s[8], alive = !!(f & 1);
     a.net = { x: SC.clamp(s[0], -W.lim.x - 20, W.lim.x + 20), y: SC.clamp(s[1], -10, 120), z: SC.clamp(s[2], -W.lim.z - 20, W.lim.z + 20), vx: s[3], vy: s[4], vz: s[5], yaw: s[6], pitch: SC.clamp(s[7], -1.3, 1.3), at };
-    a.form = f & 2 ? 'cat' : 'biped'; a.submerged = !!(f & 4); a.onGround = !!(f & 8); a.rolling = !!(f & 16); a.protectUntil = f & 32 ? G.time + 0.25 : 0; a.invisUntil = f & 64 ? G.time + 0.35 : 0;
+    a.form = f & 2 ? 'cat' : 'biped'; a.submerged = !!(f & 4); a.onGround = !!(f & 8); a.rolling = !!(f & 16); a.protectUntil = f & 32 ? G.time + 0.25 : 0; a.invisUntil = f & 64 ? G.time + 0.35 : 0; a.wideUntil = f & 128 ? G.time + 0.35 : 0;
     const w = WEAPONS[s[9]] || 'W01'; if (w !== a.weapon) { a.weapon = w; a.cat.setWeapon(w); }
     a.charge = s[10] < 0 ? -1 : Math.min(s[10], 2); a.hp = s[11]; a.ink = SC.clamp(s[12], 0, 100); a.deaths = s[13]; a.credited = s[14]; if (s.length >= 18) { a.ast = s[15]; a.paint = s[16]; a.kos = s[17]; }
     if (alive && !a.alive) { a.predKo = 0; a.pred = null; a.alive = true; a.pos.set(a.net.x, a.net.y, a.net.z); a.visY = a.net.y; a.yaw = a.net.yaw; a.cat.group.visible = true; }
@@ -10023,7 +10031,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (projectiles.length < 500) projectiles.push({ x: d[0], y: d[1], z: d[2], vx: d[3], vy: d[4], vz: d[5], team: a.team, owner: a, dmg: 0, r: SC.clamp(d[6], 1, 10), range: C.W01.range, g: C.W01.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.8, flash: true, color: colors[a.team], cause: 'W01' });
       a.cat.recoil = 1; A.sfx.shot(near(a)); if (near(a) > 0.15) SC.fx.pop(d[0], d[1], d[2], WHITE, 1.9, 0.06);
     } else if (type === 'w') { if (projectiles.length < 500) flecks(a, d[0], d[1], d[2], d[3], SC.clamp(d[4], -1.3, 1.3), SC.clamp(d[5], 1, 1.2), d[6], d[7] ? 1 : 0); a.cat.swing = 1; a.cat.recoil = 1.6; if (near(a) > 0.1) A.sfx.swing(); }
-    else if (type === 'r') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 12) { rollPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 8)); SC.fx.burst(d[2], d[4] + 0.4, d[3], colors[a.team], 2, 9, 0.35); } }
+    else if (type === 'r') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 12) { rollPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 16)); SC.fx.burst(d[2], d[4] + 0.4, d[3], colors[a.team], 2, 9, 0.35); } }
     else if (type === 'z') { const dir = new V3(d[3], d[4], d[5]); if (dir.lengthSq() > 0.5) sniperShot(a, new V3(d[0], d[1], d[2]), dir.normalize(), SC.clamp(d[6], 0, 1), SC.clamp(d[7], 1, 1.2), { len: d[8], hit: d[9] }); }
     else if (type === 'g') { const l = Math.hypot(d[3], d[4], d[5]); if (l > 0.5 && projectiles.length < 500) { pellets(a, d[0], d[1], d[2], d[3] / l, d[4] / l, d[5] / l, SC.clamp(d[6], 1, 1.2), d[7], 0); a.cat.recoil = 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a)); } }
     else if (type === 'm') { const k = Math.round(d[4]); if (k >= 0 && k <= 3) slashAt(a, d[0], d[1], d[2], d[3], k, SC.clamp(d[5], 1, 1.2), false); }
@@ -10399,7 +10407,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const me = viewer(), foe = me && me.team !== a.team, inv = a.invisUntil > G.time; // 滾刷絕招：隱形（對手看不到，自己和隊友看到半透明）
         const swim = a.form === 'cat' && a.submerged && a.onGround, still = swim && a.speed < C.SUB_STILL_V; a.subStill = still ? (a.subStill || 0) + dt : 0; const hide = a.subStill > C.SUB_STILL_T; // 第 71 版（Yen）：潛墨不動時對手完全看不到，自己和隊友看到淡淡的
         a.cat.group.visible = (!(G.time < a.protectUntil && Math.floor(now * 14) % 2 === 0) || G.state !== 'play') && !(a.isPlayer && cam.zoom > 1.4) && !a.predKo && !(hide && foe);
-        if (a.cat.setGhost) a.cat.setGhost(inv || hide); // 第 65 版（Yen）：滾刷絕招改成大家都看得到 30% 的淡影子
+        if (a.cat.setWide) a.cat.setWide(wideK(a)); if (a.cat.setGhost) a.cat.setGhost(inv || hide); // 第 65 版（Yen）：滾刷絕招改成大家都看得到 30% 的淡影子
         subArrow(a, swim && !still && a.cat.group.visible, now); // 第 71 版（Yen）：潛墨移動時頭上跟著一個立體箭頭
         xrayOf(a, me && foe && me.xrayUntil > G.time && a.alive && !a.predKo);
         a.cat.setInk(a.ink / 100); if (a.cat.lod) a.cat.lod(a.isPlayer ? 0 : camera.position.distanceTo(a.pos));
