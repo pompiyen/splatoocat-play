@@ -9301,6 +9301,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (b.armed < 0) { b.armed = G.time + C.BOMB.armDelay; b.vx *= C.BOMB.roll; b.vz *= C.BOMB.roll; }
         if (Math.abs(b.vy) > 6) { b.vy = -b.vy * 0.3; b.vx *= 0.7; b.vz *= 0.7; } else b.vy = 0;
         if (b.vy === 0) { const k = Math.exp(-C.BOMB.rollDrag * dt); b.vx *= k; b.vz *= k; if (Math.hypot(b.vx, b.vz) < 0.6) b.vx = b.vz = 0; } }
+      if (G.mode === 'boss' && b.team === 0) { // 碰到博士小鴨的防護罩就直接炸開，不用等引信（Yen 2026-11-20 第 61 版）
+        const sh = G.hit.find((e) => e.id === 'duck-shield' && e.alive);
+        if (sh && Math.hypot(b.x - sh.pos.x, b.y - (sh.pos.y + sh.cy), b.z - sh.pos.z) < sh.hr + 1.1) { blast(b); bombs.splice(i, 1); continue; }
+      }
       if (G.mode === 'boss' && b.team === 0 && BS.catchBomb && BS.catchBomb(b.x, b.y, b.z)) { b.mesh.visible = false; bombs.splice(i, 1); continue; }
       b.mesh.position.set(b.x, b.y, b.z); { const sp = b.armed < 0 ? 1 : Math.min(1, Math.hypot(b.vx, b.vz) / 8); b.mesh.rotation.x += dt * 6 * sp; b.mesh.rotation.z += dt * 4 * sp; } // 停住就不轉
       const pulse = b.armed > 0 ? 1 + Math.sin(G.time * 34) * 0.14 : 1; b.mesh.scale.setScalar(pulse); b.mesh.userData.ball.emissiveIntensity = b.armed > 0 ? 0.4 + Math.max(0, Math.sin(G.time * 34)) * 0.9 : 0.15;
