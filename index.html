@@ -11108,7 +11108,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (trickT > 0) { trickT -= dt; if (trickT <= 0) els['trick-card'].classList.remove('on'); }
     if (resultsT >= 0) {
       resultsT += dt; const k = SC.clamp((resultsT - 0.3) / 1.6, 0, 1), e = 1 - Math.pow(1 - k, 3), s = g.final;
-      if (g.rule === 'mix' && g.mixFinal) { const mx = g.mixFinal, sum = mx.reduce((x, y) => x + y, 0) || 1; bars('res', mx.map((v) => (v / sum) * e), mx.map((v) => Math.round(v * e) + ' 分')); } // 複合賽的結算條顯示總分
+      if (g.rule === 'mix' && g.koFinal) { const sv = s.v || [s.a, s.b, s.c || 0]; bars('res', sv.map((v) => v * e), g.koFinal.map((v) => Math.round(v * e) + ' 擊倒')); } // 複合賽（Yen 23:25）：條是塗地比例，數字是擊倒數
       else if (g.rule === 'knockout' && g.koFinal) { // 擊倒戰的結算條顯示擊倒數
         const ko = g.koFinal, sum = ko.reduce((x, y) => x + y, 0) || 1;
         bars('res', ko.map((v) => (v / sum) * e), ko.map((v) => Math.round(v * e) + ' 擊倒'));
@@ -11126,9 +11126,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       set('bph', b.phase + b.state + !!b.tired, () => { els['boss-phase'].textContent = b.tired ? '累了！快打！' : b.state === 'stunned' ? '頭暈中！' : b.state === 'finale' ? '能量暴走！' : b.state === 'goal' || b.state === 'cleared' ? '打倒了！' : b.phaseName; [...els['boss-pips'].children].forEach((el, i) => el.classList.toggle('done', i < b.phase - 1 || ['finale', 'goal', 'cleared'].includes(b.state))); });
     } else if (g.mode !== 'sandbox') set('timer', secs, (v) => { els.timer.textContent = Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); els.timer.classList.toggle('final', v <= C.FINAL_SECONDS); });
     const net = g.mode === 'net', s = (net && SC.net.match && SC.net.match.score) || SC.ink.score(); // 連線時分數以房主為準
-    if (g.rule === 'mix') { // 複合賽：上方顯示各隊總分（塗地%＋擊倒×3）
-      const k = g.koScore(), v = (s.v || [s.a, s.b, s.c || 0]).slice(0, g.teams || 2), mx = v.map((x, i) => g.mixPts(x, k[i])), sum = mx.reduce((x, y) => x + y, 0) || 1;
-      set('pa', 'm' + mx.map(Math.round).join('/'), () => bars('', mx.map((x) => x / sum), mx.map((x) => Math.round(x) + ' 分')));
+    if (g.rule === 'mix') { // 複合賽：上方條＝塗地比例，數字＝擊倒數
+      const k = g.koScore(), v = (s.v || [s.a, s.b, s.c || 0]).slice(0, g.teams || 2); // Yen 23:25：條是塗地比例，數字是擊倒數
+      set('pa', 'm' + v.map((x) => Math.round(x * 1000)).join('/') + '|' + k.join('/'), () => bars('', v, k.map((n) => n + ' 擊倒')));
     } else if (g.rule === 'knockout') { // 擊倒戰：上方顯示各隊的擊倒數（第 67 版：電腦對戰也有）
       const k = g.koScore(), sum = k.reduce((x, y) => x + y, 0) || 1;
       set('pa', 'k' + k.join('/'), () => bars('', k.map((v) => v / sum), k.map(String)));
