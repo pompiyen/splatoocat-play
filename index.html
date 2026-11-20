@@ -11164,6 +11164,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // - 成就徽章（Yen 21:43）：單場連殺、單場塗地比例、零被擊倒獲勝、MVP、連勝… 只在積分賽拿得到，存次數。
 // - 每週排行榜（Yen 21:43）：週一 00:00（台灣時間）重算。公開版存 Firestore weekly/w{週數}/runs/{uid}，
 //   前十名上榜；上週前三名、前十名本週頭像框有金冠／星星。規則在 web/firebase/firestore.rules（一次最多加 120、扣 60，間隔 60 秒）。
+// - 防作弊：大家互相核對（Yen 21:53 問能不能像區塊鏈那樣比對所有玩家的資料）。打完每個人把這場結果
+//   （規則｜贏的隊伍｜人數，用房主排的隊伍編號）交到 matches/{場次}/votes/{uid}；至少另一個帳號交的一樣，
+//   才在同一批寫入裡領取（claims，同一場只能領一次）並更新每週排行，Firestore 規則會檢查這些。
+//   沒核對到（例如對手馬上關掉）這場不算分。擋不了：同一個人開兩個帳號自己對打、整間房的人串通、在上限內小幅亂報分數。
 // - 存在這台裝置的 localStorage 'sc-ranked'；登入後跟著雲端存檔走（09z_account.js 的 SAVE_KEYS，合併時取比較多場的那份）。
 //   分數是玩家自己的裝置算的，有心人改得掉；沒有公開的牌位排行榜，所以不影響別人。
 (() => {
@@ -11250,6 +11254,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['三連勝', 'Triple Win', '3れんしょう', '3연승'],
     ['積分賽連贏 3 場', 'Win 3 ranked matches in a row', 'ランク戦で3連勝', '랭크전 3연승'],
     ['贏的那場擊倒', 'KOs in a win', '勝った試合のたおした数', '이긴 판의 처치'], ['升上肉球以上有 3 場保護', '3 protected matches after reaching Paw or higher', '肉球以上に上がると3試合は下がらない', '발바닥 이상 승급 후 3판 보호'],
+    ['跟其他玩家核對結果中…', 'Checking the result with other players…', 'ほかのプレイヤーと結果をたしかめ中…', '다른 플레이어와 결과 확인 중…'], ['沒有其他玩家的結果可以核對，這場不算分', 'No other player confirmed the result, so this match gives no points', 'ほかのプレイヤーの結果とたしかめられなかったので、この試合はポイントなし', '다른 플레이어와 결과를 확인하지 못해 이 경기는 포인트가 없어요'], ['大家的結果一致', 'Result confirmed by everyone', 'みんなの結果が一致', '모두의 결과가 일치'],
     ['這場不算積分', 'This match gives no points', 'この試合はポイントなし', '이 경기는 포인트 없음'],
   ]);
 
@@ -11284,6 +11289,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .rkd-gain{font:400 34px/1 var(--f-display);color:#ffd23f;text-shadow:0 3px 0 #1b1430;min-width:2.4em;text-align:center}.rkd-gain.neg{color:#ffb3b3}
 .rkd-up{position:absolute;left:50%;top:-14px;transform:translateX(-50%) rotate(-6deg);background:#ff5c9a;border:2px solid #1b1430;border-radius:10px;padding:3px 8px;font:400 14px/1 var(--f-display);white-space:nowrap;animation:rkdPop .7s cubic-bezier(.3,1.6,.5,1)}
 .rkd-up.dn{background:#8a8fb0}
+.rkd-ok{font:700 12px/1 var(--f-body);color:#7dffb0}
 .rkd-none{font-size:13px;color:var(--dim);padding:4px 10px}
 @keyframes rkdPop{0%{transform:scale(.3) rotate(-30deg)}100%{transform:scale(1)}}
 .rkd-up{animation:none}
@@ -11328,6 +11334,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }, 150);
   const share = (p) => { const pt = SC.ink && SC.ink.paintable; if (!pt) return 0; let n = 0; for (let i = 0; i < pt.length; i++) n += pt[i]; return n ? Math.min(100, Math.round(((p.paint || 0) / n) * 100)) : 0; };
 
+  // 這場給大家核對的摘要（用房主排的隊伍編號，每台都一樣）。要在離開房間前算
+  const voteOf = (g) => {
+    const m = SC.net && SC.net.match, p = g && g.player && g.player(); if (!m || !p || !/^[a-z0-9]{6,12}$/.test(m.id || '')) return null;
+    const nT = m.teams || 2, off = m.off | 0, w = g.winner, gw = w === 'tie' || w == null ? 't' : String((w + off) % nT), tm = (p.team + off) % nT;
+    return { mid: m.id, r: `${g.rule}|${gw}|${(m.players || []).length}`, tm, win: gw === String(tm) };
+  };
+
   // 一場比賽的分數。回傳 null＝這場不算
   const score = (g) => {
     if (!g || g.demo || g.spec) return null;
@@ -11356,9 +11369,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     rows: [], last: [], status: '', loaded: '', busy: false,
     can: () => !!(SC.account && SC.account.db && SC.account.user),
     // 打完一場：把這週的分數寫上去（Firestore 規則限制一次的增減和間隔）
-    push: async (wk, t) => {
-      if (!weekly.can() || !wk) return;
-      try { const { db, F } = await SC.account.db(), u = SC.account.user, ref = F.doc(db, 'weekly', wk.id, 'runs', u.uid), old = await F.getDoc(ref), cur = old.exists() ? old.data().p | 0 : 0, v = Math.max(cur - 60, Math.min(wk.p | 0, cur + 120)); await F.setDoc(ref, { n: SC.account.name().slice(0, 16), p: v, t, at: F.serverTimestamp() }); weekly.loaded = ''; } catch (e) { /* 寫不進去（例如太快連打）：下一場再寫 */ }
+    // 核對過的一場：領取（claim）和每週分數同一批寫入。cap：贏的隊伍一場最多 +120，其他 +60（規則也檢查）
+    push: async (wk, t, vf) => {
+      if (!weekly.can() || !wk || !vf || !vf.o) return;
+      try {
+        const { db, F } = await SC.account.db(), u = SC.account.user, ref = F.doc(db, 'weekly', wk.id, 'runs', u.uid), old = await F.getDoc(ref), cur = old.exists() ? old.data().p | 0 : 0;
+        const v = Math.max(0, cur - 60, Math.min(wk.p | 0, cur + (vf.win ? 120 : 60))), b = F.writeBatch(db);
+        b.set(F.doc(db, 'matches', vf.mid, 'claims', u.uid), { o: vf.o, at: F.serverTimestamp() });
+        b.set(ref, { n: SC.account.name().slice(0, 16), p: v, t, m: vf.mid, at: F.serverTimestamp() }); await b.commit(); weekly.loaded = '';
+      } catch (e) { /* 寫不進去（例如太快連打）：本機分數照算，下一場再寫 */ }
+    },
+    // 交這場的結果，等另一個帳號交一樣的（最多等 40 秒）。回傳 { o: 結果一樣的對方, others: 這場其他帳號 } 或 null
+    verify: async (vf) => {
+      const { db, F } = await SC.account.db(), u = SC.account.user;
+      try { await F.setDoc(F.doc(db, 'matches', vf.mid, 'votes', u.uid), { r: vf.r, tm: vf.tm, at: F.serverTimestamp() }); } catch (e) { return null; }
+      for (let k = 0; k < 20; k++) {
+        try { const ds = (await F.getDocs(F.collection(db, 'matches', vf.mid, 'votes'))).docs, l = ds.find((d) => d.id !== u.uid && d.data().r === vf.r); if (l) { await new Promise((ok) => setTimeout(ok, 1500)); const all = (await F.getDocs(F.collection(db, 'matches', vf.mid, 'votes'))).docs.map((d) => d.id).filter((id) => id !== u.uid); return { o: l.id, others: all }; } } catch (e) {}
+        await new Promise((ok) => setTimeout(ok, 2000));
+      }
+      return null;
     },
     top: async (id) => { const { db, F } = await SC.account.db(); const q = F.query(F.collection(db, 'weekly', id, 'runs'), F.orderBy('p', 'desc'), F.limit(BOARD)); return (await F.getDocs(q)).docs.map((d) => ({ uid: d.id, ...d.data() })).filter((r) => Number.isFinite(r.p)); },
     // 讀這週和上週的前十名；上週前三／前十是這週的「地位」
@@ -11374,6 +11403,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     mine: () => { if (weekly.status && weekly.loaded === weekId()) return weekly.status; try { const o = JSON.parse(localStorage.getItem(ST_KEY) || 'null'); return o && o.wk === weekId() ? o.s || '' : ''; } catch (e) { return ''; } },
   };
   const FRAME = { top3: { c: '#ffd23f', i: '👑', n: '上週前三名' }, top10: { c: '#c9d6ff', i: '⭐', n: '上週前十名' } };
+
+  // 一直跟同一群人打（朋友一起排、或一個人兩個帳號）：2 小時內第 3 次遇到同一群人加分減半，第 5 次起只剩 2 成（扣分照扣）
+  const OPP_KEY = 'sc-ranked-opp', OPP_WIN = 2 * 3600e3;
+  const repeat = (r, others) => {
+    let o = {}; try { o = JSON.parse(localStorage.getItem(OPP_KEY) || '{}') || {}; } catch (e) {}
+    const now = Date.now(), key = (others || []).slice().sort().join(',') || '-'; Object.keys(o).forEach((k) => { o[k] = (o[k] || []).filter((t) => now - t < OPP_WIN); if (!o[k].length) delete o[k]; });
+    const n = (o[key] || []).length + 1; o[key] = [...(o[key] || []), now]; try { localStorage.setItem(OPP_KEY, JSON.stringify(o)); } catch (e) {}
+    const k = n >= 5 ? 0.2 : n >= 3 ? 0.5 : 1, d = r.after.p - r.before.p; if (k === 1 || d <= 0) return r;
+    const nd = Math.round(d * k), wk = r.after.wk ? { ...r.after.wk, p: Math.max(0, r.after.wk.p - d + nd) } : r.after.wk;
+    return { ...r, rep: k, delta: nd, after: { ...r.after, p: r.before.p + nd, wk } };
+  };
+  score.redo = (r) => { const cur = load(); if (cur.m === r.before.m) return r; const d = r.after.p - r.before.p; return { ...r, before: cur, after: { ...r.after, p: Math.max(0, cur.p + d), m: cur.m + 1 } }; }; // 等核對時本機分數有變（例如另一個分頁）：以最新的為準
 
   let badge = null, ov = null, styled = false, tab = 'rank';
   const style = () => { if (styled) return; styled = true; const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); };
@@ -11417,22 +11458,24 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const close = () => { if (ov) ov.hidden = true; };
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && ov && !ov.hidden) close(); });
 
-  const showResult = (r) => {
+  const showResult = (r, wait) => {
     const box = document.querySelector('#m-results .res-bottom'); if (!box) return; style();
     let el = box.querySelector('.rkd-res'); if (!el) { el = document.createElement('div'); el.className = 'rkd-res'; box.insertBefore(el, box.querySelector('.actions')); }
     if (!r) { el.innerHTML = `<span class="rkd-none">${tr('這場不算積分')}</span>`; el.hidden = true; return; }
     el.hidden = false;
+    if (wait === 'wait') { el.innerHTML = `<span class="rkd-i">${icon(tierOf(r.before.p))}</span><span class="rkd-none">⏳ ${tr('跟其他玩家核對結果中…')}</span>`; return; }
+    if (wait === 'fail') { el.innerHTML = `<span class="rkd-i">${icon(tierOf(r.before.p))}</span><span class="rkd-none">⚠️ ${tr('沒有其他玩家的結果可以核對，這場不算分')}</span>`; return; }
     const t0 = tierOf(r.before.p), t1 = tierOf(r.after.p), up = t1 > t0, down = t1 < t0;
-    const chips = [r.place ? `🏆+${r.place}` : '', r.kos ? `💥+${r.kos}` : '', r.mvp ? `👑+${r.mvp}` : '', r.mult !== 1 ? `×${r.mult}` : '', r.loss ? `<span class="neg">🎟️−${r.loss}</span>` : ''].filter(Boolean).map((c) => (c.startsWith('<') ? c : `<span>${c}</span>`)).join('')
+    const chips = [r.place ? `🏆+${r.place}` : '', r.kos ? `💥+${r.kos}` : '', r.mvp ? `👑+${r.mvp}` : '', r.mult !== 1 ? `×${r.mult}` : '', r.loss ? `<span class="neg">🎟️−${r.loss}</span>` : '', r.rep ? `<span class="neg">👥×${r.rep}</span>` : ''].filter(Boolean).map((c) => (c.startsWith('<') ? c : `<span>${c}</span>`)).join('')
       + r.got.map((id) => { const x = ACH.find((y) => y.id === id); return `<span class="ach${r.fresh.includes(id) ? ' new' : ''}" title="${esc(tr(x.n))}">${x.i} ${tr(x.n)}</span>`; }).join('');
-    el.innerHTML = `<span class="rkd-i">${icon(t0)}</span><div class="rkd-mid">${stars(r.before.p) || `<span>${r.before.p}</span>`}<div class="rkd-bar"><i style="width:${frac(r.before.p) * 100}%"></i></div><div class="rkd-chips">${chips}</div></div><b class="rkd-gain${r.delta < 0 ? ' neg' : ''}">${r.delta >= 0 ? '+' : ''}${r.delta}</b>`;
+    el.innerHTML = `<span class="rkd-i">${icon(t0)}</span><div class="rkd-mid">${wait === 'ok' ? `<span class="rkd-ok">✅ ${tr('大家的結果一致')}</span>` : ''}${stars(r.before.p) || `<span class="rkd-pts">${r.before.p}</span>`}<div class="rkd-bar"><i style="width:${frac(r.before.p) * 100}%"></i></div><div class="rkd-chips">${chips}</div></div><b class="rkd-gain${r.delta < 0 ? ' neg' : ''}">${r.delta >= 0 ? '+' : ''}${r.delta}</b>`;
     setTimeout(() => { // 進度條和星星慢慢長上去；升牌位時換徽章、跳一下
       const bar = el.querySelector('.rkd-bar i'), mid = el.querySelector('.rkd-mid'), ic = el.querySelector('.rkd-i'); if (!bar) return;
       const starsUp = t1 > t0 || starsOf(r.after.p) > starsOf(r.before.p);
       bar.style.width = (starsUp ? 100 : frac(r.after.p) * 100) + '%';
       setTimeout(() => {
         if (starsUp) { bar.style.transition = 'none'; bar.style.width = '0%'; void bar.offsetWidth; bar.style.transition = ''; bar.style.width = frac(r.after.p) * 100 + '%'; }
-        const s0 = mid.querySelector('.rkd-stars, span'); if (s0) s0.outerHTML = stars(r.after.p) || `<span>${r.after.p}</span>`;
+        const s0 = mid.querySelector('.rkd-stars, .rkd-pts'); if (s0) s0.outerHTML = stars(r.after.p) || `<span class="rkd-pts">${r.after.p}</span>`;
         if (up) { ic.innerHTML = icon(t1); ic.classList.add('pop'); const b = document.createElement('i'); b.className = 'rkd-up'; b.textContent = tr('升級！'); ic.appendChild(b); SC.audio && SC.audio.sfx && SC.audio.sfx.koGot && SC.audio.sfx.koGot(); }
         else if (down) { ic.innerHTML = icon(t1); const b = document.createElement('i'); b.className = 'rkd-up dn'; b.textContent = tr('掉牌位'); ic.appendChild(b); }
         else if (starsUp && SC.audio && SC.audio.sfx && SC.audio.sfx.ding) SC.audio.sfx.ding();
@@ -11445,13 +11488,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const orig = SC.ui.onResults;
     SC.ui.onResults = (...a) => {
       orig(...a);
-      let r = null; try { r = score(SC.game); if (r) { save(r.after); weekly.push(r.after.wk, tierOf(r.after.p)); } } catch (e) { r = null; }
+      let r = null, vf = null; try { r = score(SC.game); vf = r && voteOf(SC.game); } catch (e) { r = null; }
+      const check = !!(r && vf && weekly.can()); // 公開版登入後：要核對過才算分；Claude 版沒有資料庫，照本機算
+      if (r && !check) save(r.after);
       if (SC.game && SC.game.mode === 'net' && SC.net && SC.net.ranked) { // 積分賽打完一場就結束（Yen 21:35）：離開配對房，要再打按「再配對一場」
         api.done = true; try { SC.net.leave(); } catch (e) {}
         const a = document.getElementById('btn-again'), m = document.getElementById('btn-menu'); if (a) a.textContent = '再配對一場'; if (m) m.textContent = '回主選單';
       }
-      try { showResult(r); paintBadge(); } catch (e) { /* 畫不出來就算了，分數已經存好 */ }
-      if (r && SC.account && SC.account.cloud) SC.account.cloud();
+      try { showResult(r, check ? 'wait' : ''); paintBadge(); } catch (e) { /* 畫不出來就算了 */ }
+      if (check) weekly.verify(vf).then((got) => {
+        if (!got) return showResult(r, 'fail');
+        const o = got.o, now = repeat(score.redo(r), got.others); save(now.after); weekly.push(now.after.wk, tierOf(now.after.p), { ...vf, o }); showResult(now, 'ok'); paintBadge(); if (SC.account.cloud) SC.account.cloud();
+      }).catch(() => showResult(r, 'fail'));
+      else if (r && SC.account && SC.account.cloud) SC.account.cloud();
     };
   };
   const mount = () => {
