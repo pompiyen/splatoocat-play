@@ -553,6 +553,24 @@ html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw
 .h-hs.on { animation: hsPop .7s ease-out forwards; }
 @keyframes hsPop { 0% { opacity: 0; transform: scale(.5); } 15% { opacity: 1; transform: scale(1.25); } 30% { transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
+/* 第 62 版：選貓咪卡片改成上下排（臉在上、名字、說明），任何語言、任何寬度都不會把名字一個字一個字拆開。
+   名字不換行，字的大小跟著整排的寬度（cqi）縮放；說明照單字換行，不會在單字中間斷開 */
+#pick-kind { container-type: inline-size; }
+#m-title #pick-kind .cat-pick { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; justify-items: center; align-content: start; text-align: center; padding: 8px 4px 9px; row-gap: 3px; column-gap: 0; }
+#m-title #pick-kind .cat-pick svg { grid-row: auto; width: 52px; height: 52px; }
+#m-title #pick-kind .cat-pick b { align-self: center; white-space: nowrap; overflow-wrap: normal; word-break: keep-all; max-width: 100%; font-size: 17px; font-size: min(19px, 3.2cqi); line-height: 1.15; }
+#m-title #pick-kind .cat-pick small { display: block; align-self: start; overflow-wrap: normal; word-break: normal; font-size: 11px; font-size: max(9.5px, min(11.5px, 2.75cqi)); line-height: 1.25; }
+html[data-lang="ja"] #m-title #pick-kind .cat-pick b { font-size: min(19px, 2.6cqi); }
+html[data-lang="en"] #m-title #pick-kind .cat-pick b { font-size: min(19px, 2.65cqi); letter-spacing: -.01em; } /* Shuangshuang 最長 */ /* シュアンシュアン 8 個全形字 */
+html[data-lang="ja"] #m-title #pick-kind .cat-pick small, html[data-lang="zh"] #m-title #pick-kind .cat-pick small { word-break: normal; line-break: strict; }
+@media (max-width: 560px), (max-height: 520px) { #m-title #pick-kind .cat-pick svg { width: 40px; height: 40px; } }
+#m-title.net-on #pick-kind .cat-pick small { display: none; }
+/* 日文、中文的卡片標題不換行（沒有空白，換行會斷在字中間），放不下時由 ui.fitNames 縮小字；說明文字平均分行，避免最後一行只剩一兩個字 */
+html[data-lang="ja"] #m-title .pick b, html[data-lang="zh"] #m-title .pick b { white-space: nowrap; max-width: 100%; }
+#m-title .pick small { text-wrap: balance; overflow-wrap: normal; }
+/* 日文武器名：只在「インク｜銃」這種有零寬空白的地方換行，不會斷成「イン｜ク銃」 */
+html[data-lang="ja"] .w-chip b { word-break: keep-all; }
+
 </style>
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
@@ -861,14 +879,14 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['萊姆綠', 'Lime Green', 'ライムグリーン', '라임 초록'],
     ['桃紫', 'Peach Purple', 'ピーチパープル', '복숭아 보라'],
     // 武器
-    ['漆彈槍', 'Ink Blaster', 'インク銃', '잉크 총'],
+    ['漆彈槍', 'Ink Blaster', 'インク\u200b銃', '잉크 총'],
     ['滾刷', 'Roller', 'ローラー', '롤러'],
     ['狙擊槍', 'Sniper', 'スナイパー', '저격총'],
-    ['散彈槍', 'Shotgun', 'ショットガン', '산탄총'],
-    ['墨刀', 'Ink Blade', 'インク刀', '잉크 칼'],
+    ['散彈槍', 'Shotgun', 'ショット\u200bガン', '산탄총'],
+    ['墨刀', 'Ink Blade', 'インク\u200b刀', '잉크 칼'],
     ['爆頭！', 'Headshot!', 'ヘッドショット！', '헤드샷!'],
-    ['墨水彈', 'Ink Bomb', 'インクボム', '잉크 폭탄'],
-    ['墨貓', 'Ink Cat', 'インクネコ', '잉크 고양이'],
+    ['墨水彈', 'Ink Bomb', 'インク\u200bボム', '잉크 폭탄'],
+    ['墨貓', 'Ink Cat', 'インク\u200bネコ', '잉크 고양이'],
     ['絕招', 'Special', 'ひっさつわざ', '필살기'],
     // 操作說明
     ['移動', 'Move', 'いどう', '이동'],
@@ -10290,6 +10308,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['hud', 'scope', 'vig', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'ko-w', 'ko-got', 'hs-pop', 'roster-a', 'roster-b', 'my-face',
       'boss-phase', 'boss-fill', 'boss-pips', 'm-title', 'm-pause', 'm-help', 'm-results', 'verdict', 'res-a', 'res-b', 'res-c', 'res-bar-a', 'res-bar-b', 'res-bar-c', 'res-stats', 'help-list', 'say', 'say-t', 'flash', 'dim', 'inkcover', 'lives', 'ko-lives', 'sp-btn', 'trick-badge', 'trick-card'].forEach((id) => (els[id] = $(id)));
     mapCtx = els.minimap.getContext('2d'); mapImg = null;
+    // 第 62 版：卡片上的名字（換語言後可能變長）放不下時自動縮小字，不拆成一個字一個字
+    const fitNames = () => document.querySelectorAll('#m-title .pick b').forEach((b) => {
+      b.style.fontSize = ''; if (!b.clientWidth || getComputedStyle(b).whiteSpace !== 'nowrap' || b.scrollWidth <= b.clientWidth + 1) return;
+      const f = parseFloat(getComputedStyle(b).fontSize); b.style.fontSize = Math.max(9, Math.floor(f * (b.clientWidth / b.scrollWidth) * 0.97 * 10) / 10) + 'px'; });
+    let fitQ = 0; const fitSoon = () => { clearTimeout(fitQ); fitQ = setTimeout(fitNames, 30); };
+    try { new ResizeObserver(fitSoon).observe(els['m-title']); new MutationObserver(fitSoon).observe(els['m-title'], { subtree: true, childList: true, characterData: true });
+      if (document.fonts) { document.fonts.ready.then(fitSoon); document.fonts.addEventListener('loadingdone', fitSoon); } } catch (e) { /* 舊瀏覽器：只靠 CSS 的字級 */ }
+    ui.fitNames = fitNames;
 
     const MAP_LEDE = { random: '場地每次隨機挑一張。', park: '場地：貓咪遊樂園，好多層的高台、斜坡和城牆步道，爬到最高的貓窩上面看全場！', candy: '場地：甜點廚房，小心巧克力河！', ship: '場地：海盜船，兩艘大船隔著大海。爬上船長室、跳下貨艙，走跳板、碼頭或踩礁石過去，小心別掉進海裡！', fair: '場地：歡樂遊樂場，是一座大山坡，旋轉木馬在山頂。從山腳往上衝，搶下山頂！', skate: '場地：滑板場，橢圓形的大滑板場，外圈一整圈都是可以滑上去的碗邊，還有大碗池和 U 型滑道。', round: '場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。' };
     const LEDE = { versus: () => `${sel.roster === '1v1' ? '1 對 1' : '2 對 2'} 塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。${MAP_LEDE[sel.map] || ''}`,
@@ -10751,6 +10777,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       { name: '自由金額', price: '自訂', url: '' },
     ],
     donateUrl: 'https://p.ecpay.com.tw/FDC2624', // 綠界實況主收款的贊助網址（一個網址、贊助者自己輸入金額）：各方案沒有自己的 url 時都連到這裡
+    paypal: 'https://paypal.me/pompiyen', // 國外贊助用的 PayPal.Me 連結（例：'https://paypal.me/xxx'），填了才出現
     donateNote: '遊戲免費遊玩，贊助用於支持開發與營運。幣別：新台幣。付款方式：信用卡、ATM 轉帳、超商代碼（綠界科技）。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。',
     // Xsolla（Yen 2026-11-20：先備用串接，以後可能開付費選項）。不用自己的伺服器：
     //   Firebase 用 Google/Facebook 登入時拿到的存取權杖 → Xsolla Login「用社群權杖登入」換成 Xsolla 使用者 JWT
@@ -10786,6 +10813,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['登入後也可以用 Xsolla 付款：', 'Sign in to pay with Xsolla:', 'ログインすると Xsolla で支払えます：', '로그인하면 Xsolla로 결제할 수 있어요:'],
     ['聯絡我們', 'Contact', 'お問い合わせ', '문의'],
     ['贊助方案', 'Support plans', '応援プラン', '후원 플랜'],
+    ['國外贊助（信用卡或 PayPal）：', 'From outside Taiwan (card or PayPal):', '海外から（カードまたは PayPal）：', '해외에서 (카드 또는 PayPal):'],
     ['即將開放', 'Coming soon', '準備中', '준비 중'],
     ['小魚乾贊助', 'Dried-fish tip', '小魚の応援', '멸치 후원'],
     ['罐罐贊助', 'Cat-can tip', 'ネコ缶の応援', '캔 후원'],
@@ -10950,6 +10978,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .ac-me{display:flex;align-items:center;gap:12px;margin:10px 0}.ac-me img{width:52px;height:52px;border-radius:50%}
 .ac-err{color:#c2185b}
 .ac-row .tier{justify-content:space-between;padding:0 16px}.ac-row .tier b{color:#e5306b;font-size:19px}.ac-row .tier small{font-size:12px;color:#7a6f96;font-weight:700}.ac-row .tier:disabled{cursor:default;opacity:1;background:#fff8d6}
+.ac-row .pp{background:#ffc439}
 .ac-note{font-size:12.5px!important;color:#5b4f7a;margin-top:10px!important}
 .ac-contact button{background:none;border:0;color:#ffd52e;font:inherit;text-decoration:underline;cursor:pointer;padding:0;margin-left:10px}
 .ac-contact{margin-top:12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.75)}.ac-contact a{color:inherit}
@@ -10981,7 +11010,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       else h += `<p>登入後，設定和魔王關紀錄會存在雲端，換手機也不會不見，還能用帳號名字上排行榜。不登入也能照常玩。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}${P.includes('facebook') ? `<button type="button" class="f" data-a="facebook">${I_F}用 Facebook 登入</button>` : ''}</div><p>在 LINE、Messenger 裡面打開時可能登不進去，請改用 Safari 或 Chrome 打開。</p>`;
       if (err) h += `<p class="ac-err">${esc(err)}</p>`;
     } else {
-      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: d.url || CONFIG.donateUrl }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
+      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: d.url || CONFIG.donateUrl }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>${CONFIG.paypal ? `<p>國外贊助（信用卡或 PayPal）：</p><div class="ac-row"><a class="d pp" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}PayPal</a></div>` : ''}${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
         if (err) h += `<p class="ac-err">${esc(err)}</p>`;
