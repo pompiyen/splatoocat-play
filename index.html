@@ -546,6 +546,11 @@ html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw
 .ko-w:empty { display: none; }
 .ko-w i { display: block; width: clamp(30px, 6vmin, 42px); aspect-ratio: 1; border-radius: 50%; background: #fff; flex: none; } .ko-w i svg { width: 100%; height: 100%; display: block; }
 
+/* 第 58 版：打到頭 */
+.h-hs { position: absolute; left: 50%; top: 50%; margin: -64px 0 0 26px; font: 900 clamp(16px, 3.4vmin, 24px)/1 var(--f-body); color: var(--sun); -webkit-text-stroke: .2em var(--navy); paint-order: stroke fill; opacity: 0; pointer-events: none; white-space: nowrap; }
+.h-hs.on { animation: hsPop .7s ease-out forwards; }
+@keyframes hsPop { 0% { opacity: 0; transform: scale(.5); } 15% { opacity: 1; transform: scale(1.25); } 30% { transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
+
 </style>
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
@@ -614,11 +619,14 @@ SC.CFG = {
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
   // 散彈槍（Yen 2026-11-19）：一次噴出一把小墨彈成扇形；貼近全中一發擊倒，遠一點只中幾顆
-  W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 16, ink: 50, range: 52, interval: 0.7, radius: 3.6, speed: 125, gravity: 100 }, // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水
+  W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 32, ink: 50, range: 52, interval: 0.7, radius: 3.6, speed: 125, gravity: 100 }, // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水；第 58 版每顆威力再 2 倍（16→32）
   // 墨刀（Yen 2026-11-20，第 56 版）：近身武器，不會射出東西。按住連續砍（右橫砍→左橫砍→往下直劈），每一刀把前面一片扇形塗成自己的顏色、砍到人；
   // 跳起來後再按一下：往前衝刺斬一段（約 16），一路塗地，碰到的對手直接擊倒，每次跳起來只能衝一次
-  W05: { id: 'W05', name: '墨刀', slashInk: 3.5 / INK_LAST, slashInterval: 0.26, comboGap: 0.6, reach: 7.5, arc: 1.15, overReach: 9.5, overArc: 0.32,
-    slashDamage: [55, 55, 80], slashRadius: 2.6, dashInk: 16 / INK_LAST, dashDist: 16, dashTime: 0.2, dashDamage: 100, dashRadius: 3.2, speed: 1.12 },
+  // 第 58 版（Yen）：範圍和威力都 1.2 倍
+  W05: { id: 'W05', name: '墨刀', slashInk: 3.5 / INK_LAST, slashInterval: 0.26, comboGap: 0.6, reach: 9, arc: 1.15, overReach: 11.4, overArc: 0.32,
+    slashDamage: [66, 66, 96], slashRadius: 3.12, dashInk: 16 / INK_LAST, dashDist: 19.2, dashTime: 0.2, dashDamage: 100, dashRadius: 3.84, speed: 1.12 },
+  // 打到頭（Yen 2026-11-20 第 58 版：要大於身體的兩倍）：子彈打到離腳底 HEAD_Y 以上的地方（貓咪的大頭，臉的高度）傷害乘 HEAD_MULT。墨貓形態沒有頭。槍口在 3.1，平射打身體，要把準星對到臉上才算爆頭；電腦不吃爆頭加成（不讓電腦變強）
+  HEAD_Y: 3.3, HEAD_MULT: 2.5,
   // Yen 2026-11-19：丟更遠（初速 54→72，最遠約 26→47），落地後滾一小段（落地保留約 0.3 的水平速度、每秒衰減）再停住
   // Yen 2026-11-14：墨水彈加強。爆炸塗地半徑 6→7（再乘 PAINT），傷害範圍 8.4→11，中心 5 以內直接擊倒，外圈 60
   BOMB: { ink: 20 / INK_LAST, speed: 72, gravity: 105, fuse: 2, roll: 0.32, rollDrag: 3.6, armDelay: 1.05, radius: 9.5, damageRadius: 14.5, nearRadius: 6.5, near: 12, far: 66, holdFull: 0.9, damage: 60, nearDamage: 100, maxFlight: 3 },
@@ -856,6 +864,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['狙擊槍', 'Sniper', 'スナイパー', '저격총'],
     ['散彈槍', 'Shotgun', 'ショットガン', '산탄총'],
     ['墨刀', 'Ink Blade', 'インク刀', '잉크 칼'],
+    ['爆頭！', 'Headshot!', 'ヘッドショット！', '헤드샷!'],
     ['墨水彈', 'Ink Bomb', 'インクボム', '잉크 폭탄'],
     ['墨貓', 'Ink Cat', 'インクネコ', '잉크 고양이'],
     ['絕招', 'Special', 'ひっさつわざ', '필살기'],
@@ -1949,6 +1958,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ding() { tone('triangle', 2350, 2250, 0.09, 0.14); tone('sine', 3500, 3300, 0.12, 0.08); }, // 魔王有保護，打上去「叮」一聲
     hit() { tone('square', 1250, 1700, 0.05, 0.16); tone('sine', 880, 1320, 0.07, 0.2, 0.02); },
     // 打中人時輕輕的「叮」：幾個不成倍數的高音一起響、很快消失，聽起來像敲到金屬（連發時最快每 70 毫秒一次）
+    headshot() { tone('triangle', 1760, 2640, 0.09, 0.16); tone('sine', 2640, 3520, 0.12, 0.1, 0.05); }, // 打到頭：高高的「叮叮」
     metal() { if (!A.ready) return; const t = A.ctx.currentTime; if (t - lastMetal < 0.07) return; lastMetal = t; const f = 2300 + Math.random() * 260;
       tone('sine', f, f * 0.98, 0.16, 0.09); tone('sine', f * 1.51, f * 1.49, 0.11, 0.05); tone('sine', f * 2.27, f * 2.24, 0.08, 0.035); tone('triangle', f * 0.5, f * 0.5, 0.06, 0.04); noise(0.025, 0.05, 6000, 4000, 2); },
     hurt() { noise(0.14, 0.4, 500, 120, 0.7, 'lowpass'); tone('sawtooth', 220, 90, 0.16, 0.18); },
@@ -2446,6 +2456,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     for (let i = 0; i < prims.length; i++) {
       const p = prims[i];
       if (p.t === 'cyl') { const dx = x - p.x, dz = z - p.z; if (dx * dx + dz * dz <= p.r * p.r && p.h > h) h = p.h; }
+      else if (p.t === 'cone') { const d = Math.hypot(x - p.x, z - p.z); if (d <= p.r) { const ph = p.h + (p.h1 - p.h) * (1 - d / p.r); if (ph > h) h = ph; } } // 圓錐屋頂：邊緣 h、中心 h1
       else if (p.c != null) { // 轉了角度的方塊、斜坡（圓形場地用）：u 沿著 a 的方向
         const dx = x - p.x, dz = z - p.z, u = dx * p.c + dz * p.s, v = dz * p.c - dx * p.s;
         if (u >= -p.hu && u <= p.hu && v >= -p.hv && v <= p.hv) { const ph = p.t === 'obox' ? p.h : p.h0 + ((p.h1 - p.h0) * (u + p.hu)) / (2 * p.hu); if (ph > h) h = ph; }
@@ -2973,8 +2984,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       { t: 'box', x0: -22, x1: -16, z0: 22, z1: 28, h: FTOP + 4, look: 'booth' },
     ],
     center: [
+      // 旋轉木馬（第 58 版 Yen：屋頂要可以站、可以塗）：外圈圓台上小馬繞圈，中間的圓筒加尖屋頂，屋頂本身就是地面（25.5～29.5 高，五段跳跳得上去）
       { t: 'cyl', x: 0, z: 0, r: 14, h: FTOP + 2.2, look: 'carousel' },
-      { t: 'cyl', x: 0, z: 0, r: 2.6, h: FTOP + 13, look: 'carpole' },
+      { t: 'cone', x: 0, z: 0, r: 8.5, h: FTOP + 7.5, h1: FTOP + 11.5, look: 'carroof' },
       { t: 'cyl', x: 0, z: 44, r: 4.4, h: FTOP + 0.8, look: 'pad' },
       { t: 'cyl', x: 0, z: -44, r: 4.4, h: FTOP + 0.8, look: 'pad' },
       // 山頂兩端的雲霄飛車車站（22 高，可以從山頂跳上去）
@@ -2983,7 +2995,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ],
     sky: [0x6d7bff, 0xffb8e0, 0xffe6c2], fog: 0xffe0ef, hemi: [0xfff0fa, 0xffe6d6],
     river: { color: 0x7fd3ff, rough: 0.1 },
-    look: { base: 0xff8fb8, track: 0xff5a7a, teadisc: 0xffe08a, cup: 0x8fd3ff, bumper: 0xffc93c, drop: 0x8b6bff, booth: 0xffffff, balloons: 0xffffff, carousel: 0xffd1e8, carpole: 0xffd23f, pad: 0x9be7d0, terrace: 0xc9b5ff, slide: 0xffd23f, slideTop: 0x4ecbff, candy: 0xffc4e0, hedge: 0x5fc46c, station: 0xff8fb8 },
+    look: { base: 0xff8fb8, track: 0xff5a7a, teadisc: 0xffe08a, cup: 0x8fd3ff, bumper: 0xffc93c, drop: 0x8b6bff, booth: 0xffffff, balloons: 0xffffff, carousel: 0xffd1e8, carpole: 0xffd23f, carroof: 0xffd1e8, pad: 0x9be7d0, terrace: 0xc9b5ff, slide: 0xffd23f, slideTop: 0x4ecbff, candy: 0xffc4e0, hedge: 0x5fc46c, station: 0xff8fb8 },
     rough: { track: 0.35, cup: 0.25, bumper: 0.3 },
     ground: (g) => { // 彩色地磚
       const cols = ['#fff3c9', '#ffe1ec', '#dff4ff', '#e6ffe0']; for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) { g.fillStyle = cols[(x + y * 3) % 4]; g.fillRect(x * 64, y * 64, 64, 64); g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 4; g.strokeRect(x * 64 + 2, y * 64 + 2, 60, 60); }
@@ -3054,8 +3066,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         k.cyl(p); const spin = new THREE.Group(); spin.position.set(p.x, 0, p.z); k.root.add(spin);
         const gold = k.plain(0xffd23f, 0.25, { metalness: 0.4 }), cols = [0xffffff, 0xffc4d8, 0xc9b5ff, 0x9be7ff];
         for (let i = 0; i < 8; i++) {
-          const a = (i / 8) * 6.283, r = p.r - 3.5, g = new THREE.Group(); g.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); g.rotation.y = -a; spin.add(g);
-          const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 10, 6), gold); pole.position.y = p.h + 5; g.add(pole);
+          const a = (i / 8) * 6.283, r = p.r - 2.75, g = new THREE.Group(); g.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); g.rotation.y = -a; spin.add(g);
+          const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 6.5, 6), gold); pole.position.y = p.h + 3.25; g.add(pole); const knob = new THREE.Mesh(new THREE.SphereGeometry(0.4, 10, 8), gold); knob.position.y = p.h + 6.6; g.add(knob);
           const hm = k.plain(cols[i % 4], 0.35), horse = new THREE.Group(); horse.position.y = p.h + 3; g.add(horse);
           const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.9, 1.8, 6, 10), hm); body.rotation.x = Math.PI / 2; horse.add(body);
           const head = new THREE.Mesh(new THREE.SphereGeometry(0.8, 12, 8), hm); head.position.set(0, 1.1, 1.5); horse.add(head);
@@ -3064,10 +3076,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           [[-0.5, 0.7], [0.5, 0.7], [-0.5, -0.7], [0.5, -0.7]].forEach(([x, z]) => { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.4, 6), hm); l.position.set(x, -1, z); horse.add(l); });
           g.userData.h = horse; g.userData.ph = i * 0.8;
         }
-        const roofTex = stripes(['#ff6b8b', '#fff3c9'], 16), roof = new THREE.Mesh(new THREE.ConeGeometry(p.r + 1.5, 5, 32, 1, true), new THREE.MeshStandardMaterial({ map: roofTex, roughness: 0.5, side: THREE.DoubleSide }));
-        roof.position.set(p.x, p.h + 12.5, p.z); k.root.add(roof);
-        const edge = new THREE.Mesh(new THREE.TorusGeometry(p.r + 1.5, 0.5, 8, 48), gold); edge.rotation.x = Math.PI / 2; edge.position.set(p.x, p.h + 10, p.z); k.root.add(edge);
-        k.tick((t) => { spin.rotation.y = t * 0.35; roof.rotation.y = t * 0.35; spin.children.forEach((g) => { g.userData.h.position.y = p.h + 3 + Math.sin(t * 2 + g.userData.ph) * 0.8; }); });
+        k.tick((t) => { spin.rotation.y = t * 0.35; spin.children.forEach((g) => { g.userData.h.position.y = p.h + 3 + Math.sin(t * 2 + g.userData.ph) * 0.8; }); });
+      },
+      carroof: (p, k) => { // 中間的圓筒（鏡子和金邊）＋條紋尖屋頂。屋頂用會顯示墨水的材質，形狀和地面高度一樣，所以可以站、可以塗
+        const drum = k.add(new THREE.CylinderGeometry(p.r, p.r, p.h - (FTOP + 2.2) + 0.2, 40), k.mat('carousel'), p.x, (p.h + FTOP + 2.2) / 2, p.z);
+        const gold = k.plain(0xffd23f, 0.25, { metalness: 0.4 }), glass = k.plain(0xbfe8ff, 0.1, { metalness: 0.5 });
+        for (let i = 0; i < 8; i++) { const a = (i / 8) * 6.283 + 0.39, m = k.add(new THREE.BoxGeometry(2.6, 3, 0.2), glass, p.x + Math.cos(a) * (p.r + 0.05), FTOP + 5, p.z + Math.sin(a) * (p.r + 0.05)); m.rotation.y = -a + Math.PI / 2; }
+        [FTOP + 2.6, p.h - 0.2].forEach((y) => { const t = k.add(new THREE.TorusGeometry(p.r + 0.1, 0.32, 8, 48), gold, p.x, y, p.z); t.rotation.x = Math.PI / 2; });
+        const tex = stripes(['#ff6b8b', '#fff3c9'], 16), roof = new THREE.Mesh(new THREE.ConeGeometry(p.r, p.h1 - p.h, 48, 1, false), SC.ink.patch(new THREE.MeshStandardMaterial({ map: tex, roughness: 0.5 })));
+        roof.position.set(p.x, (p.h + p.h1) / 2, p.z); roof.receiveShadow = true; roof.castShadow = true; k.root.add(roof);
+        const edge = k.add(new THREE.TorusGeometry(p.r, 0.45, 8, 48), gold, p.x, p.h, p.z); edge.rotation.x = Math.PI / 2;
+        const flag = k.add(new THREE.CylinderGeometry(0.12, 0.12, 3, 6), gold, p.x, p.h1 + 1.5, p.z); void flag; k.add(new THREE.SphereGeometry(0.45, 10, 8), gold, p.x, p.h1 + 3.1, p.z);
+        const pen = k.add(new THREE.ConeGeometry(1.1, 1.6, 3), k.plain(0xff6b8b, 0.4), p.x + 0.9, p.h1 + 2.5, p.z); pen.rotation.z = -Math.PI / 2; void drum;
       },
       carpole: (p, k) => { const m = k.add(new THREE.CylinderGeometry(p.r, p.r, p.h + 2, 20), new THREE.MeshStandardMaterial({ map: stripes(['#ffd23f', '#ff6b8b'], 10, false), roughness: 0.35 }), p.x, (p.h - 2) / 2, p.z); m.material.map.repeat.set(1, 3); },
     },
@@ -4341,7 +4361,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 打法：罐頭落地時沾滿對手墨水 → 把罐頭側面塗成自己的顏色 → 變墨貓爬上去 → 連跳到機頂 → 射紅色按鈕。
 (() => {
   const HALF = 48, DECK = 13, CAB = 12, CAB_TOP = 52, DECK_TOP = 54, BTN = 2.75, BTN_H = 0.9, CAN = 5, CAN_H = 22, CARRIAGE_Y = 74;
-  const PHASE_HP = 450, DMG = { W01: 10, W03: 60, W04: 9, W05: 18, roller: 30, bomb: 50 }, DECK_GRACE = 6, SHAKE_WARN = 1.2, CARRIAGE_SPEED = 46;
+  const PHASE_HP = 450, DMG = { W01: 10, W03: 60, W04: 18, W05: 22, roller: 30, bomb: 50 }, DECK_GRACE = 6, SHAKE_WARN = 1.2, CARRIAGE_SPEED = 46;
   // Yen 2026-11-18：第 3 階段對五歲小孩太難，調慢：招式間休息變長、預警時間跟前兩階段一樣、罐頭倒數變長、可以在機頂待久一點
   const MAX_CANS = [2, 3, 3], FUSE = 16, CAN_KEEP = 22, REST = [1.4, 1.1, 1.3], P3_DECK_GRACE = 9;
   const PHASE_NAMES = ['第 1 階段・夾子砸地', '第 2 階段・掃臂與毛線球', '第 3 階段・大王生氣了！'];
@@ -5409,7 +5429,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   SC.arenaBoss = (D) => {
     // Yen 2026-11-17：魔王先初步變弱：每回合血量約八成、整體動作（含預告和飛行物）慢 15%（PACE）
     const PACE = D.pace || 0.85;
-    const R = D.R || 46, PHASE_HP = Math.round((D.phaseHP || 360) * 0.82), DMG = D.dmg || { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
+    const R = D.R || 46, PHASE_HP = Math.round((D.phaseHP || 360) * 0.82), DMG = D.dmg || { W01: 4, W02: 30, W03: 60, W04: 6, W05: 19, bomb: 60 };
     const BODY_R = D.bodyR, TOP = D.top, NAMES = D.phaseNames;
     const CH0 = 0.05, CH1 = 2.7, BOOM = 2.82, CINE_END = BOOM + 0.42;
     const B = { name: D.name, face: D.face, lede: D.lede, spawn: D.spawn || { x: 0, z: -32 }, on: false, phase: 1, health: PHASE_HP, maxHealth: PHASE_HP, state: 'idle', phaseName: NAMES[0], time: 0, clearSeconds: 0, tired: false };
@@ -6152,7 +6172,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 招式：丟西瓜炸彈（地上紅圈）、墨水大砲（三連發）、第 3 回合會繞著場地下西瓜雨（只有紅圈外面安全）。
 (() => {
   const R = 46, BODY_R = 4.6, TOP = 12, FLY = 10, BALLOONS = 5, BALLOON_HP = 24;
-  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 6, W05: 19, bomb: 60 };
   const balloons = []; let basketMat, ropeMat, glowI = 0, glowAt = 0;
   const COLORS = [0xff5d8f, 0x58c7ff, 0xffd23f, 0x7be36b, 0xb07bff];
 
@@ -6386,7 +6406,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 第 3 回合場上有三顆大石頭，站在石頭前面引他的鑽頭衝過來，撞到石頭就卡住。
 (() => {
   const R = 46, BODY_R = 5.4, TOP = 15, UNDER = -17, BALL_HP = 12, BALL_R = 2.4;
-  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 6, W05: 19, bomb: 60 };
   const balls = [], holes = [], rocks = []; let dirt, vestMat;
 
   const B4 = SC.boss4 = SC.arenaBoss({
@@ -7475,7 +7495,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 破解（飄在天上打不到）：第 1 回合把雷球射回去打他；第 2 回合打散繞著他轉的四朵小烏雲，沒電就掉下來；第 3 回合兩顆雷球都要射回去。
 (() => {
   const R = 46, BODY_R = 7, TOP = 13, FLY = 11, BALL_HP = 12, BALL_R = 2;
-  const DMG = { W01: 4, W02: 30, W03: 60, W04: 3, W05: 16, bomb: 60 };
+  const DMG = { W01: 4, W02: 30, W03: 60, W04: 6, W05: 19, bomb: 60 };
   const balls = [], bolts = []; let cloudMat;
 
   const B9 = SC.boss9 = SC.arenaBoss({
@@ -8862,7 +8882,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // 出生台（家裡的圈圈）：Yen 2026-11-20 定的規則——塗地戰時站在上面不會被打倒，但也打不到別人；擊倒戰沒有這個保護
   const onBase = (a) => { if (G.mode === 'boss' || !a || !a.pos) return false; const [u, v] = W.toLocal(a.team, a.pos.x, a.pos.z); return u < -W.baseIn && Math.abs(v) < 17 && a.pos.y > 5; };
-  const baseSafe = (t, from) => G.mode !== 'boss' && G.rule === 'turf' && (onBase(t) || onBase(from));
+  // 時鐘廣場中間的鐘塔頂上（Yen 2026-11-20 第 58 版）：塗地戰時跟出生台一樣，打不死也打不到人
+  const onTower = (a) => !!(a && a.pos && /^round/.test(W.key || '') && a.pos.y > 12 && Math.hypot(a.pos.x, a.pos.z) < 5.5);
+  const baseSafe = (t, from) => G.mode !== 'boss' && G.rule === 'turf' && (onBase(t) || onBase(from) || onTower(t) || onTower(from));
   // ---------- 傷害與重生 ----------
   // ---------- 自由試玩的靶子 ----------
   function makeTargets() {
@@ -9154,6 +9176,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     m.copy(cam.pos).addScaledVector(viewDir, cam.dist + 1.2); dir.copy(a.aim).sub(m).normalize();
   }
   G.sniperRay = (m, dir) => sniperRay(player(), m, dir); // 測試用
+  G.testShot = (a, x, y, z, vx, vy, vz) => projectiles.push({ x, y, z, vx, vy, vz, team: a.team, owner: a, dmg: C.W01.damage, r: 1, range: 99, g: 0, travel: 0, drip: 0, life: 0, vr: 0.8, color: colors[a.team], cause: 'W01' }); // 測試用：直直飛的一發
   function fireSniper(a) {
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1);
     const m = new V3(), dir = new V3(); sniperRay(a, m, dir); const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
@@ -9269,7 +9292,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         for (const e of G.hit) {
           if (p.noHit) break; if (e.team === p.team || !e.alive) continue;
           if (p.y > e.pos.y + bodyBot(e) && p.y < e.pos.y + bodyTop(e) + 0.3 && Math.hypot(p.x - e.pos.x, p.z - e.pos.z) < bodyR(e) + 0.55) {
-            if (!(p.group && e.lastSwing === p.group)) { if (p.group) e.lastSwing = p.group; hurt(e, p.dmg, p.owner, p.cause); }
+            if (!(p.group && e.lastSwing === p.group)) { if (p.group) e.lastSwing = p.group;
+              const head = !e.isTarget && !e.bossHurt && e.form !== 'cat' && !(p.owner && p.owner.ai) && p.y > e.pos.y + C.HEAD_Y; // 打到頭：傷害 2.5 倍
+              if (hurt(e, p.dmg * (head ? C.HEAD_MULT : 1), p.owner, p.cause) && head && p.owner && p.owner.isPlayer) { SC.ui.headshot(); A.sfx.headshot(); } }
             const gy = H(e.pos.x, e.pos.z); if (gy > -4 && e.pos.y - gy < 3) INK.stamp(p.team, e.pos.x, gy, e.pos.z, p.r * 0.55);
             dead = true; break;
           }
@@ -9403,7 +9428,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.submerged) { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.REFILL_RATE * dt); }
     else if (a.form === 'cat' && a.ground === 'neutral') { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.NEUTRAL_CAT_REFILL * dt); }
     else if (a.form === 'biped' && (a.ground === 'own' || a.ground === 'neutral') && a.ink < C.EMERGENCY_CAP && since > C.EMERGENCY_DELAY) a.ink = Math.min(C.EMERGENCY_CAP, a.ink + C.EMERGENCY_RATE * dt);
-    if (a.ground === 'enemy') { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
+    if (a.ground === 'enemy' && !baseSafe(a, null)) { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
     else if (a.hp < 100 && now - a.lastHitAt > C.HEAL_DELAY) a.hp = Math.min(100, a.hp + (a.submerged ? C.HEAL_OWN_INK : a.form === 'cat' && a.ground === 'neutral' ? C.HEAL_NEUTRAL : C.HEAL_RATE) * dt);
     if (a.submerged && a.speed > 8) { a.swimT -= dt; if (a.swimT <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x, a.pos.y + 0.2, a.pos.z, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); } }
 
@@ -10114,7 +10139,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-feed" id="feed"></div>
       <div class="h-spec" id="h-spec" hidden><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M2 16Q24-8 46 16 24 40 2 16z" fill="#fff" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="16" r="8" fill="#1b1430"/><circle cx="27" cy="13" r="2.6" fill="#fff"/></svg><span>觀戰中</span><i class="dot" id="spec-dot"></i><b id="spec-name"></b><button type="button" class="spec-next" id="spec-next" aria-label="換人看"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 6l14 10L8 26z" fill="currentColor"/><rect x="23" y="6" width="4" height="20" rx="2" fill="currentColor"/></svg></button></div>
       <div class="h-scope" id="scope"></div>
-      <div class="h-cross" id="cross"><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div>
+      <div class="h-cross" id="cross"><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div><div class="h-hs" id="hs-pop">爆頭！</div>
       <div class="h-weapons" id="weapons">
         ${['W01', 'W02', 'W03', 'W04', 'W05'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>G</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Q</kbd><b>墨貓</b></span></div>
       </div>
@@ -10228,7 +10253,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     <div class="inkcover" id="inkcover"><svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20V9q4-9 9-2t9-3 8 6 9-8 9 7 8-5 9 6 9-7 8 5 9-4 9 6 4-2v12z"/></svg><i></i></div>
     <div class="flash" id="flash"></div>`);
 
-    ['hud', 'scope', 'vig', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'ko-w', 'ko-got', 'roster-a', 'roster-b', 'my-face',
+    ['hud', 'scope', 'vig', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'ko-w', 'ko-got', 'hs-pop', 'roster-a', 'roster-b', 'my-face',
       'boss-phase', 'boss-fill', 'boss-pips', 'm-title', 'm-pause', 'm-help', 'm-results', 'verdict', 'res-a', 'res-b', 'res-c', 'res-bar-a', 'res-bar-b', 'res-bar-c', 'res-stats', 'help-list', 'say', 'say-t', 'flash', 'dim', 'inkcover', 'lives', 'ko-lives', 'sp-btn', 'trick-badge', 'trick-card'].forEach((id) => (els[id] = $(id)));
     mapCtx = els.minimap.getContext('2d'); mapImg = null;
 
@@ -10405,6 +10430,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.onWeapon = (id) => { els.weapons.querySelectorAll('.w-chip').forEach((c) => c.classList.toggle('on', c.dataset.w === id)); els.cross.dataset.w = id; SC.input.setWeapon(id); };
   ui.scope = (k) => { if (!els.scope) return; const v = Math.round(k * 20) / 20; if (last.scope !== v) { last.scope = v; els.scope.style.opacity = v; els.cross.classList.toggle('scoped', v > 0.5); } };
   ui.hurt = () => { hurtK = 1; };
+  ui.headshot = () => { const e = els['hs-pop']; e.classList.remove('on'); void e.offsetWidth; e.classList.add('on'); }; // 打到頭：準星旁邊跳出「爆頭！」
   ui.hitMarker = (kill) => { hitT = kill ? 0.5 : 0.24; els.cross.classList.toggle('kill', !!kill); els.cross.classList.add('hit'); };
   ui.banner = (text, dur, big) => { els.banner.textContent = text; els.banner.classList.toggle('big', !!big); els.banner.classList.remove('on'); void els.banner.offsetWidth; els.banner.classList.add('on'); bannerT = dur; };
   // 魔王講話：上方的對話泡泡
@@ -10688,6 +10714,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       { name: '貓抓板贊助', price: 'NT$ 300', url: '' },
       { name: '自由金額', price: '自訂', url: '' },
     ],
+    donateUrl: '', // 綠界實況主收款的贊助網址（一個網址、贊助者自己輸入金額）：各方案沒有自己的 url 時都連到這裡
     donateNote: '遊戲免費遊玩，贊助用於支持開發與營運。幣別：新台幣。付款方式：信用卡、ATM 轉帳、超商代碼（綠界科技）。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。',
     // Xsolla（Yen 2026-11-20：先備用串接，以後可能開付費選項）。不用自己的伺服器：
     //   Firebase 用 Google/Facebook 登入時拿到的存取權杖 → Xsolla Login「用社群權杖登入」換成 Xsolla 使用者 JWT
@@ -10918,7 +10945,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       else h += `<p>登入後，設定和魔王關紀錄會存在雲端，換手機也不會不見，還能用帳號名字上排行榜。不登入也能照常玩。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}${P.includes('facebook') ? `<button type="button" class="f" data-a="facebook">${I_F}用 Facebook 登入</button>` : ''}</div><p>在 LINE、Messenger 裡面打開時可能登不進去，請改用 Safari 或 Chrome 打開。</p>`;
       if (err) h += `<p class="ac-err">${esc(err)}</p>`;
     } else {
-      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
+      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: d.url || CONFIG.donateUrl }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
         if (err) h += `<p class="ac-err">${esc(err)}</p>`;
