@@ -530,6 +530,22 @@ html:not([data-lang="zh"]) #pick-kind .cat-pick b { font-size: clamp(13px, 3.6vw
 #pick-stage .cat-pick .rk-best svg { width: 13px; height: 13px; background: none; border: 0; padding: 0; border-radius: 0; grid-row: auto; }
 @media (max-height: 520px) { .res-rank { padding: 4px 10px; gap: 2px; } .rk-row { padding: 1px 6px; } .rk-foot { display: none; } .rk-h b { font-size: 15px; } }
 
+/* 第 57 版：擊倒對手的提示、被擊倒後看對手的視角 */
+.h-kogot { position: absolute; left: 50%; top: 19%; display: flex; align-items: center; gap: 10px; padding: 6px 18px 6px 6px; background: var(--navy); color: #fff; border: 3px solid #fff; border-radius: 999px;
+  font: 900 clamp(16px, 3.8vmin, 28px)/1.1 var(--f-body); white-space: nowrap; opacity: 0; transform: translate(-50%, 0); pointer-events: none; box-shadow: 0 5px 0 rgba(27, 20, 48, .45); z-index: 3; }
+.h-kogot.on { animation: koGot 2.4s ease-out forwards; }
+@keyframes koGot { 0% { opacity: 0; transform: translate(-50%, 0) scale(.4); } 9% { opacity: 1; transform: translate(-50%, 0) scale(1.15); } 17% { transform: translate(-50%, 0) scale(1); } 80% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -14px) scale(.96); } }
+.kg-face { position: relative; display: block; width: clamp(44px, 9vmin, 66px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px var(--tc, var(--b)); flex: none; }
+.kg-face > svg:first-child { width: 100%; height: 100%; display: block; }
+.kg-x { position: absolute; right: -6px; bottom: -6px; width: 46%; height: 46%; }
+.kg-w { display: block; width: clamp(34px, 7vmin, 50px); flex: none; } .kg-w svg { width: 100%; height: auto; display: block; }
+.kg-n { font-style: normal; color: var(--sun); font-size: 1.25em; -webkit-text-stroke: .12em var(--navy); paint-order: stroke fill; }
+.h-ko.watch { top: 27%; }
+.h-ko.watch .ko-t { font-size: clamp(16px, 3.6vmin, 26px); }
+.ko-w { margin: 10px auto 0; width: fit-content; display: flex; align-items: center; gap: 8px; padding: 4px 16px 4px 4px; background: rgba(27, 20, 48, .82); border: 2px solid #fff; border-radius: 999px; font: 800 clamp(14px, 3vmin, 20px)/1.2 var(--f-body); }
+.ko-w:empty { display: none; }
+.ko-w i { display: block; width: clamp(30px, 6vmin, 42px); aspect-ratio: 1; border-radius: 50%; background: #fff; flex: none; } .ko-w i svg { width: 100%; height: 100%; display: block; }
+
 </style>
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
@@ -1032,6 +1048,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   pat(/^(\d+) 方大亂鬥$/, ['$1-Way Free-for-All', '$1人バトルロイヤル', '$1인 난투']);
   pat(/^(\d+) 方(塗地戰|擊倒戰)：每個人自己一隊，(.+)$/, (m, li) => ['$1-way $2: ', '$1人$2：', '$1인 $2: '][li] + tr('每個人自己一隊，' + m[3]));
   pat(/^三方(塗地戰|擊倒戰)：每個人自己一隊，(.+)$/, (m, li) => ['3-way $1: ', '三つどもえ$1：', '3팀 $1: '][li] + tr('每個人自己一隊，' + m[2]));
+  pat(/^你擊倒了(.+)！$/, ['You splatted $1!', '$1をたおした！', '$1를 쓰러뜨렸다!']);
+  pat(/^正在看(.+)的畫面$/, ["Watching $1's view", '$1の画面を見ています', '$1의 화면을 보는 중']);
   pat(/^被(.+)的(漆彈槍|滾刷|狙擊槍|散彈槍|墨刀|墨水彈|絕招|掉進河裡|被喵抓抓大王擊倒)擊倒了！$/, ["Splatted by $1's $2!", '$1の$2でやられた！', '$1의 $2에 당했다!']);
   pat(/^被(.+)擊倒了！$/, ['KO\'d by $1!', '$1にやられた！', '$1에게 당했다!']);
   pat(/^掉進(.+?)(！?)$/, ['Fell into $1$2', '$1に落ちた$2', '$1에 빠졌다$2']);
@@ -3515,6 +3533,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     // 頭
     const head = new THREE.Group(); head.position.set(0, 3.8, 0.05); body.add(head);
+    const ears = [], eyes = []; // 待機時抖耳朵、眨眼用
     head.add(mesh(S(1.45, 28, 20), mFur, 0, 0, 0, 1.13, 1, 1));
     [-1, 1].forEach((s) => { // 臉頰的蓬毛
       const cm = kindId === 'shuang' || kindId === 'taro' ? mLight : mFur; // 臉頰的蓬毛：幾顆壓扁的毛球
@@ -3522,11 +3541,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       head.add(mesh(S(0.4 * K.fluffy, 12, 8), cm, s * 1.72, -0.62, 0.2, 1.2, 0.6, 0.8));
       head.add(mesh(S(0.36 * K.fluffy, 12, 8), cm, s * 1.55, -0.95, 0.3, 1.1, 0.6, 0.8));
       const ear = mesh(new THREE.ConeGeometry(0.62, 1.05, 14), mEar, s * 0.92, 1.28, -0.05); ear.rotation.z = -s * 0.42; head.add(ear);
-      const inner = mesh(new THREE.ConeGeometry(0.36, 0.7, 12), mPink, s * 0.9, 1.22, 0.16); inner.rotation.z = -s * 0.42; head.add(inner);
+      const inner = mesh(new THREE.ConeGeometry(0.36, 0.7, 12), mPink, s * 0.9, 1.22, 0.16); inner.rotation.z = -s * 0.42; head.add(inner); ears.push({ ear, inner, s });
       // 眼睛
-      head.add(mesh(S(0.34, 16, 12), mEye, s * 0.58, 0.12, 1.2, 0.95, 1.08, 0.5));
-      head.add(mesh(S(0.15, 12, 10), mPupil, s * 0.58, 0.12, 1.37, 0.75, 1.3, 0.4));
-      head.add(mesh(S(0.07, 8, 6), mShine, s * 0.58 + 0.1, 0.27, 1.44));
+      [mesh(S(0.34, 16, 12), mEye, s * 0.58, 0.12, 1.2, 0.95, 1.08, 0.5), mesh(S(0.15, 12, 10), mPupil, s * 0.58, 0.12, 1.37, 0.75, 1.3, 0.4), mesh(S(0.07, 8, 6), mShine, s * 0.58 + 0.1, 0.27, 1.44)]
+        .forEach((m) => { m.userData.sy = m.scale.y; head.add(m); eyes.push(m); });
       if (kindId === 'maomao') { // 毛毛招牌的不爽眉毛
         const brow = mesh(new THREE.CapsuleGeometry(0.11, 0.5, 4, 8), mDark, s * 0.6, 0.55, 1.22); brow.rotation.z = Math.PI / 2 + s * 0.45; head.add(brow);
       } else if (kindId === 'shuang') { // 雙雙眼周的灰褐色面罩
@@ -3693,10 +3711,41 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       head.rotation.x = SC.clamp(-s.pitch * 0.5, -0.4, 0.4);
       head.rotation.z = Math.sin(s.t * 1.7 + cat.phase * 0.1) * 0.04;
       tail.rotation.y = Math.sin(s.t * 4.2 + root.id) * 0.4; tail.rotation.x = -0.2 + air * 0.6 + Math.sin(s.t * 2.1) * 0.08;
+      idle(dt, s, mv);
       if (s.charge > 0) hand.position.x = -0.85 + (Math.random() - 0.5) * 0.03 * s.charge;
       // 抱抱小鴨：cat.pose = { l: [x,y,z], r: [x,y,z] } 是兩隻手掌要伸到的位置（身體座標），手會轉過去、必要時拉長一點
       if (cat.pose) { aimArm(armL, cat.pose.l); aimArm(armR, cat.pose.r); cat.posed = true; }
       else if (cat.posed) { cat.posed = false; armL.rotation.set(armL.rotation.x, 0, 0.25); armR.rotation.set(armR.rotation.x, 0, -0.25); armL.scale.y = armR.scale.y = 1; }
+    };
+    // 站著不動時的小動作（Yen 2026-11-20）：一直都有呼吸和眨眼、偶爾抖耳朵；站超過一秒多，輪流張望、揮手、洗臉、開心跳一跳、甩尾巴。
+    // 持武器的右手不動，準星照樣準
+    const GESTS = ['look', 'wave', 'wash', 'hop', 'tail', 'look', 'wash'];
+    let ic = 0, blinkAt = 1 + Math.random() * 3, blinkT = 0, lastBk = 1, earAt = 2 + Math.random() * 4, earT = 0, earS = 1;
+    const idle = (dt, s, mv) => {
+      ic += dt; const T = ic; // 自己的時鐘（慢動作、測試時也一樣）
+      const still = s.onGround && mv < 0.05 && !cat.pose && cat.recoil < 0.08 && !(cat.slash > 0) && !(cat.swing > 0) && !(s.charge > 0) && !s.rolling;
+      cat.idleT = still ? (cat.idleT || 0) + dt : 0;
+      body.scale.y += Math.sin(T * 2.4 + root.id) * (still ? 0.022 : 0.008); // 呼吸
+      if (T >= blinkAt) { blinkT = 0.13; blinkAt = T + 2.2 + Math.random() * 3.5; if (Math.random() < 0.2) blinkAt = T + 0.3; } // 偶爾連眨兩下
+      blinkT -= dt; const bk = blinkT > 0 ? 0.12 : 1;
+      if (bk !== lastBk) { lastBk = bk; eyes.forEach((m) => (m.scale.y = m.userData.sy * bk)); }
+      if (T >= earAt) { earT = 0.32; earS = Math.random() < 0.5 ? -1 : 1; earAt = T + 2.5 + Math.random() * 5; }
+      earT -= dt; const ek = earT > 0 ? Math.sin((1 - earT / 0.32) * Math.PI * 3) * 0.35 : 0;
+      ears.forEach((o) => { const r = o.s === earS || cat.gest === 'tail' ? ek : 0; if (o.ear.rotation.x !== r) { o.ear.rotation.x = r; o.inner.rotation.x = r; } });
+      let g = null, gk = 0;
+      if (cat.idleT > 1.3) {
+        if (!cat.gest || T > cat.gestEnd + cat.gestGap) { let n; do n = GESTS[(Math.random() * GESTS.length) | 0]; while (n === cat.gest && Math.random() < 0.7); cat.gest = n; cat.gestAt = T; cat.gestEnd = T + 1.6; cat.gestGap = 1 + Math.random() * 2.4; }
+        if (T < cat.gestEnd) { g = cat.gest; gk = (T - cat.gestAt) / 1.6; }
+      } else cat.gest = null;
+      const env = g ? Math.min(1, gk * 5, (1 - gk) * 5) : 0;
+      let hy = 0;
+      if (g === 'look') { hy = Math.sin(gk * Math.PI * 2) * 0.75; head.rotation.x -= env * 0.1; } // 左看看右看看
+      else if (g === 'wave') { armL.rotation.x = SC.lerp(armL.rotation.x, -2.8, env); armL.rotation.z = 0.25 + env * (0.55 + Math.sin(T * 13) * 0.4); head.rotation.z += env * 0.12; } // 舉手揮一揮
+      else if (g === 'wash') { armL.rotation.x = SC.lerp(armL.rotation.x, -2.35, env); armL.rotation.z = 0.25 - env * (0.8 + Math.sin(T * 15) * 0.14); head.rotation.z -= env * 0.16; head.rotation.x += env * 0.14; } // 用手掌洗臉
+      else if (g === 'hop') { const h = Math.abs(Math.sin(gk * Math.PI * 3)) * env; body.position.y += h * 0.6; body.scale.y += (h > 0.05 ? 0.05 : -0.06) * env; } // 開心跳三下
+      else if (g === 'tail') { tail.rotation.y = SC.lerp(tail.rotation.y, Math.sin(T * 10) * 0.95, env); tail.rotation.x -= env * 0.35; } // 尾巴翹高甩一甩
+      if (g !== 'wave' && g !== 'wash' && !cat.pose && armL.rotation.z !== 0.25) armL.rotation.z = SC.damp(armL.rotation.z, 0.25, 12, dt);
+      head.rotation.y = SC.damp(head.rotation.y, hy, 8, dt);
     };
     const REACH = 1.15;
     const aimArm = (arm, t) => {
@@ -8910,8 +8959,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     SC.fx.burst(t.pos.x, Math.max(t.pos.y, -5) + 2.5, t.pos.z, col, 42, 30, 0.8); SC.fx.ghost(t.pos.x, Math.max(t.pos.y, -6), t.pos.z);
     if (!G.demo) {
       SC.ui.feed(from, t, cause);
-      if (t.isPlayer) { A.sfx.ko(); cam.shake = 1; SC.ui.onKo(from, cause); if (G.mode === 'boss') BS.taunt(); if (slowT <= 0) { slowT = 0.4; slowK = 0.3; } } // 自己被擊倒：短短的慢動作
-      else if (from && from.isPlayer) { A.sfx.koGot(); if (netOn()) SC.ui.hitMarker(true); if (slowT <= 0) { slowT = 0.2; slowK = 0.15; } cam.shake = Math.min(1, cam.shake + 0.35); } // 打倒對手：畫面頓一下
+      if (t.isPlayer) { t.koBy = from && from !== t && from.cat ? from : null; t.koAt = G.time; A.sfx.ko(); cam.shake = 1; SC.ui.onKo(from, cause); if (G.mode === 'boss') BS.taunt(); if (slowT <= 0) { slowT = 0.4; slowK = 0.3; } } // 自己被擊倒：短短的慢動作
+      else if (from && from.isPlayer) { SC.ui.onKoGot(t, cause); A.sfx.koGot(); if (netOn()) SC.ui.hitMarker(true); if (slowT <= 0) { slowT = 0.2; slowK = 0.15; } cam.shake = Math.min(1, cam.shake + 0.35); } // 打倒對手：畫面頓一下
       else A.sfx.splat(0.6);
     }
   }
@@ -9682,7 +9731,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   function updateCamera(dt) {
-    const p = viewer(), aspect = camera.aspect;
+    const p = viewer(), aspect = camera.aspect; G.watching = null;
     const baseFov = aspect < 1 ? 78 : 60;
     // 狙擊蓄力時放大：一按就先 1.8 倍，蓄滿到 SCOPE_ZOOM 倍；鏡頭移到貓咪頭部，角色不會擋住準星
     const charging = p && p.isPlayer && !G.demo && p.alive && p.weapon === 'W03' && p.charge >= 0 && G.state === 'play';
@@ -9727,23 +9776,28 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       camera.quaternion.copy(q0).slerp(q1, e); camera.updateProjectionMatrix(); return;
     }
     cam.q0 = null; cam.fin = null;
+    // 被擊倒後等重生的時候（Yen 2026-11-20）：先看自己倒下的地方 0.8 秒，接著鏡頭跑到擊倒你的對手背後，看他的視角，直到回到出生台
+    const kb = p.isPlayer && !p.alive && G.state === 'play' && G.mode !== 'boss' && p.koBy && p.koBy.alive && !p.koBy.gone && G.time - p.koAt > 0.8 ? p.koBy : null;
+    if (kb) { const kp = SC.clamp(kb.pitch * 0.5, -0.45, 0.35) - 0.2; if (!cam.kOn) { cam.kyaw = kb.yaw; cam.kpitch = kp; } else { cam.kyaw += SC.angDiff(cam.kyaw, kb.yaw) * Math.min(1, dt * 5); cam.kpitch = SC.damp(cam.kpitch, kp, 5, dt); } }
+    cam.kOn = !!kb; G.watching = kb;
+    const F = kb || p, yaw = kb ? cam.kyaw : cam.yaw;
     const cdK = G.state === 'countdown' ? SC.clamp((countdownT - 0.6) / C.COUNTDOWN_SECONDS, 0, 1) : 0;
-    const pitch = cam.pitch - cdK * 0.5, s = Math.sin(cam.yaw), c = Math.cos(cam.yaw);
+    const pitch = (kb ? cam.kpitch : cam.pitch) - cdK * 0.5, s = Math.sin(yaw), c = Math.cos(yaw);
     viewDir.set(s * Math.cos(pitch), Math.sin(pitch), c * Math.cos(pitch));
-    const py = (p.alive ? p.visY : p.pos.y) + (p.form === 'cat' ? 5.2 : 6.7);
-    let want = SC.lerp((p.form === 'cat' ? 13.5 : 15.5) + cdK * cdK * 26 + (aspect < 1 ? 3 : 0), 0.6, scopeK);
-    const hit = W.raycast(p.pos.x, py, p.pos.z, -viewDir.x, -viewDir.y, -viewDir.z, want + 1, true);
+    const py = (F.alive ? F.visY : F.pos.y) + (F.form === 'cat' ? 5.2 : 6.7);
+    let want = SC.lerp((F.form === 'cat' ? 13.5 : 15.5) + (kb ? 3 : 0) + cdK * cdK * 26 + (aspect < 1 ? 3 : 0), 0.6, scopeK);
+    const hit = W.raycast(F.pos.x, py, F.pos.z, -viewDir.x, -viewDir.y, -viewDir.z, want + 1, true);
     if (hit) want = Math.max(Math.min(3.5, want), hit.t - 1);
-    if (W.camR) { const bx = -viewDir.x, bz = -viewDir.z, a = bx * bx + bz * bz, b = p.pos.x * bx + p.pos.z * bz, c = p.pos.x * p.pos.x + p.pos.z * p.pos.z - W.camR * W.camR; if (a > 1e-6) { const t = (-b + Math.sqrt(Math.max(0, b * b - a * c))) / a; if (t < want) want = Math.max(Math.min(3.5, want), t); } } // 圓形場地：鏡頭不退到場外的裝飾後面
+    if (W.camR) { const bx = -viewDir.x, bz = -viewDir.z, a = bx * bx + bz * bz, b = F.pos.x * bx + F.pos.z * bz, c = F.pos.x * F.pos.x + F.pos.z * F.pos.z - W.camR * W.camR; if (a > 1e-6) { const t = (-b + Math.sqrt(Math.max(0, b * b - a * c))) / a; if (t < want) want = Math.max(Math.min(3.5, want), t); } } // 圓形場地：鏡頭不退到場外的裝飾後面
     cam.dist = want < cam.dist ? want : SC.damp(cam.dist, want, scopeK > 0.01 ? 14 : 5, dt);
     if (p.alive) p.cat.group.visible = scopeK < 0.5; // 開鏡時隱藏自己的角色
     // Yen 2026-11-19 打擊感：鏡頭跟著角色時稍微慢一拍（更滑順）；角色放在畫面中間偏左，往前看的畫面多一點（瞄準照樣從畫面中央射出）
-    const fx0 = p.pos.x, fz0 = p.pos.z; if (!cam.fp || Math.hypot(cam.fp.x - fx0, cam.fp.z - fz0) > 9 || Math.abs(cam.fp.y - py) > 9 || !p.alive) cam.fp = new V3(fx0, py, fz0);
+    const fx0 = F.pos.x, fz0 = F.pos.z; if (!cam.fp || Math.hypot(cam.fp.x - fx0, cam.fp.z - fz0) > 9 || Math.abs(cam.fp.y - py) > 9 || !F.alive) cam.fp = new V3(fx0, py, fz0);
     else { cam.fp.x = SC.damp(cam.fp.x, fx0, 16, dt); cam.fp.z = SC.damp(cam.fp.z, fz0, 16, dt); cam.fp.y = SC.damp(cam.fp.y, py, 11, dt); }
-    const sh = SC.lerp(aspect < 1 ? 1.1 : 2.4, 0, scopeK) * Math.min(1, cam.dist / 8), rx = Math.cos(cam.yaw), rz = -Math.sin(cam.yaw); // 鏡頭往右肩移
+    const sh = SC.lerp(aspect < 1 ? 1.1 : 2.4, 0, scopeK) * Math.min(1, cam.dist / 8), rx = Math.cos(yaw), rz = -Math.sin(yaw); // 鏡頭往右肩移
     cam.pos.set(cam.fp.x - viewDir.x * cam.dist - rx * sh, cam.fp.y - viewDir.y * cam.dist, cam.fp.z - viewDir.z * cam.dist - rz * sh);
     const gh = H(cam.pos.x, cam.pos.z); if (cam.pos.y < (gh < (W.openH || 40) ? gh : -1) + 1.2) cam.pos.y = (gh < (W.openH || 40) ? gh : -1) + 1.2;
-    W.fenceFade(cam.pos.x, cam.pos.z, p.pos.x, p.pos.z, G.mode !== 'boss');
+    W.fenceFade(cam.pos.x, cam.pos.z, F.pos.x, F.pos.z, G.mode !== 'boss');
     cam.shake = SC.damp(cam.shake, 0, 6, dt);
     camera.position.copy(cam.pos); camera.up.set(0, 1, 0);
     camera.lookAt(cam.pos.x + viewDir.x * 30, cam.pos.y + viewDir.y * 30, cam.pos.z + viewDir.z * 30);
@@ -10068,7 +10122,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-trick" id="trick-card"></div>
       <div class="h-say" id="say"><span class="say-face">${ui.bossFace()}</span><p><b class="boss-name">喵抓抓大王</b><span id="say-t"></span></p></div>
       <div class="h-banner" id="banner"></div>
-      <div class="h-ko" id="ko"><div class="ko-lives" id="ko-lives" hidden>${LIVES_HTML}</div><div class="ko-t" id="ko-t"></div><div class="ko-n" id="ko-n"></div></div>
+      <div class="h-ko" id="ko"><div class="ko-lives" id="ko-lives" hidden>${LIVES_HTML}</div><div class="ko-t" id="ko-t"></div><div class="ko-n" id="ko-n"></div><div class="ko-w" id="ko-w"></div></div><div class="h-kogot" id="ko-got" aria-live="polite"></div>
       <button class="h-pause" id="btn-pause" type="button" aria-label="暫停"><i></i><i></i></button>
       <button class="h-full fs-btn" id="btn-full" type="button" aria-label="全螢幕" hidden><i></i></button>
       <button class="h-chat" id="btn-chat" type="button" aria-label="聊天"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 7h22a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H14l-6 5v-5H5a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3z" fill="#fff"/><circle cx="10" cy="15.5" r="2" fill="#1b1430"/><circle cx="16" cy="15.5" r="2" fill="#1b1430"/><circle cx="22" cy="15.5" r="2" fill="#1b1430"/></svg></button>
@@ -10174,7 +10228,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     <div class="inkcover" id="inkcover"><svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20V9q4-9 9-2t9-3 8 6 9-8 9 7 8-5 9 6 9-7 8 5 9-4 9 6 4-2v12z"/></svg><i></i></div>
     <div class="flash" id="flash"></div>`);
 
-    ['hud', 'scope', 'vig', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'roster-a', 'roster-b', 'my-face',
+    ['hud', 'scope', 'vig', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'ko-w', 'ko-got', 'roster-a', 'roster-b', 'my-face',
       'boss-phase', 'boss-fill', 'boss-pips', 'm-title', 'm-pause', 'm-help', 'm-results', 'verdict', 'res-a', 'res-b', 'res-c', 'res-bar-a', 'res-bar-b', 'res-bar-c', 'res-stats', 'help-list', 'say', 'say-t', 'flash', 'dim', 'inkcover', 'lives', 'ko-lives', 'sp-btn', 'trick-badge', 'trick-card'].forEach((id) => (els[id] = $(id)));
     mapCtx = els.minimap.getContext('2d'); mapImg = null;
 
@@ -10370,11 +10424,22 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     el.innerHTML = from ? `${tag(from)}<em>${CAUSE[cause]}</em>${tag(t)}` : `${tag(t)}<em>${cause === 'fall' || !CAUSE[cause] ? fallTxt() : CAUSE[cause]}</em>`;
     els.feed.prepend(el); feedItems.push({ el, t: 4.5 }); if (feedItems.length > 4) feedItems.shift().el.remove();
   };
-  ui.onKo = (from, cause) => { els.tip.classList.remove('on'); tipT = 0; els['ko-t'].textContent = from ? `被${from.name}的${CAUSE[cause]}擊倒了！` : cause === 'boss' ? `被${G().bossMod().name}擊倒了！` : fallTxt() + '！'; els.ko.classList.add('on');
+  ui.onKo = (from, cause) => { els.tip.classList.remove('on'); tipT = 0; els['ko-got'].classList.remove('on'); els['ko-t'].textContent = from ? `被${from.name}的${CAUSE[cause]}擊倒了！` : cause === 'boss' ? `被${G().bossMod().name}擊倒了！` : fallTxt() + '！'; els.ko.classList.add('on');
     const kl = els['ko-lives'], g = G(), boss = g.mode === 'boss'; kl.hidden = !boss;
     if (boss) { const left = Math.max(0, C.BOSS_LIVES - g.player().deaths); [...kl.children].forEach((h, i) => { h.className = i < left ? '' : i === left ? 'break' : 'gone'; }); }
   };
-  ui.onRespawn = () => { els.ko.classList.remove('on'); };
+  ui.onRespawn = () => { els.ko.classList.remove('on', 'watch'); };
+  // 擊倒對手時（Yen 2026-11-20）：畫面上方跳出被你擊倒的那隻貓的臉和名字；3 秒內連續擊倒會顯示 ×2、×3
+  let kgAt = -9, kgN = 0;
+  ui.onKoGot = (t, cause) => {
+    const now = performance.now() / 1000; kgN = now - kgAt < 3 ? kgN + 1 : 1; kgAt = now;
+    const e = els['ko-got']; e.textContent = '';
+    const f = document.createElement('i'); f.className = 'kg-face'; f.style.setProperty('--tc', 'var(--' + (['a', 'b', 'c'][t.team] || 'b') + ')'); f.innerHTML = ui.face(t.cat && t.cat.kind) + '<svg class="kg-x" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#1b1430"/><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>'; e.appendChild(f);
+    const b = document.createElement('b'); b.textContent = `你擊倒了${t.name}！`; e.appendChild(b);
+    const ic = cause === 'bomb' ? 'BOMB' : cause; if (ICONS[ic]) { const w = document.createElement('span'); w.className = 'kg-w'; w.innerHTML = ui.icon(ic); e.appendChild(w); }
+    if (kgN > 1) { const n = document.createElement('em'); n.className = 'kg-n'; n.textContent = '×' + kgN; e.appendChild(n); }
+    e.classList.remove('on'); void e.offsetWidth; e.classList.add('on');
+  };
   let trickT = 0;
   ui.trick = (k, small) => {
     const b = els['trick-badge'], c = els['trick-card']; if (!b) return;
@@ -10575,6 +10640,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     set('lives', g.mode === 'boss' ? Math.max(0, C.BOSS_LIVES - p.deaths) : -1, (v) => { els.lives.hidden = v < 0; [...els.lives.children].forEach((h, i) => h.classList.toggle('gone', i >= v)); });
     set('ink', Math.round(p.ink), (v) => { els['ink-fill'].style.width = v + '%'; els['ink-meter'].classList.toggle('low', v < 15); });
     g.actors.forEach((a) => set('al' + a.id, a.alive, (v) => { const c = $('chip-' + a.id); if (c) c.classList.toggle('out', !v); }));
+    set('watch', g.watching ? g.watching.id : -1, () => { // 被擊倒後在看對手的視角
+      const w = g.watching, box = els['ko-w']; els.ko.classList.toggle('watch', !!w); box.textContent = '';
+      if (w) { const f = document.createElement('i'); f.innerHTML = ui.face(w.cat && w.cat.kind); box.appendChild(f); const t = document.createElement('span'); t.textContent = `正在看${w.name}的畫面`; box.appendChild(t); }
+    });
     if (!p.alive) set('ko', g.mode === 'boss' && p.deaths >= C.BOSS_LIVES ? -9 : Math.ceil(p.respawnAt - g.time), (v) => { els['ko-n'].textContent = v > 0 ? v + ' 秒後回到出生台' : ''; });
     // 準星：狙擊蓄力環、命中標記
     const ch = p.charge < 0 ? 0 : Math.min(1, p.charge / C.W03.fullCharge);
@@ -10584,7 +10653,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (hitT > 0) { hitT -= dt; if (hitT <= 0) els.cross.classList.remove('hit', 'kill'); }
     // 受傷與踩到對手墨水時，畫面邊緣染上對手顏色
     hurtK = Math.max(0, hurtK - dt * 2.2);
-    const vig = p.alive ? Math.min(1, (1 - p.hp / 100) * 0.9 + hurtK * 0.5 + (p.ground === 'enemy' ? 0.25 : 0)) : 0.5;
+    const vig = p.alive ? Math.min(1, (1 - p.hp / 100) * 0.9 + hurtK * 0.5 + (p.ground === 'enemy' ? 0.25 : 0)) : g.watching ? 0.22 : 0.5;
     set('vig', Math.round(vig * 40), (v) => (els.vig.style.opacity = v / 40));
     for (let i = feedItems.length - 1; i >= 0; i--) { const f = feedItems[i]; f.t -= dt; if (f.t <= 0) { f.el.remove(); feedItems.splice(i, 1); } }
     mapT -= dt; if (mapT <= 0) { mapT = 0.33; drawMap(g); }
