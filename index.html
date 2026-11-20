@@ -593,6 +593,12 @@ html[data-lang="ja"] .w-chip b { word-break: keep-all; }
 #map-peek .peek-card { display: flex; align-items: center; gap: 12px; background: rgba(27, 20, 48, .88); border: 3px solid #fff; border-radius: 18px 20px 18px 22px; padding: 8px 10px 8px 12px; box-shadow: var(--pop); max-width: 100%; }
 #map-peek .peek-ico svg { width: 52px; height: 38px; display: block; } #map-peek b { color: #fff; font-size: 20px; font-weight: 900; white-space: nowrap; }
 #map-peek .peek-hint { margin: 8px 0 0; color: #fff; font-size: 13px; text-shadow: 0 1px 2px var(--navy); }
+/* 第 69 版：連線房間的「一起打電腦」和電腦強度 */
+#pick-vc .head { width: 22px; height: 20px; } #pick-vdif { gap: 4px; } #pick-vdif .dif-pick { flex: 1 1 0; min-width: 0; padding: 4px 2px; transform: none; } #pick-vdif .dif-pick .mood { width: 26px; height: 26px; } #pick-vdif .dif-pick b { font-size: 11px; }
+.net-list li.cpu .net-face svg { width: 100%; height: 100%; }
+/* 第 69 版：開戰後左上角小小的房號 */
+.h-room { position: absolute; left: var(--gl); top: calc(60px + var(--sat)); z-index: 3; padding: 3px 9px; border-radius: 10px; background: rgba(27, 20, 48, .72); border: 2px solid rgba(255, 255, 255, .85); color: #fff; font: 900 13px/1.2 var(--font, system-ui); letter-spacing: .5px; pointer-events: none; white-space: nowrap; }
+.h-room[hidden] { display: none; }
 
 </style>
 <div id="app">
@@ -680,6 +686,8 @@ SC.CFG = {
   ACTOR_RADIUS: 1.5, ACTOR_HEIGHT: 5.2, STEP: 1.6,
   // 絕招（Yen 2026-11-17）：塗地累積量表，滿了按絕招鈕：垂直飛上天、往下砸，落點半徑 SP_R 內的對手直接擊倒
   SP_PER_CELL: 100 / 18000, SP_BLADE_K: 2.2, SP_KO_BONUS: 25, // 第 65 版（Yen）：墨刀塗得少，絕招量累積乘 2.2；擊倒對手額外加 25
+  BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
+  SPRAY_DMG: 24, SPRAY_SLOW: 0.6, // 第 69 版：散彈槍絕招每顆 24（原本 40），連射時移動速度 0.6 倍
   SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 16, POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
   SP_R: 18, SP_HEIGHT: 22, SP_KILL_H: 50, // SP_KILL_H：往上多高都會被打到（五段跳最高約 48）
   BOSS_LIVES: 3, // Yen 2026-11-17：魔王關只有三條命，三次都被擊倒就挑戰失敗
@@ -785,6 +793,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['帶兩把武器', 'Bring 2 Weapons', 'ぶきを2つ持っていく', '무기 2개 챙기기'],
     ['隱形 6 秒！對手看不到你', 'Invisible for 6 s! Rivals can\'t see you', '6秒間とうめい！相手から見えない', '6초 동안 투명! 상대가 못 봐요'],
     ['透視 8 秒！牆後面的對手會變成紅色', 'X-ray for 8 s! Rivals behind walls turn red', '8秒間すけて見える！カベの向こうの相手が赤くなる', '8초 동안 투시! 벽 뒤 상대가 빨갛게 보여요'],
+    ['四面八方亂掃射！', 'Spin and spray everywhere!', '全方向にうちまくれ！', '사방으로 마구 쏴라!'],
     ['四面八方爆射！', 'Blast in every direction!', '全方向にドカンとうて！', '사방으로 한 번에 펑!'],
     ['毛毛', 'Maomao', 'マオマオ', '마오마오'],
     ['雙雙', 'Shuangshuang', 'シュアンシュアン', '솽솽'],
@@ -824,6 +833,9 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['塗得多的贏', 'Most paint wins', 'たくさん塗ったら勝ち', '많이 칠하면 승리'],
     ['擊倒戰', 'Knockout', 'たおしあいバトル', '쓰러뜨리기'],
     ['規則', 'Rule', 'ルール', '규칙'],
+    ['真人對打', 'Players vs players', 'みんなで対戦', '사람끼리 대결'],
+    ['一起打電腦', 'Team up vs CPU', 'みんなでCPUと対戦', '같이 컴퓨터랑 대결'],
+    ['我們這隊', 'Our team', 'わたしたちのチーム', '우리 팀'],
     ['✔ 就選這個', '✔ Pick this one', '✔ これにする', '✔ 이걸로 할래'],
     ['點一下畫面回到選單', 'Tap anywhere to go back', 'タップでメニューにもどる', '화면을 누르면 메뉴로 돌아가요'],
     ['擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。', 'Knockout battle. In 3 minutes, the team with more KOs wins (you come back 5 s after going down).', 'たおしあいバトル。3分間で、相手をたくさんたおしたチームの勝ち（たおれても5秒でもどってくるよ）。', '쓰러뜨리기 대결. 3분 동안 상대를 더 많이 쓰러뜨린 팀이 이겨요 (쓰러져도 5초 뒤에 다시 나와요).'],
@@ -1129,6 +1141,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   pat(/^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
   pat(/^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
   pat(/^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, ['Up to $1 players per match; the others wait for the next one. $2', '1試合は$1人まで。ほかの人は次の試合を待ってね。$2', '한 판에 최대 $1명, 나머지는 다음 판을 기다려요. $2']);
+  pat(/^電腦 ×(\d+)$/, ['CPU ×$1', 'CPU ×$1', '컴퓨터 ×$1']);
+  pat(/^房號 (\d+)$/, ['Room $1', 'ルーム $1', '방 번호 $1']);
   pat(/^(\d+) 秒後開打$/, ['Starting in $1 s', '$1秒後にスタート', '$1초 뒤 시작']);
   pat(/^中繼站：(.*)$/, (m, li) => ['Relay: ', '中継：', '중계: '][li] + (m[1] === '重新連線中' ? tr(m[1]) : m[1].replace(/、/g, li === 1 ? '、' : ', ')));
   pat(/^房主・(.+)$/, ['Host · $1', 'ホスト・$1', '방장 · $1']);
@@ -5233,7 +5247,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // - 三方對戰（Yen 2026-11-19）：房間剛好 3 人時，房主可以選「三方」，每人一隊、三種顏色，場地固定是圓形的時鐘廣場。
 // 限制：只有登入 Claude、而且被邀請看這個頁面的人連得進來；只拿公開連結的人不行。
 (() => {
-  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: null, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false });
+  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: null, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false, vc: false, by: -1 });
+  // 第 69 版（Yen）：「一起打電腦」vc：房間裡的真人全部同一隊，對上同樣人數的電腦（2對2、3對3、4對4）。
+  // 電腦由這場的裁判那台來算（裁判換人就換那台接手），電腦的狀態放在裁判的 presence.cs，電腦的事件在類型後面加「#編號」
   const KINDS = ['maomao', 'shuang', 'banban', 'taro'], PI = Math.PI;
   // 事件欄位裡要跟著場地翻轉的 x／z 分量，以及面向角
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
@@ -5292,7 +5308,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function attach(r, code, qi) {
     chatOut = []; chatSeen = {}; N.chatLog = [];
     room = r; N.code = code; N.quick = qi; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
-    if (qi) { N.rule = 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; }
+    if (qi) { N.rule = 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; } N.vc = false;
     changed();
   }
   // 隨機配對（Yen 2026-11-20）：依序看 sc-q1、sc-q2…，找第一間還沒滿 4 人、也沒在打的房間進去；都滿了就再往後找。
@@ -5328,9 +5344,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     prof = { n, k, w: p.w }; if (N.state === 'lobby') send({ n: N.quick ? '' : n, k, w: p.w }); // 配對房不送暱稱
   };
   // 分隊（Yen 2026-11-19）：mix 'rand'＝開打時隨機分隊，'pick'＝房主指定（點玩家換隊，沒指定的照進房順序輪流）。asg：peer → 隊伍
-  const hostPatch = () => ({ r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
+  const hostPatch = () => ({ vc: N.vc ? 1 : 0, df: N.dif, r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
   // 這場要上場的人分到哪一隊：回傳 [{ peer, team }]。兩隊每隊最多 2 人、兩隊都要有人；三方對戰每人一隊
   N.lineup = (rand) => {
+    if (N.vc) return N.list.slice(0, 4).map((r, i) => ({ peer: r.peer, i, team: 0 })); // 一起打電腦：真人都在第 1 隊
     const tri = N.triOn(), n = N.nTeams(), cap = tri ? 1 : 2, who = N.list.slice(0, tri ? n : 4).map((r, i) => ({ peer: r.peer, i, team: rand ? -1 : N.asg[r.peer] }));
     if (rand) for (let i = who.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [who[i], who[j]] = [who[j], who[i]]; }
     const cnt = new Array(n).fill(0);
@@ -5349,20 +5366,24 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const asg = {}; L.forEach((w) => (asg[w.peer] = w.team)); asg[peer] = to; if (there.length >= cap) asg[there[there.length - 1].peer] = me.team;
     N.asg = asg; send(hostPatch()); sig = '';
   };
+  N.dif = 'normal'; N.setDif = (d) => { if (!N.isHost || !SC.DIFFICULTY[d]) return; N.dif = d; send(hostPatch()); sig = ''; };
+  N.setVc = (on) => { if (!N.isHost) return; N.vc = !!on; send(hostPatch()); sig = ''; };
   N.setRule = (rule) => { if (!N.isHost) return; N.rule = rule === 'knockout' ? 'knockout' : 'turf'; send(hostPatch()); sig = ''; };
   const okMap = (v) => v === 'random' || (SC.world.MAPS && !!SC.world.MAPS[v]);
   N.setMap = (v) => { if (!N.isHost || !okMap(v)) return; N.map = v; send(hostPatch()); sig = ''; }; // 房主選場地（Yen 2026-11-17）
   N.setTri = (on) => { if (!N.isHost) return; N.tri = !!on; send(hostPatch()); sig = ''; }; // 3 人時：三方對戰或 2 對 1
   // tri＝每人一隊（3～6 人；Yen 2026-11-19 先要三方、再要四方以上）。兩隊模式最多 4 人
-  N.triOn = () => N.list.length >= 3 && (N.tri != null ? N.tri : N.list.length !== 4); // 沒選過：3 人三方、4 人 2 對 2、5～6 人大亂鬥
+  N.triOn = () => !N.vc && N.list.length >= 3 && (N.tri != null ? N.tri : N.list.length !== 4); // 沒選過：3 人三方、4 人 2 對 2、5～6 人大亂鬥
   N.nTeams = () => (N.triOn() ? Math.min(6, N.list.length) : 2);
   N.cap = () => (N.triOn() ? 6 : 4);
 
   // 房主按開始：照進房順序輪流分到兩隊，最多 4 人；剛好 3 人又選了三方對戰，就每人一隊
-  N.start = () => {
+  N.ink = 'random'; // 房主在主選單挑的墨水顏色：開打時傳給大家，房主那隊用這個顏色（第 69 版：每台看到的顏色一樣）
+  const inkOf = (pl) => { const pr = SC.inkPair(N.ink), me = pl.find((e) => e[0] === myPeer); return pr && me ? { ink: pr.a.hex, it: me[1] } : {}; };
+  N.start = (dif = N.dif) => {
     if (!room || !N.isHost || N.list.length < 2 || N.live) return;
     const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
-    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()) } });
+    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', ...inkOf(pl) } });
   };
 
   // spec：比賽開打後才進房的人（Yen 2026-11-19）只看不打，從房主那隊的角度看，不送任何資料
@@ -5370,13 +5391,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const mine = spec ? null : h.pl.find((e) => e[0] === myPeer); nT = h.n >= 3 && h.n <= 6 ? h.n : 2; g0 = mine ? mine[1] : 0;
     // 兩隊、三隊：把場地轉到自己的出生台在左邊。四隊以上不轉（出生台不是平均分開），改由場地把隊伍編號換成自己這台的（world.teamOffset）
     rot = nT >= 4 ? 0 : (-g0 * 2 * PI) / nT; rc = Math.cos(rot); rs = nT === 2 ? 0 : Math.sin(rot); if (nT === 2 && g0) rc = -1; // 兩隊時剛好轉 180 度，用 -1 免得小數誤差
-    const pal = SC.PALETTES[Math.abs(h.pal | 0) % SC.PALETTES.length], P = h.fp ? { a: pal.b, b: pal.a, c: pal.c } : pal, cols = toLocal(SC.teamInks(P, 6).slice(0, Math.max(nT, 3)).concat(SC.teamInks(P, 6).slice(Math.max(nT, 3))));
+    const pal = SC.PALETTES[Math.abs(h.pal | 0) % SC.PALETTES.length], hp = SC.inkPair(h.ink), P = hp || (h.fp ? { a: pal.b, b: pal.a, c: pal.c } : pal), inks = SC.teamInks(P, 6), it = hp ? Math.abs(h.it | 0) % nT : 0;
+    if (it) [inks[0], inks[it]] = [inks[it], inks[0]]; // 房主挑的顏色給房主那一隊
+    const cols = toLocal(inks);
     const players = h.pl.map((e, idx) => {
       const r = list.find((x) => x.peer === e[0]);
       // 開打那一刻剛好沒收到某人的資料（公開中繼站可能漏訊息）也要把他算進來，不然整場都看不到他（Yen 2026-11-19：各玩各的）
       return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: Array.isArray(h.kd) && KINDS.includes(h.kd[e[1]]) ? h.kd[e[1]] : e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e[0] === myPeer, gone: false };
     });
-    N.match = { id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
+    const nC = Math.max(0, Math.min(4, h.vc | 0)), ck = Array.isArray(h.kd) && KINDS.includes(h.kd[1]) ? h.kd[1] : 'shuang';
+    const cpus = Array.from({ length: nC }, (_, k) => ({ idx: h.pl.length + k, team: (1 - g0 + nT) % nT, slot: k, kind: ck, cpu: true }));
+    N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
     if (N.onBegin) N.onBegin(N.match);
   }
@@ -5385,7 +5410,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.ev = (type, ...a) => {
     const m = N.match; if (!m || m.over) return;
     const R = type === 'z' ? r4 : r2; a = turn(a, FLIP[type] || [], YAW[type], -1).map((v) => (typeof v === 'number' ? R(v) : v));
-    out.push({ at: clock, d: [++seq, type, ...a] });
+    out.push({ at: clock, d: [++seq, N.by >= 0 ? type + '#' + N.by : type, ...a] });
   };
 
   // 這場結束。房主把結果公布給大家。res: { a, b, c, ko: [各隊擊倒] }。送出去的是 [場次, 各隊塗地..., 各隊擊倒...]（依房主排的隊伍順序）
@@ -5422,6 +5447,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const host = list[0], h = host ? validH(host.q.h) : null, m = N.match;
     N.list = list; N.isHost = !!host && host.isMe; N.online = room.connected ? room.connected() : true;
     if (!N.isHost && host && (host.q.r === 'turf' || host.q.r === 'knockout')) N.rule = host.q.r;
+    if (!N.isHost && host && (host.q.vc === 0 || host.q.vc === 1)) N.vc = !!host.q.vc;
+    if (!N.isHost && host && SC.DIFFICULTY[host.q.df]) N.dif = host.q.df;
     if (!N.isHost && host && okMap(host.q.mp)) N.map = host.q.mp;
     if (!N.isHost && host && (host.q.tm === 0 || host.q.tm === 2 || host.q.tm === 3)) N.tri = host.q.tm ? host.q.tm === 3 : null;
     if (!N.isHost && host && (host.q.mx === 'rand' || host.q.mx === 'pick')) N.mix = host.q.mx;
@@ -5451,7 +5478,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (qT != null && qT <= 0) { qT = null; qSent = null; send({ qs: null }); N.start(); }
       }
     } else if (N.quick && N.isHost && qSent != null) { qT = null; qSent = null; send({ qs: null }); }
-    const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer]).join('|') + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + N.qs + (m ? m.id + m.over : '');
+    const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer]).join('|') + N.vc + N.dif + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + N.qs + (m ? m.id + m.over : '');
     if (s2 !== sig) { sig = s2; changed(); }
     if (h && h.st === 'play' && (!m || m.id !== h.id) && !done.has(h.id) && myPeer) {
       if (h.pl.some((e) => e[0] === myPeer)) return begin(h, list);
@@ -5468,6 +5495,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (!pl.gone && q && q.mi === m.id && clock - (heard[pl.peer] == null ? m.at : heard[pl.peer]) < (window.SC_PUBLIC ? 5 : 3)) { ref = pl; break; }
     }
     N.referee = !!ref && ref.isMe;
+    if (m.cpus.length && !m.spec) g.netCpuOwner(N.referee); // 電腦歸裁判那台算
 
     // 送出自己的狀態與最近的事件（觀戰的人不送）
     sendT -= dt;
@@ -5475,6 +5503,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       sendT = m.players.length >= 5 ? 0.075 : m.players.length >= 4 ? 0.06 : 0.05; out = out.filter((e) => clock - e.at < 0.9);
       const patch = { mi: m.id, hb: (hb = (hb + 1) % 1e6), s: turn(g.netSnap(), S_FLIP, S_YAW, -1).map(r2), e: out.map((e) => e.d) };
       while (patch.e.length && JSON.stringify(patch).length > 3000) patch.e.shift(); // presence 上限 4 KiB
+      if (m.cpus.length) patch.cs = N.referee ? g.netCpuSnaps().map((s) => turn(s, S_FLIP, S_YAW, -1).map(r2)) : null;
       if (N.referee) {
         hostT -= 0.05;
         if (hostT <= 0) { hostT = 0.5; const sc = g.netScore(); patch.sc = [m.id, ...toGlobal(sc.v || [sc.a, sc.b, sc.c || 0]).map(r4)]; }
@@ -5491,10 +5520,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       missing[pl.peer] = 0; if (seen.get(pl.peer) === q) continue; seen.set(pl.peer, q); heard[pl.peer] = clock;
       if (Array.isArray(q.e)) for (const ev of q.e) {
         if (!Array.isArray(ev) || !(ev[0] > (lastSeq[pl.peer] || 0)) || typeof ev[1] !== 'string') continue;
-        lastSeq[pl.peer] = ev[0]; const d = ev.slice(2);
-        if (d.length <= 12 && d.every(Number.isFinite)) g.netEvent(pl.idx, ev[1], turn(d, FLIP[ev[1]] || [], YAW[ev[1]], 1));
+        lastSeq[pl.peer] = ev[0]; const d = ev.slice(2), tp = ev[1].split('#'), who = tp.length === 2 ? +tp[1] : pl.idx, ty = tp[0];
+        if (tp.length === 2 && !m.cpus.some((c) => c.idx === who)) continue; // 只有電腦可以借別人的編號
+        if (d.length <= 12 && d.every(Number.isFinite)) g.netEvent(who, ty, turn(d, FLIP[ty] || [], YAW[ty], 1));
       }
       if (Array.isArray(q.s) && q.s.length >= S_LEN && q.s.length <= 20 && q.s.every(Number.isFinite)) g.netState(pl.idx, turn(q.s.slice(), S_FLIP, S_YAW, 1), clock);
+      if (ref && pl.peer === ref.peer && Array.isArray(q.cs)) q.cs.forEach((s, k) => { const c = m.cpus[k]; if (c && Array.isArray(s) && s.length >= S_LEN && s.length <= 20 && s.every(Number.isFinite)) g.netState(c.idx, turn(s.slice(), S_FLIP, S_YAW, 1), clock); });
     }
     if (N.match !== m || m.over) return;
     // 分數與結果以裁判為準。任何一位已經宣布這場結果的人都算數（例如原本的裁判回來前，接手的人已經宣布了）。
@@ -8896,6 +8927,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   SC.bossList = () => [SC.boss, SC.boss2, SC.boss3, SC.boss4, SC.boss5, SC.boss6, SC.boss7, SC.boss8, SC.boss9, SC.boss10, SC.boss11, SC.boss12, SC.boss13, SC.boss14, SC.boss15]; // 三個世界，一個世界五關
   G.bossMod = () => BS;
 
+  const newAI = () => ({ target: null, retargetAt: 0, enemy: null, seeAt: 0, senseT: Math.random() * 0.2, strafe: 1, strafeAt: 0, err: new V3(), errAt: 0, refill: false, lastOwn: null, nextBomb: 8 + Math.random() * 6, stuckT: 0, lastPos: new V3(), stuck: 0 });
+  // 連線事件：電腦（第 69 版一起打電腦）送出的事件要標上是哪一隻
+  const nev = (a, ...x) => { SC.net.by = a && a.cpu ? a.idx : -1; SC.net.ev(...x); SC.net.by = -1; };
   function makeActor(id, team, kind, isPlayer) {
     const cat = SC.makeCat(kind); scene.add(cat.group, cat.trail);
     return {
@@ -8905,7 +8939,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       aim: new V3(), ground: 'neutral', prevFire: false, swimT: 0, lastSwing: -1, airSpeed: C.WALK_SPEED, sight: null, sp: 0, spT: null, trailLast: null,
       gain(n) { if (G.state === 'play' && !this.remote) this.paint += n; if (this.spT == null && this.sp < 100 && G.state === 'play') { this.sp = Math.min(100, this.sp + n * C.SP_PER_CELL * (this.weapon === 'W05' ? C.SP_BLADE_K : 1)); if (this.sp >= 100 && this.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } } },
       ctl: { mx: 0, mz: 0, fire: false, cat: false, jump: false, bomb: false, select: null, sp: false },
-      ai: isPlayer ? null : { target: null, retargetAt: 0, enemy: null, seeAt: 0, senseT: Math.random() * 0.2, strafe: 1, strafeAt: 0, err: new V3(), errAt: 0, refill: false, lastOwn: null, nextBomb: 8 + Math.random() * 6, stuckT: 0, lastPos: new V3(), stuck: 0 },
+      ai: isPlayer ? null : newAI(),
     };
   }
 
@@ -8913,7 +8947,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const boss = G.mode === 'boss', s = boss ? BS.spawn : W.spawns[a.team][a.slot];
     a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
-    a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
+    a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; bladeAimHide(a); a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
     a.invisUntil = a.xrayUntil = a.sprayUntil = 0; a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.inWater = false; a.poolCd = 0;
     a.protectUntil = G.time + C.SPAWN_PROTECTION; a.cat.group.visible = true; a.nextShotAt = 0; a.cat.setInk(1);
     if (a.ai) { a.ai.target = null; a.ai.enemy = null; a.ai.refill = false; a.ai.lastOwn = null; }
@@ -8950,7 +8984,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (bossMoved || mapMoved) INK.build(W.height, boss ? 0 : W.lim.x, boss ? 0 : W.lim.z); // 換場地時重算可以塗的格子（圓形場地的格網比較大）
     const pal = SC.PALETTES[(Math.random() * SC.PALETTES.length) | 0], flip = Math.random() < 0.5;
     G.palette = net ? net.palette : flip ? { a: pal.b, b: pal.a } : pal;
-    const mine = !G.demo && SC.inkPair(G.opts.ink); if (mine) G.palette = mine; // 主選單挑的顏色（連線時只影響自己這台的畫面）
+    const mine = !G.demo && !net && SC.inkPair(G.opts.ink); if (mine) G.palette = mine; // 主選單挑的顏色；連線時改用房主挑的顏色，大家看到的一樣（第 69 版，Yen）
     const inks = mine ? SC.teamInks(mine, 6) : G.palette.list || SC.teamInks(G.palette, 6);
     colors.forEach((c, i) => c.setHex(inks[i % inks.length].hex));
     INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
@@ -8959,16 +8993,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     projectiles.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false));
     const others = Object.keys(SC.CAT_KINDS).filter((k) => k !== G.opts.kind), other = G.demo ? (G.opts.kind === 'maomao' ? 'shuang' : 'maomao') : others[(Math.random() * others.length) | 0]; // 對手隊隨機挑另一種貓（同一種貓固定同一隊）
     G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.targets = []; G.popped = 0;
-    G.actors = net ? net.players.map((q, i) => { const a = makeActor(i, q.team, q.kind, q.isMe); a.idx = q.idx; a.slot = q.slot; if (!q.isMe) { a.remote = true; a.ai = null; a.name = q.nick; } return a; })
+    if (net && net.cpus.length) G.opts.difficulty = net.df; // 一起打電腦：電腦強度照房主選的
+    G.actors = net ? net.players.map((q, i) => { const a = makeActor(i, q.team, q.kind, q.isMe); a.idx = q.idx; a.slot = q.slot; if (!q.isMe) { a.remote = true; a.ai = null; a.name = q.nick; } return a; }).concat(net.cpus.map((q, k) => { const a = makeActor(net.players.length + k, q.team, q.kind, false); a.idx = q.idx; a.slot = q.slot; a.cpu = true; a.remote = true; a.ai = null; if (k) a.name += k + 1; return a; }))
       : solo ? [makeActor(0, 0, G.opts.kind, true)]
       : duo ? [makeActor(0, 0, G.opts.kind, !G.demo), makeActor(1, 0, G.opts.kind, false), makeActor(2, 1, other, false), makeActor(3, 1, other, false)] // 同一種貓固定同一隊（Yen 11/14）
         : [makeActor(0, 0, G.opts.kind, true), makeActor(2, 1, other, false)];
     if (!net) G.actors.forEach((a, i) => { if (G.actors.slice(0, i).some((b) => b.kind === a.kind)) a.name += '2'; }); // 同隊兩隻一樣的貓，名字加個 2 分得出來
-    G.time = 0; endT = 0; G.failAt = null; finalOn = false; resultsShown = false; G.paused = G.menu = false; G.winner = null; G.rule = net ? net.rule : !G.demo && G.mode === 'versus' && G.opts.vrule === 'knockout' ? 'knockout' : 'turf'; // 第 67 版（Yen）：電腦對戰也能選擊倒戰 G.koFinal = null;
+    G.time = 0; endT = 0; G.failAt = null; finalOn = false; resultsShown = false; G.paused = G.menu = false; G.winner = null; G.rule = net ? net.rule : !G.demo && G.mode === 'versus' && G.opts.vrule === 'knockout' ? 'knockout' : 'turf'; G.koFinal = null; // 第 67 版（Yen）：電腦對戰也能選擊倒戰
     G.actors.forEach((a, i) => {
       if (!net) a.slot = i % 2; a.cat.setTeamColor(colors[a.team]); a.weapon = a.isPlayer ? loadout()[0] : 'W01'; a.cat.setWeapon(a.weapon); spawn(a); a.protectUntil = 0;
       const css = '#' + colors[a.team].getHexString();
-      a.cat.setTag(a.isPlayer ? '' : a.name, css, !a.isPlayer && !G.demo);
+      const ally = !a.isPlayer && a.team === 0; a.cat.setTag(ally ? a.name : '', css, ally && !G.demo); // 第 69 版（Yen）：頭上只顯示隊友的名字，敵人不顯示
     });
     if (G.mode === 'sandbox') makeTargets();
     G.hit = G.actors.concat(G.targets, boss ? BS.targets || (BS.target ? [BS.target] : []) : []);
@@ -9052,16 +9087,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function hurt(t, amount, from, cause) {
     if (t.bossHurt) return G.state === 'play' && t.bossHurt(amount, from, cause);
     if (t.isTarget) return hurtTarget(t, amount, from);
-    if (t.ai && !G.demo) amount /= aiD().tough || 1; // 瘋狂／地獄：電腦比較耐打
+    if ((t.ai || t.cpu) && !G.demo) amount /= aiD().tough || 1; // 瘋狂／地獄：電腦比較耐打
     if (netOn()) {
       if (!from || from.remote) return false; // 別人的子彈由開槍的那一方判定
       if (t.remote) { // 打到別人：通知對方自己扣體力
         if (!t.alive || t.predKo || G.state !== 'play' || G.time < t.protectUntil || baseSafe(t, from)) return false;
-        SC.net.ev('h', t.idx, amount, CAUSES.indexOf(cause));
+        nev(from, 'h', t.idx, amount, CAUSES.indexOf(cause));
         // 第 63 版：對方那台確認擊倒要等一來一回（公開中繼站約一秒），這邊先用最近知道的體力算，打到 0 就先讓他倒下；1.5 秒內沒收到擊倒就還原
         const base = t.pred && G.time - t.pred.at < 0.8 ? t.pred.hp : t.hp, left = base - amount; t.pred = { hp: left, at: G.time };
         if (left <= 0) { predictKo(t, from, cause); return true; }
-        SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, colors[from.team], 6, 14, 0.45); hitFx(t, from); A.sfx.hit(); A.sfx.metal(); SC.ui.hitMarker(false); return true;
+        SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, colors[from.team], 6, 14, 0.45); hitFx(t, from); if (from.isPlayer) { A.sfx.hit(); A.sfx.metal(); SC.ui.hitMarker(false); } return true;
       }
     }
     return damage(t, amount, from, cause);
@@ -9101,7 +9136,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (t.sight) t.sight.visible = false;
     if (!helpers) { helpers = []; if (t.dmgBy) t.dmgBy.forEach((at, e) => { if (e !== from && G.time - at < 5 && e.team !== t.team && !e.gone) helpers.push(e); }); }
     if (t.dmgBy) t.dmgBy.clear(); helpers.forEach((e) => e.ast++);
-    if (netOn() && t.isPlayer) { if (from) t.credited++; SC.net.ev('k', from ? from.idx : -1, CAUSES.indexOf(cause), ...helpers.slice(0, 6).map((e) => e.idx)); }
+    if (netOn() && !t.remote) { if (from) t.credited++; nev(t, 'k', from ? from.idx : -1, CAUSES.indexOf(cause), ...helpers.slice(0, 6).map((e) => e.idx)); }
     const gy = H(t.pos.x, t.pos.z), col = from ? colors[from.team] : WHITE;
     if (from) { from.kos++; if (from !== t && from.team !== t.team && !from.remote && from.spT == null && from.sp < 100 && G.state === 'play') { from.sp = Math.min(100, from.sp + C.SP_KO_BONUS); if (from.sp >= 100 && from.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } } if (gy > -4) { INK.splat(from.team, t.pos.x, gy, t.pos.z, 7.5); INK.stamp(from.team, t.pos.x, gy, t.pos.z, 5.5); } }
     if (!pk) { SC.fx.burst(t.pos.x, Math.max(t.pos.y, -5) + 2.5, t.pos.z, col, 42, 30, 0.8); SC.fx.ghost(t.pos.x, Math.max(t.pos.y, -6), t.pos.z); }
@@ -9140,7 +9175,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const v = jitter(ballistic(m, tgt, w.speed, w.gravity, t3), a.onGround ? 0.03 : 0.065, 0.018);
     const r = w.radius * C.PAINT * paintBoost(a);
     projectiles.push({ x: m.x, y: m.y, z: m.z, vx: v.x, vy: v.y, vz: v.z, team: a.team, owner: a, dmg: w.damage * (a.ai ? aiD().dmg * 0.8 : 1), r, range: w.range, g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.8, flash: true, color: colors[a.team], cause: 'W01' }); // 子彈大一點（0.55→0.8）
-    if (netOn()) SC.net.ev('p', m.x, m.y, m.z, v.x, v.y, v.z, r);
+    if (netOn()) nev(a, 'p', m.x, m.y, m.z, v.x, v.y, v.z, r);
     a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1; A.sfx.shot(near(a));
     if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 1.9, 0.06); // 槍口火光
   }
@@ -9149,7 +9184,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function fireW04(a) {
     const w = C.W04, m = muzzle(a, t1), dir = t2.copy(a.aim).sub(m).normalize(), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a);
     pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, a.ai ? aiD().dmg : 1);
-    if (netOn()) SC.net.ev('g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed);
+    if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed);
     a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a));
     if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 3, 0.08);
   }
@@ -9172,7 +9207,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const yaw = a.isPlayer ? cam.yaw : a.yaw, boost = paintBoost(a);
     a.ink -= w.slashInk; a.lastShotAt = now; a.nextShotAt = now + w.slashInterval * (a.combo === 2 ? 1.25 : 1);
     slashAt(a, a.pos.x, a.pos.y, a.pos.z, yaw, a.combo, boost, true);
-    if (netOn()) SC.net.ev('m', a.pos.x, a.pos.y, a.pos.z, yaw, a.combo, boost);
+    if (netOn()) nev(a, 'm', a.pos.x, a.pos.y, a.pos.z, yaw, a.combo, boost);
   }
   // 一刀：前面一片扇形塗成自己的顏色；judge 時判定砍到誰（連線時別人的刀只畫刀光和塗地）
   function slashAt(a, x, y, z, yaw, kind, boost, judge) {
@@ -9213,7 +9248,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.dash = { t: 0, yaw, pitch, px: a.pos.x, pz: a.pos.z, nx: a.pos.x, nz: a.pos.z, hit: new Set() }; a.yaw = yaw;
     slashAt(a, a.pos.x, a.pos.y, a.pos.z, yaw, 3, 1, true);
     if (a.isPlayer) cam.shake = Math.min(1, cam.shake + 0.25);
-    if (netOn()) SC.net.ev('m', a.pos.x, a.pos.y, a.pos.z, yaw, 3, 1);
+    if (netOn()) nev(a, 'm', a.pos.x, a.pos.y, a.pos.z, yaw, 3, 1);
   }
   // 衝刺中每一格：固定往前飛、不往下掉，把經過的地面塗掉，碰到的對手直接擊倒
   function dashStep(a, dt) {
@@ -9228,7 +9263,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (Math.hypot(e.pos.x - a.pos.x, e.pos.z - a.pos.z) < w.dashRadius + bodyR(e)) { D.hit.add(e); hurt(e, w.dashDamage * (a.ai ? aiD().dmg : 1), a, 'W05'); }
     }
     const end = D.t >= w.dashTime || a.onGround;
-    if (netOn() && (end || Math.hypot(a.pos.x - D.nx, a.pos.z - D.nz) > 7)) { SC.net.ev('n', D.nx, D.nz, a.pos.x, a.pos.z, a.pos.y, r); D.nx = a.pos.x; D.nz = a.pos.z; }
+    if (netOn() && (end || Math.hypot(a.pos.x - D.nx, a.pos.z - D.nz) > 7)) { nev(a, 'n', D.nx, D.nz, a.pos.x, a.pos.z, a.pos.y, r); D.nx = a.pos.x; D.nz = a.pos.z; }
     if (end) { a.dash = null; a.vel.x *= 0.35; a.vel.z *= 0.35; }
   }
   // 衝刺斬塗地：沿路每一點塗在正下方的地面上（太高的懸空處就不塗）
@@ -9243,7 +9278,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const m = muzzle(a, t1), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a); if (near(a) > 0.1) A.sfx.swing();
     if (G.mode === 'boss') BS.onRoller(a.pos);
     flecks(a, m.x, m.y, m.z, yaw, a.pitch, boost, seed, air);
-    if (netOn()) SC.net.ev('w', m.x, m.y, m.z, yaw, a.pitch, boost, seed, air);
+    if (netOn()) nev(a, 'w', m.x, m.y, m.z, yaw, a.pitch, boost, seed, air);
   }
   // 滾刷甩出的七道墨水。用種子產生亂數，連線時每台裝置甩出來的形狀才會一樣。
   // 站在地上是橫的一排（九道），在空中是直的一道（又窄又遠）。
@@ -9269,7 +9304,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     INK.by = a; rollPaint(a.team, x0, z0, fx, fz, a.pos.y, r); INK.by = null;
     if (netOn()) { // 連線時每 0.1 秒把這段路送出去一次
       const n = a.rollNet || (a.rollNet = { x: x0, z: z0, at: G.time });
-      if (G.time - n.at >= 0.1) { SC.net.ev('r', n.x, n.z, fx, fz, a.pos.y, r); n.x = fx; n.z = fz; n.at = G.time; }
+      if (G.time - n.at >= 0.1) { nev(a, 'r', n.x, n.z, fx, fz, a.pos.y, r); n.x = fx; n.z = fz; n.at = G.time; }
     }
     a.rollPt.x = fx; a.rollPt.z = fz;
     const sx = t1.z * r * 0.9, sz = -t1.x * r * 0.9; // 刷頭兩端濺出的墨水
@@ -9281,7 +9316,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
   }
   function rollEnd(a) {
-    if (netOn() && a.isPlayer && a.rollNet && Math.hypot(a.rollPt.x - a.rollNet.x, a.rollPt.z - a.rollNet.z) > 0.3) SC.net.ev('r', a.rollNet.x, a.rollNet.z, a.rollPt.x, a.rollPt.z, a.pos.y, C.W02.rollRadius * C.PAINT);
+    if (netOn() && a.isPlayer && a.rollNet && Math.hypot(a.rollPt.x - a.rollNet.x, a.rollPt.z - a.rollNet.z) > 0.3) nev(a, 'r', a.rollNet.x, a.rollNet.z, a.rollPt.x, a.rollPt.z, a.pos.y, C.W02.rollRadius * C.PAINT);
     a.rollPt = a.rollNet = null;
   }
   // 沿著 (x0,z0)→(x1,z1) 塗一條寬帶：中間一排、左右各一排
@@ -9307,7 +9342,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function fireSniper(a) {
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1);
     const m = new V3(), dir = new V3(); sniperRay(a, m, dir); const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
-    if (netOn()) SC.net.ev('z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
+    if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
   }
   // 狙擊槍的一槍：沿線塗地、判定命中、畫光束。replay 是連線時別人開的槍（{ len, hit }），照他那邊算好的長度重播，不再判定命中。
@@ -9346,7 +9381,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const D = Math.hypot(tgt.x - m.x, tgt.z - m.z), T = SC.clamp(0.32 + D * 0.0125, 0.36, 0.92), v = t3;
     v.set((tgt.x - m.x) / T, (tgt.y - m.y + 0.5 * b.gravity * T * T) / T, (tgt.z - m.z) / T);
     spawnBomb(a, m.x, m.y, m.z, v.x, v.y, v.z);
-    if (netOn()) SC.net.ev('b', m.x, m.y, m.z, v.x, v.y, v.z);
+    if (netOn()) nev(a, 'b', m.x, m.y, m.z, v.x, v.y, v.z);
   }
   function bombTarget(a, m, pow, out) {
     const b = C.BOMB, D = b.near + (b.far - b.near) * pow; let dx = a.aim.x - m.x, dz = a.aim.z - m.z, l = Math.hypot(dx, dz);
@@ -9528,6 +9563,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.charge >= 0) sp *= 0.55; if (a.rolling) sp *= SC.lerp(C.W02.rollSpeedMin, C.W02.rollSpeedMax, a.rollK); // 滾刷越推越快
     if (a.ai) sp *= aiD().speed;
     if (a.inWater) sp *= C.SEA_SLOW; // 第 66 版（Yen）：海盜船掉進海裡變慢
+    if (a.sprayUntil > now) sp *= C.SPRAY_SLOW; // 第 69 版：散彈槍絕招連射時走比較慢（防守、邊打邊退）
     if (a.weapon === 'W05' && a.form === 'biped') sp *= C.W05.speed; // 拿刀跑比較快
     if (a.onGround) a.airSpeed = Math.max(C.WALK_SPEED, sp);
     const len = Math.hypot(ctl.mx, ctl.mz), k = len > 1 ? 1 / len : 1, acc = a.onGround ? 13 : 4;
@@ -9572,7 +9608,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     // 武器
     const canAct = active && a.form === 'biped' && now >= a.switchUntil;
-    if (a.sprayUntil > now) { ctl.fire = false; if (a.sprayNext && now >= a.sprayNext && a.form === 'biped') { sprayTick(a); a.sprayNext = 0; } } // 散彈槍絕招：往四面八方爆射一次就結束（第 64 版）
+    if (a.sprayUntil > now) { ctl.fire = false; if (now >= a.sprayNext && a.form === 'biped') { sprayTick(a); a.sprayNext = now + 0.12; } } // 散彈槍絕招（第 69 版，Yen）：連續往四面八方亂射 3 秒，每顆比較弱
     if ((ctl.fire || ctl.bomb) && a.protectUntil > now + 0.5) a.protectUntil = now + 0.5; // 重生無敵：開槍或丟彈後只剩 0.5 秒（第 60 版：不再一開槍就沒了，擊倒戰也有短暫無傷）
     a.rolling = false;
     if (a.weapon === 'W01') {
@@ -9701,29 +9737,47 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (n > 0.05 && !G.demo) A.sfx.spUp(n * 0.7);
     if (kind === 'invis') { a.invisUntil = now + 6; if (a.isPlayer) SC.ui.tip('隱形 6 秒！對手看不到你', 2.4); }
     else if (kind === 'xray') { a.xrayUntil = now + 8; if (a.isPlayer) { SC.ui.tip('透視 8 秒！牆後面的對手會變成紅色', 2.4); SC.ui.flash('rgba(255,40,40,.35)', 0.3); } }
-    else if (kind === 'spray') { a.sprayUntil = now + 0.5; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('四面八方爆射！', 2); }
-    else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = spLine(a); a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 1; a.cat.slashKind = 2; }
-    if (netOn()) SC.net.ev('Y', SP_KINDS.indexOf(kind));
+    else if (kind === 'spray') { a.sprayUntil = now + 3; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('四面八方亂掃射！', 2); }
+    else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
+    if (netOn()) nev(a, 'Y', SP_KINDS.indexOf(kind));
   }
   function sprayRing(a, x, y, z, ang, seed, dmgK, N = 10) { // 散彈槍絕招的一圈：N 顆往四面八方
     let s = seed | 0; const rnd = () => { s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     for (let k = 0; k < N; k++) { const yaw = ang + (k / N) * Math.PI * 2 + (rnd() - 0.5) * 0.3, pitch = 0.04 + rnd() * 0.14, sp = 100 + rnd() * 20;
-      projectiles.push({ x, y, z, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a, dmg: 40 * dmgK, r: 5.2 * C.PAINT, range: 30 + rnd() * 8, g: 70, travel: 0, drip: 0.03, life: 0, vr: 0.7, flash: k === 0, color: colors[a.team], cause: 'W04' }); }
+      projectiles.push({ x, y, z, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a, dmg: C.SPRAY_DMG * dmgK, r: 5.2 * C.PAINT, range: 30 + rnd() * 8, g: 70, travel: 0, drip: 0.03, life: 0, vr: 0.7, flash: k === 0, color: colors[a.team], cause: 'W04' }); }
     a.cat.recoil = 1.4; const n = near(a); if (n > 0.05 && !G.demo) A.sfx.shotgun(n * 0.55);
     if (n > 0.1) { SC.fx.pop(x, y, z, new THREE.Color(0xffe14d), 3.2, 0.08); SC.fx.burst(x, y, z, colors[a.team], 6, 22, 0.35); }
   }
   function sprayTick(a) {
-    const y = a.pos.y + 2.6, seed = (Math.random() * 1e9) | 0, N = 28;
-    sprayRing(a, a.pos.x, y, a.pos.z, a.sprayAng, seed, a.ai ? aiD().dmg : 1, N); if (near(a) > 0.1) { SC.fx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, colors[a.team], 14, 0.4); if (a.isPlayer) cam.shake = Math.min(1, cam.shake + 0.6); }
-    if (netOn()) SC.net.ev('q', a.pos.x, y, a.pos.z, a.sprayAng, seed, N);
+    a.sprayAng += 0.75; const y = a.pos.y + 2.6, seed = (Math.random() * 1e9) | 0, N = 10;
+    sprayRing(a, a.pos.x, y, a.pos.z, a.sprayAng, seed, a.ai ? aiD().dmg : 1, N);
+    if (netOn()) nev(a, 'q', a.pos.x, y, a.pos.z, a.sprayAng, seed, N);
   }
-  function bladeSpecial(a, dt) { // 0～0.45 秒：往前劃出一條墨水線；0.45～0.8 秒：沿著線衝過去，碰到的對手直接擊倒
-    const B = a.blade, t = (a.spT += dt), T1 = 0.6, T2 = 1.15, sx = Math.sin(B.yaw), sz = Math.cos(B.yaw), col = colors[a.team];
+  function bladeAimOf(a) { // 墨刀絕招蓄力時地上的預告長條
+    if (!a.bladeAim) { const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.45, depthWrite: false, depthTest: false, side: THREE.DoubleSide })); m.renderOrder = 3;
+      const tipM = new THREE.Mesh(new THREE.CircleGeometry(0.5, 3), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, depthWrite: false, depthTest: false, side: THREE.DoubleSide })); tipM.renderOrder = 4; m.userData.tip = tipM; scene.add(m, tipM); a.bladeAim = m; }
+    a.bladeAim.material.color.copy(colors[a.team]); return a.bladeAim;
+  }
+  function bladeAimHide(a) { if (a.bladeAim) { a.bladeAim.visible = false; a.bladeAim.userData.tip.visible = false; } }
+  function bladeSpecial(a, dt) { // 先蓄力 0.5 秒（可以轉方向）；再 0.6 秒往前劃出一條墨水線；最後 0.55 秒沿著線衝過去，碰到的對手直接擊倒
+    const t0 = (a.spT += dt), TC = C.BLADE_CHARGE;
+    if (!a.blade) { // 蓄力：站著不動，身體跟著鏡頭轉；蓄滿那一刻的方向就是衝出去的方向
+      a.vel.set(0, 0, 0); a.speed = 0; if (a.isPlayer) a.yaw = cam.yaw; a.cat.squash = -0.5 - 0.2 * Math.sin(t0 * 40);
+      const col = colors[a.team], k = Math.min(1, t0 / TC);
+      if (near(a) > 0.05 && Math.random() < 0.8) { const r = 5 * (1 - k) + 1, an = Math.random() * 6.283; SC.fx.burst(a.pos.x + Math.sin(an) * r, a.pos.y + 1 + Math.random() * 3, a.pos.z + Math.cos(an) * r, col, 1, 4, 0.25, 0.1); }
+      if (a.isPlayer && t0 < TC) { const L = spLine(a), m = bladeAimOf(a), tip = m.userData.tip, w = 6, len = Math.max(2, L.L), sx = Math.sin(L.yaw), sz = Math.cos(L.yaw);
+        m.visible = tip.visible = true; m.rotation.set(-Math.PI / 2, L.yaw, 0, 'YXZ');
+        m.scale.set(w, len * k, 1); m.position.set(a.pos.x + sx * len * k * 0.5, a.pos.y + 0.3, a.pos.z + sz * len * k * 0.5); m.material.opacity = 0.3 + 0.25 * (0.5 + 0.5 * Math.sin(t0 * 30));
+        tip.rotation.set(-Math.PI / 2, L.yaw, -Math.PI / 2, 'YXZ'); tip.scale.setScalar(5); tip.position.set(a.pos.x + sx * len * k, a.pos.y + 0.32, a.pos.z + sz * len * k); }
+      if (t0 >= TC) { bladeAimHide(a); a.blade = spLine(a); a.blade.t0 = t0; a.cat.slash = 1; a.cat.slashKind = 2; a.cat.squash = 0.3; if (near(a) > 0.05 && !G.demo) A.sfx.slash(near(a), 2); }
+      return;
+    }
+    const B = a.blade, t = t0 - (B.t0 || 0), T1 = 0.6, T2 = 1.15, sx = Math.sin(B.yaw), sz = Math.cos(B.yaw), col = colors[a.team];
     a.vel.set(0, 0, 0); a.speed = 0; a.yaw = B.yaw;
     if (t < T1 || !B.dashed) { // 線往前長出去
       const want = B.L * Math.min(1, t / T1);
       if (want > B.drawn + 0.5 || t >= T1) { const x0 = B.x0 + sx * B.drawn, z0 = B.z0 + sz * B.drawn, x1 = B.x0 + sx * want, z1 = B.z0 + sz * want;
-        INK.by = a; dashPaint(a.team, x0, z0, x1, z1, a.pos.y, 3.2 * C.PAINT); INK.by = null; if (netOn()) SC.net.ev('n', x0, z0, x1, z1, a.pos.y, 3.2 * C.PAINT);
+        INK.by = a; dashPaint(a.team, x0, z0, x1, z1, a.pos.y, 3.2 * C.PAINT); INK.by = null; if (netOn()) nev(a, 'n', x0, z0, x1, z1, a.pos.y, 3.2 * C.PAINT);
         if (near(a) > 0.05) SC.fx.burst(x1, H(x1, z1) + 0.6, z1, col, 4, 12, 0.35, 0, 1, 0.3); B.drawn = want; }
       if (t >= T1) { B.dashed = true; a.cat.slash = 1; a.cat.slashKind = 3; if (near(a) > 0.05 && !G.demo) A.sfx.spDive(near(a)); }
       return;
@@ -9746,7 +9800,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.isPlayer) { a.spPitch = cam.pitch; SC.ui.spUsed(); }
     if (near(a) > 0.05 && !G.demo) A.sfx.spUp(near(a));
     SC.fx.burst(a.pos.x, a.pos.y + 0.5, a.pos.z, colors[a.team], 30, 24, 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.2, a.pos.z, colors[a.team], 6, 0.35);
-    if (netOn()) SC.net.ev('S', a.pos.x, a.pos.y, a.pos.z);
+    if (netOn()) nev(a, 'S', a.pos.x, a.pos.y, a.pos.z);
   }
   function special(a, dt) {
     if (a.spKind === 'blade') return bladeSpecial(a, dt);
@@ -9764,7 +9818,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (t0 < SP_UP && t >= SP_UP) { if (near(a) > 0.05 && !G.demo) A.sfx.spDome(near(a)); SC.fx.ring(s0.x, s0.g + 0.3, s0.z, colors[a.team], C.SP_R, 0.3); }
     if (t0 < SP_HOLD && t >= SP_HOLD && near(a) > 0.05 && !G.demo) A.sfx.spDive(near(a));
     if (a.isPlayer && t < SP_DOWN) cam.pitch = SC.damp(cam.pitch, -1.15, 6, dt); // 鏡頭往下看，看得到地上的攻擊範圍
-    if (t0 < SP_DOWN && t >= SP_DOWN) { spImpact(a, s0.x, s0.g, s0.z, true); if (netOn()) SC.net.ev('X', s0.x, s0.g, s0.z); }
+    if (t0 < SP_DOWN && t >= SP_DOWN) { spImpact(a, s0.x, s0.g, s0.z, true); if (netOn()) nev(a, 'X', s0.x, s0.g, s0.z); }
     if (t >= SP_END) { a.spT = null; a.onGround = true; a.jumps = 0; ring.visible = false; if (a.isPlayer) cam.pitch = SC.lerp(cam.pitch, a.spPitch ?? -0.14, 0.7); }
   }
   // 落地爆炸。judge：自己這台判定擊倒（連線時別人的絕招只畫特效和塗地）
@@ -9899,11 +9953,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   G.netScore = () => { const s = INK.score(); return { ...s, v: s.v.slice(0, G.teams) }; };
   G.netResult = () => { const s = G.netScore(); return { a: s.a, b: s.b, c: s.c, v: s.v, ko: koScore() }; };
   // 自己的狀態：位置、速度、面向、旗標、武器、蓄力、體力、墨水、被擊倒次數
-  G.netSnap = () => {
-    const p = player();
+  G.netSnap = (p = player()) => {
     return [p.pos.x, p.pos.y, p.pos.z, p.vel.x, p.onGround ? 0 : p.vel.y, p.vel.z, p.yaw, p.pitch,
       (p.alive ? 1 : 0) | (p.form === 'cat' ? 2 : 0) | (p.submerged ? 4 : 0) | (p.onGround ? 8 : 0) | (p.rolling ? 16 : 0) | (G.time < p.protectUntil ? 32 : 0) | (G.time < p.invisUntil ? 64 : 0),
       WEAPONS.indexOf(p.weapon), p.charge < 0 ? -1 : p.charge, p.hp, p.ink, p.deaths, p.credited, p.ast, p.paint, p.kos];
+  };
+  G.netCpuSnaps = () => G.actors.filter((a) => a.cpu).map((a) => G.netSnap(a));
+  // 裁判換人：電腦改由這台算（從最後收到的狀態接手），或交給別台、改成跟著收到的狀態動
+  G.netCpuOwner = (mine) => {
+    G.actors.forEach((a) => { if (!a.cpu || !mine === !!a.remote) return;
+      if (mine) { a.remote = false; a.ai = newAI(); a.ctl.mx = a.ctl.mz = 0; a.ctl.fire = false; if (!a.alive) a.respawnAt = Math.min(a.respawnAt || 0, G.time + 2); }
+      else { a.remote = true; a.ai = null; a.net = { x: a.pos.x, y: a.pos.y, z: a.pos.z, vx: 0, vy: 0, vz: 0, yaw: a.yaw, pitch: a.pitch, at: SC.net.clock() }; } });
   };
   G.netState = (idx, s, at) => {
     const a = G.netActor(idx); if (!a || !a.remote || a.gone) return; const f = s[8], alive = !!(f & 1);
@@ -9943,7 +10003,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (type === 'X') spImpact(a, d[0], d[1], d[2], false);
     else if (type === 'Y') { const k = SP_KINDS[d[0] | 0]; SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, colors[a.team], 30, 24, 0.6); if (near(a) > 0.05) A.sfx.spUp(near(a) * 0.7); if (k === 'blade') { a.cat.slash = 1; a.cat.slashKind = 3; } }
     else if (type === 'q') { if (projectiles.length < 460) sprayRing(a, d[0], d[1], d[2], d[3], d[4], 0, d[5] || 10); a.sprayAng = d[3]; a.sprayUntil = G.time + 0.3; }
-    else if (type === 'h') { const p = player(); if (p && d[0] === p.idx && a.team !== p.team) damage(p, SC.clamp(d[1], 0, 100), a, CAUSES[d[2]] || 'W01'); }
+    else if (type === 'h') { const t = G.netActor(d[0]); if (t && !t.remote && t.alive && a.team !== t.team) damage(t, SC.clamp(d[1], 0, 100), a, CAUSES[d[2]] || 'W01'); } // 打到自己或自己這台算的電腦
     else if (type === 'k') { if (a.alive) ko(a, d[0] >= 0 ? G.netActor(d[0]) || null : null, CAUSES[d[1]] || 'fall', d.slice(2).map((i) => G.netActor(i)).filter((e) => e && e !== a)); }
   };
   // 有人離線（或離開這場）
@@ -10398,7 +10458,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-banner" id="banner"></div>
       <div class="h-ko" id="ko"><div class="ko-lives" id="ko-lives" hidden>${LIVES_HTML}</div><div class="ko-t" id="ko-t"></div><div class="ko-n" id="ko-n"></div><div class="ko-w" id="ko-w"></div></div><div class="h-kogot" id="ko-got" aria-live="polite"></div>
       <button class="h-pause" id="btn-pause" type="button" aria-label="暫停"><i></i><i></i></button>
-      <button class="h-full fs-btn" id="btn-full" type="button" aria-label="全螢幕" hidden><i></i></button>
+      <button class="h-full fs-btn" id="btn-full" type="button" aria-label="全螢幕" hidden><i></i></button><div class="h-room" id="h-room" hidden></div>
       <button class="h-chat" id="btn-chat" type="button" aria-label="聊天"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 7h22a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H14l-6 5v-5H5a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3z" fill="#fff"/><circle cx="10" cy="15.5" r="2" fill="#1b1430"/><circle cx="16" cy="15.5" r="2" fill="#1b1430"/><circle cx="22" cy="15.5" r="2" fill="#1b1430"/></svg></button>
       <div class="h-chatbar" id="h-chatbar" hidden><div class="chat-stk" data-chat="stk"></div><div class="chat-row" data-chat="row"><input type="text" maxlength="40" placeholder="說點什麼…" autocomplete="off" enterkeyhint="send"><button type="button" class="btn small">送出</button></div></div>
       <div class="h-chatfeed" id="h-chatfeed" aria-live="polite"></div>
@@ -10455,6 +10515,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
               <div class="net-row"><span>房號</span><b class="net-code" id="net-room"></b><button type="button" class="btn small" id="net-leave">離開房間</button></div>
               <ul class="net-list" id="net-list"></ul>
               <div class="chat" id="chat"><ul class="chat-log" id="chat-log" aria-live="polite"></ul><div class="chat-stk" data-chat="stk"></div><div class="chat-row" data-chat="row"><input type="text" maxlength="40" placeholder="說點什麼…" autocomplete="off" enterkeyhint="send" aria-label="聊天"><button type="button" class="btn small">送出</button></div></div>
+              <div class="row" id="pick-vc"><button type="button" class="pick ros-pick" data-v="0" aria-label="真人對打"><span class="vs">${HEAD('a')}<i>VS</i>${HEAD('b')}</span><b>真人對打</b></button><button type="button" class="pick ros-pick" data-v="1" aria-label="一起打電腦"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i><span class="two"><svg class="head" viewBox="0 0 40 36" aria-hidden="true"><path d="M6 10l3-8 7 6h8l7-6 3 8v14q0 9-14 9T6 24z" fill="#9aa3b5" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><rect x="10" y="13" width="20" height="10" rx="4" fill="#1b1430"/><circle cx="15" cy="18" r="2.6" fill="#5df2ff"/><circle cx="25" cy="18" r="2.6" fill="#5df2ff"/><path d="M20 2v-3" stroke="#1b1430" stroke-width="2.4"/><circle cx="20" cy="-1" r="2" fill="#ff4a5a"/></svg><svg class="head" viewBox="0 0 40 36" aria-hidden="true"><path d="M6 10l3-8 7 6h8l7-6 3 8v14q0 9-14 9T6 24z" fill="#9aa3b5" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><rect x="10" y="13" width="20" height="10" rx="4" fill="#1b1430"/><circle cx="15" cy="18" r="2.6" fill="#5df2ff"/><circle cx="25" cy="18" r="2.6" fill="#5df2ff"/><path d="M20 2v-3" stroke="#1b1430" stroke-width="2.4"/><circle cx="20" cy="-1" r="2" fill="#ff4a5a"/></svg></span></span><b>一起打電腦</b></button></div>
+              <div class="row dif-mini" id="pick-vdif" hidden>${['easy', 'normal', 'hard', 'crazy', 'hell'].map((d) => `<button type="button" class="pick dif-pick" data-v="${d}" aria-label="${SC.DIFFICULTY[d].name}">${MOOD[d]}<b>${SC.DIFFICULTY[d].name}</b></button>`).join('')}</div>
               <div class="row" id="pick-mix"><button type="button" class="pick ros-pick" data-v="rand" aria-label="隨機分隊"><span class="vs"><svg class="dice" viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="5" width="30" height="30" rx="8" fill="#fff" stroke="#1b1430" stroke-width="3" transform="rotate(-10 20 20)"/><circle cx="13" cy="14" r="3" fill="#ff6b8b"/><circle cx="20" cy="20" r="3" fill="#4ecbff"/><circle cx="27" cy="26" r="3" fill="#ffc93c"/></svg></span><b>隨機分隊</b></button><button type="button" class="pick ros-pick" data-v="pick" aria-label="指定組隊"><span class="vs">${HEAD('a')}<svg class="swap-ic" viewBox="0 0 40 30" aria-hidden="true"><path d="M6 10h26l-6-6M34 20H8l6 6" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>${HEAD('b')}</span><b>指定組隊</b></button></div>
               <div class="row" id="pick-teams" hidden><button type="button" class="pick ros-pick" data-v="3" aria-label="三方對戰"><span class="vs">${HEAD('a')}${HEAD('b')}${HEAD('c')}</span><b>三方對戰</b></button><button type="button" class="pick ros-pick" data-v="2" aria-label="2 對 1"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i>${HEAD('b')}</span><b>2 對 1</b></button></div>
               <div class="row" id="pick-rule"><button type="button" class="pick" data-v="turf"><b>塗地戰</b><small>塗得多的贏</small></button><button type="button" class="pick" data-v="knockout"><b>擊倒戰</b><small>擊倒多的贏</small></button></div>
@@ -10547,16 +10609,20 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (!inRoom) return;
       $('net-room').textContent = n.quick ? '隨機配對' : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
-      const tri = n.triOn(), rand = n.mix === 'rand', L = n.lineup(false);
+      const tri = n.triOn(), vc = !!n.vc, rand = n.mix === 'rand' && !vc, L = n.lineup(false);
       n.list.forEach((r, i) => {
         const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'), w = L.find((x) => x.peer === r.peer), t = w ? w.team : -1;
         f.className = 'net-face'; f.innerHTML = ui.face(w && !rand ? n.teamKinds(L, n.nTeams())[t] : r.kind); name.textContent = (r.nick || '玩家' + (i + 1)) + (r.isMe ? '（你）' : '');
-        tag.textContent = (i === 0 ? '房主・' : '') + (!w ? '等下一場' : rand ? '開打時抽籤' : `第 ${t + 1} 隊`); li.className = !w ? 'wait' : rand ? 'tr' : 't' + t; li.append(f, name, tag);
-        if (w && !rand && n.isHost) { const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'net-swap'; sw.dataset.peer = r.peer; sw.setAttribute('aria-label', '換隊'); sw.textContent = '⇄'; li.append(sw); } // 房主點這顆換隊
+        tag.textContent = (i === 0 ? '房主・' : '') + (!w ? '等下一場' : vc ? '我們這隊' : rand ? '開打時抽籤' : `第 ${t + 1} 隊`); li.className = !w ? 'wait' : rand ? 'tr' : 't' + t; li.append(f, name, tag);
+        if (w && !rand && !vc && n.isHost) { const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'net-swap'; sw.dataset.peer = r.peer; sw.setAttribute('aria-label', '換隊'); sw.textContent = '⇄'; li.append(sw); } // 房主點這顆換隊
         ul.append(li);
       });
+      if (vc) { const k = Math.min(4, n.list.length), li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'); f.className = 'net-face'; f.innerHTML = MOOD[n.dif] || MOOD.normal; name.textContent = '電腦 ×' + k; tag.textContent = (SC.DIFFICULTY[n.dif] || SC.DIFFICULTY.normal).name; li.className = 't1 cpu'; li.append(f, name, tag); ul.append(li); } // 一起打電腦：電腦人數跟真人一樣
+      $('pick-vc').hidden = !!n.quick; $('pick-vc').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (vc ? '1' : '0')); b.disabled = !n.isHost; });
+      $('pick-vdif').hidden = !vc; $('pick-vdif').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.dif); b.disabled = !n.isHost; });
+      if (vc) $('pick-mix').hidden = true;
       $('pick-mix').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.mix); b.disabled = !n.isHost; });
-      $('pick-teams').hidden = n.list.length < 3 || !!n.quick; { const k = Math.min(6, n.list.length), b3 = $('pick-teams').querySelector('[data-v="3"]'), b2 = $('pick-teams').querySelector('[data-v="2"]');
+      $('pick-teams').hidden = n.list.length < 3 || !!n.quick || vc; { const k = Math.min(6, n.list.length), b3 = $('pick-teams').querySelector('[data-v="3"]'), b2 = $('pick-teams').querySelector('[data-v="2"]');
         b3.querySelector('b').textContent = k === 3 ? '三方對戰' : k + ' 方大亂鬥'; b3.querySelector('.vs').innerHTML = [HEAD('a'), HEAD('b'), HEAD('c')].concat(k > 3 ? ['<i>+' + (k - 3) + '</i>'] : []).join('');
         b2.querySelector('b').textContent = k === 3 ? '2 對 1' : '兩隊對戰'; } // 3 人以上：每人一隊或兩隊
       $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.triOn() ? '3' : '2')); b.disabled = !n.isHost; });
@@ -10564,7 +10630,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       mapSync();
       $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
     };
-    const modeSync = () => {
+    const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
       $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[sel.mode](); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
       SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); netSync();
@@ -10634,6 +10700,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     $('pick-mix').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setMix(b.dataset.v); netSync(); } });
     $('net-list').addEventListener('click', (e) => { const b = e.target.closest('.net-swap'); if (b && SC.net.isHost) { click(); SC.net.swap(b.dataset.peer); netSync(); } });
     $('pick-teams').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setTri(b.dataset.v === '3'); netSync(); } });
+    $('pick-vc').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setVc(b.dataset.v === '1'); SC.net.setDif(sel.difficulty); netSync(); } });
+    $('pick-vdif').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); sel.difficulty = b.dataset.v; SC.net.setDif(b.dataset.v); save(); netSync(); } });
     $('pick-rule').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setRule(b.dataset.v); netSync(); } });
     on('btn-resume', () => G().setPaused(false));
     on('btn-pause', () => G().setPaused(true));
@@ -10688,6 +10756,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     resultsT = -1; last = {}; hurtK = 0; els.tip.classList.remove('on');
     $('h-spec').hidden = true; app.classList.remove('spec');
     document.getElementById('app').classList.toggle('netmode', g.mode === 'net' && !g.demo); $('h-chatbar').hidden = true; $('h-chatfeed').textContent = '';
+    { const rm = $('h-room'), cd = g.mode === 'net' && !g.demo && SC.net && SC.net.code && !SC.net.quick ? SC.net.code : ''; rm.hidden = !cd; rm.textContent = cd ? '房號 ' + cd : ''; } // 第 69 版：開戰後角落顯示房號
     if (g.demo) return;
     const chip = (a) => `<div class="chip" id="chip-${a.id}">${ui.face(a.kind)}</div>`;
     els['roster-a'].innerHTML = g.actors.filter((a) => a.team === 0).map(chip).join(''); els['roster-b'].innerHTML = g.actors.filter((a) => a.team !== 0).sort((a, b) => a.team - b.team).map((a) => chip(a).replace('class="chip"', `class="chip t${a.team}" style="--tc:#${g.colors[a.team].getHexString()}"`)).join('');
