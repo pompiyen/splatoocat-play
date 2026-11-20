@@ -731,7 +731,7 @@ SC.DIFFICULTY = {
 };
 // 第 65 版（Yen）：瘋狂＝認真的 1.5 倍、地獄＝認真的 3 倍。所有能力都乘：傷害、移動速度、射擊頻率、看見你的距離、耐打（受到的傷害除以倍數），
 // 瞄準誤差和反應時間是「越小越強」，所以除以倍數
-[['crazy', '瘋狂', 1.5], ['hell', '地獄', 3]].forEach(([k, name, m]) => { const h = SC.DIFFICULTY.hard;
+[['crazy', '瘋狂', 1.5], ['hell', '地獄', 1.5]].forEach(([k, name, m]) => { const h = SC.DIFFICULTY.hard; // 第 76 版（Yen）：地獄的瞄準、反應、開槍頻率、發現距離（電腦的「技術」）改成 1.5 倍，傷害和速度維持 1.8 倍
   SC.DIFFICULTY[k] = { name, aimErr: h.aimErr / m, react: h.react / m, fireDuty: Math.min(1, h.fireDuty * m), engage: h.engage * m, dmg: h.dmg * (k === 'hell' ? 1.8 : m), speed: h.speed * (k === 'hell' ? 1.8 : m), bombGap: 0, special: true, tough: k === 'hell' ? 1 : 2 }; }); // 第 72～73 版（Yen）：瘋狂耐打 2 倍；地獄血量跟一般一樣，傷害、速度 1.8 倍（瞄準等其他還是 3 倍）
 
 SC.clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
