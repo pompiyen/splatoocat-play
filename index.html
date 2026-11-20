@@ -10749,7 +10749,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const b = e.target.closest('.pick'); if (!b || b.disabled) return; click();
       const v = b.dataset.v;
       if (sel.mode === 'net') { SC.net.setMap(v); netSync(); } else { sel.map = v; modeSync(); }
-      const g = G(); if (g.demo && !els['m-title'].hidden && v !== 'random') { if (v !== SC.world.key) g.start({ demo: true, map: v }); peek(b); } // 第 68 版（Yen）：選地圖時整個畫面預覽這張場地
+      const g = G(); if (g.demo && !els['m-title'].hidden && v !== 'random') { if (v !== SC.world.key) g.start({ demo: true, map: v }); } // 第 81 版（Yen）：選地圖時選單不動，直接把背景換成這張場地（不再切到全畫面預覽）
     });
     // 地圖預覽：選單淡出，鏡頭繞著場地轉（電腦在裡面對打），點一下回選單
     let peekT = 0; const peekEnd = () => { clearTimeout(peekT); $('map-peek').hidden = true; els['m-title'].classList.remove('peeking'); G().peek = false; };
