@@ -586,6 +586,13 @@ html[data-lang="ja"] .w-chip b { word-break: keep-all; }
 /* 第 67 版：電腦對戰的規則（塗地戰／擊倒戰） */
 .rule-pick .rico { width: 40px; height: 34px; display: block; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .35)); }
 @media (max-width: 560px), (max-height: 520px) { .rule-pick .rico { width: 30px; height: 26px; } }
+/* 第 68 版：選地圖預覽 */
+#m-title { transition: opacity .25s; } #m-title.peeking { opacity: 0; pointer-events: none; }
+#map-peek { position: absolute; inset: 0; z-index: 30; pointer-events: auto; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0 16px max(22px, env(safe-area-inset-bottom)); cursor: pointer; }
+#map-peek[hidden] { display: none; }
+#map-peek .peek-card { display: flex; align-items: center; gap: 12px; background: rgba(27, 20, 48, .88); border: 3px solid #fff; border-radius: 18px 20px 18px 22px; padding: 8px 10px 8px 12px; box-shadow: var(--pop); max-width: 100%; }
+#map-peek .peek-ico svg { width: 52px; height: 38px; display: block; } #map-peek b { color: #fff; font-size: 20px; font-weight: 900; white-space: nowrap; }
+#map-peek .peek-hint { margin: 8px 0 0; color: #fff; font-size: 13px; text-shadow: 0 1px 2px var(--navy); }
 
 </style>
 <div id="app">
@@ -817,6 +824,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['塗得多的贏', 'Most paint wins', 'たくさん塗ったら勝ち', '많이 칠하면 승리'],
     ['擊倒戰', 'Knockout', 'たおしあいバトル', '쓰러뜨리기'],
     ['規則', 'Rule', 'ルール', '규칙'],
+    ['✔ 就選這個', '✔ Pick this one', '✔ これにする', '✔ 이걸로 할래'],
+    ['點一下畫面回到選單', 'Tap anywhere to go back', 'タップでメニューにもどる', '화면을 누르면 메뉴로 돌아가요'],
     ['擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。', 'Knockout battle. In 3 minutes, the team with more KOs wins (you come back 5 s after going down).', 'たおしあいバトル。3分間で、相手をたくさんたおしたチームの勝ち（たおれても5秒でもどってくるよ）。', '쓰러뜨리기 대결. 3분 동안 상대를 더 많이 쓰러뜨린 팀이 이겨요 (쓰러져도 5초 뒤에 다시 나와요).'],
     ['擊倒多的贏', 'Most KOs win', 'たくさんたおしたら勝ち', '많이 쓰러뜨리면 승리'],
     ['開戰！', 'Battle!', 'バトル開始！', '시작!'],
@@ -10003,8 +10012,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     camera.fov = (2 * Math.atan(Math.tan((baseFov * Math.PI) / 360) / cam.zoom) * 180) / Math.PI;
     SC.ui.scope(scopeK);
     if (G.demo || !p) {
-      cam.orbit += dt * 0.11; const r = aspect < 1 ? 150 : 104;
-      cam.pos.set(Math.sin(cam.orbit) * r, 46 + Math.sin(cam.orbit * 0.7) * 6, Math.cos(cam.orbit) * r * 0.72);
+      cam.orbit += dt * (G.peek ? 0.3 : 0.11); const r = (aspect < 1 ? 150 : 104) * (G.peek ? 0.85 : 1); // 選地圖預覽時轉快一點、近一點
+      cam.pos.set(Math.sin(cam.orbit) * r, (G.peek ? 52 : 46) + Math.sin(cam.orbit * 0.7) * 6, Math.cos(cam.orbit) * r * 0.72);
       camera.position.copy(cam.pos); camera.up.set(0, 1, 0); camera.lookAt(0, 3, 0); camera.updateProjectionMatrix(); return;
     }
     if (G.mode === 'boss' && BS.state === 'finale') { // 打倒魔王：鏡頭轉去看大爆炸，慢慢繞圈
@@ -10395,6 +10404,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-chatfeed" id="h-chatfeed" aria-live="polite"></div>
     </div>
 
+    <div id="map-peek" hidden><div class="peek-card"><span class="peek-ico" id="peek-ico"></span><b id="peek-name"></b><button type="button" class="btn primary" id="peek-ok">✔ 就選這個</button></div><p class="peek-hint">點一下畫面回到選單</p></div>
     <div class="menu" id="m-title">
       <div class="title-card">
         <div class="logo-wrap">
@@ -10583,10 +10593,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     renderStages();
     $('pick-map').addEventListener('click', (e) => {
       const b = e.target.closest('.pick'); if (!b || b.disabled) return; click();
-      if (sel.mode === 'net') { SC.net.setMap(b.dataset.v); netSync(); return; }
-      sel.map = b.dataset.v; modeSync();
-      const g = G(); if (g.demo && !els['m-title'].hidden && sel.map !== 'random' && sel.map !== SC.world.key) g.start({ demo: true, map: sel.map }); // 背景換成剛選的場地，先看一眼
+      const v = b.dataset.v;
+      if (sel.mode === 'net') { SC.net.setMap(v); netSync(); } else { sel.map = v; modeSync(); }
+      const g = G(); if (g.demo && !els['m-title'].hidden && v !== 'random') { if (v !== SC.world.key) g.start({ demo: true, map: v }); peek(b); } // 第 68 版（Yen）：選地圖時整個畫面預覽這張場地
     });
+    // 地圖預覽：選單淡出，鏡頭繞著場地轉（電腦在裡面對打），點一下回選單
+    let peekT = 0; const peekEnd = () => { clearTimeout(peekT); $('map-peek').hidden = true; els['m-title'].classList.remove('peeking'); G().peek = false; };
+    function peek(b) {
+      $('peek-name').textContent = b.querySelector('b') ? b.querySelector('b').textContent : ''; $('peek-ico').innerHTML = b.querySelector('svg') ? b.querySelector('svg').outerHTML : '';
+      $('map-peek').hidden = false; els['m-title'].classList.add('peeking'); G().peek = true; clearTimeout(peekT); peekT = setTimeout(peekEnd, 9000);
+    }
+    $('map-peek').addEventListener('click', (e) => { if (e.target.closest('#peek-ok')) click(); peekEnd(); });
     const on = (id, fn) => $(id).addEventListener('click', () => { click(); fn(); });
     const begin = () => {
       rank.hide(); // 排行榜還沒按勾勾就再挑戰：用填好的名字存起來
