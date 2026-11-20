@@ -9156,7 +9156,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (t.sight) t.sight.visible = false;
     if (!helpers) { helpers = []; if (t.dmgBy) t.dmgBy.forEach((at, e) => { if (e !== from && G.time - at < 5 && e.team !== t.team && !e.gone) helpers.push(e); }); }
     if (t.dmgBy) t.dmgBy.clear(); helpers.forEach((e) => e.ast++);
-    if (netOn() && !t.remote) { if (from) t.credited++; nev(t, 'k', from ? from.idx : -1, CAUSES.indexOf(cause), ...helpers.slice(0, 6).map((e) => e.idx)); }
+    if (!t.remote && from && from !== t) t.credited++; // 第 79 版：電腦對戰（沒連線）也要算，不然擊倒戰上方的擊倒數一直是 0
+    if (netOn() && !t.remote) { nev(t, 'k', from ? from.idx : -1, CAUSES.indexOf(cause), ...helpers.slice(0, 6).map((e) => e.idx)); }
     const gy = H(t.pos.x, t.pos.z), col = from ? colors[from.team] : WHITE;
     if (from) { from.kos++; if (from !== t && from.team !== t.team && !from.remote && from.spT == null && from.sp < 100 && G.state === 'play') { from.sp = Math.min(100, from.sp + C.SP_KO_BONUS); if (from.sp >= 100 && from.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } } if (gy > -4) { INK.splat(from.team, t.pos.x, gy, t.pos.z, 7.5); INK.stamp(from.team, t.pos.x, gy, t.pos.z, 5.5); } }
     if (!pk) { SC.fx.burst(t.pos.x, Math.max(t.pos.y, -5) + 2.5, t.pos.z, col, 42, 30, 0.8); SC.fx.ghost(t.pos.x, Math.max(t.pos.y, -6), t.pos.z); }
