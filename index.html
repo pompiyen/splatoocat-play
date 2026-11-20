@@ -599,6 +599,10 @@ html[data-lang="ja"] .w-chip b { word-break: keep-all; }
 /* 第 69 版：開戰後左上角小小的房號 */
 .h-room { position: absolute; left: var(--gl); top: calc(60px + var(--sat)); z-index: 3; padding: 3px 9px; border-radius: 10px; background: rgba(27, 20, 48, .72); border: 2px solid rgba(255, 255, 255, .85); color: #fff; font: 900 13px/1.2 var(--font, system-ui); letter-spacing: .5px; pointer-events: none; white-space: nowrap; }
 .h-room[hidden] { display: none; }
+/* 第 70 版：被擊倒後半段重播 */
+.ko-w i.rp-dot { width: clamp(14px, 3vmin, 20px); margin-left: 8px; background: #ff3b5c; box-shadow: 0 0 0 3px rgba(255, 59, 92, .35); animation: rpBlink 1s steps(2, start) infinite; }
+@keyframes rpBlink { to { visibility: hidden; } }
+#app.replaying .h-cross, #app.replaying .h-hs { visibility: hidden; }
 
 </style>
 <div id="app">
@@ -835,6 +839,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['規則', 'Rule', 'ルール', '규칙'],
     ['真人對打', 'Players vs players', 'みんなで対戦', '사람끼리 대결'],
     ['一起打電腦', 'Team up vs CPU', 'みんなでCPUと対戦', '같이 컴퓨터랑 대결'],
+    ['重播', 'Replay', 'リプレイ', '다시 보기'],
     ['我們這隊', 'Our team', 'わたしたちのチーム', '우리 팀'],
     ['✔ 就選這個', '✔ Pick this one', '✔ これにする', '✔ 이걸로 할래'],
     ['點一下畫面回到選單', 'Tap anywhere to go back', 'タップでメニューにもどる', '화면을 누르면 메뉴로 돌아가요'],
@@ -5278,7 +5283,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.played = (id) => done.has(id);
   N.clean = (s) => String(s == null ? '' : s).replace(/[^\p{L}\p{N} _-]/gu, '').trim().slice(0, 8);
   const validH = (h) => (h && typeof h === 'object' && typeof h.id === 'string' && Array.isArray(h.pl) && h.pl.length >= 1 && h.pl.length <= 6 && (h.n == null || (h.n === 2 && h.pl.length <= 4) || (h.n >= 3 && h.n <= 6 && h.pl.length === h.n))
-    && h.pl.every((e) => Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] < (h.n || 2) && (e[2] === 0 || e[2] === 1)) ? h : null);
+    && h.pl.every((e) => Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] < (h.n || 2) && Number.isInteger(e[2]) && e[2] >= 0 && e[2] <= 3) ? h : null); // 第 70 版：一起打電腦時一隊最多 4 人（座位 0～3）
   // 場地座標換算：dir 1＝收到的（大家共用的座標→自己畫面），-1＝送出去的。轉 rot 角度，面向角跟著減
   const turn = (a, idx, yaw, dir) => {
     if (!rot) return a; const s = rs * dir;
@@ -8943,8 +8948,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
   }
 
+  function spawnPt(team, slot) { // 每隊地圖只有 2 個出生點；3、4 人一隊時（第 70 版：一起打電腦 3對3、4對4）第 3、4 人站在兩點中間，第 3 人再往後一點
+    const sp = W.spawns[team] || W.spawns[0]; if (sp[slot]) return sp[slot];
+    const p0 = sp[0], p1 = sp[1] || sp[0], mx = (p0.x + p1.x) / 2, mz = (p0.z + p1.z) / 2, l = Math.hypot(mx, mz) || 1, back = slot === 2 ? 6 : 0;
+    return { x: mx + (mx / l) * back, z: mz + (mz / l) * back };
+  }
   function spawn(a) {
-    const boss = G.mode === 'boss', s = boss ? BS.spawn : W.spawns[a.team][a.slot];
+    const boss = G.mode === 'boss', s = boss ? BS.spawn : spawnPt(a.team, a.slot | 0);
     a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
     a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; bladeAimHide(a); a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
@@ -8990,7 +9000,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
     W.setTeamColors(...colors.slice(0, G.teams)); INK.reset();
     G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); }); SC.swimTrail.clear();
-    projectiles.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false));
+    projectiles.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false)); RP.buf.length = 0; RP.burst = -1; G.replaying = null; rpBombs(null);
     const others = Object.keys(SC.CAT_KINDS).filter((k) => k !== G.opts.kind), other = G.demo ? (G.opts.kind === 'maomao' ? 'shuang' : 'maomao') : others[(Math.random() * others.length) | 0]; // 對手隊隨機挑另一種貓（同一種貓固定同一隊）
     G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.targets = []; G.popped = 0;
     if (net && net.cpus.length) G.opts.difficulty = net.df; // 一起打電腦：電腦強度照房主選的
@@ -10061,6 +10071,50 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     p.aim.set(o.x + viewDir.x * tt, o.y + viewDir.y * tt, o.z + viewDir.z * tt);
   }
 
+  // 第 70 版（Yen）：被擊倒後，前一半看擊倒你的對手當下的視角，後一半重播你被擊倒前的那幾秒
+  const RP = { buf: [], burst: -1, bm: [] }, RP_T0 = 2.5, RP_BACK = 2.2, RP_KEEP = 3.2;
+  function rpRecord() {
+    const b = []; for (let i = 0; i < projectiles.length && b.length < 120; i++) { const q = projectiles[i]; b.push({ x: q.x, y: q.y, z: q.z, vx: q.vx, vy: q.vy, vz: q.vz, vr: q.vr, color: q.color, life: 1, flash: false }); }
+    RP.buf.push({ t: G.time, a: G.actors.map((a) => [a.alive && !a.gone ? 1 : 0, a.pos.x, a.alive ? a.visY : a.pos.y, a.pos.z, a.cat.group.rotation.y, a.form, a.speed, a.submerged, a.onGround, a.rolling]), b, bm: bombs.map((q) => [q.x, q.y, q.z]) });
+    while (RP.buf.length > 2 && RP.buf[0].t < G.time - RP_KEEP) RP.buf.shift();
+  }
+  function rpBombs(list) { // 重播用的炸彈（另外一組，不跟真的炸彈搶）
+    const n = list ? list.length : 0;
+    while (RP.bm.length < Math.min(n, 8) && bombMeshes[0]) { const m = bombMeshes[0].clone(true); m.visible = false; scene.add(m); RP.bm.push(m); }
+    RP.bm.forEach((m, i) => { const q = list && list[i]; m.visible = !!q; if (q) m.position.set(q[0], q[1], q[2]); });
+  }
+  function rpFrame() { // 現在要重播哪一格（沒有在重播就是 null）
+    const p = G.player(), was = G.replaying;
+    let on = !!(p && !p.alive && !G.demo && G.mode !== 'boss' && G.state === 'play' && p.koAt != null && G.time - p.koAt >= RP_T0 && RP.buf.length > 1);
+    if (!on) { if (was) { G.actors.forEach((a) => { if (!a.alive) a.cat.group.visible = false; }); rpBombs(null); } G.replaying = null; return null; }
+    const rt = p.koAt - RP_BACK + (G.time - p.koAt - RP_T0), B = RP.buf; let i = 0;
+    while (i < B.length - 2 && B[i + 1].t <= rt) i++;
+    const f0 = B[i], f1 = B[i + 1], k = SC.clamp((rt - f0.t) / Math.max(1e-4, f1.t - f0.t), 0, 1);
+    const at = (idx) => { const a0 = f0.a[idx], a1 = f1.a[idx]; if (!a0) return null; const b = a1 || a0; return { vis: a0[0], x: SC.lerp(a0[1], b[1], k), y: SC.lerp(a0[2], b[2], k), z: SC.lerp(a0[3], b[3], k), yaw: a0[4] + SC.angDiff(a0[4], b[4]) * k, s: a0 }; };
+    const pi = G.actors.indexOf(p), ki = p.koBy ? G.actors.indexOf(p.koBy) : -1, V = at(pi), K = ki >= 0 ? at(ki) : null;
+    if (V && !V.vis && RP.lastV) Object.assign(V, { x: RP.lastV.x, y: RP.lastV.y, z: RP.lastV.z }); else if (V) RP.lastV = { x: V.x, y: V.y, z: V.z };
+    if (rt >= p.koAt && RP.burst !== p.koAt && V) { RP.burst = p.koAt; SC.fx.burst(V.x, V.y + 2, V.z, colors[p.koBy ? p.koBy.team : 1], 40, 30, 0.8); A.sfx.ko(); cam.shake = 0.6; } // 重播到被擊倒的那一刻：噴墨＋音效
+    if (K && K.vis) RP.lastK = K; else if (RP.lastK && RP.lastK.ko !== p.koAt) RP.lastK = null; if (RP.lastK) RP.lastK.ko = p.koAt;
+    G.replaying = { rt, at, V, K: RP.lastK, left: G.time - p.koAt - RP_T0, f0 };
+    return G.replaying;
+  }
+  function rpActor(a, rf, dt, now) {
+    const r = rf.at(G.actors.indexOf(a)); if (!r || !r.vis) { a.cat.group.visible = false; return; }
+    const g = a.cat.group; g.visible = true; g.position.set(r.x, r.y, r.z); g.rotation.y = r.yaw; if (a.cat.setGhost) a.cat.setGhost(false); xrayOf(a, false);
+    a.cat.animate(dt, { speed: r.s[6], onGround: r.s[8], vy: 0, form: r.s[5], submerged: r.s[7], pitch: 0, rolling: r.s[9], charge: 0, t: now });
+  }
+  function rpCamera(dt) { // 重播鏡頭：站在你後面偏一邊，看得到你和擊倒你的人
+    const R = G.replaying, V = R.V; if (!V) return; const K = R.K;
+    let ux, uz, dk = 0; if (K) { const dx = V.x - K.x, dz = V.z - K.z; dk = Math.hypot(dx, dz); ux = dk > 0.5 ? dx / dk : 0; uz = dk > 0.5 ? dz / dk : 1; } else { const a = 0.6 + R.left * 0.35; ux = Math.sin(a); uz = Math.cos(a); }
+    const side = 0.5, cx = ux * Math.cos(side) - uz * Math.sin(side), cz = ux * Math.sin(side) + uz * Math.cos(side), D = (camera.aspect < 1 ? 20 : 15) + Math.min(10, dk * 0.12);
+    const lk = K ? Math.min(0.45, 20 / Math.max(dk, 1)) : 0, lx = V.x + (K ? (K.x - V.x) * lk : 0), lz = V.z + (K ? (K.z - V.z) * lk : 0), ly = V.y + 3 + (K ? (K.y - V.y) * lk * 0.5 : 0);
+    t1.set(V.x + cx * D, V.y + 9, V.z + cz * D); const gh = H(t1.x, t1.z); if (t1.y < gh + 3 && gh < (W.openH || 40)) t1.y = gh + 3;
+    if (!RP.camOn) cam.pos.copy(t1); else cam.pos.lerp(t1, Math.min(1, dt * 4)); RP.camOn = true;
+    camera.position.copy(cam.pos); camera.up.set(0, 1, 0); camera.lookAt(lx, ly, lz);
+    cam.shake = SC.damp(cam.shake, 0, 6, dt); if (cam.shake > 0.01) { camera.position.x += (Math.random() - 0.5) * cam.shake * 0.9; camera.position.y += (Math.random() - 0.5) * cam.shake * 0.9; }
+    W.fenceFade(camera.position.x, camera.position.z, V.x, V.z, true); camera.updateProjectionMatrix();
+  }
+
   function updateCamera(dt) {
     const p = viewer(), aspect = camera.aspect; G.watching = null;
     const baseFov = aspect < 1 ? 78 : 60;
@@ -10107,8 +10161,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       camera.quaternion.copy(q0).slerp(q1, e); camera.updateProjectionMatrix(); return;
     }
     cam.q0 = null; cam.fin = null;
+    if (G.replaying) { rpCamera(dt); return; } RP.camOn = false;
     // 被擊倒後等重生的時候（Yen 2026-11-20）：先看自己倒下的地方 0.8 秒，接著鏡頭跑到擊倒你的對手背後，看他的視角，直到回到出生台
-    const kb = p.isPlayer && !p.alive && G.state === 'play' && G.mode !== 'boss' && p.koBy && p.koBy.alive && !p.koBy.gone && G.time - p.koAt > 0.8 ? p.koBy : null;
+    const kb = p.isPlayer && !p.alive && G.state === 'play' && G.mode !== 'boss' && p.koBy && p.koBy.alive && !p.koBy.gone && G.time - p.koAt > 0.5 && G.time - p.koAt < RP_T0 ? p.koBy : null; // 第 70 版：看到 2.5 秒，後面換重播
     if (kb) { const kp = SC.clamp(kb.pitch * 0.5, -0.45, 0.35) - 0.2; if (!cam.kOn) { cam.kyaw = kb.yaw; cam.kpitch = kp; } else { cam.kyaw += SC.angDiff(cam.kyaw, kb.yaw) * Math.min(1, dt * 5); cam.kpitch = SC.damp(cam.kpitch, kp, 5, dt); } }
     cam.kOn = !!kb; G.watching = kb;
     const F = kb || p, yaw = kb ? cam.kyaw : cam.yaw;
@@ -10305,8 +10360,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         G.actors.forEach((a) => updateActor(a, dt));
         updateProjectiles(dt); updateBombs(dt);
       }
-      const now = performance.now() / 1000;
+      const now = performance.now() / 1000, rf = rpFrame();
       G.actors.forEach((a) => {
+        if (rf) { rpActor(a, rf, dt, now); return; }
         if (!a.alive) return;
         a.visY = a.onGround ? SC.damp(a.visY, a.pos.y, 22, dt) : a.pos.y;
         a.cat.group.position.set(a.pos.x, a.visY, a.pos.z); a.cat.group.rotation.y = a.sprayUntil > G.time ? a.sprayAng : a.yaw;
@@ -10319,6 +10375,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         updateSight(a);
         if (a.submerged && a.onGround) SC.swimTrail.add(a, a.pos.x, a.pos.y, a.pos.z, colors[a.team]); else SC.swimTrail.cut(a);
       });
+      if (rf) { SC.fx.drawBlobs(rf.f0.b); rpBombs(rf.f0.bm); } else { const p = G.player(); if (p && !G.demo && G.mode !== 'boss' && G.state === 'play' && (p.alive || G.time - p.koAt < 0.35)) rpRecord(); }
       grayTick(dt); updateInkDomes(dt); updateHearts(dt); SC.fx.update(dt, camera); W.update(now); INK.dentTick(dt); INK.flush();
       updateCamera(dt); bombPreview();
     }
@@ -11016,8 +11073,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     set('lives', g.mode === 'boss' ? Math.max(0, C.BOSS_LIVES - p.deaths) : -1, (v) => { els.lives.hidden = v < 0; [...els.lives.children].forEach((h, i) => h.classList.toggle('gone', i >= v)); });
     set('ink', Math.round(p.ink), (v) => { els['ink-fill'].style.width = v + '%'; els['ink-meter'].classList.toggle('low', v < 15); });
     g.actors.forEach((a) => set('al' + a.id, a.alive, (v) => { const c = $('chip-' + a.id); if (c) c.classList.toggle('out', !v); }));
-    set('watch', g.watching ? g.watching.id : -1, () => { // 被擊倒後在看對手的視角
-      const w = g.watching, box = els['ko-w']; els.ko.classList.toggle('watch', !!w); box.textContent = '';
+    set('watch', g.replaying ? 'rp' : g.watching ? g.watching.id : -1, () => { // 被擊倒後在看對手的視角；後半段是重播（第 70 版）
+      const w = g.watching, box = els['ko-w']; els.ko.classList.toggle('watch', !!w || !!g.replaying); els.ko.classList.toggle('replay', !!g.replaying); $('app').classList.toggle('replaying', !!g.replaying); box.textContent = '';
+      if (g.replaying) { const f = document.createElement('i'); f.className = 'rp-dot'; box.appendChild(f); const t = document.createElement('span'); t.textContent = '重播'; box.appendChild(t); return; }
       if (w) { const f = document.createElement('i'); f.innerHTML = ui.face(w.cat && w.cat.kind); box.appendChild(f); const t = document.createElement('span'); t.textContent = `正在看${w.name}的畫面`; box.appendChild(t); }
     });
     if (!p.alive) set('ko', g.mode === 'boss' && p.deaths >= C.BOSS_LIVES ? -9 : Math.ceil(p.respawnAt - g.time), (v) => { els['ko-n'].textContent = v > 0 ? v + ' 秒後回到出生台' : ''; });
