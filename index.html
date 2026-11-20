@@ -606,6 +606,7 @@ html[data-lang="ja"] .w-chip b { word-break: keep-all; }
 /* 第 74 版（Yen）：散彈槍的準星圈圈放大，和打得到人的範圍一起變大 */
 .h-cross[data-w="W04"] .c-ring { width: 60px; height: 60px; left: -30px; top: -30px; }
 .h-cross[data-w="W04"].reloading .c-ring { -webkit-mask: radial-gradient(circle, transparent 25px, #000 26px); mask: radial-gradient(circle, transparent 25px, #000 26px); }
+.h-hs.kill { color: #ff4a3d; font-size: clamp(20px, 4.6vmin, 34px); } /* 第 78 版：打死的「爆頭！」比較大、紅色；沒打死是黃色「頭擊！」 */
 
 </style>
 <div id="app">
@@ -947,6 +948,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['散彈槍', 'Shotgun', 'ショット\u200bガン', '산탄총'],
     ['墨刀', 'Ink Blade', 'インク\u200b刀', '잉크 칼'],
     ['爆頭！', 'Headshot!', 'ヘッドショット！', '헤드샷!'],
+    ['頭擊！', 'Head hit!', 'ヘッドヒット！', '머리 명중!'],
     ['墨水彈', 'Ink Bomb', 'インク\u200bボム', '잉크 폭탄'],
     ['墨貓', 'Ink Cat', 'インク\u200bネコ', '잉크 고양이'],
     ['絕招', 'Special', 'ひっさつわざ', '필살기'],
@@ -9478,7 +9480,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           if (p.y > e.pos.y + bodyBot(e) - (p.pad ? p.pad * 0.4 : 0) && p.y < e.pos.y + bodyTop(e) + 0.3 + (p.pad ? p.pad * 0.3 : 0) && Math.hypot(p.x - e.pos.x, p.z - e.pos.z) < bodyR(e) + (p.pad || 0.55)) { // 散彈槍每顆子彈碰到人的範圍比較大（第 74 版）
             if (!(p.group && e.lastSwing === p.group)) { if (p.group) e.lastSwing = p.group;
               const head = !e.isTarget && !e.bossHurt && e.form !== 'cat' && !(p.owner && p.owner.ai) && p.y > e.pos.y + C.HEAD_Y; // 打到頭：傷害 2.5 倍
-              if (hurt(e, p.dmg * (head ? C.HEAD_MULT : 1), p.owner, p.cause) && head && p.owner && p.owner.isPlayer) { SC.ui.headshot(); A.sfx.headshot(); } }
+              if (hurt(e, p.dmg * (head ? C.HEAD_MULT : 1), p.owner, p.cause) && head && p.owner && p.owner.isPlayer) { SC.ui.headshot(!e.alive || !!e.predKo); A.sfx.headshot(); } } // 第 78 版（Yen）：打到頭打死才叫「爆頭」，沒打死叫「頭擊」
             const gy = H(e.pos.x, e.pos.z); if (gy > -4 && e.pos.y - gy < 3) INK.stamp(p.team, e.pos.x, gy, e.pos.z, p.r * 0.55);
             dead = true; break;
           }
@@ -10853,7 +10855,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.onWeapon = (id) => { els.weapons.querySelectorAll('.w-chip').forEach((c) => c.classList.toggle('on', c.dataset.w === id)); els.cross.dataset.w = id; SC.input.setWeapon(id); };
   ui.scope = (k) => { if (!els.scope) return; const v = Math.round(k * 20) / 20; if (last.scope !== v) { last.scope = v; els.scope.style.opacity = v; els.cross.classList.toggle('scoped', v > 0.5); } };
   ui.hurt = () => { hurtK = 1; };
-  ui.headshot = () => { const e = els['hs-pop']; e.classList.remove('on'); void e.offsetWidth; e.classList.add('on'); }; // 打到頭：準星旁邊跳出「爆頭！」
+  ui.headshot = (kill) => { const e = els['hs-pop']; e.textContent = kill ? '爆頭！' : '頭擊！'; e.classList.toggle('kill', !!kill); e.classList.remove('on'); void e.offsetWidth; e.classList.add('on'); }; // 打到頭：準星旁邊跳出「爆頭！」
   ui.hitMarker = (kill) => { hitT = kill ? 0.5 : 0.24; els.cross.classList.toggle('kill', !!kill); els.cross.classList.add('hit'); };
   ui.banner = (text, dur, big) => { els.banner.textContent = text; els.banner.classList.toggle('big', !!big); els.banner.classList.remove('on'); void els.banner.offsetWidth; els.banner.classList.add('on'); bannerT = dur; };
   // 魔王講話：上方的對話泡泡
