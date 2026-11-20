@@ -582,6 +582,7 @@ html[data-lang="ja"] .w-chip b { word-break: keep-all; }
 .wpn-pick.on .wslot { display: block; }
 @media (max-width: 560px), (max-height: 520px) { #pick-wpn .wpn-pick .wi { width: 32px; height: 32px; } #pick-wpn .wpn-pick b { font-size: 11px; } }
 .w-chip[hidden], .t-w[hidden] { display: none !important; }
+body.wlock .w-chip[data-w], body.wlock .t-btn.t-w { opacity: .35; filter: grayscale(1); } /* 第 84 版：大絕招期間不能換武器 */
 
 /* 第 67 版：電腦對戰的規則（塗地戰／擊倒戰） */
 .rule-pick .rico { width: 40px; height: 34px; display: block; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .35)); }
@@ -803,6 +804,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['選貓咪', 'Pick a Cat', 'ネコをえらぶ', '고양이 고르기'],
     ['帶兩把武器', 'Bring 2 Weapons', 'ぶきを2つ持っていく', '무기 2개 챙기기'],
     ['滾刷變超寬 5 秒！', 'Super-wide roller for 5 s!', '5秒間ローラーが超ワイド！', '5초 동안 롤러가 엄청 넓어져요!'],
+    ['絕招用完才能換武器', 'Finish your special before switching weapons', 'ひっさつわざ中は武器を変えられないよ', '필살기가 끝나야 무기를 바꿀 수 있어요'],
     ['隱形 6 秒！對手看不到你', 'Invisible for 6 s! Rivals can\'t see you', '6秒間とうめい！相手から見えない', '6초 동안 투명! 상대가 못 봐요'],
     ['透視 8 秒！牆後面的對手會變成紅色', 'X-ray for 8 s! Rivals behind walls turn red', '8秒間すけて見える！カベの向こうの相手が赤くなる', '8초 동안 투시! 벽 뒤 상대가 빨갛게 보여요'],
     ['四面八方亂掃射！', 'Spin and spray everywhere!', '全方向にうちまくれ！', '사방으로 마구 쏴라!'],
@@ -8962,7 +8964,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       form: 'biped', submerged: false, hp: 100, ink: 100, alive: true, respawnAt: 0, protectUntil: 0, weapon: 'W01', nextShotAt: 0, lastShotAt: -9,
       lastHitAt: -9, switchUntil: 0, charge: -1, rolling: false, rollFrom: 0, rollK: 0, rollPt: null, rollNet: null, rollSfx: 0, rollHit: {}, nextBombAt: 0, kos: 0, deaths: 0, credited: 0, ast: 0, paint: 0, dmgBy: new Map(), speed: 0,
       aim: new V3(), ground: 'neutral', prevFire: false, swimT: 0, lastSwing: -1, airSpeed: C.WALK_SPEED, sight: null, sp: 0, spT: null, trailLast: null,
-      gain(n) { if (G.state === 'play' && !this.remote) this.paint += n; if (this.spT == null && this.sp < 100 && G.state === 'play') { this.sp = Math.min(100, this.sp + n * C.SP_PER_CELL * (this.weapon === 'W05' ? C.SP_BLADE_K : 1)); if (this.sp >= 100 && this.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } } },
+      gain(n) { if (G.state === 'play' && !this.remote) this.paint += n; if (!spBusy(this) && this.sp < 100 && G.state === 'play') { this.sp = Math.min(100, this.sp + n * C.SP_PER_CELL * (this.weapon === 'W05' ? C.SP_BLADE_K : 1)); if (this.sp >= 100 && this.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } } },
       ctl: { mx: 0, mz: 0, fire: false, cat: false, jump: false, bomb: false, select: null, sp: false },
       ai: isPlayer ? null : newAI(),
     };
@@ -9172,7 +9174,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!t.remote && from && from !== t) t.credited++; // 第 79 版：電腦對戰（沒連線）也要算，不然擊倒戰上方的擊倒數一直是 0
     if (netOn() && !t.remote) { nev(t, 'k', from ? from.idx : -1, CAUSES.indexOf(cause), ...helpers.slice(0, 6).map((e) => e.idx)); }
     const gy = H(t.pos.x, t.pos.z), col = from ? colors[from.team] : WHITE;
-    if (from) { from.kos++; if (from !== t && from.team !== t.team && !from.remote && from.spT == null && from.sp < 100 && G.state === 'play') { from.sp = Math.min(100, from.sp + C.SP_KO_BONUS); if (from.sp >= 100 && from.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } } if (gy > -4) { INK.splat(from.team, t.pos.x, gy, t.pos.z, 7.5); INK.stamp(from.team, t.pos.x, gy, t.pos.z, 5.5); } }
+    if (from) { from.kos++; if (from !== t && from.team !== t.team && !from.remote && !spBusy(from) && from.sp < 100 && G.state === 'play') { from.sp = Math.min(100, from.sp + C.SP_KO_BONUS); if (from.sp >= 100 && from.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } } if (gy > -4) { INK.splat(from.team, t.pos.x, gy, t.pos.z, 7.5); INK.stamp(from.team, t.pos.x, gy, t.pos.z, 5.5); } }
     if (!pk) { SC.fx.burst(t.pos.x, Math.max(t.pos.y, -5) + 2.5, t.pos.z, col, 42, 30, 0.8); SC.fx.ghost(t.pos.x, Math.max(t.pos.y, -6), t.pos.z); }
     if (!G.demo) {
       SC.ui.feed(from, t, cause);
@@ -9561,8 +9563,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     return true;
   }
 
+  const spBusy = (a) => a.spT != null || a.sprayUntil > G.time || a.xrayUntil > G.time || a.wideUntil > G.time || a.invisUntil > G.time; // 第 84 版（Yen）：大絕招還在用的時候不能換武器
   function setWeapon(a, id) {
     if (a.weapon === id || !a.alive) return;
+    if (spBusy(a)) { if (a.isPlayer && G.time > (a.lockTipAt || 0)) { a.lockTipAt = G.time + 1.5; SC.ui.tip('絕招用完才能換武器', 1.2); } return; }
     a.weapon = id; a.switchUntil = G.time + C.SWITCH_DELAY; a.charge = -1; a.rolling = false; a.dash = null; a.cat.setWeapon(id);
     if (a.isPlayer) { A.sfx.swap(); SC.ui.onWeapon(id); }
   }
@@ -9573,7 +9577,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!a.alive) { if (now >= a.respawnAt && G.state === 'play' && !(G.mode === 'boss' && a.isPlayer && a.deaths >= C.BOSS_LIVES)) { spawn(a); if (a.isPlayer) { A.sfx.respawn(); SC.ui.onRespawn(); } } return; }
     const active = G.state === 'play';
     if (!active) { ctl.mx = ctl.mz = 0; ctl.fire = ctl.cat = ctl.jump = ctl.bomb = ctl.sp = false; ctl.select = null; }
-    if (a.spT != null) { special(a, dt); ctl.jump = ctl.bomb = ctl.sp = false; return; }
+    if (a.spT != null) { special(a, dt); ctl.jump = ctl.bomb = ctl.sp = false; ctl.select = null; return; }
     if (ctl.sp && a.sp >= 100 && active && !a.climb) { ctl.sp = false; startSpecial(a); return; }
     ctl.sp = false;
     if (ctl.select) setWeapon(a, ctl.select);
@@ -9765,6 +9769,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     for (let i = 1; i <= 108; i++) { const h = H(a.pos.x + sx * i, a.pos.z + sz * i); if (h > y + 3 || h < -3.5) break; y = Math.max(h, y - 6); L = i; }
     return { yaw, x0: a.pos.x, z0: a.pos.z, x1: a.pos.x + sx * L, z1: a.pos.z + sz * L, L, drawn: 0, hit: new Set() };
   }
+  function airLine(a) { // 第 84 版（Yen）：在空中開墨刀絕招，朝準星的點從空中斜斜往下衝（最少往下 14 度，最長 110）
+    const yaw = a.yaw, sx = Math.sin(yaw), sz = Math.cos(yaw), x0 = a.pos.x, y0 = a.pos.y, z0 = a.pos.z;
+    let p = -0.5, dA = 0; if (a.isPlayer && a.aim) dA = Math.hypot(a.aim.x - x0, a.aim.z - z0); if (a.isPlayer && a.aim) p = Math.atan2(Math.min(a.aim.y, H(a.aim.x, a.aim.z)) - y0, Math.max(1, Math.hypot(a.aim.x - x0, a.aim.z - z0))); // 對準準星底下的地面
+    p = SC.clamp(p, -1.45, -0.25); const dx = sx * Math.cos(p), dy = Math.sin(p), dz = sz * Math.cos(p);
+    let x1 = x0, z1 = z0, y1 = H(x0, z0), px = x0, pz = z0, py = y0, safe = null;
+    for (let i = 1; i <= 110; i++) { const x = x0 + dx * i, y = y0 + dy * i, z = z0 + dz * i, g = H(x, z);
+      if (g > y + 3) { x1 = px; z1 = pz; y1 = H(px, pz); break; } // 撞到牆：停在牆前面
+      if (y <= g + 0.6 || (dA > 2 && i * Math.cos(p) >= dA)) { if (g > -3.5) { x1 = x; z1 = z; y1 = g; } else if (safe) { x1 = safe.x; z1 = safe.z; y1 = safe.g; } break; } // 落點是水或坑：退回最後一個能站的地方
+      if (g > -3.5) safe = { x, z, g }; px = x; pz = z; py = y;
+      if (i === 110) { if (safe) { x1 = safe.x; z1 = safe.z; y1 = safe.g; } else { x1 = x; z1 = z; y1 = g; } } }
+    if (y1 > y0) y1 = y0;
+    return { yaw, air: true, x0, y0, z0, x1, y1, z1, L: Math.hypot(x1 - x0, z1 - z0), drawn: 0, hit: new Set() };
+  }
   function startWeaponSpecial(a, kind) {
     a.sp = 0; a.dash = null; a.charge = -1; a.rolling = false; if (a.rollPt) rollEnd(a); if (a.isPlayer) SC.ui.spUsed();
     const col = colors[a.team], n = near(a), now = G.time;
@@ -9774,7 +9791,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬 5 秒！', 2.4); }
     else if (kind === 'xray') { a.xrayUntil = now + 8; if (a.isPlayer) { SC.ui.tip('透視 8 秒！牆後面的對手會變成紅色', 2.4); SC.ui.flash('rgba(255,40,40,.35)', 0.3); } }
     else if (kind === 'spray') { a.sprayUntil = now + 3; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('四面八方亂掃射！', 2); }
-    else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
+    else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.bladeAir = !a.inWater && a.pos.y - H(a.pos.x, a.pos.z) > 4; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
     if (netOn()) nev(a, 'Y', SP_KINDS.indexOf(kind));
   }
   function sprayRing(a, x, y, z, ang, seed, dmgK, N = 10) { // 散彈槍絕招的一圈：N 顆往四面八方
@@ -9795,37 +9812,47 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.bladeAim.material.color.copy(colors[a.team]); return a.bladeAim;
   }
   function bladeAimHide(a) { if (a.bladeAim) { a.bladeAim.visible = false; a.bladeAim.userData.tip.visible = false; } }
+  function bladeAirAim(a, L, k, t) { // 空中衝刺的預告：從貓斜斜往下到落點的一條光帶，落點地上有白色箭頭
+    const m = bladeAimOf(a), tip = m.userData.tip, ex = L.x1 - L.x0, ey = L.y1 - L.y0, ez = L.z1 - L.z0, len = Math.max(2, Math.hypot(ex, ey, ez)), fall = Math.atan2(-ey, Math.max(0.01, L.L));
+    m.visible = tip.visible = true; m.rotation.set(fall - Math.PI / 2, L.yaw, 0, 'YXZ'); m.scale.set(6, len * k, 1);
+    m.position.set(L.x0 + ex * k * 0.5, L.y0 + 0.3 + ey * k * 0.5, L.z0 + ez * k * 0.5); m.material.opacity = 0.3 + 0.25 * (0.5 + 0.5 * Math.sin(t * 30));
+    tip.rotation.set(-Math.PI / 2, L.yaw, -Math.PI / 2, 'YXZ'); tip.scale.setScalar(5); tip.position.set(L.x0 + ex * k, L.y0 + ey * k + 0.32, L.z0 + ez * k);
+  }
   function bladeSpecial(a, dt) { // 先蓄力 0.5 秒（可以轉方向）；再 0.6 秒往前劃出一條墨水線；最後 0.55 秒沿著線衝過去，碰到的對手直接擊倒
     const t0 = (a.spT += dt), TC = C.BLADE_CHARGE;
     if (!a.blade) { // 蓄力：站著不動，身體跟著鏡頭轉；蓄滿那一刻的方向就是衝出去的方向
       a.vel.set(0, 0, 0); a.speed = 0; if (a.isPlayer) a.yaw = cam.yaw; a.cat.squash = -0.5 - 0.2 * Math.sin(t0 * 40);
       const col = colors[a.team], k = Math.min(1, t0 / TC);
       if (near(a) > 0.05 && Math.random() < 0.8) { const r = 5 * (1 - k) + 1, an = Math.random() * 6.283; SC.fx.burst(a.pos.x + Math.sin(an) * r, a.pos.y + 1 + Math.random() * 3, a.pos.z + Math.cos(an) * r, col, 1, 4, 0.25, 0.1); }
-      if (a.isPlayer && t0 < TC) { const L = spLine(a), m = bladeAimOf(a), tip = m.userData.tip, w = 6, len = Math.max(2, L.L), sx = Math.sin(L.yaw), sz = Math.cos(L.yaw);
+      if (a.isPlayer && t0 < TC && a.bladeAir) { const L = airLine(a); bladeAirAim(a, L, k, t0); }
+      else if (a.isPlayer && t0 < TC) { const L = spLine(a), m = bladeAimOf(a), tip = m.userData.tip, w = 6, len = Math.max(2, L.L), sx = Math.sin(L.yaw), sz = Math.cos(L.yaw);
         m.visible = tip.visible = true; m.rotation.set(-Math.PI / 2, L.yaw, 0, 'YXZ');
         m.scale.set(w, len * k, 1); m.position.set(a.pos.x + sx * len * k * 0.5, a.pos.y + 0.3, a.pos.z + sz * len * k * 0.5); m.material.opacity = 0.3 + 0.25 * (0.5 + 0.5 * Math.sin(t0 * 30));
         tip.rotation.set(-Math.PI / 2, L.yaw, -Math.PI / 2, 'YXZ'); tip.scale.setScalar(5); tip.position.set(a.pos.x + sx * len * k, a.pos.y + 0.32, a.pos.z + sz * len * k); }
-      if (t0 >= TC) { bladeAimHide(a); a.blade = spLine(a); a.blade.t0 = t0; a.cat.slash = 1; a.cat.slashKind = 2; a.cat.squash = 0.3; if (near(a) > 0.05 && !G.demo) A.sfx.slash(near(a), 2); }
+      if (t0 >= TC) { bladeAimHide(a); a.blade = a.bladeAir ? airLine(a) : spLine(a); a.blade.t0 = t0; a.cat.slash = 1; a.cat.slashKind = 2; a.cat.squash = 0.3; if (near(a) > 0.05 && !G.demo) A.sfx.slash(near(a), 2); }
       return;
     }
-    const B = a.blade, t = t0 - (B.t0 || 0), T1 = 0.6, T2 = 1.15, sx = Math.sin(B.yaw), sz = Math.cos(B.yaw), col = colors[a.team];
+    const B = a.blade, t = t0 - (B.t0 || 0), T1 = B.air ? 0.3 : 0.6, T2 = B.air ? 0.75 : 1.15, sx = Math.sin(B.yaw), sz = Math.cos(B.yaw), col = colors[a.team];
     a.vel.set(0, 0, 0); a.speed = 0; a.yaw = B.yaw;
-    if (t < T1 || !B.dashed) { // 線往前長出去
-      const want = B.L * Math.min(1, t / T1);
+    if (t < T1 || !B.dashed) { // 線往前長出去（空中：地上那條線畫在落點附近的地面）
+      const want = B.L * Math.min(1, t / T1), py = B.air ? B.y1 + 2 : a.pos.y;
+      if (B.air && a.isPlayer) bladeAirAim(a, B, 1, t);
       if (want > B.drawn + 0.5 || t >= T1) { const x0 = B.x0 + sx * B.drawn, z0 = B.z0 + sz * B.drawn, x1 = B.x0 + sx * want, z1 = B.z0 + sz * want;
-        INK.by = a; dashPaint(a.team, x0, z0, x1, z1, a.pos.y, 3.2 * C.PAINT); INK.by = null; if (netOn()) nev(a, 'n', x0, z0, x1, z1, a.pos.y, 3.2 * C.PAINT);
+        INK.by = a; dashPaint(a.team, x0, z0, x1, z1, py, 3.2 * C.PAINT); INK.by = null; if (netOn()) nev(a, 'n', x0, z0, x1, z1, py, 3.2 * C.PAINT);
         if (near(a) > 0.05) SC.fx.burst(x1, H(x1, z1) + 0.6, z1, col, 4, 12, 0.35, 0, 1, 0.3); B.drawn = want; }
-      if (t >= T1) { B.dashed = true; a.cat.slash = 1; a.cat.slashKind = 3; if (near(a) > 0.05 && !G.demo) A.sfx.spDive(near(a)); }
+      if (t >= T1) { B.dashed = true; bladeAimHide(a); a.cat.slash = 1; a.cat.slashKind = 3; if (near(a) > 0.05 && !G.demo) A.sfx.spDive(near(a)); }
       return;
     }
     const k = Math.min(1, (t - T1) / (T2 - T1)), e = 1 - Math.pow(1 - k, 2), px = a.pos.x, pz = a.pos.z;
-    a.pos.x = B.x0 + sx * B.L * e; a.pos.z = B.z0 + sz * B.L * e; a.pos.y = H(a.pos.x, a.pos.z); a.onGround = true;
+    if (B.air) { a.pos.x = B.x0 + (B.x1 - B.x0) * e; a.pos.z = B.z0 + (B.z1 - B.z0) * e; a.pos.y = Math.max(H(a.pos.x, a.pos.z), B.y0 + (B.y1 - B.y0) * e); a.onGround = k >= 1; } // 從空中斜斜衝到落點
+    else { a.pos.x = B.x0 + sx * B.L * e; a.pos.z = B.z0 + sz * B.L * e; a.pos.y = H(a.pos.x, a.pos.z); a.onGround = true; }
     if (near(a) > 0.05) SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, col, 5, 16, 0.4);
     if (k > 0) { const seg = Math.hypot(a.pos.x - px, a.pos.z - pz) || 1e-6;
       G.hit.forEach((e2) => { if (e2.team === a.team || !e2.alive || e2.bossHurt || B.hit.has(e2)) return;
         const ux = e2.pos.x - px, uz = e2.pos.z - pz, along = SC.clamp((ux * (a.pos.x - px) + uz * (a.pos.z - pz)) / (seg * seg), 0, 1), dx = ux - (a.pos.x - px) * along, dz = uz - (a.pos.z - pz) * along;
         if (Math.hypot(dx, dz) < 7.2 + bodyR(e2) && Math.abs(e2.pos.y - a.pos.y) < 6) { B.hit.add(e2); hurt(e2, e2.isTarget ? 999 : 100, a, 'special'); } }); }
-    if (k >= 1) { a.spT = null; a.spKind = null; a.onGround = true; a.jumps = 0; a.cat.slash = 0; SC.fx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, col, 8, 0.35); }
+    if (k >= 1) { a.spT = null; a.spKind = null; a.onGround = true; a.jumps = 0; a.cat.slash = 0; SC.fx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, col, 8, 0.35);
+      if (B.air) { a.pos.y = H(a.pos.x, a.pos.z); INK.by = a; INK.stamp(a.team, a.pos.x, a.pos.y, a.pos.z, 4.5 * C.PAINT); INK.by = null; SC.fx.burst(a.pos.x, a.pos.y + 0.5, a.pos.z, col, 24, 22, 0.5); const n = near(a); if (n > 0.05 && !G.demo) { A.sfx.spSlam(n * 0.4); cam.shake = Math.min(1, cam.shake + 0.25 * n); } } }
   }
   function startSpecial(a) {
     const kind = G.mode === 'boss' || a.ai ? 'slam' : SP_KIND[a.weapon] || 'slam';
@@ -10085,6 +10112,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (I.fire || since > 4 || (p.onGround && since >= 0.3)) p.leapAt = null; else cat = true;
     }
     if (!p.alive) { I.cancelActions(); } // 倒下等重生時按的東西都不算
+    const lk = p.alive && spBusy(p); if (lk !== !!p.wlock) { p.wlock = lk; document.body.classList.toggle('wlock', lk); } // 大絕招期間武器按鈕變灰
     if (p.holdBlock && !I.fire) p.holdBlock = false;
     ctl.fire = (I.fire && !p.holdBlock) || I.fireTap; ctl.cat = cat; if (I.jump) ctl.jump = true; if (I.bomb) { ctl.bomb = true; ctl.bombPow = I.bombPow; } if (I.sp) ctl.sp = true;
     const lo = loadout(); if (I.select) { if (lo.includes(I.select)) ctl.select = I.select; } else if (I.swap) ctl.select = lo[(Math.max(0, lo.indexOf(p.weapon)) + I.swap + lo.length * 2) % lo.length];
