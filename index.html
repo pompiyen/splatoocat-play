@@ -632,7 +632,7 @@ window.SC = SC;
 const INK_LAST = 1.3; // Yen 2026-11-14：墨水持久量 1.3 倍（每一發耗的墨水除以 1.3）
 
 SC.CFG = {
-  ROUND_SECONDS: 180,
+  ROUND_SECONDS: 180, MIX_KO: 3, // 複合賽：擊倒一次算 3 分（塗地 1% 算 1 分）
   COUNTDOWN_SECONDS: 3,
   RESPAWN_SECONDS: 5,
   SPAWN_PROTECTION: 2.5, // 重生後無傷時間（塗地戰、擊倒戰都有；第 60 版 2→2.5）
@@ -5325,7 +5325,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   function attach(r, code, qi, ranked) {
     chatOut = []; chatSeen = {}; N.chatLog = [];
-    room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); N.qrule = ranked === 'knockout' ? 'knockout' : 'turf'; N.rmode = ranked === '1v1' ? '1v1' : '2v2'; N.rsize = N.ranked && ranked === '1v1' ? 2 : 4; N.ready = false; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
+    room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); N.qrule = ranked === 'knockout' ? 'knockout' : 'turf'; N.rmode = ranked === '1v1' ? '1v1' : '2v2'; N.rsize = N.ranked && ranked === '1v1' ? 2 : 4; N.ready = false; N.rkDone = false; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
     if (qi) { N.rule = N.qrule; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; } N.vc = false;
     changed();
   }
@@ -5404,11 +5404,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.start = (dif = N.dif) => {
     if (!room || !N.isHost || N.list.length < 2 || N.live) return;
     const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
-    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.ranked ? (Math.random() < 0.5 ? 'knockout' : 'turf') : N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', ...inkOf(pl) } });
+    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.ranked ? 'mix' : N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', ...inkOf(pl) } });
   };
 
   // spec：比賽開打後才進房的人（Yen 2026-11-19）只看不打，從房主那隊的角度看，不送任何資料
   function begin(h, list, spec) {
+    if (N.ranked) { N.rkDone = true; if (N.ready) { N.ready = false; send({ rd: 0 }); } } // 積分賽：開打就把「準備」清掉，打完不會被舊的準備觸發下一場
     const mine = spec ? null : h.pl.find((e) => e[0] === myPeer); nT = h.n >= 3 && h.n <= 6 ? h.n : 2; g0 = mine ? mine[1] : 0;
     // 兩隊、三隊：把場地轉到自己的出生台在左邊。四隊以上不轉（出生台不是平均分開），改由場地把隊伍編號換成自己這台的（world.teamOffset）
     rot = nT >= 4 ? 0 : (-g0 * 2 * PI) / nT; rc = Math.cos(rot); rs = nT === 2 ? 0 : Math.sin(rot); if (nT === 2 && g0) rc = -1; // 兩隊時剛好轉 180 度，用 -1 免得小數誤差
@@ -5422,7 +5423,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
     const nC = Math.max(0, Math.min(4, h.vc | 0)), ck = Array.isArray(h.kd) && KINDS.includes(h.kd[1]) ? h.kd[1] : 'shuang';
     const cpus = Array.from({ length: nC }, (_, k) => ({ idx: h.pl.length + k, team: (1 - g0 + nT) % nT, slot: k, kind: ck, cpu: true }));
-    N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' ? 'knockout' : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
+    N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' || h.rule === 'mix' ? h.rule : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
     if (N.onBegin) N.onBegin(N.match);
   }
@@ -5494,7 +5495,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const i = list.findIndex((r) => r.isMe);
       if (i >= (N.ranked ? N.rsize : 4)) { const q = N.quick, rk = N.ranked && N.rmode; N.leave(); N.quickJoin(q + 1, rk); return; } // 擠進來超過人數：換下一間
       if (N.isHost) { // 房主倒數自動開打：2 人等 15 秒，4 人到齊 4 秒
-        if (N.ranked) { const all = list.length === N.rsize && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 3; qT -= dt; } } // 積分賽：人到齊、大家都準備好，3 秒後開打
+        if (N.ranked && N.rkDone) qT = null; // 積分賽一間房只打一場（Yen 23:16）：打完不再自動開下一場
+        else if (N.ranked) { const all = list.length === N.rsize && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 3; qT -= dt; } } // 積分賽：人到齊、大家都準備好，3 秒後開打
         else if (list.length < 2) qT = null; else { if (qT == null) qT = 15; if (list.length >= 4) qT = Math.min(qT, 4); qT -= dt; }
         const qs = qT == null ? null : Math.max(0, Math.ceil(qT)); if (qs !== qSent) { qSent = qs; send({ qs }); }
         if (qT != null && qT <= 0) { qT = null; qSent = null; send({ qs: null }); N.start(); }
@@ -9062,7 +9064,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const onBase = (a) => { if (G.mode === 'boss' || !a || !a.pos) return false; const [u, v] = W.toLocal(a.team, a.pos.x, a.pos.z); return u < -W.baseIn && Math.abs(v) < 17 && a.pos.y > 5; };
   // 時鐘廣場中間的鐘塔頂上（Yen 2026-11-20 第 58 版設為無敵，第 75 版改成減傷，見 towerK）
   const onTower = (a) => !!(a && a.pos && /^round/.test(W.key || '') && a.pos.y > 12 && Math.hypot(a.pos.x, a.pos.z) < 5.5);
-  const baseSafe = (t, from) => G.mode !== 'boss' && G.rule === 'turf' && (onBase(t) || onBase(from));
+  const baseSafe = (t, from) => G.mode !== 'boss' && G.rule !== 'knockout' && (onBase(t) || onBase(from));
   // 第 75 版（Yen）：鐘塔頂不再是無敵，改成站在上面受到的傷害變 1/10、打出去的傷害變 1/5（塗地戰）
   const towerK = (t, from) => G.mode === 'boss' || G.rule !== 'turf' ? 1 : (onTower(t) ? C.TOWER_TAKE : 1) * (onTower(from) ? C.TOWER_DEAL : 1);
   // ---------- 傷害與重生 ----------
@@ -9981,6 +9983,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const koScore = () => (G.teams >= 3 ? Array.from({ length: G.teams }, (_, T) => T).map((T) => G.actors.reduce((n, a) => n + (a.team === T ? a.kos : 0), 0))
     : [0, 1].map((T) => G.actors.reduce((n, a) => n + (a.team !== T ? a.credited || 0 : 0), 0)));
   G.koScore = koScore;
+  const mixPts = (paint, kos) => Math.round((paint || 0) * 1000) / 10 + (kos || 0) * C.MIX_KO; G.mixPts = mixPts; // 複合賽總分
   // 結算表（Yen 2026-11-19）：每個人的擊倒、被擊倒、助攻、塗地面積（平方公尺）和 MVP
   G.board = () => {
     const ko = G.rule === 'knockout', cell = C.CELL * C.CELL, rows = G.actors.filter((a) => !a.isTarget).map((a) => {
@@ -10324,6 +10327,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const top = (v, eps) => { const o = v.map((x, i) => [x, i]).sort((p, q) => q[0] - p[0]); return o.length > 1 && o[0][0] - o[1][0] <= eps ? 'tie' : o[0][1]; };
     G.winner = top(fv, 0.0005);
     const ko = (res && res.ko) || koScore(); G.koFinal = ko; if (G.rule === 'knockout') G.winner = top(ko, 0);
+    G.mixFinal = null; if (G.rule === 'mix') { G.mixFinal = fv.map((x, i) => mixPts(x, ko[i])); G.winner = top(G.mixFinal, 0.05); } // 複合賽（Yen 23:16）：塗地 1% 算 1 分＋擊倒一次 3 分
     if (netOn()) SC.net.end({ a: fv[0], b: fv[1], c: G.final.c, v: fv, ko });
     projectiles.length = 0; bombs.forEach((b) => (b.mesh.visible = false)); bombs.length = 0;
     G.actors.forEach((a) => { a.charge = -1; if (a.sight) a.sight.visible = false; a.cat.setTag('', '', false); });
@@ -10386,9 +10390,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       } else if (G.state === 'ended') { if (G.mode === 'boss') { BS.update(dt); if (hug) hugUpdate(dt); } endT += dt;
         if (G.mode !== 'boss') {
           if (!judged && endT > 1.7) { // 先宣布地圖塗布的勝負
-            judged = true; const f = G.final, ko = G.koFinal, byKo = G.rule === 'knockout';
-            const tri = G.teams >= 3, nums = byKo ? ko.map(String) : f.v.map((v) => (v * 100).toFixed(1) + '%');
-            SC.ui.banner((G.teams >= 4 ? (G.winner === 'tie' ? '' : '第 ' + (f.v.filter((x, i) => (byKo ? ko[i] > ko[0] : x > f.v[0])).length + 1) + ' 名') : (byKo ? '擊倒 ' : '塗地 ') + nums.join(' 比 ')) + (camera.aspect < 1 ? '\n' : '　') + (G.winner === 'tie' ? '平手！' : G.winner === 0 ? (tri ? '你獲勝！' : '我方獲勝！') : '對手獲勝…'), 1.9);
+            judged = true; const f = G.final, ko = G.koFinal, mx = G.rule === 'mix' && G.mixFinal, byKo = G.rule === 'knockout' || !!mx;
+            const tri = G.teams >= 3, nums = mx ? mx.map((v) => v.toFixed(1)) : byKo ? ko.map(String) : f.v.map((v) => (v * 100).toFixed(1) + '%');
+            SC.ui.banner((G.teams >= 4 ? (G.winner === 'tie' ? '' : '第 ' + (f.v.filter((x, i) => (mx ? mx[i] > mx[0] : byKo ? ko[i] > ko[0] : x > f.v[0])).length + 1) + ' 名') : (mx ? '總分 ' : byKo ? '擊倒 ' : '塗地 ') + nums.join(' 比 ')) + (camera.aspect < 1 ? '\n' : '　') + (G.winner === 'tie' ? '平手！' : G.winner === 0 ? (tri ? '你獲勝！' : '我方獲勝！') : '對手獲勝…'), 1.9);
             if (G.winner !== 'tie') (G.winner === 0 ? A.sfx.win : A.sfx.lose)();
           }
           if (!vic && endT > VIC_AT && !resultsShown) victoryStart();
@@ -10688,7 +10692,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const MAP_LEDE = { random: '場地每次隨機挑一張。', park: '場地：貓咪遊樂園，好多層的高台、斜坡和城牆步道，爬到最高的貓窩上面看全場！', candy: '場地：甜點廚房，小心巧克力河！', ship: '場地：海盜船，兩艘大船隔著大海。爬上船長室、跳下貨艙，走跳板、碼頭或踩礁石過去，小心別掉進海裡！', fair: '場地：歡樂遊樂場，是一座大山坡，旋轉木馬在山頂。從山腳往上衝，搶下山頂！', skate: '場地：滑板場，橢圓形的大滑板場，外圈一整圈都是可以滑上去的碗邊，還有大碗池和 U 型滑道。', round: '場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。' };
     const modeKey = () => (sel.mode === 'net' && sel.rk ? 'ranked' : sel.mode);
     const LEDE = { versus: () => `${sel.roster === '1v1' ? '1 對 1' : '2 對 2'} ${sel.vrule === 'knockout' ? '擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。' : '塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。'}${MAP_LEDE[sel.map] || ''}`,
-      ranked: () => '積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場隨機塗地戰或擊倒戰，打完一場就結束。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。' + (SC.account && SC.account.needed ? '要先登入才能玩。' : ''),
+      ranked: () => '積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。' + (SC.account && SC.account.needed ? '要先登入才能玩。' : ''),
       sandbox: () => '一個人不限時自由練習。場上有氣球靶和會噴對手墨水的灑水器，打壞了過幾秒會再出現。',
       boss: () => ({ 2: '魔王關卡 2：胖嘟嘟魔王。躲開地上的紅色預告，魔王累到冒星星的時候用力打。身上沾滿墨水就會爆開，打完三個回合就過關。',
         3: '魔王關卡 3：氣球小豬船長。把綁著船長的氣球一顆顆打破，他摔下來冒星星的時候用力打。',
@@ -10878,7 +10882,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     els['my-face'].innerHTML = ui.face((g.player() || g.opts).kind); ui.onWeapon((g.player() || {}).weapon || lo[0]); if (g.spec) ui.onWatch();
     els.hud.classList.toggle('solo', g.mode === 'sandbox'); els.hud.classList.toggle('boss', g.mode === 'boss'); last.timer = null;
     els.lives.classList.remove('intro'); if (g.mode === 'boss') { void els.lives.offsetWidth; els.lives.classList.add('intro'); els.timer.classList.remove('final'); return; }
-    if (g.mode === 'net' || g.rule === 'knockout') ui.tip(tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
+    if (g.mode === 'net' || g.rule === 'knockout') ui.tip(g.rule === 'mix' ? '複合賽：塗地 1% 算 1 分，擊倒一次算 3 分，總分高的隊伍獲勝' : tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
     if (g.mode === 'net' || g.rule === 'knockout') return;
     if (g.mode === 'sandbox') { els.timer.textContent = '不限時'; els.timer.classList.remove('final'); ui.banner('自由試玩', 1.4); ui.tip('打破氣球靶、擊毀灑水器，想練什麼就練什麼。按暫停可以回主選單', 7); return; }
     ui.tip(SC.input.isTouch ? '把地面塗成你們隊的顏色！按住左下的「墨貓」可以在自己的墨水裡快速移動、補墨水；射擊鈕短點是跳' : '把地面塗成你們隊的顏色！按住 Shift 可以在自己的墨水裡快速移動、補墨水', 7);
@@ -11054,7 +11058,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     els['res-stats'].classList.add('has-board');
     els['res-stats'].innerHTML = `<table class="board"><thead><tr><th></th><th>擊倒</th><th>被擊倒</th><th>助攻</th><th>塗地</th></tr></thead><tbody>`
       + rows.map((r) => `<tr class="${r.me ? 'me' : ''}${r.gone ? ' gone' : ''}${r.mvp ? ' mvp' : ''}"><td class="nm"><div><i class="dot" style="background:#${g.colors[r.team].getHexString()}"></i>${r.mvp ? CROWN : ''}<span>${esc(r.name)}${r.me ? '（你）' : ''}</span>${r.mvp ? '<em>MVP</em>' : ''}</div></td><td>${r.k}</td><td>${r.d}</td><td>${r.as}</td><td>${r.area}</td></tr>`).join('')
-      + `</tbody></table>` + (net || g.rule === 'knockout' ? `<p class="board-rule">${g.rule === 'knockout' ? '擊倒戰' : '塗地戰'}・塗地是塗了幾平方公尺</p>` : '<p class="board-rule">塗地是塗了幾平方公尺</p>');
+      + `</tbody></table>` + (net || g.rule === 'knockout' ? `<p class="board-rule">${g.rule === 'knockout' ? '擊倒戰' : g.rule === 'mix' ? '複合賽' : '塗地戰'}・塗地是塗了幾平方公尺</p>` : '<p class="board-rule">塗地是塗了幾平方公尺</p>');
     els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0;
     SC.audio.music('toy');
   };
@@ -11101,7 +11105,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (trickT > 0) { trickT -= dt; if (trickT <= 0) els['trick-card'].classList.remove('on'); }
     if (resultsT >= 0) {
       resultsT += dt; const k = SC.clamp((resultsT - 0.3) / 1.6, 0, 1), e = 1 - Math.pow(1 - k, 3), s = g.final;
-      if (g.rule === 'knockout' && g.koFinal) { // 擊倒戰的結算條顯示擊倒數
+      if (g.rule === 'mix' && g.mixFinal) { const mx = g.mixFinal, sum = mx.reduce((x, y) => x + y, 0) || 1; bars('res', mx.map((v) => (v / sum) * e), mx.map((v) => Math.round(v * e) + ' 分')); } // 複合賽的結算條顯示總分
+      else if (g.rule === 'knockout' && g.koFinal) { // 擊倒戰的結算條顯示擊倒數
         const ko = g.koFinal, sum = ko.reduce((x, y) => x + y, 0) || 1;
         bars('res', ko.map((v) => (v / sum) * e), ko.map((v) => Math.round(v * e) + ' 擊倒'));
       } else { const sv = s.v || [s.a, s.b, s.c || 0]; bars('res', sv.map((v) => v * e), sv.map((v) => (v * 100 * e).toFixed(1) + '%')); }
@@ -11118,7 +11123,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       set('bph', b.phase + b.state + !!b.tired, () => { els['boss-phase'].textContent = b.tired ? '累了！快打！' : b.state === 'stunned' ? '頭暈中！' : b.state === 'finale' ? '能量暴走！' : b.state === 'goal' || b.state === 'cleared' ? '打倒了！' : b.phaseName; [...els['boss-pips'].children].forEach((el, i) => el.classList.toggle('done', i < b.phase - 1 || ['finale', 'goal', 'cleared'].includes(b.state))); });
     } else if (g.mode !== 'sandbox') set('timer', secs, (v) => { els.timer.textContent = Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); els.timer.classList.toggle('final', v <= C.FINAL_SECONDS); });
     const net = g.mode === 'net', s = (net && SC.net.match && SC.net.match.score) || SC.ink.score(); // 連線時分數以房主為準
-    if (g.rule === 'knockout') { // 擊倒戰：上方顯示各隊的擊倒數（第 67 版：電腦對戰也有）
+    if (g.rule === 'mix') { // 複合賽：上方顯示各隊總分（塗地%＋擊倒×3）
+      const k = g.koScore(), v = (s.v || [s.a, s.b, s.c || 0]).slice(0, g.teams || 2), mx = v.map((x, i) => g.mixPts(x, k[i])), sum = mx.reduce((x, y) => x + y, 0) || 1;
+      set('pa', 'm' + mx.map(Math.round).join('/'), () => bars('', mx.map((x) => x / sum), mx.map((x) => Math.round(x) + ' 分')));
+    } else if (g.rule === 'knockout') { // 擊倒戰：上方顯示各隊的擊倒數（第 67 版：電腦對戰也有）
       const k = g.koScore(), sum = k.reduce((x, y) => x + y, 0) || 1;
       set('pa', 'k' + k.join('/'), () => bars('', k.map((v) => v / sum), k.map(String)));
     } else {
@@ -11156,7 +11164,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 積分制（牌位）。Yen 2026-11-20：「加入 APEX 遊戲的積分制」。
 // 借的是一般「排位天梯」的想法（每場依名次、擊倒加分，扣一點入場費，分數夠了升牌位），
 // 牌位名字和圖示都是漆貓自己的：毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹。給五歲小朋友看，所以用圖示和星星，字很少。
-// - 積分賽塗地和擊倒合併（Yen 21:35）：同一個配對，每場隨機規則，都算同一份積分；打完一場就離開配對房；點積分賽模式自動跳出牌位視窗。
+// - 積分賽塗地和擊倒合併（Yen 21:35）；23:16 起每場都是複合賽（塗地%＋擊倒×3），一間房只打一場，都算同一份積分；打完一場就離開配對房；點積分賽模式自動跳出牌位視窗。
 // - Yen 2026-11-20 13:58：分成「電腦對戰」「一般連線對戰」「積分賽對戰」三種，只有積分賽算分。
 //   積分賽＝自動配對的連線房（07d_net.js 的 sc-r1、sc-r2…，SC.net.ranked），公開版要先登入；中途離開、觀戰不算。
 // - 每個牌位 300 分、三顆星（每 100 分一顆）；彩虹是最高，只顯示分數。
@@ -11218,8 +11226,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['配對拿積分升牌位', 'Match, score, rank up', 'マッチしてランクアップ', '매칭하고 랭크 업'],
     ['開始配對', 'Find match', 'マッチング開始', '매칭 시작'],
     ['登入後開始', 'Sign in to play', 'ログインしてね', '로그인하고 시작'],
-    ['積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場隨機塗地戰或擊倒戰，打完一場就結束。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。', 'Ranked: pick 1v1 or 2v2 to auto-match; it starts when the room is full and everyone is ready. Each match is randomly Turf or KO, one match per queue. Win, KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow).', 'ランク戦：1対1か2対2をえらんで自動マッチング。人がそろって、みんなが準備OKで開始。毎回ナワバリかノックアウトがランダム、1試合で終わり。勝つ、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。', '랭크전: 1대1이나 2대2를 골라 자동 매칭, 인원이 차고 모두 준비하면 시작. 매번 땅따먹기나 처치전이 랜덤, 한 판이면 끝. 이기고, 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개).'],
-    ['積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場隨機塗地戰或擊倒戰，打完一場就結束。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。要先登入才能玩。', 'Ranked: pick 1v1 or 2v2 to auto-match; it starts when the room is full and everyone is ready. Each match is randomly Turf or KO, one match per queue. Win, KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow). Sign in first.', 'ランク戦：1対1か2対2をえらんで自動マッチング。人がそろって、みんなが準備OKで開始。毎回ナワバリかノックアウトがランダム、1試合で終わり。勝つ、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。ログインが必要です。', '랭크전: 1대1이나 2대2를 골라 자동 매칭, 인원이 차고 모두 준비하면 시작. 매번 땅따먹기나 처치전이 랜덤, 한 판이면 끝. 이기고, 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개). 먼저 로그인하세요.'],
+    ['複合賽：塗地 1% 算 1 分，擊倒一次算 3 分，總分高的隊伍獲勝', 'Combo: 1 point per 1% painted, 3 points per KO; the higher total wins', 'ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち', '복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리'],
+    ['複合賽', 'Combo', 'ミックスバトル', '복합전'],
+    ['積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。', 'Ranked: pick 1v1 or 2v2 to auto-match; it starts when the room is full and everyone is ready. Every match is Combo: 1 point per 1% painted, 3 per KO; higher total wins. One match per queue. Win, KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow).', 'ランク戦：1対1か2対2をえらんで自動マッチング。人がそろって、みんなが準備OKで開始。毎回ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち。1試合で終わり。勝つ、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。', '랭크전: 1대1이나 2대2를 골라 자동 매칭, 인원이 차고 모두 준비하면 시작. 매번 복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리. 한 판이면 끝. 이기고, 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개).'],
+    ['積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。要先登入才能玩。', 'Ranked: pick 1v1 or 2v2 to auto-match; it starts when the room is full and everyone is ready. Every match is Combo: 1 point per 1% painted, 3 per KO; higher total wins. One match per queue. Win, KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow). Sign in first.', 'ランク戦：1対1か2対2をえらんで自動マッチング。人がそろって、みんなが準備OKで開始。毎回ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち。1試合で終わり。勝つ、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。ログインが必要です。', '랭크전: 1대1이나 2대2를 골라 자동 매칭, 인원이 차고 모두 준비하면 시작. 매번 복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리. 한 판이면 끝. 이기고, 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개). 먼저 로그인하세요.'],
     ['先按開始配對', 'Tap Find match first', 'まずマッチング開始を押してね', '먼저 매칭 시작을 눌러요'],
     ['塗地積分賽', 'Ranked Turf', 'ナワバリランク戦', '땅따먹기 랭크전'], ['擊倒積分賽', 'Ranked KO', 'ノックアウトランク戦', '처치 랭크전'], ['先選一種積分賽', 'Pick a ranked battle first', 'まずランク戦をえらんでね', '먼저 랭크전을 골라요'],
     ['再配對一場', 'Find another match', 'もう一度マッチング', '다시 매칭'],
@@ -11266,6 +11276,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['這場不算積分', 'This match gives no points', 'この試合はポイントなし', '이 경기는 포인트 없음'],
   ]);
 
+  if (SC.i18n && SC.i18n.pat) { SC.i18n.pat(/^總分 (.+) 比 (.+)$/, ['Total $1 vs $2', '合計 $1 対 $2', '합계 $1 대 $2']); SC.i18n.pat(/^(\d+) 分$/, ['$1 pts', '$1点', '$1점']); SC.i18n.pat(/^複合賽・塗地是塗了幾平方公尺$/, ['Combo · Paint = square meters painted', 'ミックスバトル・ぬった＝ぬった広さ（平方メートル）', '복합전 · 칠하기 = 칠한 넓이(제곱미터)']); }
   if (SC.i18n && SC.i18n.pat) SC.i18n.pat(/^正在等其他玩家加入…（(\d)\/(\d)）$/, ['Waiting for other players… ($1/$2)', 'ほかのプレイヤーを待っています…（$1/$2）', '다른 플레이어를 기다리는 중… ($1/$2)']);
   // 牌位徽章：彩色圓章＋圖案（全部原創的簡單圖形）
   const EMB = [
@@ -11357,7 +11368,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const p = g.player && g.player(); if (!p || g.actors.some((a) => a.cpu)) return null;
     let place, win = false, lost = false, label;
     if ((g.teams || 2) >= 3) {
-      const v = g.rule === 'knockout' ? g.koFinal || [] : (g.final && g.final.v) || [], mine = v[p.team] || 0;
+      const v = g.rule === 'mix' ? g.mixFinal || [] : g.rule === 'knockout' ? g.koFinal || [] : (g.final && g.final.v) || [], mine = v[p.team] || 0;
       const rank = v.filter((x) => x > mine).length + 1; place = PLACEN[Math.min(rank, PLACEN.length) - 1]; win = rank === 1; lost = rank > Math.ceil(v.length / 2); label = rank === 1 ? '第一名' : '名次';
     } else { const r = g.winner === 'tie' ? 'tie' : g.winner === p.team ? 'win' : 'lose'; place = PLACE2[r]; win = r === 'win'; lost = r === 'lose'; label = r === 'win' ? '贏' : r === 'tie' ? '平手' : '輸'; }
     const solo = g.actors.filter((a) => !a.cpu && !a.isTarget).length <= 2, row = (g.board ? g.board() : []).find((r) => r.me), mvp = !solo && row && row.mvp ? MVP : 0;
