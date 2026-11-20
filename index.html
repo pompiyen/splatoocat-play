@@ -10680,7 +10680,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // Firebase 主控台 → 專案設定 → 你的應用程式 → 網頁應用程式的 firebaseConfig。apiKey 本來就是公開放在網頁裡的。
     firebase: null, // 例：{ apiKey: '…', authDomain: 'spalacat.firebaseapp.com', projectId: 'spalacat', appId: '…' }
     providers: ['google'], // Firebase Authentication 裡啟用了哪些：'google'、'facebook'
-    donate: [], // 例：[{ name: 'PayPal', url: 'https://www.paypal.com/donate/?hosted_button_id=…' }]
+    // 贊助方案（和綠界審核用的產品圖 /mnt/project-files/splacat/ecpay/spalacat-product.png 同一份價目）。
+    // url 空的那一項按鈕先關著、顯示「即將開放」，等綠界審核通過、拿到贊助網址再填。
+    donate: [
+      { name: '小魚乾贊助', price: 'NT$ 50', url: '' },
+      { name: '罐罐贊助', price: 'NT$ 100', url: '' },
+      { name: '貓抓板贊助', price: 'NT$ 300', url: '' },
+      { name: '自由金額', price: '自訂', url: '' },
+    ],
+    donateNote: '遊戲免費遊玩，贊助用於支持開發與營運。幣別：新台幣。付款方式：信用卡、ATM 轉帳、超商代碼（綠界科技）。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。',
     // Xsolla（Yen 2026-11-20：先備用串接，以後可能開付費選項）。不用自己的伺服器：
     //   Firebase 用 Google/Facebook 登入時拿到的存取權杖 → Xsolla Login「用社群權杖登入」換成 Xsolla 使用者 JWT
     //   → Store API 幫這個玩家建一張商品訂單，拿到付款 token → 開 Pay Station 付款頁。
@@ -10694,7 +10702,6 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const demo = /[?&]sc-account-demo\b/.test(location.search); // 本機預覽：沒有設定也顯示按鈕（贊助用假連結）
   if (demo && window.SC_TEST_FIREBASE) CONFIG.firebase = window.SC_TEST_FIREBASE, CONFIG.providers = ['google', 'facebook']; // 自動測試用
   if (demo && window.SC_TEST_XSOLLA) CONFIG.xsolla = window.SC_TEST_XSOLLA; // 自動測試用
-  if (demo && !CONFIG.donate.length) CONFIG.donate = [{ name: '贊助範例', url: 'https://example.com/' }];
   const on = !!(window.SC_PUBLIC || demo);
   const useFb = on && !!CONFIG.firebase;
 
@@ -10715,6 +10722,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['用信用卡或其他方式付款（Xsolla）：', 'Pay by card or other methods (Xsolla):', 'カードなどで支払う（Xsolla）：', '카드 등으로 결제 (Xsolla):'],
     ['登入後也可以用 Xsolla 付款：', 'Sign in to pay with Xsolla:', 'ログインすると Xsolla で支払えます：', '로그인하면 Xsolla로 결제할 수 있어요:'],
     ['聯絡我們', 'Contact', 'お問い合わせ', '문의'],
+    ['贊助方案', 'Support plans', '応援プラン', '후원 플랜'],
+    ['即將開放', 'Coming soon', '準備中', '준비 중'],
+    ['小魚乾贊助', 'Dried-fish tip', '小魚の応援', '멸치 후원'],
+    ['罐罐贊助', 'Cat-can tip', 'ネコ缶の応援', '캔 후원'],
+    ['貓抓板贊助', 'Scratcher tip', '爪とぎの応援', '스크래처 후원'],
+    ['自由金額', 'Any amount', '自由な金額', '자유 금액'],
+    ['自訂', 'You choose', '自由', '직접 입력'],
+    ['遊戲免費遊玩，贊助用於支持開發與營運。幣別：新台幣。付款方式：信用卡、ATM 轉帳、超商代碼（綠界科技）。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。', 'The game is free to play. Support goes to development and running costs. Currency: TWD. Payment: card, ATM transfer or convenience store code (ECPay). Support is a digital service: nothing is shipped and it does not change the game.', 'ゲームは無料です。応援は開発と運営に使われます。通貨：台湾ドル。支払い：カード・ATM・コンビニ（ECPay）。デジタルサービスのため商品の発送はなく、ゲーム内容も変わりません。', '게임은 무료입니다. 후원금은 개발과 운영에 쓰입니다. 통화: 대만 달러. 결제: 카드, ATM, 편의점 (ECPay). 디지털 서비스라 실물 배송이 없고 게임 내용도 바뀌지 않아요.'],
     ['請先登入。', 'Please sign in first.', '先にログインしてください。', '먼저 로그인하세요.'],
     ['付款頁面打不開，等一下再試一次。', 'Could not open the payment page. Try again later.', '支払いページを開けません。しばらくしてからもう一度。', '결제 페이지를 열 수 없어요. 잠시 후 다시 시도하세요.'],
     ['大家的紀錄・登入後才能上榜', 'Everyone\'s records · sign in to join', 'みんなの記録・ログインするとのれます', '모두의 기록 · 로그인하면 올라가요'],
@@ -10871,6 +10886,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .ac-row svg{width:22px;height:22px}.ac-row .g{background:#fff}.ac-row .f{background:#1877f2;color:#fff;border-color:#1877f2}.ac-row .d{background:#ffd52e}
 .ac-me{display:flex;align-items:center;gap:12px;margin:10px 0}.ac-me img{width:52px;height:52px;border-radius:50%}
 .ac-err{color:#c2185b}
+.ac-row .tier{justify-content:space-between;padding:0 16px}.ac-row .tier b{color:#e5306b;font-size:19px}.ac-row .tier small{font-size:12px;color:#7a6f96;font-weight:700}.ac-row .tier:disabled{cursor:default;opacity:1;background:#fff8d6}
+.ac-note{font-size:12.5px!important;color:#5b4f7a;margin-top:10px!important}
+.ac-contact button{background:none;border:0;color:#ffd52e;font:inherit;text-decoration:underline;cursor:pointer;padding:0;margin-left:10px}
 .ac-contact{margin-top:12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.75)}.ac-contact a{color:inherit}
 .rk-v{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#2fb8ff;color:#fff;font-size:11px;font-style:normal;font-weight:900;margin-left:4px;flex:none}`;
   const I_USER = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.2" fill="currentColor"/><path d="M3.5 21c.8-4.6 4.2-7 8.5-7s7.7 2.4 8.5 7z" fill="currentColor"/></svg>';
@@ -10900,7 +10918,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       else h += `<p>登入後，設定和魔王關紀錄會存在雲端，換手機也不會不見，還能用帳號名字上排行榜。不登入也能照常玩。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}${P.includes('facebook') ? `<button type="button" class="f" data-a="facebook">${I_F}用 Facebook 登入</button>` : ''}</div><p>在 LINE、Messenger 裡面打開時可能登不進去，請改用 Safari 或 Chrome 打開。</p>`;
       if (err) h += `<p class="ac-err">${esc(err)}</p>`;
     } else {
-      h += `<h2>${I_HEART}贊助</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => `<a class="d" href="${esc(d.url)}" target="_blank" rel="noopener">${I_HEART}${esc(d.name)}</a>`).join('')}</div>`;
+      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p><div class="ac-row">${CONFIG.donate.map((d) => d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
         if (err) h += `<p class="ac-err">${esc(err)}</p>`;
@@ -10935,7 +10953,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const bar = document.createElement('div'); bar.className = 'ac-bar'; title.appendChild(bar);
     if (CONFIG.donate.length || (useFb && CONFIG.xsolla)) { const b = document.createElement('button'); b.type = 'button'; b.className = 'ac-btn heart'; b.setAttribute('aria-label', '贊助'); b.innerHTML = I_HEART; b.onclick = () => open('donate'); bar.appendChild(b); }
     if (CONFIG.firebase || demo) { accBtn = document.createElement('button'); accBtn.type = 'button'; accBtn.className = 'ac-btn'; accBtn.setAttribute('aria-label', '帳號'); accBtn.onclick = () => open('acc'); bar.appendChild(accBtn); }
-    if (CONFIG.contact) { const c = document.createElement('div'); c.className = 'ac-contact'; c.setAttribute('translate', 'no'); const em = /@/.test(CONFIG.contact); c.innerHTML = `${esc(SC.tr ? SC.tr('聯絡我們') : '聯絡我們')}：<a href="${em ? 'mailto:' : 'tel:'}${esc(CONFIG.contact.replace(/\s/g, ''))}">${esc(CONFIG.contact)}</a>`; (title.querySelector('.title-card') || title).appendChild(c); }
+    if (CONFIG.contact) { const c = document.createElement('div'); c.className = 'ac-contact'; c.setAttribute('translate', 'no'); const em = /@/.test(CONFIG.contact); c.innerHTML = `${esc(SC.tr ? SC.tr('聯絡我們') : '聯絡我們')}：<a href="${em ? 'mailto:' : 'tel:'}${esc(CONFIG.contact.replace(/\s/g, ''))}">${esc(CONFIG.contact)}</a>`; if (CONFIG.donate.length) { const d = document.createElement('button'); d.type = 'button'; d.textContent = SC.tr ? SC.tr('贊助方案') : '贊助方案'; d.onclick = () => open('donate'); c.appendChild(d); } (title.querySelector('.title-card') || title).appendChild(c); }
     paint();
   };
   if (on && (CONFIG.firebase || CONFIG.donate.length || CONFIG.contact)) { // Xsolla 要搭配 Firebase 登入，所以不單獨判斷
