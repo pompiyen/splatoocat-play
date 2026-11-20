@@ -580,7 +580,7 @@ SC.CFG = {
   ROUND_SECONDS: 180,
   COUNTDOWN_SECONDS: 3,
   RESPAWN_SECONDS: 5,
-  SPAWN_PROTECTION: 2,
+  SPAWN_PROTECTION: 2.5, // 重生後無傷時間（塗地戰、擊倒戰都有；第 60 版 2→2.5）
   FINAL_SECONDS: 30,
 
   GRAVITY: 196.2,
@@ -3845,6 +3845,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const bombDown = () => { if (bombAt < 0) bombAt = performance.now() / 1000; };
   const bombUp = () => { if (bombAt < 0) return; I.bombPow = I.bombHold(); bombAt = -1; I.bomb = true; };
   I.bombHold = () => (bombAt < 0 ? -1 : SC.clamp((performance.now() / 1000 - bombAt - 0.1) / SC.CFG.BOMB.holdFull, 0, 1));
+  I.cancelActions = () => { bombAt = -1; I.bomb = false; I.sp = false; I.jump = false; I.fireTap = false; }; // 重生時丟掉倒下前按的招式（第 60 版）
   I.consume = () => { I.fireTap = false; I.jump = false; I.bomb = false; I.sp = false; I.swap = 0; I.select = null; I.pause = false; I.lookX = 0; I.lookY = 0; };
 
   I.setTouch = (on) => {
@@ -4229,10 +4230,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 給遊戲的子彈判定用：跟靶子一樣，圓柱範圍包住護罩
     const wp = new THREE.Vector3(), v = new THREE.Vector3();
     st.target = { isTarget: true, id: 'duck-shield', name: '防護罩', team: 1, alive: false, pos: new THREE.Vector3(0, -99, 0), hy0: -4.2, hy1: 4.2, hr: 4.1, cy: 0,
-      bossHurt: (amount, from) => st.hurt(amount, from) };
-    st.hurt = (amount, from) => {
+      bossHurt: (amount, from, cause) => st.hurt(amount, from, cause) };
+    st.hurt = (amount, from, cause) => {
       if (st.open || !st.target.alive) return false;
-      st.hp -= Math.min(100, amount); st.wob = 1; const c = st.ctx;
+      st.hp -= cause === 'bomb' || cause === 'special' ? st.hp : Math.min(100, amount); st.wob = 1; const c = st.ctx; // 墨水彈（Yen 2026-11-20 第 60 版）和絕招一下就打破
       // 墨水黏在面向開槍那一邊的護罩上
       bubble.getWorldPosition(wp); v.set(from ? from.pos.x - wp.x : 0, from ? from.pos.y + 3 - wp.y : 0, from ? from.pos.z - wp.z : 1).normalize();
       v.x += (Math.random() - 0.5) * 0.9; v.y += (Math.random() - 0.5) * 0.9; v.z += (Math.random() - 0.5) * 0.9; v.normalize();
@@ -8828,7 +8829,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
     a.protectUntil = G.time + C.SPAWN_PROTECTION; a.cat.group.visible = true; a.nextShotAt = 0; a.cat.setInk(1);
     if (a.ai) { a.ai.target = null; a.ai.enemy = null; a.ai.refill = false; a.ai.lastOwn = null; }
-    if (a.isPlayer) { cam.yaw = a.yaw; cam.pitch = -0.14; I.clearLatch(); }
+    a.ctl.fire = a.ctl.jump = a.ctl.bomb = a.ctl.sp = false; a.holdBlock = !!(a.isPlayer && I.fire); // 倒下前按的絕招／墨水彈／射擊不會在重生時直接放出來，要放開再按（Yen 2026-11-20 第 60 版）
+    if (a.isPlayer) { cam.yaw = a.yaw; cam.pitch = -0.14; I.clearLatch(); I.cancelActions(); }
   }
 
   G.init = (sc, cm, rn) => {
@@ -9236,7 +9238,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const b = C.BOMB;
     if (G.time < a.nextBombAt) return;
     if (a.ink < b.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } return; }
-    a.ink -= b.ink; a.lastShotAt = G.time; a.nextBombAt = G.time + 0.8; a.protectUntil = 0;
+    a.ink -= b.ink; a.lastShotAt = G.time; a.nextBombAt = G.time + 0.8; a.protectUntil = Math.min(a.protectUntil, G.time + 0.5);
     const m = muzzle(a, t1), tgt = t2.copy(a.aim), pow = a.ctl.bombPow, maxD = pow >= 0 ? b.far : (b.speed * b.speed) / b.gravity * 0.96, d = Math.hypot(tgt.x - m.x, tgt.z - m.z);
     a.ctl.bombPow = -1;
     if (pow >= 0) bombTarget(a, m, pow, tgt); // 玩家：短按丟近、按越久丟越遠，方向跟著準星
@@ -9454,13 +9456,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.submerged) { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.REFILL_RATE * dt); }
     else if (a.form === 'cat' && a.ground === 'neutral') { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.NEUTRAL_CAT_REFILL * dt); }
     else if (a.form === 'biped' && (a.ground === 'own' || a.ground === 'neutral') && a.ink < C.EMERGENCY_CAP && since > C.EMERGENCY_DELAY) a.ink = Math.min(C.EMERGENCY_CAP, a.ink + C.EMERGENCY_RATE * dt);
-    if (a.ground === 'enemy' && !baseSafe(a, null)) { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
+    if (a.ground === 'enemy' && !baseSafe(a, null) && now >= a.protectUntil) { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
     else if (a.hp < 100 && now - a.lastHitAt > C.HEAL_DELAY) a.hp = Math.min(100, a.hp + (a.submerged ? C.HEAL_OWN_INK : a.form === 'cat' && a.ground === 'neutral' ? C.HEAL_NEUTRAL : C.HEAL_RATE) * dt);
     if (a.submerged && a.speed > 8) { a.swimT -= dt; if (a.swimT <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x, a.pos.y + 0.2, a.pos.z, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); } }
 
     // 武器
     const canAct = active && a.form === 'biped' && now >= a.switchUntil;
-    if (ctl.fire || ctl.bomb) a.protectUntil = 0;
+    if ((ctl.fire || ctl.bomb) && a.protectUntil > now + 0.5) a.protectUntil = now + 0.5; // 重生無敵：開槍或丟彈後只剩 0.5 秒（第 60 版：不再一開槍就沒了，擊倒戰也有短暫無傷）
     a.rolling = false;
     if (a.weapon === 'W01') {
       let n = 0;
@@ -9759,7 +9761,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const since = G.time - p.leapAt;
       if (I.fire || since > 4 || (p.onGround && since >= 0.3)) p.leapAt = null; else cat = true;
     }
-    ctl.fire = I.fire || I.fireTap; ctl.cat = cat; if (I.jump) ctl.jump = true; if (I.bomb) { ctl.bomb = true; ctl.bombPow = I.bombPow; } if (I.sp) ctl.sp = true;
+    if (!p.alive) { I.cancelActions(); } // 倒下等重生時按的東西都不算
+    if (p.holdBlock && !I.fire) p.holdBlock = false;
+    ctl.fire = (I.fire && !p.holdBlock) || I.fireTap; ctl.cat = cat; if (I.jump) ctl.jump = true; if (I.bomb) { ctl.bomb = true; ctl.bombPow = I.bombPow; } if (I.sp) ctl.sp = true;
     if (I.select) ctl.select = I.select; else if (I.swap) ctl.select = WEAPONS[(WEAPONS.indexOf(p.weapon) + I.swap + WEAPONS.length) % WEAPONS.length];
     if (I.pause) G.setPaused(true);
     if (!p.alive) return;
