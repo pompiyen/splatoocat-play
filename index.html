@@ -669,6 +669,7 @@ SC.CFG = {
   ACTOR_RADIUS: 1.5, ACTOR_HEIGHT: 5.2, STEP: 1.6,
   // 絕招（Yen 2026-11-17）：塗地累積量表，滿了按絕招鈕：垂直飛上天、往下砸，落點半徑 SP_R 內的對手直接擊倒
   SP_PER_CELL: 100 / 18000, SP_BLADE_K: 2.2, SP_KO_BONUS: 25, // 第 65 版（Yen）：墨刀塗得少，絕招量累積乘 2.2；擊倒對手額外加 25
+  SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 16, POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
   SP_R: 18, SP_HEIGHT: 22, SP_KILL_H: 50, // SP_KILL_H：往上多高都會被打到（五段跳最高約 48）
   BOSS_LIVES: 3, // Yen 2026-11-17：魔王關只有三條命，三次都被擊倒就挑戰失敗
   BOSS_HIT: 55, BOSS_HIT_GRACE: 1.6, // 魔王打到扣 55 體力（兩下才倒），之後 1.6 秒無敵
@@ -2809,7 +2810,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 船上多了船長室（可以爬上屋頂）、兩側舷邊走道和大砲、往下凹的貨艙、救生艇；海裡有踏腳礁石，碼頭上有木箱和漁夫小屋，寶藏島中間是小岩山。
   const hullW = (x) => (x <= -96 ? 30 : x >= -26 ? -1 : 30 * Math.sqrt((x + 26) / -70)); // A 隊船身在 x 的半寬（船頭在 x=-26）
   MAPS.ship = {
-    name: '海盜船', water: '大海', vic: { x: -108, z: 14 }, holeW: 0, lim: { x: 140, z: 80 }, bx: 136,
+    name: '海盜船', water: '大海', vic: { x: -108, z: 14 },
+    // 第 66 版（Yen）：掉進海裡會浮著、變慢、一直扣血，可以跳回陸地；兩個漩渦互相傳送、高高噴出；多四座沙洲小島
+    swim: true, pools: [{ x: 25, z: 36 }, { x: -25, z: -36 }], isles: [[-30, 30], [30, -30], [-40, -38], [40, 38]], holeW: 0, lim: { x: 140, z: 80 }, bx: 136,
     tgt: { sprinkler: { x: -44, z: 12 }, small: { x: -82, z: -14 }, medium: { x: -54, z: -4 }, large: { x: -70, z: 14 }, far: { x: 12, z: -4 }, high: { x: -94, z: -5 } },
     base: sym((x, z) => (Math.abs(z) > hullW(x) ? -12 : x >= -72 && x <= -60 && Math.abs(z) < 8 ? -3 : 0)),
     tint: (x, z, h) => (h < -4 ? 0x2f86c8 : h < -1 ? 0xb98a5c : 0xffffff),
@@ -2849,6 +2852,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       { t: 'cyl', x: -8, z: 25, r: 2.6, h: 1.5, look: 'rock' },
       { t: 'cyl', x: -12, z: 35, r: 2.6, h: 1.8, look: 'rock' },
       { t: 'cyl', x: -16, z: 45, r: 2.6, h: 1.5, look: 'rock' },
+      // 第 66 版：海上多兩座沙洲小島（對面再兩座，共四座），掉進海裡可以先跳上去
+      { t: 'cyl', x: -30, z: 30, r: 5, h: 1.4, look: 'isle' },
+      { t: 'cyl', x: -40, z: -38, r: 5, h: 1.4, look: 'isle' },
     ],
     center: [
       { t: 'cyl', x: 0, z: 0, r: 18, h: 1.2, look: 'island' },
@@ -2868,7 +2874,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ],
     sky: [0x2f8cff, 0x9fdcff, 0xfff1d0], fog: 0xbfe6ff, hemi: [0xeaf6ff, 0xd9c3a0],
     river: { color: 0x2a9fe0, rough: 0.08 },
-    look: { base: 0xb07a4a, fore: 0xc48a52, plank: 0xd9a46a, mast: 0x8a5a36, mast2: 0x8a5a36, cannon: 0x3a3550, barrel: 0xb57a43, crate: 0xd1a160, island: 0xffe2a0, chest: 0xc77a32, pier: 0xc9955f, cabin: 0xa86e42, walk: 0xc48a52, boat: 0xffffff, rock: 0x9aa3b5, hill: 0xb7a58a, shack: 0x7fc6e8 },
+    look: { base: 0xb07a4a, fore: 0xc48a52, plank: 0xd9a46a, mast: 0x8a5a36, mast2: 0x8a5a36, cannon: 0x3a3550, barrel: 0xb57a43, crate: 0xd1a160, island: 0xffe2a0, isle: 0xffe2a0, chest: 0xc77a32, pier: 0xc9955f, cabin: 0xa86e42, walk: 0xc48a52, boat: 0xffffff, rock: 0x9aa3b5, hill: 0xb7a58a, shack: 0x7fc6e8 },
     rough: { cannon: 0.35, ground: 0.75 },
     ground: (g) => { // 甲板木板
       g.fillStyle = '#d8a468'; g.fillRect(0, 0, 512, 512);
@@ -2947,6 +2953,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       },
       barrel: (p, k) => { const y0 = p.y0 != null ? p.y0 : -1, H = p.h - y0, b = k.add(new THREE.CylinderGeometry(p.r * 0.92, p.r * 0.92, H, 18), k.mat('barrel'), p.x, (p.h + y0) / 2, p.z); const bm = k.plain(0x4a4060, 0.4); [0.22, 0.78].forEach((f) => { const t = new THREE.Mesh(new THREE.TorusGeometry(p.r * 0.95, 0.16, 6, 24), bm); t.rotation.x = Math.PI / 2; t.position.y = -H / 2 + H * f; b.add(t); }); },
       crate: (p, k) => { const m = k.box(p, { r: 0.3 }), w = p.x1 - p.x0, d = p.z1 - p.z0, sm = k.plain(0x9b6a3f, 0.7); [[w + 0.1, 0.5, 0.5, 0, p.h - 0.6], [w + 0.1, 0.5, 0.5, 0, 0.4]].forEach(([a, b, c, x, y]) => { [-1, 1].forEach((s) => { const g = new THREE.Mesh(new THREE.BoxGeometry(a, b, c), sm); g.position.set(x, y, s * (d / 2 - 0.1)); m.add(g); }); }); },
+      isle: (p, k) => { // 小沙洲：沙子、一棵小椰子樹（樹不擋人）、幾顆貝殼
+        k.cyl(p); const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.55, 8, 8), k.plain(0xa8784a, 0.8)); trunk.position.set(p.x + 1.6, p.h + 3.8, p.z - 1.2); trunk.rotation.z = -0.2; trunk.castShadow = true; k.root.add(trunk);
+        for (let i = 0; i < 5; i++) { const l = new THREE.Mesh(new THREE.SphereGeometry(2.6, 10, 6), k.plain(0x3fbf5a, 0.6)); l.scale.set(1.6, 0.18, 0.55); const a = (i / 5) * 6.283; l.position.set(p.x + 2.4 + Math.cos(a) * 2, p.h + 7.6, p.z - 1.2 + Math.sin(a) * 2); l.rotation.y = -a; l.rotation.z = 0.25; k.root.add(l); }
+        [0xff9bb5, 0xfff1d0, 0xffd36a].forEach((c, i) => { const sh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 6), k.plain(c, 0.4)); sh.scale.y = 0.45; sh.position.set(p.x - 2 + i * 1.3, p.h + 0.15, p.z + 2 - i * 0.6); k.root.add(sh); });
+      },
       island: (p, k) => { // 沙灘小島：沙子、兩棵椰子樹（樹不擋人）
         k.cyl(p); const r = k.rnd;
         [[-7, 6], [6, -7]].forEach(([dx, dz]) => {
@@ -2965,6 +2976,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const X = k.lim.x, Z = k.lim.z, sh = new THREE.Shape(); sh.absarc(0, 0, 680, 0, Math.PI * 2, false);
       const hole = new THREE.Path(); [[-X - 3, -Z - 3], [X + 3, -Z - 3], [X + 3, Z + 3], [-X - 3, Z + 3]].forEach(([x, z], i) => (i ? hole.lineTo(x, z) : hole.moveTo(x, z))); hole.closePath(); sh.holes.push(hole);
       const sea = new THREE.Mesh(new THREE.ShapeGeometry(sh, 48), k.plain(0x2a9fe0, 0.08)); sea.rotation.x = -Math.PI / 2; sea.position.y = -5.5; k.root.add(sea);
+      // 第 66 版：兩個漩渦（藍白螺旋，一直轉，中間有亮光）
+      (MAPS.ship.pools || []).forEach((p, i) => {
+        const cv = document.createElement('canvas'); cv.width = cv.height = 256; const g = cv.getContext('2d'); g.translate(128, 128);
+        const grd = g.createRadialGradient(0, 0, 4, 0, 0, 128); grd.addColorStop(0, '#e9fbff'); grd.addColorStop(0.35, '#4fc3ff'); grd.addColorStop(1, 'rgba(30,120,200,0)'); g.fillStyle = grd; g.beginPath(); g.arc(0, 0, 128, 0, 7); g.fill();
+        g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineCap = 'round'; for (let arm = 0; arm < 4; arm++) { g.lineWidth = 7; g.beginPath(); for (let t = 0; t <= 1.001; t += 0.02) { const r = 8 + t * 112, an = arm * Math.PI / 2 + t * 5.2; t ? g.lineTo(Math.cos(an) * r, Math.sin(an) * r) : g.moveTo(Math.cos(an) * r, Math.sin(an) * r); } g.stroke(); }
+        const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+        const m = new THREE.Mesh(new THREE.CircleGeometry(6.5, 40), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.set(p.x, -5.35, p.z); m.renderOrder = 2; k.root.add(m);
+        const glow = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 2.2, 3, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xbff4ff, transparent: true, opacity: 0.45, depthWrite: false, side: THREE.DoubleSide })); glow.position.set(p.x, -4.2, p.z); k.root.add(glow);
+        k.tick((t) => { m.rotation.z = -t * 2.4 * (i ? -1 : 1); glow.scale.y = 1 + Math.sin(t * 5 + i) * 0.25; });
+      });
       // 船身：照甲板的形狀往下長到海裡，木頭色，上面一圈欄杆
       const hullM = k.plain(0x8a5a36, 0.7), bandM = k.plain(0xffd36a, 0.4), railM = k.plain(0x6b4426, 0.6);
       [1, -1].forEach((s) => {
@@ -3492,7 +3513,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const m = built[key] || build(key);
     Object.keys(built).forEach((k2) => { built[k2].root.visible = k2 === key; });
     // 名字放在 water（river 是水面的材質設定；之前兩個同名，掉水訊息會變成 [object Object]）
-    world.key = key; world.riverName = MAPS[key].water; world.root = m.root; world.prims = m.prims; world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
+    world.key = key; world.riverName = MAPS[key].water; world.swim = !!MAPS[key].swim; world.pools = MAPS[key].pools || null; world.isles = MAPS[key].isles || null; world.root = m.root; world.prims = m.prims; world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
     world.lim = m.lim; world.ang = m.ang; world.spawns = m.spawns; world.baseIn = m.baseIn; world.teams = m.ang.length; world.cur = m;
     scene0.environment = m.env; scene0.fog = m.fog;
     return true;
@@ -8877,7 +8898,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
     a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
-    a.invisUntil = a.xrayUntil = a.sprayUntil = 0; a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null;
+    a.invisUntil = a.xrayUntil = a.sprayUntil = 0; a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.inWater = false; a.poolCd = 0;
     a.protectUntil = G.time + C.SPAWN_PROTECTION; a.cat.group.visible = true; a.nextShotAt = 0; a.cat.setInk(1);
     if (a.ai) { a.ai.target = null; a.ai.enemy = null; a.ai.refill = false; a.ai.lastOwn = null; }
     a.ctl.fire = a.ctl.jump = a.ctl.bomb = a.ctl.sp = false; a.holdBlock = !!(a.isPlayer && I.fire); // 倒下前按的絕招／墨水彈／射擊不會在重生時直接放出來，要放開再按（Yen 2026-11-20 第 60 版）
@@ -9474,8 +9495,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     // 腳下墨水
     const own = G.mode === 'boss' && a.pos.y > 3 ? 0 : INK.ownerAt(a.pos.x, a.pos.z); // 罐頭頂、機頂不算地面墨水
-    a.ground = !a.onGround ? 'air' : own === a.team + 1 ? 'own' : own > 0 ? 'enemy' : 'neutral';
-    const wantCat = ctl.cat && !ctl.fire && a.charge < 0, wasSub = a.submerged;
+    a.ground = !a.onGround ? 'air' : a.inWater ? 'water' : own === a.team + 1 ? 'own' : own > 0 ? 'enemy' : 'neutral';
+    const wantCat = ctl.cat && !ctl.fire && a.charge < 0 && !a.inWater, wasSub = a.submerged; // 海裡不能變墨貓
     a.form = wantCat ? 'cat' : 'biped'; a.submerged = wantCat && (a.ground === 'own' || !!a.climb);
     if (a.isPlayer && wasSub !== a.submerged) (a.submerged ? A.sfx.dive : A.sfx.surface)();
     if (a.submerged !== wasSub && a.onGround) SC.fx.burst(a.pos.x, a.pos.y + 0.3, a.pos.z, colors[a.team], 7, 11, 0.4);
@@ -9490,6 +9511,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (a.ground === 'air') sp = Math.min(a.airSpeed, C.WALK_SPEED * 1.25);
     if (a.charge >= 0) sp *= 0.55; if (a.rolling) sp *= SC.lerp(C.W02.rollSpeedMin, C.W02.rollSpeedMax, a.rollK); // 滾刷越推越快
     if (a.ai) sp *= aiD().speed;
+    if (a.inWater) sp *= C.SEA_SLOW; // 第 66 版（Yen）：海盜船掉進海裡變慢
     if (a.weapon === 'W05' && a.form === 'biped') sp *= C.W05.speed; // 拿刀跑比較快
     if (a.onGround) a.airSpeed = Math.max(C.WALK_SPEED, sp);
     const len = Math.hypot(ctl.mx, ctl.mz), k = len > 1 ? 1 / len : 1, acc = a.onGround ? 13 : 4;
@@ -9507,22 +9529,28 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const nx = a.pos.x + a.vel.x * dt; if (blocked(a, nx, a.pos.z)) a.vel.x = 0; else a.pos.x = nx;
     const nz = a.pos.z + a.vel.z * dt; if (blocked(a, a.pos.x, nz)) a.vel.z = 0; else a.pos.z = nz;
     if (a.kx || a.kz) { const kx = a.pos.x + a.kx * dt, kz = a.pos.z + a.kz * dt; if (!blocked(a, kx, a.pos.z)) a.pos.x = kx; if (!blocked(a, a.pos.x, kz)) a.pos.z = kz; const f = Math.exp(-7 * dt); a.kx *= f; a.kz *= f; if (Math.hypot(a.kx, a.kz) < 0.2) a.kx = a.kz = 0; } // 被打退
-    const g = H(a.pos.x, a.pos.z);
+    const g0 = H(a.pos.x, a.pos.z), sea = W.swim && G.mode !== 'boss' && g0 < C.SEA_Y, g = sea ? C.SEA_Y : g0; // 海盜船：海面浮得起來（不再直接掉下去）
     if (a.onGround) { if (g < a.pos.y - 1.1) { a.onGround = false; a.jumps = Math.max(a.jumps, 1); a.vel.y = 0; } else a.pos.y = g; }
     else {
       a.pos.y += a.vel.y * dt;
       if (a.pos.y <= g) { a.pos.y = g; if (a.vel.y <= 0) { a.onGround = true; a.jumps = 0; a.cat.squash = SC.clamp(-a.vel.y / 90, 0.2, 0.9); a.vel.y = 0; if (a.isPlayer) A.sfx.land(); } }
     }
     a.speed = Math.hypot(a.vel.x, a.vel.z);
+    const wasW = a.inWater; a.inWater = sea && a.onGround && a.pos.y <= C.SEA_Y + 0.05;
+    if (a.inWater && !wasW) { SC.fx.burst(a.pos.x, C.SEA_Y + 1.6, a.pos.z, WHITE, 18, 18, 0.6); if (near(a) > 0.05 && !G.demo) A.sfx.land(); if (a.isPlayer && !G.demo) SC.ui.tip('掉進海裡了！會一直扣血，快跳回陸地', 2.4); }
+    if (a.inWater) a.cat.squash = Math.sin(now * 6) * 0.08;
+    if (W.pools && G.mode !== 'boss' && seaPool(a, now)) return;
     }
-    if (a.pos.y < -5.5) { SC.fx.burst(a.pos.x, -5, a.pos.z, WHITE, 26, 26, 0.7); ko(a, null, 'fall'); return; }
+    if (a.pos.y < (W.swim && G.mode !== 'boss' ? -40 : -5.5)) { SC.fx.burst(a.pos.x, -5, a.pos.z, WHITE, 26, 26, 0.7); ko(a, null, 'fall'); return; }
 
     // 墨水與體力（規則同 Roblox 版）
     const since = now - a.lastShotAt;
-    if (a.submerged) { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.REFILL_RATE * dt); }
+    if (a.inWater) { a.submerged = false; if (now >= a.protectUntil && G.state === 'play') { a.hp -= C.SEA_HURT * dt; a.lastHitAt = now; if (a.isPlayer) SC.ui.hurt(); if (a.hp <= 0) { SC.fx.burst(a.pos.x, C.SEA_Y + 2, a.pos.z, WHITE, 26, 26, 0.7); ko(a, null, 'fall'); return; } } }
+    else if (a.submerged) { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.REFILL_RATE * dt); }
     else if (a.form === 'cat' && a.ground === 'neutral') { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.NEUTRAL_CAT_REFILL * dt); }
     else if (a.form === 'biped' && (a.ground === 'own' || a.ground === 'neutral') && a.ink < C.EMERGENCY_CAP && since > C.EMERGENCY_DELAY) a.ink = Math.min(C.EMERGENCY_CAP, a.ink + C.EMERGENCY_RATE * dt);
-    if (a.ground === 'enemy' && !baseSafe(a, null) && now >= a.protectUntil) { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
+    if (a.inWater) { /* 海裡不回血 */ }
+    else if (a.ground === 'enemy' && !baseSafe(a, null) && now >= a.protectUntil) { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
     else if (a.hp < 100 && now - a.lastHitAt > C.HEAL_DELAY) a.hp = Math.min(100, a.hp + (a.submerged ? C.HEAL_OWN_INK : a.form === 'cat' && a.ground === 'neutral' ? C.HEAL_NEUTRAL : C.HEAL_RATE) * dt);
     if (a.submerged && a.speed > 8) { a.swimT -= dt; if (a.swimT <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x, a.pos.y + 0.2, a.pos.z, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); } }
 
@@ -9625,6 +9653,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function grayApply(root, f) {
     GRAY.value = f; (grayLists.get(root) || []).forEach((m) => { const o = m.userData.gp; m.transparent = f > 0 || o.tr; m.opacity = o.op * (1 - 0.5 * f); m.depthWrite = f > 0 ? false : o.dw; });
+  }
+  // 海盜船的兩個漩渦（第 66 版，Yen）：游進一個，從另一個高高噴出來，落在中間的寶藏島附近
+  function seaPool(a, now) {
+    if (!a.inWater || now < (a.poolCd || 0)) return false;
+    const i = W.pools.findIndex((p) => Math.hypot(a.pos.x - p.x, a.pos.z - p.z) < C.POOL_R); if (i < 0) return false;
+    const P = W.pools[i], Q = W.pools[1 - i], col = new THREE.Color(0x9fe8ff);
+    if (near(a) > 0.05) SC.fx.burst(P.x, C.SEA_Y + 1.5, P.z, col, 16, 16, 0.5);
+    a.pos.set(Q.x, C.SEA_Y + 0.5, Q.z); a.visY = a.pos.y; a.inWater = false; a.onGround = false; a.jumps = 1; a.dash = null; a.poolCd = now + 2.5;
+    const vy = C.POOL_VY, land = 1.2 - C.SEA_Y, t = (vy + Math.sqrt(Math.max(0, vy * vy - 2 * C.GRAVITY * land))) / C.GRAVITY; // 落到島面（高 1.2）的時間
+    const d = Math.hypot(Q.x, Q.z) || 1, go = Math.max(0, d - 12); a.vel.set((-Q.x / d) * go / t, vy, (-Q.z / d) * go / t); a.launchT = t;
+    if (near(a) > 0.05) { SC.fx.burst(Q.x, C.SEA_Y + 2, Q.z, col, 30, 30, 0.8); SC.fx.ring(Q.x, C.SEA_Y + 0.6, Q.z, col, 7, 0.5); if (!G.demo) A.sfx.spDive(near(a)); }
+    if (a.isPlayer) { cam.shake = Math.min(1, cam.shake + 0.4); if (!G.demo) SC.ui.tip('漩渦把你噴飛了！', 1.6); }
+    return true;
   }
   function xrayOf(a, on) { // 透視：對手身上疊一個不會被牆擋住的紅色剪影
     if (!on) { if (a.xray) a.xray.visible = false; return; }
@@ -9811,6 +9852,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       else if ((H(a.pos.x, a.pos.z) < -3 || hA - a.pos.y > 0.3) && a.vel.y < 4 && a.jumps < C.MAX_JUMPS) ctl.jump = true;
       ai.stuckT += dt;
       if (ai.stuckT > 0.6) { ai.stuckT = 0; if (ai.lastPos.distanceTo(a.pos) < 1.3) { ai.stuck++; ctl.jump = true; if (ai.stuck >= 3) { pickTarget(a); ai.stuck = 0; ai.strafe *= -1; } } else ai.stuck = 0; ai.lastPos.copy(a.pos); }
+    }
+    if (a.inWater) { // 掉進海裡：往最近的陸地游，一直跳
+      let bx = 0, bz = 0, bd = 1e9; const cx = SC.clamp(a.pos.x, -80, 80);
+      for (const [x, z] of [[0, 0], [-70, 0], [70, 0], [cx, 58], [cx, -58], ...(W.isles || [])]) { const d = Math.hypot(x - a.pos.x, z - a.pos.z); if (d < bd) { bd = d; bx = x; bz = z; } }
+      mx = (bx - a.pos.x) / (bd || 1); mz = (bz - a.pos.z) / (bd || 1); ctl.jump = true; ctl.cat = false;
     }
     ctl.mx = mx; ctl.mz = mz;
     const ax = a.aim.x - a.pos.x, az = a.aim.z - a.pos.z, tyaw = ctl.cat && ml > 0.1 ? Math.atan2(mx, mz) : Math.atan2(ax, az);
