@@ -690,6 +690,7 @@ SC.CFG = {
   ACTOR_RADIUS: 1.5, ACTOR_HEIGHT: 5.2, STEP: 1.6,
   // 絕招（Yen 2026-11-17）：塗地累積量表，滿了按絕招鈕：垂直飛上天、往下砸，落點半徑 SP_R 內的對手直接擊倒
   SP_PER_CELL: 100 / 18000, SP_BLADE_K: 2.2, SP_KO_BONUS: 25, // 第 65 版（Yen）：墨刀塗得少，絕招量累積乘 2.2；擊倒對手額外加 25
+  SUB_STILL_V: 3, SUB_STILL_T: 0.25, // 第 71 版（Yen）：潛墨時速度低於 3 超過 0.25 秒＝不動，對手看不到
   BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
   SPRAY_DMG: 24, SPRAY_SLOW: 0.6, // 第 69 版：散彈槍絕招每顆 24（原本 40），連射時移動速度 0.6 倍
   SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 16, POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
@@ -8999,7 +9000,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     colors.forEach((c, i) => c.setHex(inks[i % inks.length].hex));
     INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
     W.setTeamColors(...colors.slice(0, G.teams)); INK.reset();
-    G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); }); SC.swimTrail.clear();
+    G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); if (a.subArr) scene.remove(a.subArr); if (a.bladeAim) scene.remove(a.bladeAim, a.bladeAim.userData.tip); }); SC.swimTrail.clear();
     projectiles.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false)); RP.buf.length = 0; RP.burst = -1; G.replaying = null; rpBombs(null);
     const others = Object.keys(SC.CAT_KINDS).filter((k) => k !== G.opts.kind), other = G.demo ? (G.opts.kind === 'maomao' ? 'shuang' : 'maomao') : others[(Math.random() * others.length) | 0]; // 對手隊隨機挑另一種貓（同一種貓固定同一隊）
     G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.targets = []; G.popped = 0;
@@ -9142,7 +9143,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function ko(t, from, cause, helpers) {
     const pk = t.predKo; t.predKo = 0; t.pred = null;
-    t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.invisUntil = t.sprayUntil = t.xrayUntil = 0; t.spKind = null; t.respawnAt = G.time + C.RESPAWN_SECONDS; t.cat.group.visible = false; t.charge = -1; t.rolling = false;
+    t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.invisUntil = t.sprayUntil = t.xrayUntil = 0; t.spKind = null; t.respawnAt = G.time + C.RESPAWN_SECONDS; t.cat.group.visible = false; if (t.subArr) t.subArr.visible = false; t.charge = -1; t.rolling = false;
     if (t.sight) t.sight.visible = false;
     if (!helpers) { helpers = []; if (t.dmgBy) t.dmgBy.forEach((at, e) => { if (e !== from && G.time - at < 5 && e.team !== t.team && !e.gone) helpers.push(e); }); }
     if (t.dmgBy) t.dmgBy.clear(); helpers.forEach((e) => e.ast++);
@@ -10115,6 +10116,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     W.fenceFade(camera.position.x, camera.position.z, V.x, V.z, true); camera.updateProjectionMatrix();
   }
 
+  function subArrow(a, on, now) { // 潛墨移動時頭上的立體箭頭（尖端朝下指著自己），大家都看得到
+    if (!on) { if (a.subArr) a.subArr.visible = false; return; }
+    if (!a.subArr) { const mat = new THREE.MeshLambertMaterial({ color: colors[a.team], emissive: colors[a.team], emissiveIntensity: 0.35 }), edge = new THREE.MeshBasicMaterial({ color: 0x1b1430, side: THREE.BackSide });
+      const g = new THREE.Group(), head = new THREE.Mesh(new THREE.ConeGeometry(1.15, 1.5, 4), mat), shaft = new THREE.Mesh(new THREE.BoxGeometry(0.75, 1.3, 0.75), mat);
+      head.rotation.x = Math.PI; head.rotation.y = Math.PI / 4; head.position.y = 0; shaft.position.y = 1.35; const ho = new THREE.Mesh(head.geometry, edge), so = new THREE.Mesh(shaft.geometry, edge); ho.scale.setScalar(1.18); so.scale.set(1.3, 1.12, 1.3); head.add(ho); shaft.add(so);
+      g.add(head, shaft); g.scale.setScalar(1.4); g.userData.mat = mat; scene.add(g); a.subArr = g; }
+    const g = a.subArr; g.visible = true; g.userData.mat.color.copy(colors[a.team]); g.userData.mat.emissive.copy(colors[a.team]);
+    g.position.set(a.pos.x, a.visY + 4 + Math.abs(Math.sin(now * 6)) * 0.7, a.pos.z); g.rotation.y = now * 3;
+  }
+
   function updateCamera(dt) {
     const p = viewer(), aspect = camera.aspect; G.watching = null;
     const baseFov = aspect < 1 ? 78 : 60;
@@ -10362,13 +10373,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }
       const now = performance.now() / 1000, rf = rpFrame();
       G.actors.forEach((a) => {
-        if (rf) { rpActor(a, rf, dt, now); return; }
+        if (rf) { if (a.subArr) a.subArr.visible = false; rpActor(a, rf, dt, now); return; }
         if (!a.alive) return;
         a.visY = a.onGround ? SC.damp(a.visY, a.pos.y, 22, dt) : a.pos.y;
         a.cat.group.position.set(a.pos.x, a.visY, a.pos.z); a.cat.group.rotation.y = a.sprayUntil > G.time ? a.sprayAng : a.yaw;
         const me = viewer(), foe = me && me.team !== a.team, inv = a.invisUntil > G.time; // 滾刷絕招：隱形（對手看不到，自己和隊友看到半透明）
-        a.cat.group.visible = (!(G.time < a.protectUntil && Math.floor(now * 14) % 2 === 0) || G.state !== 'play') && !(a.isPlayer && cam.zoom > 1.4) && !a.predKo;
-        if (a.cat.setGhost) a.cat.setGhost(inv); // 第 65 版（Yen）：滾刷絕招改成大家都看得到 30% 的淡影子
+        const swim = a.form === 'cat' && a.submerged && a.onGround, still = swim && a.speed < C.SUB_STILL_V; a.subStill = still ? (a.subStill || 0) + dt : 0; const hide = a.subStill > C.SUB_STILL_T; // 第 71 版（Yen）：潛墨不動時對手完全看不到，自己和隊友看到淡淡的
+        a.cat.group.visible = (!(G.time < a.protectUntil && Math.floor(now * 14) % 2 === 0) || G.state !== 'play') && !(a.isPlayer && cam.zoom > 1.4) && !a.predKo && !(hide && foe);
+        if (a.cat.setGhost) a.cat.setGhost(inv || hide); // 第 65 版（Yen）：滾刷絕招改成大家都看得到 30% 的淡影子
+        subArrow(a, swim && !still && a.cat.group.visible, now); // 第 71 版（Yen）：潛墨移動時頭上跟著一個立體箭頭
         xrayOf(a, me && foe && me.xrayUntil > G.time && a.alive && !a.predKo);
         a.cat.setInk(a.ink / 100); if (a.cat.lod) a.cat.lod(a.isPlayer ? 0 : camera.position.distanceTo(a.pos));
         a.cat.animate(dt, { speed: a.speed, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged, pitch: a.pitch, rolling: a.rolling && a.alive, charge: a.charge < 0 ? 0 : a.charge / C.W03.fullCharge, t: now });
