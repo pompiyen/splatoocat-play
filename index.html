@@ -792,6 +792,42 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .fsg-steps li::before { content: counter(fsg); width: 26px; height: 26px; border-radius: 50%; background: var(--sun); color: var(--navy); display: grid; place-items: center; font-weight: 900; flex: none; }
 .fsg-ic { width: 48px; height: 48px; flex: none; background: #fff; border-radius: 12px; display: grid; place-items: center; }
 .fsg-ic svg { width: 40px; height: 40px; }
+/* 第 106 版：教學卡片「做這個 ➜ 目標」、過關大勾勾、下一步鈕；每一步先在中間放大再縮回左上角 */
+.tut { transition: transform .35s cubic-bezier(.2, 1.6, .4, 1), left .45s ease, top .45s ease; }
+.tut.on.intro { left: 50%; top: 22%; transform: translateX(-50%) scale(1.6); transform-origin: 50% 0; }
+.tut-row { position: relative; display: flex; align-items: center; gap: 8px; }
+.tut-to { font: 900 30px/1 var(--f-body); color: #fff; text-shadow: 0 3px 0 rgba(27, 20, 48, .7); }
+.tut-goal { display: flex; align-items: center; gap: 4px; min-height: 64px; padding: 6px 10px; border-radius: 22px; background: rgba(27, 20, 48, .82); border: 4px solid #fff; box-shadow: 0 6px 0 rgba(27, 20, 48, .6); }
+.tut[data-k="party"] .tut-to, .tut[data-k="party"] .tut-goal { display: none; }
+.tut-slot { position: relative; width: 34px; height: 46px; } .tut-slot svg { width: 100%; height: 100%; display: block; transition: opacity .2s; }
+.tut-slot.got svg { opacity: .3; }
+.tut-slot.got::after { content: '✓'; position: absolute; left: 1px; top: 7px; width: 28px; height: 28px; border-radius: 50%; background: #3ccf6e; border: 3px solid #fff; color: #fff; font: 900 18px/28px var(--f-body); text-align: center; animation: stkPop .4s cubic-bezier(.2, 1.8, .4, 1) both; }
+.tut-goal[data-k="swim"] { gap: 8px; } .tut-flag svg { width: 36px; height: 46px; display: block; }
+.tut-bar { width: 92px; height: 18px; border-radius: 9px; background: rgba(255, 255, 255, .22); border: 3px solid #fff; overflow: hidden; } .tut-bar i { display: block; height: 100%; width: 0; background: #ffd23f; transition: width .15s; }
+.tut-ok { position: absolute; left: 50%; top: 50%; width: 88px; height: 88px; transform: translate(-50%, -50%) scale(0); pointer-events: none; filter: drop-shadow(0 4px 0 rgba(27, 20, 48, .5)); }
+.tut-ok svg { width: 100%; height: 100%; display: block; }
+.tut.done .tut-ok { animation: tutOk .45s cubic-bezier(.2, 1.8, .4, 1) forwards; }
+@keyframes tutOk { to { transform: translate(-50%, -50%) scale(1); } }
+.tut-skip { pointer-events: auto; width: 66px; height: 46px; padding: 0; display: grid; place-items: center; border-radius: 18px; border: 4px solid #fff; background: #ff4fa3; box-shadow: 0 4px 0 rgba(27, 20, 48, .6); cursor: pointer; animation: inkNudge 1s ease-in-out infinite; }
+.tut-skip svg { width: 36px; height: 26px; } .tut-skip[hidden] { display: none; }
+.is-touch .tut-goal { min-height: 52px; padding: 4px 8px; border-radius: 18px; } .is-touch .tut-slot { width: 28px; height: 38px; } .is-touch .tut-slot.got::after { width: 22px; height: 22px; line-height: 22px; font-size: 14px; top: 6px; left: 0; } .is-touch .tut-to { font-size: 24px; }
+@media (max-height: 520px) { .tut-goal { min-height: 46px; } .tut-slot { width: 26px; height: 35px; } .tut-bar { width: 70px; } .tut.on.intro { top: 16%; transform: translateX(-50%) scale(1.3); } }
+/* 第 106 版：貼紙本上方「怎麼拿／拿來做什麼」圖示說明、貼著的那張、左下大頭貼的小貼紙 */
+.stk-how { display: grid; gap: 6px; margin-bottom: 12px; }
+.stk-how-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 16px; background: rgba(255, 255, 255, .08); }
+.stk-how-ic { position: relative; width: 54px; height: 46px; flex: none; display: grid; place-items: center; } .stk-how-ic > svg { width: 100%; height: 100%; display: block; }
+.stk-how-one i { position: absolute; right: -6px; top: -4px; font: 900 14px/1 var(--f-body); font-style: normal; color: #1b1430; background: var(--sun); border: 2px solid #fff; border-radius: 10px; padding: 2px 5px; }
+.stk-tap > svg:last-child { position: absolute; width: 30px; height: 30px; right: -8px; bottom: -10px; animation: tutTap 1s ease-in-out infinite; }
+.stk-arr { font: 900 22px/1 var(--f-body); color: #fff; }
+.stk-how-row small { flex: 1; font-size: 12px; opacity: .8; line-height: 1.35; }
+.stk.worn { background: rgba(255, 210, 63, .28); box-shadow: 0 0 0 4px var(--sun); }
+.stk.worn::after { content: ''; position: absolute; left: -4px; top: -4px; width: 26px; height: 26px; border-radius: 50%; background: #3ccf6e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12l5 5 9-10' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/80% no-repeat; border: 2px solid #fff; }
+.h-face { position: relative; }
+.h-stk { position: absolute; right: -10px; bottom: -8px; width: 26px; height: 26px; pointer-events: none; } .h-stk svg { width: 100%; height: 100%; display: block; }
+.is-touch .h-stk { width: 20px; height: 20px; right: -8px; bottom: -6px; }
+@media (max-width: 560px) { .stk-how-row small { font-size: 11px; } .stk-how-ic { width: 44px; height: 38px; } }
+.tut-skip { position: relative; } .tut-skip kbd { position: absolute; left: 50%; bottom: -20px; transform: translateX(-50%); font: 900 11px/1 var(--f-body); color: #fff; background: var(--navy); border: 2px solid #fff; border-radius: 6px; padding: 2px 5px; }
+.is-touch .tut-skip kbd { display: none; }
 
 </style>
 <div id="app">
@@ -883,7 +919,7 @@ SC.CFG = {
   SP_PER_CELL: 100 / 18000, SP_BLADE_K: 2.2, SP_KO_BONUS: 25, // 第 65 版（Yen）：墨刀塗得少，絕招量累積乘 2.2；擊倒對手額外加 25
   SUB_STILL_V: 3, SUB_STILL_T: 0.25, // 第 71 版（Yen）：潛墨時速度低於 3 超過 0.25 秒＝不動，對手看不到
   TOWER_TAKE: 0.1, TOWER_DEAL: 0.2, // 第 75 版（Yen）：時鐘廣場鐘塔頂上，受到的傷害 1/10、打出去的傷害 1/5（塗地戰）
-  ROLL_WIDE: 2.2, ROLL_WIDE_T: 6, ROLL_SP_SPEED: 1.5, // 第 99 版（Yen）：滾刷絕招 6 秒、速度 ×1.5、不耗墨、能滾上牆
+  ROLL_WIDE: 2.2, ROLL_WIDE_T: 8, ROLL_SP_SPEED: 1.5, // 第 106 版（Yen）：滾刷絕招 8 秒（第 99 版是 6 秒）、速度 ×1.5、不耗墨、能滾上牆
   // 第 82 版（Yen）：滾刷絕招改成刷頭寬度 2.2 倍、5 秒（原本是隱形）
   BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
   SPRAY_DMG: 24, SPRAY_SLOW: 0.6, // 第 69 版：散彈槍絕招每顆 24（原本 40），連射時移動速度 0.6 倍
@@ -991,7 +1027,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['選貓咪', 'Pick a Cat', 'ネコをえらぶ', '고양이 고르기'],
     ['帶兩把武器', 'Bring 2 Weapons', 'ぶきを2つ持っていく', '무기 2개 챙기기'],
     ['滾刷變超寬 5 秒！', 'Super-wide roller for 5 s!', '5秒間ローラーが超ワイド！', '5초 동안 롤러가 엄청 넓어져요!'],
-    ['滾刷變超寬、超快 6 秒！不耗墨，還能滾上牆！', 'Super-wide, super-fast roller for 6 s! No ink used, and it rolls up walls!', '6秒間ローラーが超ワイド＆超はやい！インクを使わず、かべも登れる！', '6초 동안 롤러가 엄청 넓고 빨라요! 잉크도 안 들고 벽도 굴러 올라가요!'],
+    ['滾刷變超寬、超快 8 秒！不耗墨，還能滾上牆！', 'Super-wide, super-fast roller for 8 s! No ink used, and it rolls up walls!', '8秒間ローラーが超ワイド＆超はやい！インクを使わず、かべも登れる！', '8초 동안 롤러가 엄청 넓고 빨라요! 잉크도 안 들고 벽도 굴러 올라가요!'],
     ['上面還沒塗到！先射墨水把上面塗成你的顏色', 'The part above isn\'t painted yet! Shoot ink up there first', '上がまだぬれてないよ！先にインクでぬろう', '위쪽이 아직 안 칠해졌어요! 먼저 잉크로 칠해요'],
     ['下一場電腦會弱一點喔！', 'The CPU will be a little easier next match!', '次の試合はCPUが少し弱くなるよ！', '다음 판은 컴퓨터가 조금 약해져요!'],
     ['絕招用完才能換武器', 'Finish your special before switching weapons', 'ひっさつわざ中は武器を変えられないよ', '필살기가 끝나야 무기를 바꿀 수 있어요'],
@@ -1054,6 +1090,13 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['離開全螢幕', 'Exit Full Screen', '全画面をやめる', '전체 화면 끄기'],
     ['這個瀏覽器不允許全螢幕', "This browser doesn't allow full screen", 'このブラウザは全画面にできません', '이 브라우저는 전체 화면을 쓸 수 없어요'],
     ['進入試玩', 'Start Practice', '練習スタート', '연습 시작'],
+    ['教學試玩', 'Tutorial', 'チュートリアル', '튜토리얼'],
+    ['跟著圖示學玩法', 'Learn by following the icons', 'アイコンを見ておぼえよう', '아이콘을 따라 배워요'],
+    ['開始教學', 'Start Tutorial', 'チュートリアル開始', '튜토리얼 시작'],
+    ['打完一場（對戰、魔王關、教學）就送一張貼紙', 'Finish a game (battle, boss, tutorial) to get a sticker', '1回あそびおわると（対戦・ボス・チュートリアル）シールが1まいもらえるよ', '한 판을 끝내면(대전, 보스, 튜토리얼) 스티커를 한 장 받아요'],
+    ['點一張貼紙，貼到你的貓咪背上；再點一次拿下來', 'Tap a sticker to put it on your cat\'s back; tap again to take it off', 'シールをタップするとネコの背中にはれるよ。もう一度タップではがす', '스티커를 누르면 고양이 등에 붙어요. 한 번 더 누르면 떼요'],
+    ['下一步', 'Next step', '次へ', '다음 단계'],
+    ['跟著左上角的圖示一步一步學：射擊、走路、墨貓游泳、跳高、丟墨水彈。打破氣球或游到黃色圈圈就過關，五步做完回主選單。', 'Follow the icon in the top-left, one step at a time: shoot, walk, swim as an ink cat, jump high, throw an ink bomb. Pop the balloons or swim to the yellow ring to pass. After five steps you go back to the menu.', '左上のアイコンを見て1つずつおぼえよう：うつ、歩く、インク猫で泳ぐ、高くジャンプ、インクボムを投げる。風船をわるか黄色い輪まで泳げばクリア。5つ終わるとメニューにもどるよ。', '왼쪽 위 아이콘을 보고 하나씩 배워요: 쏘기, 걷기, 잉크 고양이로 헤엄치기, 높이 점프, 잉크 폭탄 던지기. 풍선을 터뜨리거나 노란 고리까지 헤엄치면 통과. 다섯 단계를 끝내면 메뉴로 돌아가요.'],
     ['挑戰魔王', 'Fight the Boss', 'ボスに挑戦', '보스 도전'],
     ['開始對戰', 'Start Battle', '対戦スタート', '대전 시작'],
     ['等房主開始', 'Waiting for host', 'ホストを待ってるよ', '방장을 기다리는 중'],
@@ -4202,7 +4245,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const tagTex = new THREE.CanvasTexture(cv); tagTex.colorSpace = THREE.SRGBColorSpace;
     const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map: tagTex, depthTest: false, transparent: true })); tag.scale.set(5.2, 1.95, 1); tag.position.y = 7.6; tag.renderOrder = 10; root.add(tag);
 
-    const cat = { group: root, trail, kind: kindId, name: K.name, phase: Math.random() * 6, hand, weapons, weaponId: null, squash: 0, recoil: 0, swing: 0 };
+    const cat = { group: root, trail, tank, kind: kindId, name: K.name, phase: Math.random() * 6, hand, weapons, weaponId: null, squash: 0, recoil: 0, swing: 0 };
     // 被打到時全身閃白一下（Yen 2026-11-19 打擊感）
     const flashMats = [mFur, mLight, mDark, mEar, mTail, mTeam, mTeamGloss], flashBase = flashMats.map((m) => [m.emissive.clone(), m.emissiveIntensity]); let flashK = 0;
     let flashAt = 0; cat.hitFlash = () => { const n = performance.now(); if (n - flashAt < 130) return; flashAt = n; flashK = 1; cat.squash = Math.max(cat.squash, 0.22); }; // 一直被打時一閃一閃，不會整隻變白
@@ -9918,7 +9961,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 連線事件：電腦（第 69 版一起打電腦）送出的事件要標上是哪一隻
   const nev = (a, ...x) => { SC.net.by = a && a.cpu ? a.idx : -1; SC.net.ev(...x); SC.net.by = -1; };
   function makeActor(id, team, kind, isPlayer) {
-    const cat = SC.makeCat(kind); scene.add(cat.group, cat.trail);
+    const cat = SC.makeCat(kind); scene.add(cat.group, cat.trail); if (isPlayer && SC.stk && SC.stk.dress) SC.stk.dress(cat); // 第 106 版：自己的貓背上貼著選的貼紙
     return {
       id, team, kind, name: cat.name, isPlayer, cat, pos: new V3(), vel: new V3(), yaw: 0, pitch: 0, visY: 0, onGround: true, jumps: 0, lastJumpAt: -9,
       form: 'biped', submerged: false, hp: 100, ink: 100, alive: true, respawnAt: 0, protectUntil: 0, weapon: 'W01', nextShotAt: 0, lastShotAt: -9,
@@ -10902,7 +10945,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, col, 30, 24, 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.2, a.pos.z, col, 6, 0.35);
     if (n > 0.05 && !G.demo) A.sfx.spUp(n * 0.7);
     if (kind === 'invis') { a.invisUntil = now + 6; if (a.isPlayer) SC.ui.tip('隱形 6 秒！對手看不到你', 2.4); }
-    else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; a.spDur = C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬、超快 6 秒！不耗墨，還能滾上牆！', 2.8); }
+    else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; a.spDur = C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬、超快 8 秒！不耗墨，還能滾上牆！', 2.8); }
     else if (kind === 'xray') { a.xrayUntil = now + 8; a.spDur = 8; if (a.isPlayer) { SC.ui.tip('透視 8 秒！牆後面的對手會變成紅色', 2.4); SC.ui.flash('rgba(255,40,40,.35)', 0.3); } }
     else if (kind === 'spray') { a.sprayUntil = now + 3; a.spDur = 3; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('四面八方亂掃射！', 2); }
     else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.bladeAir = !a.inWater && a.pos.y - H(a.pos.x, a.pos.z) > 4; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
@@ -11638,7 +11681,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const T = (SC.tut = { active: false });
   const KEY = 'sc-tut';
   T.seen = () => { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return true; } };
-  const mark = () => { try { localStorage.setItem(KEY, '1'); } catch (e) { /* 私密模式：不記也沒關係 */ } };
+  const mark0 = () => { try { localStorage.setItem(KEY, '1'); } catch (e) { /* 私密模式：不記也沒關係 */ } };
   const G = () => SC.game, A = () => SC.audio;
   const BAL = (id, hp, r, color, name) => ({ id, kind: 'balloon', name: name || '氣球', hp, r, color });
   const COLORS = [0xff8fc8, 0xffd23f, 0x7fd8ff, 0x9dff8a, 0xc9a7ff];
@@ -11654,53 +11697,97 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     bomb: (touch) => '<path d="M32 9L8 45 30 57z" fill="#ff4fa3" stroke="#1b1430" stroke-width="3"/><path d="M32 9L56 45 30 57z" fill="#e23d8d" stroke="#1b1430" stroke-width="3"/>' + (touch ? '' : '<g transform="translate(14 -6) scale(.6)">' + KBD('Q', 26) + '</g>'),
     party: () => '<path d="M10 56L24 18l22 22z" fill="#ffd23f" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><circle cx="44" cy="12" r="4" fill="#ff4fa3"/><circle cx="54" cy="24" r="3" fill="#7fd8ff"/><circle cx="36" cy="6" r="3" fill="#9dff8a"/><path d="M40 22q6-8 14-6" fill="none" stroke="#ff4fa3" stroke-width="3" stroke-linecap="round"/>',
   };
+  // 第 106 版（Yen：教學每一步「要做什麼、做到哪裡算過關」看不懂）：
+  //   卡片分成「做這個 ➜ 目標」：左邊是動作圖示，右邊是這一步要打破的氣球格子（打破一顆就打勾）或游泳進度條。
+  //   每一步開始時卡片先在畫面中間放大 1.4 秒，再縮回左上角；場上要打的氣球頭上有一支會跳的黃色箭頭，游泳那一步地上有一個終點圈。
+  //   過關時卡片蓋一個大勾勾、叮一聲，再換下一步。卡住 15 秒卡片上出現「下一步」鈕（大人可以幫按），40 秒才自動跳過。
   const STEPS = ['fire', 'move', 'swim', 'jump', 'bomb'];
-  let el = null, step = -1, stepT = 0, left = 0, swimD = 0, lastP = null, doneT = -1, then = null, clock = 0, jobs = [];
+  const NEED = { fire: 1, move: 1, swim: 0, jump: 1, bomb: 3 }, SWIM_D = 14;
+  const BALLOON = (c) => `<svg viewBox="0 0 40 52"><ellipse cx="20" cy="19" rx="14" ry="17" fill="${c}" stroke="#1b1430" stroke-width="3"/><path d="M16 36h8l-4 5z" fill="${c}" stroke="#1b1430" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 41q-4 5 1 10" fill="none" stroke="#1b1430" stroke-width="2"/><ellipse cx="14" cy="12" rx="3" ry="5" fill="#fff" opacity=".6"/></svg>`;
+  const FLAG = '<svg viewBox="0 0 40 52"><ellipse cx="20" cy="44" rx="17" ry="6" fill="none" stroke="#ffd23f" stroke-width="4"/><path d="M13 44V6" stroke="#1b1430" stroke-width="3.4" stroke-linecap="round"/><path d="M14 7h20l-6 7 6 7H14z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/></svg>';
+  let el = null, step = -1, stepT = 0, left = 0, swimD = 0, lastP = null, doneT = -1, then = null, clock = 0, jobs = [], passed = false, ring = null, arrows = [];
   const later = (sec, fn) => jobs.push({ at: clock + sec, fn }); // 用遊戲時間排程：暫停時不會偷偷往下走
 
   function card() {
     if (el) return el;
-    el = document.createElement('div'); el.className = 'tut'; el.id = 'tut'; el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = '<div class="tut-ic"><svg viewBox="0 0 64 64"></svg><svg class="tut-finger" viewBox="0 0 64 64">' + FINGER + '</svg></div><div class="tut-dots"></div>';
-    document.getElementById('ui').appendChild(el); return el;
+    el = document.createElement('div'); el.className = 'tut'; el.id = 'tut';
+    el.innerHTML = '<div class="tut-row"><div class="tut-ic"><svg viewBox="0 0 64 64"></svg><svg class="tut-finger" viewBox="0 0 64 64">' + FINGER + '</svg></div><div class="tut-to" aria-hidden="true">➜</div><div class="tut-goal"></div><div class="tut-ok" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#3ccf6e" stroke="#fff" stroke-width="5"/><path d="M18 33l10 10 18-20" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="tut-dots"></div><button type="button" class="tut-skip" aria-label="下一步" hidden><svg viewBox="0 0 40 28"><path d="M4 4l14 10L4 24zM20 4l14 10-14 10z" fill="#fff"/><rect x="34" y="4" width="4" height="20" rx="1.5" fill="#fff"/></svg><kbd>Enter</kbd></button>';
+    document.getElementById('ui').appendChild(el);
+    const skip = () => { if (T.active && step >= 0 && step < STEPS.length && !passed && !el.querySelector('.tut-skip').hidden) { A().sfx.ui(); pass(true); } };
+    el.querySelector('.tut-skip').addEventListener('click', (e) => { e.stopPropagation(); skip(); });
+    window.addEventListener('keydown', (e) => { if (e.code === 'Enter' || e.code === 'NumpadEnter') skip(); }); // 電腦版滑鼠被鎖在畫面裡點不到鈕：按 Enter 也可以
+    return el;
+  }
+  function goal(kind) { // 右邊的目標：要打破幾顆氣球（格子）或游到終點（進度條）
+    const g = card().querySelector('.tut-goal'); g.dataset.k = kind;
+    if (kind === 'party') { g.innerHTML = ''; return; }
+    if (kind === 'swim') { g.innerHTML = '<div class="tut-flag">' + FLAG + '</div><div class="tut-bar"><i></i></div>'; return; }
+    const n = NEED[kind]; g.innerHTML = Array.from({ length: n }, (_, i) => `<span class="tut-slot">${BALLOON('#' + COLORS[(step + i + (n > 1 ? 4 : 0)) % 5].toString(16).padStart(6, '0'))}</span>`).join('');
   }
   function show(kind) {
     const c = card(), touch = SC.input.isTouch; c.querySelector('.tut-ic svg').innerHTML = ICON[kind](touch); c.dataset.k = kind;
     c.querySelector('.tut-finger').style.display = touch && kind !== 'party' ? '' : 'none';
     c.querySelector('.tut-dots').innerHTML = STEPS.map((s, i) => `<i class="${i < step ? 'ok' : i === step ? 'now' : ''}"></i>`).join('');
-    c.classList.remove('on'); void c.offsetWidth; c.classList.add('on');
+    c.querySelector('.tut-skip').hidden = true; c.classList.remove('done'); goal(kind);
+    c.classList.remove('on', 'intro'); void c.offsetWidth; c.classList.add('on', 'intro'); later(1.4, () => c.classList.remove('intro')); // 先在中間放大給孩子看清楚，再縮回左上角
     document.body.classList.remove(...STEPS.map((s) => 'tut-' + s)); if (kind !== 'party') document.body.classList.add('tut-' + kind);
   }
+  // 場上的提示：要打的氣球頭上一支會上下跳的黃色箭頭；游泳那一步地上一個黃色終點圈
+  function arrowMesh() { const g = new THREE.Group(), m = new THREE.MeshBasicMaterial({ color: 0xffd23f, depthTest: false, transparent: true }), o = new THREE.MeshBasicMaterial({ color: 0x1b1430, depthTest: false, transparent: true, side: THREE.BackSide });
+    const head = new THREE.Mesh(new THREE.ConeGeometry(1.5, 2.4, 4), m); head.rotation.x = Math.PI; const stem = new THREE.Mesh(new THREE.BoxGeometry(1, 2.2, 1), m); stem.position.y = 2.2;
+    head.renderOrder = stem.renderOrder = 21; const ho = new THREE.Mesh(head.geometry, o); ho.rotation.x = Math.PI; ho.scale.setScalar(1.25); const so = new THREE.Mesh(stem.geometry, o); so.position.y = 2.2; so.scale.set(1.4, 1.15, 1.4);
+    ho.renderOrder = so.renderOrder = 20; g.add(ho, so, head, stem); return g; }
+  function clearMarks() { const sc = SC.debug && SC.debug.scene; arrows.forEach((a) => { if (sc) sc.remove(a.g); }); arrows = []; if (ring && sc) sc.remove(ring); ring = null; }
+  function mark(t) { const sc = SC.debug && SC.debug.scene; if (!sc) return; const g = arrowMesh(); sc.add(g); arrows.push({ g, t }); }
   function fwd() { const y = G().cam.yaw; return { fx: Math.sin(y), fz: Math.cos(y), sx: -Math.cos(y), sz: Math.sin(y) }; }
   function next() {
-    step++; stepT = 0; const g = G(), p = g.player(); if (!p) return;
-    g.tutClear(); const { fx, fz, sx, sz } = fwd(), P = p.pos, col = COLORS[step % COLORS.length];
+    step++; stepT = 0; passed = false; const g = G(), p = g.player(); if (!p) return;
+    g.tutClear(); clearMarks(); const { fx, fz, sx, sz } = fwd(), P = p.pos, col = COLORS[step % COLORS.length];
     if (step >= STEPS.length) return party();
     const k = STEPS[step]; show(k); A().sfx.meow(g.opts.kind); A().sfx.ui();
-    if (k === 'fire') { g.tutAdd(BAL('b1', 35, 1.8, col), P.x + fx * 13, P.z + fz * 13); left = 1; }
-    else if (k === 'move') { g.tutAdd(BAL('b2', 35, 1.8, col), P.x + fx * 34 + sx * 9, P.z + fz * 34 + sz * 9); left = 1; }
-    else if (k === 'swim') { swimD = 0; lastP = null; left = 0; for (let d = 0; d <= 30; d += 2) { const x = P.x + fx * d, z = P.z + fz * d, h = SC.world.height(x, z); if (h > -4) SC.ink.stamp(p.team, x, h, z, 3.4); } }
-    else if (k === 'jump') { g.tutAdd(BAL('b4', 35, 1.8, col), P.x + fx * 12, P.z + fz * 12, 8); left = 1; }
-    else if (k === 'bomb') { for (let i = -1; i <= 1; i++) g.tutAdd(BAL('b5' + i, 35, 1.3, COLORS[(step + i + 5) % 5]), P.x + fx * 15 + sx * i * 2.4, P.z + fz * 15 + sz * i * 2.4); left = 3; }
+    if (k === 'fire') { mark(g.tutAdd(BAL('b1', 35, 1.8, col), P.x + fx * 13, P.z + fz * 13)); left = 1; }
+    else if (k === 'move') { mark(g.tutAdd(BAL('b2', 35, 1.8, col), P.x + fx * 34 + sx * 9, P.z + fz * 34 + sz * 9)); left = 1; }
+    else if (k === 'swim') {
+      swimD = 0; lastP = null; left = 0; let end = null;
+      for (let d = 0; d <= 30; d += 2) { const x = P.x + fx * d, z = P.z + fz * d, h = SC.world.height(x, z); if (h > -4) { SC.ink.stamp(p.team, x, h, z, 3.4); if (d <= SWIM_D + 4) end = { x, y: h, z }; } }
+      const sc = SC.debug && SC.debug.scene; if (end && sc) { ring = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.5, 8, 32), new THREE.MeshBasicMaterial({ color: 0xffd23f })); ring.rotation.y = Math.atan2(fx, fz); ring.position.set(end.x, end.y + 3, end.z); sc.add(ring); ring.userData.end = end; mark({ pos: new THREE.Vector3(end.x, end.y + 3, end.z), alive: true, cy: 0, ring: true }); } // 終點是一個立起來的黃色圈圈（像要鑽過去的門），頭上也有箭頭
+    }
+    else if (k === 'jump') { mark(g.tutAdd(BAL('b4', 35, 1.8, col), P.x + fx * 12, P.z + fz * 12, 8)); left = 1; }
+    else if (k === 'bomb') { for (let i = -1; i <= 1; i++) mark(g.tutAdd(BAL('b5' + i, 35, 1.3, COLORS[(step + i + 5) % 5]), P.x + fx * 15 + sx * i * 2.4, P.z + fz * 15 + sz * i * 2.4)); left = 3; }
   }
   function cheer() { const p = G().player(); if (!p) return; const c = G().colors[p.team]; SC.fx.burst(p.pos.x, p.pos.y + 4, p.pos.z, c, 24, 18, 0.7); A().sfx.aww(); }
+  function pass(skipped) { // 這一步過關：卡片蓋大勾勾、叮一聲，1.1 秒後下一步
+    if (passed) return; passed = true; const c = card(); c.classList.add('done'); c.querySelector('.tut-skip').hidden = true;
+    c.querySelectorAll('.tut-slot').forEach((s) => s.classList.add('got')); const bar = c.querySelector('.tut-bar i'); if (bar) bar.style.width = '100%';
+    if (!skipped) cheer(); A().sfx.ding && A().sfx.ding(); clearMarks(); later(1.1, next);
+  }
   function party() {
     show('party'); doneT = 0; A().sfx.win(); SC.ui.banner('🎉', 2.4, true);
     const p = G().player(); if (p) for (let i = 0; i < 6; i++) later(i * 0.26, () => { const a = Math.random() * 6.28, r = 4 + Math.random() * 6; SC.fx.burst(p.pos.x + Math.cos(a) * r, p.pos.y + 6 + Math.random() * 4, p.pos.z + Math.sin(a) * r, new THREE.Color(COLORS[i % 5]), 30, 22, 0.9); A().sfx.firework(); });
   }
-  T.begin = (afterOpts) => { mark(); T.active = true; step = -1; doneT = -1; clock = 0; jobs = []; then = afterOpts || null; later(0.9, next); };
-  T.stop = () => { T.active = false; jobs = []; if (el) el.classList.remove('on'); document.body.classList.remove(...STEPS.map((s) => 'tut-' + s)); };
-  T.onPop = () => { if (!T.active || step < 0 || step >= STEPS.length) return; left--; if (left <= 0) { cheer(); later(0.7, next); } };
+  T.begin = (afterOpts) => { mark0(); T.active = true; step = -1; doneT = -1; clock = 0; jobs = []; passed = false; clearMarks(); then = afterOpts || null; later(0.9, next); };
+  T.stop = () => { T.active = false; jobs = []; clearMarks(); if (el) el.classList.remove('on', 'intro', 'done'); document.body.classList.remove(...STEPS.map((s) => 'tut-' + s)); };
+  T.step = () => (step < 0 ? 0 : Math.min(step + 1, STEPS.length)); // 計時器那一格顯示「第幾步 / 5」
+  T.onPop = () => {
+    if (!T.active || step < 0 || step >= STEPS.length || passed) return; left--;
+    const slots = card().querySelectorAll('.tut-slot:not(.got)'); if (slots[0]) slots[0].classList.add('got'); // 打破一顆，格子就打勾
+    if (left <= 0) pass(false);
+  };
   T.tick = (dt) => {
     if (!T.active) return; const g = G(), p = g.player(); if (!p) return; clock += dt;
     for (let i = jobs.length - 1; i >= 0; i--) if (clock >= jobs[i].at) { const j = jobs[i]; jobs.splice(i, 1); j.fn(); }
+    for (const a of arrows) { const t = a.t; a.g.visible = !!t.alive; if (!t.alive) continue; a.g.position.set(t.pos.x, t.pos.y + (t.ring ? 3.8 : (t.cy || 2) + 4.2) + Math.abs(Math.sin(clock * 4)) * 1.4, t.pos.z); a.g.rotation.y = clock * 2; }
+    if (ring) ring.scale.setScalar(1 + Math.sin(clock * 5) * 0.08);
     if (doneT >= 0) { doneT += dt; if (doneT > 3.4) { T.stop(); SC.ui.tutDone(then); } return; }
-    if (step < 0 || step >= STEPS.length) return; stepT += dt;
-    if (STEPS[step] === 'swim') { // 在自己的墨水裡游 12 步以上就過關
+    if (step < 0 || step >= STEPS.length || passed) return; stepT += dt;
+    if (STEPS[step] === 'swim') { // 在自己的墨水裡游 14 步以上，或潛著游到終點圈，就過關
       if (p.submerged && p.alive) { if (lastP) swimD += Math.hypot(p.pos.x - lastP.x, p.pos.z - lastP.z); lastP = { x: p.pos.x, z: p.pos.z }; } else lastP = null;
-      if (swimD > 12) { swimD = -999; cheer(); later(0.5, next); }
+      const bar = card().querySelector('.tut-bar i'); if (bar) bar.style.width = Math.min(100, (swimD / SWIM_D) * 100) + '%';
+      const e = ring && ring.userData.end, atRing = e && p.submerged && Math.hypot(p.pos.x - e.x, p.pos.z - e.z) < 3.6;
+      if (swimD > SWIM_D || atRing) pass(false);
     }
-    if (stepT > 30 && !jobs.length) next(); // 卡住太久就換下一招，不讓孩子困在同一關
+    if (stepT > 15) { const sk = card().querySelector('.tut-skip'); if (sk.hidden) sk.hidden = false; } // 卡住 15 秒：出現「下一步」鈕
+    if (stepT > 40 && !jobs.length) pass(true); // 40 秒還是卡住就自動跳過，不讓孩子困在同一關
   };
 })();
 
@@ -11729,7 +11816,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const SPLAT = (k) => `<svg class="splat" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4c4 0 5 5 8 6s7-3 9 0-2 7 0 10 6 4 5 8-6 3-7 6 1 8-3 9-6-4-10-3-6 6-10 4-1-7-4-9-8 0-8-4 5-5 5-8-5-6-3-9 7 0 9-3 2-7 8-7z" fill="${k === 'rand' ? 'url(#rbw)' : 'var(--ic)'}" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/>${k === 'rand' ? '<defs><linearGradient id="rbw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3b5c"/><stop offset=".3" stop-color="#ffd52e"/><stop offset=".55" stop-color="#4fdc4a"/><stop offset=".8" stop-color="#2fb8ff"/><stop offset="1" stop-color="#a64dff"/></linearGradient></defs><text x="24" y="31" text-anchor="middle" font-size="20" font-weight="900" fill="#fff" stroke="#1b1430" stroke-width="1.4">?</text>' : '<path d="M17 17q3-4 7-3" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".75"/>'}</svg>`;
   const ICON = {
     versus: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><path d="M6 22c0-9 6-15 13-14s9 5 13 5 6-6 13-5 13 6 13 14-7 15-14 14-8-6-12-6-5 7-12 6S6 31 6 22z" fill="var(--ca)" stroke="#1b1430" stroke-width="2.6"/><path d="M32 6c7 0 11 6 13 9s8 4 9 9-4 10-9 11-8 4-13 3z" fill="var(--cb)" stroke="#1b1430" stroke-width="2.6"/><path d="M28 14l8 8-8 8M36 14l-8 8 8 8" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none"/></svg>`,
-    sandbox: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><circle cx="26" cy="23" r="17" fill="#fff" stroke="#1b1430" stroke-width="2.6"/><circle cx="26" cy="23" r="11" fill="#ff4a6a"/><circle cx="26" cy="23" r="5" fill="#fff"/><ellipse cx="51" cy="15" rx="8" ry="10" fill="#ffd23f" stroke="#1b1430" stroke-width="2.4"/><path d="M51 25q-3 6 1 14" stroke="#1b1430" stroke-width="2" fill="none"/></svg>`,
+    sandbox: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><ellipse cx="22" cy="17" rx="12" ry="14" fill="#ff8fc8" stroke="#1b1430" stroke-width="2.6"/><path d="M19 31h6l-3 4z" fill="#ff8fc8" stroke="#1b1430" stroke-width="2"/><path d="M22 35q-3 4 1 8" fill="none" stroke="#1b1430" stroke-width="2"/><ellipse cx="17" cy="11" rx="2.6" ry="4.4" fill="#fff" opacity=".6"/><path d="M47 42c-5 0-8-3-9-7l-3-9c-1-2 1-4 3-2l3 4V12c0-2 1-3 3-3s3 1 3 3v9l1-1c2 0 3 1 3 2v1c2 0 3 1 3 3v8c0 6-4 10-9 10z" fill="#fff" stroke="#1b1430" stroke-width="2.4" stroke-linejoin="round"/></svg>`, // 第 106 版：教學試玩＝氣球＋手指
     boss: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><path d="M12 34l-4-24 13 10 11-16 11 16 13-10-4 24z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.8" stroke-linejoin="round"/><circle cx="32" cy="26" r="4" fill="#ff4a6a" stroke="#1b1430" stroke-width="2"/><rect x="12" y="34" width="40" height="6" rx="2" fill="#ffb21f" stroke="#1b1430" stroke-width="2.6"/></svg>`,
     net: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><rect x="5" y="12" width="18" height="28" rx="4" fill="#2fb8ff" stroke="#1b1430" stroke-width="2.6"/><rect x="41" y="12" width="18" height="28" rx="4" fill="#ff7ab0" stroke="#1b1430" stroke-width="2.6"/><path d="M22 10q10-9 20 0M26 15q6-5 12 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="32" cy="20" r="2.6" fill="#fff"/></svg>`,
     ranked: `<svg class="mico" viewBox="0 0 64 44" aria-hidden="true"><path d="M20 6h24v8q0 13-12 15-12-2-12-15z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><path d="M20 10h-7q0 10 9 12M44 10h7q0 10-9 12" fill="none" stroke="#1b1430" stroke-width="2.6" stroke-linecap="round"/><path d="M32 29v6M23 40h18l-2-5H25z" fill="#ff9a3c" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 11l2 4 4.4.6-3.2 3 .8 4.4-4-2.2-4 2.2.8-4.4-3.2-3 4.4-.6z" fill="#fff" stroke="#1b1430" stroke-width="1.4" stroke-linejoin="round"/></svg>`, // 積分賽（Yen 2026-11-20）
@@ -11853,7 +11940,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         <div class="opts">
           <div class="opt"><h3>模式</h3><div class="row" id="pick-mode">
             <button type="button" class="pick ico-pick" data-v="versus">${ICON.versus}<b>電腦對戰</b><small>三分鐘塗地</small></button>
-            <button type="button" class="pick ico-pick" data-v="sandbox">${ICON.sandbox}<b>自由試玩</b><small>不限時靶場</small></button>
+            <button type="button" class="pick ico-pick" data-v="sandbox">${ICON.sandbox}<b>教學試玩</b><small>跟著圖示學玩法</small></button>
             <button type="button" class="pick ico-pick" data-v="boss">${ICON.boss}<b>魔王關卡</b><small>十五隻大魔王</small></button>
             <button type="button" class="pick ico-pick" data-v="net">${ICON.net}<b>連線對戰</b><small>和朋友開房間</small></button>
             <button type="button" class="pick ico-pick" data-v="ranked">${ICON.ranked}<b>積分賽</b><small>配對拿積分升牌位</small></button></div></div>
@@ -11904,7 +11991,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             </div>
           </div>
         </div>
-        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn icon tut-btn" id="btn-tut" aria-label="氣球派對（教學）">🎈</button><button type="button" class="btn icon tut-btn" id="btn-stk" aria-label="貼紙本">📒</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button><label class="btn lang-btn"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3.5 16h25M16 3.5c-4.6 4-4.6 21 0 25M16 3.5c4.6 4 4.6 21 0 25" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span id="lang-cur">${SC.i18n.LABEL[SC.i18n.lang]}</span><select id="pick-lang" aria-label="語言">${SC.i18n.LANGS.map((l) => `<option value="${l}"${l === SC.i18n.lang ? ' selected' : ''}>${SC.i18n.LABEL[l]}</option>`).join('')}</select></label><div class="sens-opt"><span class="sens-l">視角靈敏度</span><span class="sens-ic" aria-hidden="true">🐢</span><input type="range" id="set-sens0" min="0.2" max="3" step="0.1" value="1" aria-label="視角靈敏度"><span class="sens-ic" aria-hidden="true">🐇</span><output class="sens-v" id="sens-v0">1.0</output></div></div>
+        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn icon tut-btn" id="btn-stk" aria-label="貼紙本">📒</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button><label class="btn lang-btn"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3.5 16h25M16 3.5c-4.6 4-4.6 21 0 25M16 3.5c4.6 4 4.6 21 0 25" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span id="lang-cur">${SC.i18n.LABEL[SC.i18n.lang]}</span><select id="pick-lang" aria-label="語言">${SC.i18n.LANGS.map((l) => `<option value="${l}"${l === SC.i18n.lang ? ' selected' : ''}>${SC.i18n.LABEL[l]}</option>`).join('')}</select></label><div class="sens-opt"><span class="sens-l">視角靈敏度</span><span class="sens-ic" aria-hidden="true">🐢</span><input type="range" id="set-sens0" min="0.2" max="3" step="0.1" value="1" aria-label="視角靈敏度"><span class="sens-ic" aria-hidden="true">🐇</span><output class="sens-v" id="sens-v0">1.0</output></div></div>
       </div>
     </div>
 
@@ -11981,7 +12068,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const modeKey = () => (sel.mode === 'net' && sel.rk ? 'ranked' : sel.mode);
     const LEDE = { versus: () => `${sel.roster === '1v1' ? '1 對 1' : '2 對 2'} ${sel.vrule === 'knockout' ? '擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。' : '塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。'}${MAP_LEDE[sel.map] || ''}`,
       ranked: () => '積分賽：按「開始配對」進配對房，大家都按「即刻開戰」就照現有人數開打：2 人 1 對 1、3 人三方對戰、4 人 2 對 2、6 人 3 對 3（5 人要等第 6 人）。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 2% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。' + (SC.account && SC.account.needed ? '要先登入才能玩。' : ''),
-      sandbox: () => '一個人不限時自由練習。場上有氣球靶和會噴對手墨水的灑水器，打壞了過幾秒會再出現。',
+      sandbox: () => '跟著左上角的圖示一步一步學：射擊、走路、墨貓游泳、跳高、丟墨水彈。打破氣球或游到黃色圈圈就過關，五步做完回主選單。',
       boss: () => ({ 2: '魔王關卡 2：胖嘟嘟魔王。躲開地上的紅色預告，魔王累到冒星星的時候用力打。身上沾滿墨水就會爆開，打完三個回合就過關。',
         3: '魔王關卡 3：氣球小豬船長。把綁著船長的氣球一顆顆打破，他摔下來冒星星的時候用力打。',
         4: '魔王關卡 4：鑽地兔工頭。土堆追過來時快跑開；對滾過來的泥球射墨水，把它打回去撞工頭。',
@@ -11990,7 +12077,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 場地選單：電腦對戰用自己選的；連線時在房間裡才出現，只有房主能改，其他人看到房主選的
     const mapSync = () => {
       const n = SC.net, net = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', cur = net ? n.map : sel.map;
-      $('map-opt').hidden = !(sel.mode === 'versus' || sel.mode === 'sandbox' || (net && inRoom && !n.triOn() && !n.quick)); // 三方對戰固定在時鐘廣場
+      $('map-opt').hidden = !(sel.mode === 'versus' || (net && inRoom && !n.triOn() && !n.quick)); // 三方對戰固定在時鐘廣場
       $('pick-map').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === cur); b.disabled = net && !n.isHost; });
     };
     // 連線房間畫面。暱稱是別人打的字，一律用 textContent 放進畫面。
@@ -12032,7 +12119,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
-      { const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
+      { const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '開始教學' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
       SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); netSync();
     };
     // 選關：世界列 + 這個世界的五張魔王卡
@@ -12081,13 +12168,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (G().mode === 'net' && !G().demo) { const again = SC.ranked && SC.ranked.done; toMenu(); if (again) { SC.ranked.done = false; ui.rankedAgain(); } return; } // 連線對戰打完：回房間等房主開下一場；積分賽打完已經離開，按這顆重新配對
       if (sel.mode === 'net') return SC.net.start(); // 房主開始後，每個人都由 SC.net.onBegin 進場
       SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true;
-      if (SC.tut && !SC.tut.seen() && (sel.mode === 'versus' || sel.mode === 'sandbox')) return tutGo({ ...sel }); // 第 90 版：第一次玩先來一場 60 秒的氣球派對，玩完自動進原本選的模式
+      if (sel.mode === 'sandbox' && SC.tut) return tutGo(null); // 第 106 版（Yen）：「自由試玩」換成氣球教學「教學試玩」，玩完回主選單
+      if (SC.tut && !SC.tut.seen() && sel.mode === 'versus') return tutGo({ ...sel }); // 第 90 版：第一次玩先來一場 60 秒的氣球派對，玩完自動進原本選的模式
       G().start({ ...sel, demo: false });
     };
     const tutGo = (then) => { SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; G().start({ ...sel, mode: 'sandbox', map: 'park', demo: false, tut: true }); SC.tut.begin(then); };
     ui.tutDone = (then) => { if (SC.stk) ui.stkToast(SC.stk.award()); if (then) G().start({ ...then, demo: false }); else toMenu(); };
     ui.stkToast = (got) => { const t = document.createElement('div'); t.className = 'stk-toast'; t.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}`; $('ui').appendChild(t); SC.audio.sfx.squeak && SC.audio.sfx.squeak(); setTimeout(() => t.remove(), 3200); };
-    on('btn-tut', () => tutGo(null)); on('btn-stk', () => SC.stk && SC.stk.open());
+    on('btn-stk', () => SC.stk && SC.stk.open());
     on('btn-start', begin); on('btn-again', begin); on('btn-restart', begin);
     // 聊天（Yen 2026-11-20）：貼圖大家都能按；打字只在好友房（SC.net.canType）。別人打的字一律用 textContent 放進畫面
     const STK = [['👋', '嗨！'], ['👍', '加油！'], ['🎉', '好球！'], ['😄', '好好玩！'], ['😮', '哇！'], ['😭', '哭哭'], ['🔁', '再來一場！'], ['❤️', '謝謝！']];
@@ -12196,13 +12284,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const chip = (a) => `<div class="chip" id="chip-${a.id}">${ui.face(a.kind)}</div>`;
     els['roster-a'].innerHTML = g.actors.filter((a) => a.team === 0).map(chip).join(''); els['roster-b'].innerHTML = g.actors.filter((a) => a.team !== 0).sort((a, b) => a.team - b.team).map((a) => chip(a).replace('class="chip"', `class="chip t${a.team}" style="--tc:#${g.colors[a.team].getHexString()}"`)).join('');
     ui.applyLoadout(); const lo = g.loadout();
-    els['my-face'].innerHTML = ui.face((g.player() || g.opts).kind); ui.onWeapon((g.player() || {}).weapon || lo[0]); if (g.spec) ui.onWatch();
+    els['my-face'].innerHTML = ui.face((g.player() || g.opts).kind); if (SC.stk && SC.stk.badge) SC.stk.badge(); ui.onWeapon((g.player() || {}).weapon || lo[0]); if (g.spec) ui.onWatch();
     els.hud.classList.toggle('solo', g.mode === 'sandbox'); els.hud.classList.toggle('boss', g.mode === 'boss'); last.timer = null;
     els.lives.classList.remove('intro'); if (g.mode === 'boss') { void els.lives.offsetWidth; els.lives.classList.add('intro'); els.timer.classList.remove('final'); return; }
     if (g.rule === 'zombie') { const og = g.opts; setTimeout(() => { if (G().opts !== og || G().rule !== 'zombie' || G().state !== 'play') return; ui.banner('守住博士小鴨！', 2.2, true); ui.tip('殭屍鼠要來咬小鴨的防護罩！打爆牠們，撐過五分鐘就贏', 6); }, 3400); setTimeout(() => { if (G().opts === og && G().rule === 'zombie' && G().state === 'play') ui.tip('把地面塗成你的顏色，殭屍鼠走上去會變慢！', 5); }, 14000); return; } // 倒數完才出（不跟 3、2、1 疊在一起）
     if (g.mode === 'net' || g.rule === 'knockout') ui.tip(g.rule === 'mix' ? '複合賽：塗地 1% 算 1 分，擊倒一次算 3 分，總分高的隊伍獲勝' : tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
     if (g.mode === 'net' || g.rule === 'knockout') return;
-    if (g.mode === 'sandbox' && g.opts.tut) { els.timer.textContent = '🎈'; els.timer.classList.remove('final'); return; }
+    if (g.mode === 'sandbox' && g.opts.tut) { els.timer.textContent = '1 / 5'; els.timer.classList.remove('final'); return; }
     if (g.mode === 'sandbox') { els.timer.textContent = '不限時'; els.timer.classList.remove('final'); ui.banner('自由試玩', 1.4); ui.tip('打破氣球靶、擊毀灑水器，想練什麼就練什麼。按暫停可以回主選單', 7); return; }
     const tipGame = G().opts; setTimeout(() => { if (G().opts !== tipGame || G().demo) return; ui.tip(SC.input.isTouch ? '把地面塗成你們隊的顏色！按住左下的「墨貓」可以在自己的墨水裡快速移動、補墨水；射擊鈕短點是跳' : '把地面塗成你們隊的顏色！按住 Shift 可以在自己的墨水裡快速移動、補墨水', 7); }, 3300); // 第 87 版（試玩報告）：倒數完才出提示，不跟 3、2、1 疊在一起
   };
@@ -12494,7 +12582,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       set('timer', t, (v) => { els.timer.textContent = Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); });
       set('bhp', Math.round((b.health / b.maxHealth) * 200), (v) => (els['boss-fill'].style.width = v / 2 + '%'));
       set('bph', b.phase + b.state + !!b.tired, () => { els['boss-phase'].textContent = b.tired ? '累了！快打！' : b.state === 'stunned' ? '頭暈中！' : b.state === 'finale' ? '能量暴走！' : b.state === 'goal' || b.state === 'cleared' ? '打倒了！' : b.phaseName; [...els['boss-pips'].children].forEach((el, i) => el.classList.toggle('done', i < b.phase - 1 || ['finale', 'goal', 'cleared'].includes(b.state))); });
-    } else if (g.mode !== 'sandbox') set('timer', secs, (v) => { els.timer.textContent = Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); els.timer.classList.toggle('final', v <= C.FINAL_SECONDS); });
+    } else if (g.mode === 'sandbox' && g.opts.tut && SC.tut) set('timer', SC.tut.step(), (v) => { els.timer.textContent = Math.max(1, v) + ' / 5'; }); // 第 106 版：教學時顯示第幾步
+    else if (g.mode !== 'sandbox') set('timer', secs, (v) => { els.timer.textContent = Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); els.timer.classList.toggle('final', v <= C.FINAL_SECONDS); });
     const net = g.mode === 'net', s = (net && SC.net.match && SC.net.match.score) || SC.ink.score(); // 連線時分數以房主為準
     if (g.rule === 'mix') { // 複合賽：上方條＝塗地比例，數字＝擊倒數
       const k = g.koScore(), v = (s.v || [s.a, s.b, s.c || 0]).slice(0, g.teams || 2); // Yen 23:25：條是塗地比例，數字是擊倒數
@@ -12559,7 +12648,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const LIST = [];
   ['maomao', 'shuang', 'banban', 'taro'].forEach((k, i) => ['circle', 'heart', 'star', 'cloud'].forEach((b, j) => LIST.push({ id: k + '-' + b, bg: b, col: COL[(i + j) % COL.length], face: k })));
   ['W01', 'W02', 'W03', 'W04', 'W05', 'BOMB'].forEach((w, i) => LIST.push({ id: 'w-' + w, bg: i % 2 ? 'circle' : 'star', col: COL[(i + 2) % COL.length], icon: w }));
-  ['🐟', '🧶', '🎈', '👑', '🍰', '🌈', '⭐', '🎉', '🍬', '🦆'].forEach((e, i) => LIST.push({ id: 'e' + i, bg: ['cloud', 'heart', 'circle', 'star'][i % 4], col: COL[(i + 4) % COL.length], emoji: e }));
+  ['🐟', '🧶', '🍓', '👑', '🍰', '🌈', '⭐', '🎉', '🍬', '🦆'].forEach((e, i) => LIST.push({ id: 'e' + i, bg: ['cloud', 'heart', 'circle', 'star'][i % 4], col: COL[(i + 4) % COL.length], emoji: e }));
   S.LIST = LIST;
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } };
   const save = (o) => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* 私密模式：這一次記不住也沒關係 */ } if (SC.account && SC.account.cloud) try { SC.account.cloud(); } catch (e) { /* 沒登入 */ } };
@@ -12577,24 +12666,51 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 給一張：九成機會給還沒有的，全部都有了就隨便給一張（會多一張）
   S.award = () => {
     const o = load(), miss = LIST.filter((s) => !o[s.id]), pool = miss.length && Math.random() < 0.9 ? miss : LIST, st = pool[(Math.random() * pool.length) | 0];
-    const isNew = !o[st.id]; o[st.id] = (o[st.id] || 0) + 1; save(o); return { st, isNew, have: Object.keys(o).length, total: LIST.length };
+    const isNew = !o[st.id]; o[st.id] = (o[st.id] || 0) + 1; save(o); return { st, isNew, have: Object.keys(o).filter((k) => LIST.some((s) => s.id === k)).length, total: LIST.length };
   };
+
+  // 第 106 版（Yen：貼紙怎麼拿、拿來做什麼看不懂）：貼紙可以「貼」到自己貓咪背上的墨水罐（第三人稱鏡頭一直看得到），
+  // 主畫面左下的大頭貼也會貼一張小的。在貼紙本點一張就貼上，再點一次拿下來。只存在這台裝置（sc-stk-wear）。
+  const WEAR = 'sc-stk-wear';
+  S.worn = () => { let id = null; try { id = localStorage.getItem(WEAR); } catch (e) { /* 私密模式 */ } return id && load()[id] && LIST.find((s) => s.id === id) || null; };
+  S.wear = (id) => { try { if (id) localStorage.setItem(WEAR, id); else localStorage.removeItem(WEAR); } catch (e) { /* 私密模式：這一次記不住 */ } S.badge(); };
+  const texCache = {};
+  function tex(st) { // 貼紙 SVG 畫到 canvas 變成材質（非同步：圖片載好才換上）
+    if (texCache[st.id]) return texCache[st.id];
+    const c = document.createElement('canvas'); c.width = c.height = 256; const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; texCache[st.id] = t;
+    const img = new Image(); img.onload = () => { const x = c.getContext('2d'); x.clearRect(0, 0, 256, 256); x.drawImage(img, 8, 8, 240, 240); t.needsUpdate = true; };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(S.svg(st).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" ')); return t;
+  }
+  S.dress = (cat) => { // 把貼的那張貼紙放到這隻貓背上的墨水罐後面（沒貼就拿掉）
+    if (!cat || !cat.tank) return; if (cat.stk) { cat.tank.remove(cat.stk); cat.stk = null; }
+    const st = S.worn(); if (!st) return;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(0.95, 0.95), new THREE.MeshBasicMaterial({ map: tex(st), transparent: true, alphaTest: 0.05 }));
+    m.position.set(0, 0.15, -0.47); m.rotation.y = Math.PI; cat.tank.add(m); cat.stk = m;
+  };
+  S.badge = () => { // 左下大頭貼角落的小貼紙；遊戲中換貼紙時也立刻貼到貓背上
+    const f = document.getElementById('my-face'), st = S.worn(); if (f) { let b = f.querySelector('.h-stk'); if (!st) { if (b) b.remove(); } else { if (!b) { b = document.createElement('span'); b.className = 'h-stk'; f.appendChild(b); } b.innerHTML = S.svg(st); } }
+    const p = SC.game && SC.game.player && SC.game.player(); if (p && p.cat) S.dress(p.cat);
+  };
+  // 貼紙本上方的兩行圖示說明：怎麼拿（打完一場 ➜ 一張貼紙）、拿來做什麼（點貼紙 ➜ 貼到貓咪背上）
+  const HOW_GET = '<svg viewBox="0 0 64 48"><path d="M16 6h32v10q0 15-16 17Q16 31 16 16z" fill="#ffd23f" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><path d="M16 10H7q0 12 11 13M48 10h9q0 12-11 13" fill="none" stroke="#1b1430" stroke-width="3"/><path d="M28 33h8v6h6v5H22v-5h6z" fill="#ffd23f" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/></svg>';
+  const HOW_USE = '<svg viewBox="0 0 64 48"><path d="M10 40c0-12 9-21 22-21s22 9 22 21z" fill="#ffb86b" stroke="#1b1430" stroke-width="3"/><path d="M14 26l-3-16 12 9M50 26l3-16-12 9" fill="#ffb86b" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><rect x="22" y="22" width="20" height="20" rx="6" fill="#bfe9ff" stroke="#1b1430" stroke-width="3"/><path d="M32 25l3 6 6 1-4.5 4 1 6-5.5-3-5.5 3 1-6-4.5-4 6-1z" fill="#ff8fc8" stroke="#fff" stroke-width="1.6"/></svg>';
+  const TAP = '<svg viewBox="0 0 64 64">' + '<path d="M30 58c-7 0-12-5-13-11l-4-13c-1-3 2-5 4-3l5 6V14c0-3 2-5 4-5s4 2 4 5v14l2-1c2 0 4 1 4 3l1-1c2 0 4 1 4 3l1-1c2 0 4 2 4 4v10c0 8-6 13-14 13z" fill="#fff" stroke="#1b1430" stroke-width="3.2" stroke-linejoin="round"/></svg>';
 
   // 貼紙本
   let box = null;
   function book() {
     if (box) return box;
     box = document.createElement('div'); box.className = 'menu dim'; box.id = 'm-stk'; box.hidden = true;
-    box.innerHTML = '<div class="card stk-card"><div class="stk-head"><span class="stk-book" aria-hidden="true">📒</span><b id="stk-n"></b><button type="button" class="btn icon" id="stk-x" aria-label="關閉">✕</button></div><div class="stk-grid" id="stk-grid"></div></div>';
+    box.innerHTML = `<div class="card stk-card"><div class="stk-head"><span class="stk-book" aria-hidden="true">📒</span><b id="stk-n"></b><button type="button" class="btn icon" id="stk-x" aria-label="關閉">✕</button></div><div class="stk-how"><div class="stk-how-row"><span class="stk-how-ic">${HOW_GET}</span><b class="stk-arr">➜</b><span class="stk-how-ic stk-how-one">${S.svg(LIST[0])}<i>+1</i></span><small>打完一場（對戰、魔王關、教學）就送一張貼紙</small></div><div class="stk-how-row"><span class="stk-how-ic stk-tap">${S.svg(LIST[17])}${TAP}</span><b class="stk-arr">➜</b><span class="stk-how-ic">${HOW_USE}</span><small>點一張貼紙，貼到你的貓咪背上；再點一次拿下來</small></div></div><div class="stk-grid" id="stk-grid"></div></div>`;
     document.getElementById('ui').appendChild(box);
     box.querySelector('#stk-x').addEventListener('click', () => { box.hidden = true; SC.audio.sfx.ui(); });
     box.addEventListener('click', (e) => { if (e.target === box) box.hidden = true; });
-    box.querySelector('#stk-grid').addEventListener('click', (e) => { const b = e.target.closest('.stk'); if (!b || b.classList.contains('ghost')) return; b.classList.remove('wig'); void b.offsetWidth; b.classList.add('wig'); const st = LIST.find((s) => s.id === b.dataset.id); if (st && st.face) SC.audio.sfx.meow(st.face); else SC.audio.sfx.pop(); });
+    box.querySelector('#stk-grid').addEventListener('click', (e) => { const b = e.target.closest('.stk'); if (!b || b.classList.contains('ghost')) return; b.classList.remove('wig'); void b.offsetWidth; b.classList.add('wig'); const st = LIST.find((s) => s.id === b.dataset.id); if (st && st.face) SC.audio.sfx.meow(st.face); else SC.audio.sfx.pop(); const on = !b.classList.contains('worn'); S.wear(on ? b.dataset.id : null); box.querySelectorAll('.stk.worn').forEach((x) => x.classList.remove('worn')); if (on) b.classList.add('worn'); });
     return box;
   }
   S.open = () => {
     const b = book(), o = load(); b.querySelector('#stk-n').textContent = Object.keys(o).filter((k) => LIST.some((s) => s.id === k)).length + ' / ' + LIST.length;
-    b.querySelector('#stk-grid').innerHTML = LIST.map((s) => `<button type="button" class="stk${o[s.id] ? '' : ' ghost'}" data-id="${s.id}" aria-label="${o[s.id] ? '貼紙' : '還沒有'}">${S.svg(s, !o[s.id])}${o[s.id] > 1 ? `<i>×${o[s.id]}</i>` : ''}</button>`).join('');
+    const w = S.worn(); b.querySelector('#stk-grid').innerHTML = LIST.map((s) => `<button type="button" class="stk${o[s.id] ? '' : ' ghost'}${w && w.id === s.id ? ' worn' : ''}" data-id="${s.id}" aria-label="${o[s.id] ? '貼紙' : '還沒有'}">${S.svg(s, !o[s.id])}${o[s.id] > 1 ? `<i>×${o[s.id]}</i>` : ''}</button>`).join('');
     b.hidden = false; SC.audio.sfx.ui();
   };
 })();
