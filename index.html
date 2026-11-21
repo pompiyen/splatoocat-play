@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='8fa6f883f589';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='a8a58593273f';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -879,6 +879,10 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .zb-alarm .za-duck svg { width: 36px; height: 36px; }
 @keyframes za-blink { from { opacity: .35; } to { opacity: 1; } }
 @keyframes za-bob { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+/* 第 112.1 版：iPad 也走加入主畫面；Safari 全螢幕改成圖解裡的備用小按鈕，卡片在矮的橫向手機上可以捲動 */
+#m-fsguide .card.fsg { max-height: calc(100% - 16px); overflow-y: auto; }
+.fsg-try { display: block; width: 100%; margin-top: 8px; font-size: 14px; padding: 8px 12px; background: transparent; color: var(--cream); border: 2px solid rgba(255, 255, 255, .4); box-shadow: none; }
+.fsg-try[hidden] { display: none; }
 
 </style>
 <div id="app">
@@ -1493,6 +1497,9 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['蓄力中，轉方向瞄準！', 'Charging, turn to aim!', 'ためてるよ、向きをかえてねらおう！', '모으는 중, 방향을 돌려 조준!'],
     ['全螢幕玩', 'Play full screen', '全画面であそぶ', '전체 화면으로 놀기'],
     ['點 Safari 的「分享」', 'Tap Share in Safari', 'Safari の「共有」をタップ', 'Safari의 "공유"를 눌러요'],
+    ['點 Safari 的分享鈕（iPad 在右上角，看不到就先點「⋯」）', 'Tap the Share button in Safari (top right on iPad; if you can\'t see it, tap "⋯" first)', 'Safari の共有ボタンをタップ（iPad は右上。見えないときは先に「⋯」）', 'Safari의 공유 버튼을 눌러요 (iPad는 오른쪽 위, 안 보이면 먼저 "⋯")'],
+    ['iPhone 不能網頁全螢幕；iPad 的 Safari 全螢幕兩隻手指一動就會被退出。從主畫面打開沒有網址列，也不會跑掉。', "iPhone can't put web pages in full screen, and iPad Safari leaves full screen when two fingers move. Opened from the home screen there's no address bar and it never drops out.", 'iPhone はウェブの全画面ができず、iPad の Safari 全画面は2本の指が動くと解除されます。ホーム画面から開くとアドレスバーがなく、解除されません。', 'iPhone은 웹 전체 화면이 안 되고, iPad Safari 전체 화면은 두 손가락이 움직이면 풀려요. 홈 화면에서 열면 주소창도 없고 풀리지 않아요.'],
+    ['先用 Safari 全螢幕（可能會跑掉）', 'Use Safari full screen for now (may drop out)', 'とりあえず Safari の全画面（解除されるかも）', '일단 Safari 전체 화면 (풀릴 수 있어요)'],
     ['選「加入主畫面」', 'Choose "Add to Home Screen"', '「ホーム画面に追加」をえらぶ', '"홈 화면에 추가"를 골라요'],
     ['從主畫面的「漆貓」打開，整個螢幕都是遊戲', 'Open the cat icon on your home screen: the game fills the whole screen', 'ホーム画面のネコのアイコンから開くと、画面いっぱいがゲームになるよ', '홈 화면의 고양이 아이콘으로 열면 화면 전체가 게임이 돼요'],
     ['iPhone 的 Safari 不讓網頁直接全螢幕，加到主畫面後打開就沒有網址列。', "iPhone Safari doesn't let web pages go full screen, but opened from the home screen there is no address bar.", 'iPhone の Safari はウェブページを全画面にできないけど、ホーム画面から開くとアドレスバーが消えるよ。', 'iPhone Safari는 웹페이지 전체 화면을 지원하지 않지만, 홈 화면에서 열면 주소창이 없어요.'],
@@ -12430,12 +12437,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="card fsg">
         <h2>全螢幕玩</h2>
         <ol class="fsg-steps">
-          <li><i class="fsg-ic"><svg viewBox="0 0 48 48"><rect x="10" y="18" width="28" height="24" rx="5" fill="none" stroke="#2f7bff" stroke-width="3.4"/><path d="M24 6v24M16 13l8-8 8 8" fill="none" stroke="#2f7bff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>點 Safari 的「分享」</span></li>
+          <li><i class="fsg-ic"><svg viewBox="0 0 48 48"><rect x="10" y="18" width="28" height="24" rx="5" fill="none" stroke="#2f7bff" stroke-width="3.4"/><path d="M24 6v24M16 13l8-8 8 8" fill="none" stroke="#2f7bff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>點 Safari 的分享鈕（iPad 在右上角，看不到就先點「⋯」）</span></li>
           <li><i class="fsg-ic"><svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="8" fill="none" stroke="#1b1430" stroke-width="3.4"/><path d="M24 16v16M16 24h16" stroke="#1b1430" stroke-width="3.6" stroke-linecap="round"/></svg></i><span>選「加入主畫面」</span></li>
           <li><i class="fsg-ic"><svg viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="11" fill="#ff5fa2"/><path d="M13 22l2-11 7 6M35 22l-2-11-7 6" fill="#ffb347"/><circle cx="24" cy="27" r="11" fill="#ffb347"/><circle cx="20" cy="26" r="2" fill="#1b1430"/><circle cx="28" cy="26" r="2" fill="#1b1430"/></svg></i><span>從主畫面的「漆貓」打開，整個螢幕都是遊戲</span></li>
         </ol>
-        <p class="note" id="fsg-note">iPhone 的 Safari 不讓網頁直接全螢幕，加到主畫面後打開就沒有網址列。</p>
+        <p class="note" id="fsg-note">iPhone 不能網頁全螢幕；iPad 的 Safari 全螢幕兩隻手指一動就會被退出。從主畫面打開沒有網址列，也不會跑掉。</p>
         <button type="button" class="btn primary" id="btn-fsguide-close">知道了</button>
+        <button type="button" class="btn fsg-try" id="btn-fsguide-try" hidden>先用 Safari 全螢幕（可能會跑掉）</button>
       </div>
     </div>
     <div class="menu dim" id="m-help" hidden>
@@ -12650,7 +12658,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const fsOk = !!(doc.fullscreenEnabled || doc.webkitFullscreenEnabled) && !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
     const standalone = navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches);
     const coarse = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches) || 'ontouchstart' in window;
-    const guideOk = !fsOk && !standalone && coarse; // 手機（iPhone）：顯示加入主畫面圖解
+    // 第 112.1 版（Yen 11-21 22:39「iPad 測試還是容易跑掉」）：iPad Safari 的網頁全螢幕本身就會被系統手勢退出
+    // （兩指靠近＝縮小手勢、從上緣往下滑），左手搖桿＋右手瞄準常常被當成縮小手勢，網頁攔不住。
+    // 所以 iPhone、iPad 都改成「加入主畫面」：從主畫面打開沒有網址列、沒有這些手勢，不會跑掉。Safari 全螢幕留在圖解裡當備用。
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const guideOk = !standalone && coarse && (!fsOk || ios); // iPhone、iPad：顯示加入主畫面圖解
     let fsWant = false, fsTry = 0;
     const fsSync = () => { $('btn-full2').textContent = fsOn() ? '離開全螢幕' : '全螢幕'; $('btn-full').classList.toggle('on', fsOn()); };
     const fsEnter = (loud) => {
@@ -12661,11 +12673,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       } catch (e) { if (loud) ui.tip('這個瀏覽器不允許全螢幕', 2.5); }
     };
     const fsToggle = () => {
-      if (guideOk) { $('m-fsguide').hidden = false; return; }
+      if (guideOk && !fsOn()) { $('m-fsguide').hidden = false; return; }
       if (fsOn()) { fsWant = false; (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc); return; }
       fsWant = true; fsTry = 0; fsEnter(true);
     };
-    if (fsOk || guideOk) { $('btn-full').hidden = false; $('btn-full2').hidden = false; }
+    if ((fsOk || guideOk) && !standalone) { $('btn-full').hidden = false; $('btn-full2').hidden = false; } // 從主畫面打開的（standalone）已經是整個螢幕，不用全螢幕鈕
+    if (guideOk && fsOk) $('btn-fsguide-try').hidden = false;
+    on('btn-fsguide-try', () => { $('m-fsguide').hidden = true; fsWant = true; fsTry = 0; fsEnter(true); });
+    // iPhone、iPad 第一次在 Safari 打開：自動跳出一次加入主畫面圖解
+    if (guideOk && window.SC_PUBLIC) { let seen = '1'; try { seen = localStorage.getItem('sc-fsg'); localStorage.setItem('sc-fsg', '1'); } catch (e) {} if (!seen) setTimeout(() => { if (!els['m-title'].hidden) $('m-fsguide').hidden = false; }, 1500); }
     doc.addEventListener('fullscreenchange', fsSync); doc.addEventListener('webkitfullscreenchange', fsSync);
     // 被系統退出全螢幕：下一次手指離開畫面（touchend／pointerup 才算使用者操作）就再進去
     const fsBack = () => { if (fsWant && fsOk && !fsOn()) fsEnter(false); };
