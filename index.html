@@ -9198,7 +9198,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const cam = { yaw: Math.PI / 2, pitch: -0.14, dist: 15, shake: 0, pos: new V3(), orbit: 0, zoom: 1, fp: null };
   const SCOPE_ZOOM = 4; // 狙擊鏡最大倍率（Yen 2026-11-14：放大距離要夠）
   const V0 = Math.sqrt(2 * C.GRAVITY * C.GROUND_JUMP_HEIGHT), V1 = Math.sqrt(2 * C.GRAVITY * C.AIR_JUMP_HEIGHT);
-  const t1 = new V3(), t2 = new V3(), t3 = new V3(), viewDir = new V3();
+  const t1 = new V3(), t2 = new V3(), t3 = new V3(), viewDir = new V3(), PMAX = 1.5;
   const WEAPONS = ['W01', 'W02', 'W03', 'W04', 'W05'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special', 'W04', 'W05'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
   let slowT = 0, slowK = 0.35, countdownT = 0, endT = 0, lastCount = 0, finalOn = false, swingSeq = 0, vic = null, judged = false, splatSfxAt = 0, resultsShown = false, nextSprayAt = 0, spraySerial = 0;
   G.cam = cam; G.colors = colors;
@@ -9854,25 +9854,32 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const dx = ctl.mx / ml, dz = ctl.mz / ml, y = a.pos.y + 1.2, ox = a.pos.x, oz = a.pos.z, ix = ox + dx * (R + 1.4), iz = oz + dz * (R + 1.4);
       if (H(ix, iz) < a.pos.y + C.STEP + 0.6) return false;
       const f = SC.wallInk.face(ox, oz, ix, iz, y); if (!f || -(dx * f.nx + dz * f.nz) < 0.5) return false;
-      if (SC.wallInk.owner(f.x, y, f.z) !== own) return false;
+      if (![0, 1.2, 2.4, 3.6].some((d) => SC.wallInk.owner(f.x, y + d, f.z) === own)) return false; // 第 97 版：前面附近有自己的墨就能開始爬（不用剛好塗在正前方）
       w = { x: f.x, z: f.z, nx: f.nx, nz: f.nz }; if (a.isPlayer) A.sfx.dive();
     }
     const inward = -(ctl.mx * w.nx + ctl.mz * w.nz);
     if (inward < -0.25 && a.pos.y <= H(a.pos.x, a.pos.z) + 0.3) { a.climb = null; a.onGround = true; return false; } // 第 95 版：爬到牆腳再往外推就離開牆面（原本會一直貼在牆上動不了）
-    if (ctl.jump) { a.climb = null; a.vel.set(w.nx * 24, V0 * 0.85, w.nz * 24); a.onGround = false; a.jumps = 1; a.launchT = 0.22; a.lastJumpAt = G.time; ctl.jump = false; if (a.isPlayer) A.sfx.jump(1); return false; }
     const top = H(w.x - w.nx * 1.2, w.z - w.nz * 1.2);
+    if (ctl.jump && inward < -0.25) { a.climb = null; a.vel.set(w.nx * 24, V0 * 0.85, w.nz * 24); a.onGround = false; a.jumps = 1; a.launchT = 0.22; a.lastJumpAt = G.time; ctl.jump = false; if (a.isPlayer) A.sfx.jump(1); return false; } // 往外拉＋跳：從牆上跳開
+    if (ctl.jump) { ctl.jump = false; if (a.isPlayer) A.sfx.jump(1); // 第 97 版（Yen）：在牆上按跳＝往上跳一下（約 9 高），離牆頂差一點時直接跳上去；跳完不能再連跳，免得不塗墨就跳上城牆
+      if (top - a.pos.y <= 9) { a.crest = { t: 0, x0: a.pos.x, y0: a.pos.y, z0: a.pos.z, x1: w.x - w.nx * (R + 1.6), y1: top, z1: w.z - w.nz * (R + 1.6) }; return true; }
+      a.climb = null; a.vel.set(-w.nx * 1.5, V0, -w.nz * 1.5); a.onGround = false; a.jumps = C.MAX_JUMPS; a.launchT = 0.22; a.lastJumpAt = G.time; a.gateT = G.time; return false; }
     a.climb = w; a.onGround = false; a.jumps = 0; a.vel.set(0, 0, 0); a.ground = 'own'; a.submerged = true;
     a.pos.x = w.x + w.nx * (R + 0.15); a.pos.z = w.z + w.nz * (R + 0.15);
     if (inward > 0.25 && a.pos.y >= top - 2.2) { a.crest = { t: 0, x0: a.pos.x, y0: a.pos.y, z0: a.pos.z, x1: w.x - w.nx * (R + 1.6), y1: top, z1: w.z - w.nz * (R + 1.6) }; return true; }
     let vy = inward > 0.25 ? 13 : inward < -0.25 ? -8 : 0;
-    if (vy > 0 && SC.wallInk.owner(w.x, a.pos.y + 2 + vy * dt, w.z) !== own && a.pos.y < top - 2.2) { vy = 0; a.climbStuck = (a.climbStuck || 0) + dt;
+    // 第 97 版：上面 4 以內的小空隙、離牆頂 6 以內都爬得過去，不用塗滿。
+    // 第 97 版（Yen「按照慣性跳上去」）：往上爬到墨水沒了、離牆頂不到 14，就順著衝勁跳出牆面、翻上去
+    if (vy > 0 && a.pos.y < top - 6 && ![2, 3.2, 4.4, 5.6].some((d) => SC.wallInk.owner(w.x, a.pos.y + d + vy * dt, w.z) === own)) {
+      if (top - a.pos.y <= 14) { a.climb = null; a.vel.set(-w.nx * 3, Math.sqrt(2 * C.GRAVITY * (top - a.pos.y + 2.5)), -w.nz * 3); a.onGround = false; a.jumps = C.MAX_JUMPS; a.launchT = 0.22; a.lastJumpAt = G.time; a.gateT = G.time; if (a.isPlayer) A.sfx.jump(1); return false; }
+      vy = 0; a.climbStuck = (a.climbStuck || 0) + dt;
       if (a.isPlayer && a.climbStuck > 0.8 && G.time - (a.stuckFxAt || -9) > 0.45) { a.stuckFxAt = G.time; SC.fx.burst(w.x, a.pos.y + 3.2, w.z, WHITE, 10, 7, 0.45, 0.2, 0.6, 0); SC.fx.pop(w.x, a.pos.y + 3.2, w.z, WHITE, 3, 0.12);
         if (G.time - (a.stuckTipAt || -9) > 4) { a.stuckTipAt = G.time; SC.ui.tip('上面還沒塗到！先射墨水把上面塗成你的顏色', 2.4); } } }
     else a.climbStuck = 0;
     // 第 96 版（Yen 11/21 14:44）：在牆上也能左右移動（沿著牆面橫移 13，旁邊要是自己的顏色、而且牆還在；牆轉角時重新貼齊牆面）
     const ux = -w.nz, uz = w.nx, side = ctl.mx * ux + ctl.mz * uz; let moved = 0;
     if (Math.abs(side) > 0.25) { const st = Math.sign(side) * 13 * dt, cx = w.x + ux * st, cz = w.z + uz * st, cy = a.pos.y + 1.2;
-      if (H(cx - w.nx * 0.8, cz - w.nz * 0.8) > cy && SC.wallInk.owner(cx, cy, cz) === own) {
+      if (H(cx - w.nx * 0.8, cz - w.nz * 0.8) > cy && [[0, 0], [1.2, 0], [2.4, 0], [0, 1.2], [0, -1.2], [1.2, 1.2], [1.2, -1.2]].some(([du, dv]) => SC.wallInk.owner(cx + ux * Math.sign(side) * du, cy + dv, cz + uz * Math.sign(side) * du) === own)) {
         const f = SC.wallInk.face(cx + w.nx * 2, cz + w.nz * 2, cx - w.nx * 2, cz - w.nz * 2, cy);
         if (f && f.nx * w.nx + f.nz * w.nz > 0.5) { w.x = f.x; w.z = f.z; w.nx = f.nx; w.nz = f.nz; } else { w.x = cx; w.z = cz; }
         a.pos.x = w.x + w.nx * (R + 0.15); a.pos.z = w.z + w.nz * (R + 0.15); moved = 13;
@@ -10407,7 +10414,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   G.netState = (idx, s, at) => {
     const a = G.netActor(idx); if (!a || !a.remote || a.gone) return; const f = s[8], alive = !!(f & 1);
-    a.net = { x: SC.clamp(s[0], -W.lim.x - 20, W.lim.x + 20), y: SC.clamp(s[1], -10, 120), z: SC.clamp(s[2], -W.lim.z - 20, W.lim.z + 20), vx: s[3], vy: s[4], vz: s[5], yaw: s[6], pitch: SC.clamp(s[7], -1.3, 1.3), at };
+    a.net = { x: SC.clamp(s[0], -W.lim.x - 20, W.lim.x + 20), y: SC.clamp(s[1], -10, 120), z: SC.clamp(s[2], -W.lim.z - 20, W.lim.z + 20), vx: s[3], vy: s[4], vz: s[5], yaw: s[6], pitch: SC.clamp(s[7], -1.56, 1.56), at };
     a.form = f & 2 ? 'cat' : 'biped'; a.submerged = !!(f & 4); a.onGround = !!(f & 8); a.rolling = !!(f & 16); a.protectUntil = f & 32 ? G.time + 0.25 : 0; a.invisUntil = f & 64 ? G.time + 0.35 : 0; a.wideUntil = f & 128 ? G.time + 0.35 : 0;
     const w = WEAPONS[s[9]] || 'W01'; if (w !== a.weapon) { a.weapon = w; a.cat.setWeapon(w); }
     a.charge = s[10] < 0 ? -1 : Math.min(s[10], 2); a.hp = s[11]; a.ink = SC.clamp(s[12], 0, 100); a.deaths = s[13]; a.credited = s[14]; if (s.length >= 18) { a.ast = s[15]; a.paint = s[16]; a.kos = s[17]; }
@@ -10466,7 +10473,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function controlPlayer(p, dt) {
     const ctl = p.ctl;
-    cam.yaw -= I.lookX; cam.pitch = SC.clamp(cam.pitch - I.lookY, -1.2, 0.95);
+    cam.yaw -= I.lookX; cam.pitch = SC.clamp(cam.pitch - I.lookY, -PMAX, PMAX); // 第 97 版（Yen）：上下看的角度不限制（到接近正上方、正下方）
     I.zoom = 1 / cam.zoom;
     const s = Math.sin(cam.yaw), c = Math.cos(cam.yaw);
     ctl.mx = s * I.moveZ - c * I.moveX; ctl.mz = c * I.moveZ + s * I.moveX;
@@ -10506,7 +10513,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     I.aimSlow = AS && best && bA < C7 ? 1 - 0.5 * (1 - bA / C7) * (1 - bA / C7) * (1 + 2 * bA / C7) : 1;
     if (AS && best && bA < C7 && I.lookHeld && I.lookHeld()) {
       t1.set(best.pos.x - o.x, best.pos.y + bodyMid(best, 2.4) - o.y, best.pos.z - o.z); const ty = Math.atan2(t1.x, t1.z), tp = Math.atan2(t1.y, Math.hypot(t1.x, t1.z));
-      if (p.asT === best) { const k = net ? 0.2 : 0.35; cam.yaw += SC.clamp(SC.angDiff(p.asY, ty) * k, -0.05, 0.05); cam.pitch = SC.clamp(cam.pitch + SC.clamp((tp - p.asP) * k, -0.04, 0.04), -1.2, 0.95); }
+      if (p.asT === best) { const k = net ? 0.2 : 0.35; cam.yaw += SC.clamp(SC.angDiff(p.asY, ty) * k, -0.05, 0.05); cam.pitch = SC.clamp(cam.pitch + SC.clamp((tp - p.asP) * k, -0.04, 0.04), -PMAX, PMAX); }
       p.asT = best; p.asY = ty; p.asP = tp;
     } else p.asT = null;
     p.aim.set(o.x + viewDir.x * tt, o.y + viewDir.y * tt, o.z + viewDir.z * tt);
@@ -10631,7 +10638,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (hit) want = Math.max(Math.min(3.5, want), hit.t - 1);
     if (W.camR) { const bx = -viewDir.x, bz = -viewDir.z, a = bx * bx + bz * bz, b = F.pos.x * bx + F.pos.z * bz, c = F.pos.x * F.pos.x + F.pos.z * F.pos.z - W.camR * W.camR; if (a > 1e-6) { const t = (-b + Math.sqrt(Math.max(0, b * b - a * c))) / a; if (t < want) want = Math.max(Math.min(3.5, want), t); } } // 圓形場地：鏡頭不退到場外的裝飾後面
     cam.dist = want < cam.dist ? want : SC.damp(cam.dist, want, scopeK > 0.01 ? 14 : 5, dt);
-    if (p.alive) p.cat.group.visible = scopeK < 0.5; // 開鏡時隱藏自己的角色
+    if (p.alive) p.cat.group.visible = scopeK < 0.5 && (kb || cam.dist > 4.2); // 開鏡時隱藏自己的角色（第 97 版：往上看時鏡頭貼到身上也隱藏，不會整個畫面被頭擋住）
     // Yen 2026-11-19 打擊感：鏡頭跟著角色時稍微慢一拍（更滑順）；角色放在畫面中間偏左，往前看的畫面多一點（瞄準照樣從畫面中央射出）
     const fx0 = F.pos.x, fz0 = F.pos.z; if (!cam.fp || Math.hypot(cam.fp.x - fx0, cam.fp.z - fz0) > 9 || Math.abs(cam.fp.y - py) > 9 || !F.alive) cam.fp = new V3(fx0, py, fz0);
     else { cam.fp.x = SC.damp(cam.fp.x, fx0, 16, dt); cam.fp.z = SC.damp(cam.fp.z, fz0, 16, dt); cam.fp.y = SC.damp(cam.fp.y, py, 11, dt); }
