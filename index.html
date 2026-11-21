@@ -663,6 +663,27 @@ body.lowhp .hud-weapons .w-chip.bomb:last-child, body.lowhp .w-chip.bomb:last-of
 @media (max-height: 520px) { .pr-chip b { font-size: 26px; } .pr-chip svg, .pr-chip .pr-face, .pr-chip .pr-face svg { width: 30px; height: 30px; } }
 .cat-pick.meow > svg:first-child, .cat-pick.meow > .face { animation: meowTilt .5s ease-in-out; transform-origin: 50% 80%; }
 @keyframes meowTilt { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg) scale(1.1); } 60% { transform: rotate(9deg) scale(1.05); } }
+/* 第 90 版：氣球派對（第一次玩的教學）提示卡：上方中間一張大圖示卡＋會動的手指＋五個進度點，不用字 */
+.tut { position: absolute; left: calc(16px + env(safe-area-inset-left, 0px)); top: calc(84px + var(--sat, 0px)); transform: scale(0); transform-origin: 0 0; z-index: 3; pointer-events: none; display: grid; justify-items: center; gap: 6px; transition: transform .35s cubic-bezier(.2, 1.6, .4, 1); }
+.tut.on { transform: scale(1); }
+.tut-ic { position: relative; width: 104px; height: 104px; border-radius: 28px; background: rgba(27, 20, 48, .82); border: 4px solid #fff; box-shadow: 0 6px 0 rgba(27, 20, 48, .6); display: grid; place-items: center; }
+.tut-ic > svg:first-child { width: 78px; height: 78px; }
+.tut-finger { position: absolute; width: 52px; height: 52px; right: -30px; bottom: -22px; animation: tutTap 1s ease-in-out infinite; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .4)); }
+.tut[data-k="move"] .tut-finger { animation: tutDrag 1.4s ease-in-out infinite; }
+.tut[data-k="swim"] .tut-finger { animation: tutHold 1.4s ease-in-out infinite; }
+.tut .tut-nub { animation: tutNub 1.4s ease-in-out infinite; }
+.tut-dots { display: flex; gap: 8px; } .tut-dots i { width: 14px; height: 14px; border-radius: 50%; background: rgba(255, 255, 255, .35); border: 2px solid #fff; }
+.tut-dots i.ok { background: var(--sun); } .tut-dots i.now { background: #ff4fa3; animation: hpBeat 1s ease-in-out infinite; }
+@keyframes tutTap { 0%, 100% { transform: translate(0, 0) scale(1); } 45% { transform: translate(-6px, -6px) scale(1.05); } 60% { transform: translate(-2px, -2px) scale(.92); } }
+@keyframes tutDrag { 0%, 100% { transform: translate(-20px, 0); } 50% { transform: translate(10px, -16px); } }
+@keyframes tutHold { 0%, 100% { transform: translate(0, 0); } 30%, 80% { transform: translate(-4px, -4px) scale(.92); } }
+@keyframes tutNub { 0%, 100% { transform: translate(-8px, 6px); } 50% { transform: translate(8px, -8px); } }
+body.tut-fire #t-fire, body.tut-jump #t-fire, body.tut-bomb #t-bomb, body.tut-swim #t-cat { animation: inkNudge .7s ease-in-out infinite; box-shadow: 0 0 0 5px #fff, 0 0 26px 10px rgba(255, 255, 255, .8); }
+body.tut-fire #t-fire::after, body.tut-jump #t-fire::after, body.tut-bomb #t-bomb::after, body.tut-swim #t-cat::after { content: '☝'; position: absolute; right: -16px; top: -32px; font-size: 36px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .5)); animation: inkPoint .7s ease-in-out infinite; transform: rotate(-35deg); }
+body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bottom: 70px; width: 110px; height: 110px; border-radius: 50%; border: 5px solid #fff; background: rgba(255, 255, 255, .18); animation: inkNudge 1s ease-in-out infinite; pointer-events: none; }
+.tut-btn { font-size: 22px; padding: 6px 12px; }
+.is-touch .tut { top: calc(130px + var(--sat, 0px)); } .is-touch .tut-ic { width: 80px; height: 80px; border-radius: 22px; } .is-touch .tut-ic > svg:first-child { width: 60px; height: 60px; }
+@media (max-height: 520px) { .is-touch .tut { top: calc(122px + var(--sat, 0px)); } .tut-ic { width: 72px; height: 72px; border-radius: 22px; } .tut-ic > svg:first-child { width: 54px; height: 54px; } .tut-dots i { width: 11px; height: 11px; } }
 
 </style>
 <div id="app">
@@ -9103,7 +9124,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // opts: { kind, weapon, difficulty, mode: 'versus'｜'sandbox'｜'boss'｜'net', roster: '1v1'｜'2v2', demo, net: SC.net.match }
   G.start = (opts) => {
-    if (opts.weapon && !opts.loadout) G.opts.loadout = null; Object.assign(G.opts, opts); G.demo = !!opts.demo; G.mode = G.demo ? 'versus' : G.opts.mode || 'versus'; slowT = 0; cam.fin = null; G.cine = false; vic = null; judged = false; hugEnd();
+    if (opts.weapon && !opts.loadout) G.opts.loadout = null; Object.assign(G.opts, opts); G.opts.tut = !!opts.tut; G.demo = !!opts.demo; if (!G.opts.tut && SC.tut && SC.tut.active) SC.tut.stop(); G.mode = G.demo ? 'versus' : G.opts.mode || 'versus'; slowT = 0; cam.fin = null; G.cine = false; vic = null; judged = false; hugEnd();
     const net = netOn() ? G.opts.net : null, boss = G.mode === 'boss', solo = boss || G.mode === 'sandbox', duo = G.demo || G.opts.roster !== '1v1';
     const all = SC.bossList(); BS = (boss && all[(+G.opts.stage || 1) - 1]) || SC.boss; let off = false; all.forEach((m) => { if (m && m !== BS && m.setActive(false, scene)) off = true; });
     // 對戰場地（Yen 2026-11-17 加到五張）：試玩靶場固定遊樂園，連線用房主選的，其他用選單選的（random＝隨機）
@@ -9173,6 +9194,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // ---------- 傷害與重生 ----------
   // ---------- 自由試玩的靶子 ----------
   function makeTargets() {
+    if (G.opts.tut && SC.tut) { G.targets = []; nextSprayAt = 1e9; spraySerial = 0; return; } // 第 90 版：第一次玩的氣球派對，靶子由 SC.tut 一顆一顆放
     G.targets = SC.TARGETS.list.map((spec, i) => {
       // 每張場地的靶子位置不一樣（W.MAPS[key].tgt）；沒寫的用預設位置，落在水裡就往旁邊找陸地（Yen 2026-11-20：自由試玩可選場地）
       let { x, z } = (W.MAPS[W.key].tgt || {})[spec.id] || spec;
@@ -9182,6 +9204,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
     nextSprayAt = 1; spraySerial = 0;
   }
+  // 第 90 版：氣球派對用的靶子（不會重生、可以浮在半空）
+  G.tutAdd = (spec, x, z, lift = 0) => {
+    for (let r = 2; H(x, z) < -3 && r < 40; r += 2) for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2, nx = x + Math.cos(a) * r, nz = z + Math.sin(a) * r, hh = H(nx, nz); if (hh > -3 && hh < 20) { x = nx; z = nz; break; } }
+    const m = SC.makeTarget(spec, colors[1]), y = H(x, z) + lift; m.mesh.position.set(x, y, z); scene.add(m.mesh);
+    const t = { id: 'tut' + G.targets.length, isTarget: true, spec, team: 1, name: spec.name, pos: new V3(x, y, z), hp: spec.hp, alive: true, respawnAt: 1e9, noRespawn: true, hitK: 1, lastSwing: -1, ...m };
+    G.targets.push(t); G.hit.push(t); SC.fx.burst(x, y + t.cy, z, WHITE, 16, 16, 0.5); SC.fx.ring(x, H(x, z) + 0.2, z, colors[0], 3.5, 0.4); return t;
+  };
+  G.tutClear = () => { G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.hit = G.hit.filter((e) => !e.isTarget); G.targets = []; };
   function hurtTarget(t, amount, from) {
     if (!t.alive || G.state !== 'play') return false;
     t.hp -= amount; t.hitK = 1; t.setHp(t.hp / t.spec.hp);
@@ -9192,21 +9222,22 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       t.alive = false; t.respawnAt = G.time + SC.TARGETS.respawn; t.mesh.visible = false; G.popped++;
       SC.fx.burst(t.pos.x, y, t.pos.z, col, 36, 28, 0.8);
       if (from) INK.splat(from.team, t.pos.x, t.pos.y, t.pos.z, 5.5);
-      A.sfx.koGot(); SC.ui.tip(`${t.name}擊破！${SC.TARGETS.respawn} 秒後會再出現`, 2.4);
+      A.sfx.koGot(); if (t.noRespawn) { A.sfx.pop(); if (SC.tut) SC.tut.onPop(t); } else SC.ui.tip(`${t.name}擊破！${SC.TARGETS.respawn} 秒後會再出現`, 2.4);
     }
     return true;
   }
   function updateTargets(dt) {
     const T = SC.TARGETS, now = performance.now() / 1000;
     G.targets.forEach((t, i) => {
-      if (!t.alive) { if (G.time >= t.respawnAt) { t.alive = true; t.hp = t.spec.hp; t.setHp(1); t.mesh.visible = true; t.hitK = 1; SC.fx.burst(t.pos.x, t.pos.y + t.cy, t.pos.z, WHITE, 10, 12, 0.5); } return; }
+      if (!t.alive) { if (!t.noRespawn && G.time >= t.respawnAt) { t.alive = true; t.hp = t.spec.hp; t.setHp(1); t.mesh.visible = true; t.hitK = 1; SC.fx.burst(t.pos.x, t.pos.y + t.cy, t.pos.z, WHITE, 10, 12, 0.5); } return; }
       t.hitK = SC.damp(t.hitK, 0, 9, dt); const k = 1 + t.hitK * 0.22;
       if (t.spec.kind === 'balloon') { t.body.scale.set(k, k * 1.1, k); t.body.position.x = Math.sin(now * 1.3 + i * 2.1) * 0.14; t.body.position.z = Math.cos(now * 1.1 + i) * 0.1; }
       else t.body.scale.setScalar(k + Math.sin(now * 9) * 0.04);
     });
     // 灑水器：照固定順序把對手顏色的墨水噴到周圍，打壞後 7 秒重生
+    if (G.opts.tut && SC.tut) SC.tut.tick(dt);
     const s = G.targets[0];
-    if (s && s.alive && G.time >= nextSprayAt) {
+    if (s && s.alive && s.spec.kind === 'sprinkler' && G.time >= nextSprayAt) {
       nextSprayAt = G.time + T.sprayInterval; const o = T.sprayOffsets[spraySerial++ % T.sprayOffsets.length], D = Math.hypot(o[0], o[1]), th = 1.1;
       const v = D > 0.6 ? Math.sqrt((105 * D) / Math.sin(2 * th)) : 0;
       projectiles.push({ x: s.pos.x, y: s.pos.y + 3.1, z: s.pos.z, vx: v ? (o[0] / D) * v * Math.cos(th) : 0, vy: v ? v * Math.sin(th) : 15, vz: v ? (o[1] / D) * v * Math.cos(th) : 0,
@@ -10622,6 +10653,79 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
 })();
 
+// 第 90 版（手感報告：第一次玩的 60 秒「氣球派對」）
+// 一次只教一招，打破一顆才出現下一顆：射氣球 → 走過去射 → 潛進墨水游過去 → 跳起來射高的 → 丟墨水彈。
+// 提示只用圖示、會動的手指和貓叫聲，不用讀字（對象是五歲孩子）。卡住 30 秒就自動跳到下一招。
+(() => {
+  const T = (SC.tut = { active: false });
+  const KEY = 'sc-tut';
+  T.seen = () => { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return true; } };
+  const mark = () => { try { localStorage.setItem(KEY, '1'); } catch (e) { /* 私密模式：不記也沒關係 */ } };
+  const G = () => SC.game, A = () => SC.audio;
+  const BAL = (id, hp, r, color, name) => ({ id, kind: 'balloon', name: name || '氣球', hp, r, color });
+  const COLORS = [0xff8fc8, 0xffd23f, 0x7fd8ff, 0x9dff8a, 0xc9a7ff];
+
+  // 提示卡上的大圖示（觸控和電腦版各一套）
+  const FINGER = '<path d="M30 58c-7 0-12-5-13-11l-4-13c-1-3 2-5 4-3l5 6V14c0-3 2-5 4-5s4 2 4 5v14l2-1c2 0 4 1 4 3l1-1c2 0 4 1 4 3l1-1c2 0 4 2 4 4v10c0 8-6 13-14 13z" fill="#fff" stroke="#1b1430" stroke-width="3.2" stroke-linejoin="round"/>';
+  const KBD = (t, w = 30) => `<rect x="${32 - w / 2}" y="18" width="${w}" height="28" rx="6" fill="#fff" stroke="#1b1430" stroke-width="3.2"/><text x="32" y="39" text-anchor="middle" font-size="${t.length > 2 ? 11 : 18}" font-weight="900" fill="#1b1430">${t}</text>`;
+  const ICON = {
+    fire: (touch) => (touch ? '<circle cx="32" cy="30" r="20" fill="#ff4fa3" stroke="#fff" stroke-width="4"/><circle cx="32" cy="30" r="8" fill="none" stroke="#fff" stroke-width="4"/>' : '<rect x="18" y="8" width="28" height="44" rx="14" fill="#fff" stroke="#1b1430" stroke-width="3.2"/><path d="M18 26h28M32 8v18" stroke="#1b1430" stroke-width="3"/><path d="M20 24V22a12 12 0 0 1 12-12v14z" fill="#ff4fa3"/>'),
+    move: (touch) => (touch ? '<circle cx="32" cy="32" r="22" fill="rgba(255,255,255,.25)" stroke="#fff" stroke-width="4"/><circle class="tut-nub" cx="32" cy="32" r="10" fill="#fff"/>' : KBD('W', 22).replace('y="18"', 'y="4"').replace('y="39"', 'y="24"') + '<g transform="translate(-24 28)">' + KBD('A', 22).replace('y="18"', 'y="0"').replace('y="39"', 'y="20"') + '</g><g transform="translate(0 28)">' + KBD('S', 22).replace('y="18"', 'y="0"').replace('y="39"', 'y="20"') + '</g><g transform="translate(24 28)">' + KBD('D', 22).replace('y="18"', 'y="0"').replace('y="39"', 'y="20"') + '</g>'),
+    swim: (touch) => '<path d="M6 46q8-6 16 0t16 0 16 0 6-2" fill="none" stroke="#ff4fa3" stroke-width="6" stroke-linecap="round"/><path d="M18 40c0-10 6-18 14-18s14 8 14 18z" fill="#fff" stroke="#1b1430" stroke-width="3.2"/><path d="M22 26l-2-10 8 6M42 26l2-10-8 6" fill="#fff" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/>' + (touch ? '' : '<g transform="translate(0 -14) scale(1 .7)">' + KBD('Shift', 40) + '</g>'),
+    jump: (touch) => '<path d="M32 6l14 16h-9v14h-10V22h-9z" fill="#ffd23f" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="50" r="9" fill="#fff" stroke="#1b1430" stroke-width="3"/>' + (touch ? '' : '<g transform="translate(0 30) scale(1 .55)">' + KBD('Space', 46) + '</g>'),
+    bomb: (touch) => '<path d="M32 9L8 45 30 57z" fill="#ff4fa3" stroke="#1b1430" stroke-width="3"/><path d="M32 9L56 45 30 57z" fill="#e23d8d" stroke="#1b1430" stroke-width="3"/>' + (touch ? '' : '<g transform="translate(14 -6) scale(.6)">' + KBD('Q', 26) + '</g>'),
+    party: () => '<path d="M10 56L24 18l22 22z" fill="#ffd23f" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><circle cx="44" cy="12" r="4" fill="#ff4fa3"/><circle cx="54" cy="24" r="3" fill="#7fd8ff"/><circle cx="36" cy="6" r="3" fill="#9dff8a"/><path d="M40 22q6-8 14-6" fill="none" stroke="#ff4fa3" stroke-width="3" stroke-linecap="round"/>',
+  };
+  const STEPS = ['fire', 'move', 'swim', 'jump', 'bomb'];
+  let el = null, step = -1, stepT = 0, left = 0, swimD = 0, lastP = null, doneT = -1, then = null, clock = 0, jobs = [];
+  const later = (sec, fn) => jobs.push({ at: clock + sec, fn }); // 用遊戲時間排程：暫停時不會偷偷往下走
+
+  function card() {
+    if (el) return el;
+    el = document.createElement('div'); el.className = 'tut'; el.id = 'tut'; el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<div class="tut-ic"><svg viewBox="0 0 64 64"></svg><svg class="tut-finger" viewBox="0 0 64 64">' + FINGER + '</svg></div><div class="tut-dots"></div>';
+    document.getElementById('ui').appendChild(el); return el;
+  }
+  function show(kind) {
+    const c = card(), touch = SC.input.isTouch; c.querySelector('.tut-ic svg').innerHTML = ICON[kind](touch); c.dataset.k = kind;
+    c.querySelector('.tut-finger').style.display = touch && kind !== 'party' ? '' : 'none';
+    c.querySelector('.tut-dots').innerHTML = STEPS.map((s, i) => `<i class="${i < step ? 'ok' : i === step ? 'now' : ''}"></i>`).join('');
+    c.classList.remove('on'); void c.offsetWidth; c.classList.add('on');
+    document.body.classList.remove(...STEPS.map((s) => 'tut-' + s)); if (kind !== 'party') document.body.classList.add('tut-' + kind);
+  }
+  function fwd() { const y = G().cam.yaw; return { fx: Math.sin(y), fz: Math.cos(y), sx: -Math.cos(y), sz: Math.sin(y) }; }
+  function next() {
+    step++; stepT = 0; const g = G(), p = g.player(); if (!p) return;
+    g.tutClear(); const { fx, fz, sx, sz } = fwd(), P = p.pos, col = COLORS[step % COLORS.length];
+    if (step >= STEPS.length) return party();
+    const k = STEPS[step]; show(k); A().sfx.meow(g.opts.kind); A().sfx.ui();
+    if (k === 'fire') { g.tutAdd(BAL('b1', 35, 1.8, col), P.x + fx * 13, P.z + fz * 13); left = 1; }
+    else if (k === 'move') { g.tutAdd(BAL('b2', 35, 1.8, col), P.x + fx * 34 + sx * 9, P.z + fz * 34 + sz * 9); left = 1; }
+    else if (k === 'swim') { swimD = 0; lastP = null; left = 0; for (let d = 0; d <= 30; d += 2) { const x = P.x + fx * d, z = P.z + fz * d, h = SC.world.height(x, z); if (h > -4) SC.ink.stamp(p.team, x, h, z, 3.4); } }
+    else if (k === 'jump') { g.tutAdd(BAL('b4', 35, 1.8, col), P.x + fx * 12, P.z + fz * 12, 8); left = 1; }
+    else if (k === 'bomb') { for (let i = -1; i <= 1; i++) g.tutAdd(BAL('b5' + i, 35, 1.3, COLORS[(step + i + 5) % 5]), P.x + fx * 15 + sx * i * 2.4, P.z + fz * 15 + sz * i * 2.4); left = 3; }
+  }
+  function cheer() { const p = G().player(); if (!p) return; const c = G().colors[p.team]; SC.fx.burst(p.pos.x, p.pos.y + 4, p.pos.z, c, 24, 18, 0.7); A().sfx.aww(); }
+  function party() {
+    show('party'); doneT = 0; A().sfx.win(); SC.ui.banner('🎉', 2.4, true);
+    const p = G().player(); if (p) for (let i = 0; i < 6; i++) later(i * 0.26, () => { const a = Math.random() * 6.28, r = 4 + Math.random() * 6; SC.fx.burst(p.pos.x + Math.cos(a) * r, p.pos.y + 6 + Math.random() * 4, p.pos.z + Math.sin(a) * r, new THREE.Color(COLORS[i % 5]), 30, 22, 0.9); A().sfx.firework(); });
+  }
+  T.begin = (afterOpts) => { mark(); T.active = true; step = -1; doneT = -1; clock = 0; jobs = []; then = afterOpts || null; later(0.9, next); };
+  T.stop = () => { T.active = false; jobs = []; if (el) el.classList.remove('on'); document.body.classList.remove(...STEPS.map((s) => 'tut-' + s)); };
+  T.onPop = () => { if (!T.active || step < 0 || step >= STEPS.length) return; left--; if (left <= 0) { cheer(); later(0.7, next); } };
+  T.tick = (dt) => {
+    if (!T.active) return; const g = G(), p = g.player(); if (!p) return; clock += dt;
+    for (let i = jobs.length - 1; i >= 0; i--) if (clock >= jobs[i].at) { const j = jobs[i]; jobs.splice(i, 1); j.fn(); }
+    if (doneT >= 0) { doneT += dt; if (doneT > 3.4) { T.stop(); SC.ui.tutDone(then); } return; }
+    if (step < 0 || step >= STEPS.length) return; stepT += dt;
+    if (STEPS[step] === 'swim') { // 在自己的墨水裡游 12 步以上就過關
+      if (p.submerged && p.alive) { if (lastP) swimD += Math.hypot(p.pos.x - lastP.x, p.pos.z - lastP.z); lastP = { x: p.pos.x, z: p.pos.z }; } else lastP = null;
+      if (swimD > 12) { swimD = -999; cheer(); later(0.5, next); }
+    }
+    if (stepT > 30 && !jobs.length) next(); // 卡住太久就換下一招，不讓孩子困在同一關
+  };
+})();
+
 // 介面：HUD、主選單、暫停、結算、操作說明。全部是 DOM，蓋在 3D 畫面上。
 (() => {
   // 魔王關的命：三顆愛心（Yen 2026-11-19：原本太小看不到，改大並在被擊倒時顯示一顆愛心碎掉）
@@ -10821,7 +10925,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             </div>
           </div>
         </div>
-        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button><label class="btn lang-btn"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3.5 16h25M16 3.5c-4.6 4-4.6 21 0 25M16 3.5c4.6 4 4.6 21 0 25" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span id="lang-cur">${SC.i18n.LABEL[SC.i18n.lang]}</span><select id="pick-lang" aria-label="語言">${SC.i18n.LANGS.map((l) => `<option value="${l}"${l === SC.i18n.lang ? ' selected' : ''}>${SC.i18n.LABEL[l]}</option>`).join('')}</select></label><div class="sens-opt"><span class="sens-l">視角靈敏度</span><span class="sens-ic" aria-hidden="true">🐢</span><input type="range" id="set-sens0" min="0.2" max="3" step="0.1" value="1" aria-label="視角靈敏度"><span class="sens-ic" aria-hidden="true">🐇</span><output class="sens-v" id="sens-v0">1.0</output></div></div>
+        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn icon tut-btn" id="btn-tut" aria-label="氣球派對（教學）">🎈</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button><label class="btn lang-btn"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3.5 16h25M16 3.5c-4.6 4-4.6 21 0 25M16 3.5c4.6 4 4.6 21 0 25" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span id="lang-cur">${SC.i18n.LABEL[SC.i18n.lang]}</span><select id="pick-lang" aria-label="語言">${SC.i18n.LANGS.map((l) => `<option value="${l}"${l === SC.i18n.lang ? ' selected' : ''}>${SC.i18n.LABEL[l]}</option>`).join('')}</select></label><div class="sens-opt"><span class="sens-l">視角靈敏度</span><span class="sens-ic" aria-hidden="true">🐢</span><input type="range" id="set-sens0" min="0.2" max="3" step="0.1" value="1" aria-label="視角靈敏度"><span class="sens-ic" aria-hidden="true">🐇</span><output class="sens-v" id="sens-v0">1.0</output></div></div>
       </div>
     </div>
 
@@ -10981,8 +11085,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       rank.hide(); // 排行榜還沒按勾勾就再挑戰：用填好的名字存起來
       if (G().mode === 'net' && !G().demo) { const again = SC.ranked && SC.ranked.done; toMenu(); if (again) { SC.ranked.done = false; ui.rankedAgain(); } return; } // 連線對戰打完：回房間等房主開下一場；積分賽打完已經離開，按這顆重新配對
       if (sel.mode === 'net') return SC.net.start(); // 房主開始後，每個人都由 SC.net.onBegin 進場
-      SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; G().start({ ...sel, demo: false });
+      SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true;
+      if (SC.tut && !SC.tut.seen() && (sel.mode === 'versus' || sel.mode === 'sandbox')) return tutGo({ ...sel }); // 第 90 版：第一次玩先來一場 60 秒的氣球派對，玩完自動進原本選的模式
+      G().start({ ...sel, demo: false });
     };
+    const tutGo = (then) => { SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; G().start({ ...sel, mode: 'sandbox', map: 'park', demo: false, tut: true }); SC.tut.begin(then); };
+    ui.tutDone = (then) => { if (then) G().start({ ...then, demo: false }); else toMenu(); };
+    on('btn-tut', () => tutGo(null));
     on('btn-start', begin); on('btn-again', begin); on('btn-restart', begin);
     // 聊天（Yen 2026-11-20）：貼圖大家都能按；打字只在好友房（SC.net.canType）。別人打的字一律用 textContent 放進畫面
     const STK = [['👋', '嗨！'], ['👍', '加油！'], ['🎉', '好球！'], ['😄', '好好玩！'], ['😮', '哇！'], ['😭', '哭哭'], ['🔁', '再來一場！'], ['❤️', '謝謝！']];
@@ -11077,6 +11186,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     els.lives.classList.remove('intro'); if (g.mode === 'boss') { void els.lives.offsetWidth; els.lives.classList.add('intro'); els.timer.classList.remove('final'); return; }
     if (g.mode === 'net' || g.rule === 'knockout') ui.tip(g.rule === 'mix' ? '複合賽：塗地 1% 算 1 分，擊倒一次算 3 分，總分高的隊伍獲勝' : tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
     if (g.mode === 'net' || g.rule === 'knockout') return;
+    if (g.mode === 'sandbox' && g.opts.tut) { els.timer.textContent = '🎈'; els.timer.classList.remove('final'); return; }
     if (g.mode === 'sandbox') { els.timer.textContent = '不限時'; els.timer.classList.remove('final'); ui.banner('自由試玩', 1.4); ui.tip('打破氣球靶、擊毀灑水器，想練什麼就練什麼。按暫停可以回主選單', 7); return; }
     const tipGame = G().opts; setTimeout(() => { if (G().opts !== tipGame || G().demo) return; ui.tip(SC.input.isTouch ? '把地面塗成你們隊的顏色！按住左下的「墨貓」可以在自己的墨水裡快速移動、補墨水；射擊鈕短點是跳' : '把地面塗成你們隊的顏色！按住 Shift 可以在自己的墨水裡快速移動、補墨水', 7); }, 3300); // 第 87 版（試玩報告）：倒數完才出提示，不跟 3、2、1 疊在一起
   };
