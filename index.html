@@ -808,7 +808,7 @@ SC.CFG = {
   // Yen 2026-11-19：丟更遠（初速 54→72，最遠約 26→47），落地後滾一小段（落地保留約 0.3 的水平速度、每秒衰減）再停住
   // Yen 2026-11-14：墨水彈加強。爆炸塗地半徑 6→7（再乘 PAINT），傷害範圍 8.4→11，中心 5 以內直接擊倒，外圈 60
   BOMB: { ink: 20 / INK_LAST, speed: 72, gravity: 105, fuse: 2, roll: 0.32, rollDrag: 3.6, armDelay: 1.05, radius: 12.35, damageRadius: 18.85, nearRadius: 8.45, near: 12, far: 66, holdFull: 0.9, damage: 78, nearDamage: 100, // 第 98 版（Yen）：爆炸威力和範圍再 ×1.3（9.5→12.35、14.5→18.85、60→78）
-    maxFlight: 3 },
+    maxFlight: 4 },
 
   // 場地：長軸 X，A 隊在 -X、B 隊在 +X。
   HX: 110, HZ: 62, RIVER: 12, CELL: 0.5,
@@ -817,7 +817,8 @@ SC.CFG = {
   SP_PER_CELL: 100 / 18000, SP_BLADE_K: 2.2, SP_KO_BONUS: 25, // 第 65 版（Yen）：墨刀塗得少，絕招量累積乘 2.2；擊倒對手額外加 25
   SUB_STILL_V: 3, SUB_STILL_T: 0.25, // 第 71 版（Yen）：潛墨時速度低於 3 超過 0.25 秒＝不動，對手看不到
   TOWER_TAKE: 0.1, TOWER_DEAL: 0.2, // 第 75 版（Yen）：時鐘廣場鐘塔頂上，受到的傷害 1/10、打出去的傷害 1/5（塗地戰）
-  ROLL_WIDE: 2.2, ROLL_WIDE_T: 5, // 第 82 版（Yen）：滾刷絕招改成刷頭寬度 2.2 倍、5 秒（原本是隱形）
+  ROLL_WIDE: 2.2, ROLL_WIDE_T: 6, ROLL_SP_SPEED: 1.5, // 第 99 版（Yen）：滾刷絕招 6 秒、速度 ×1.5、不耗墨、能滾上牆
+  // 第 82 版（Yen）：滾刷絕招改成刷頭寬度 2.2 倍、5 秒（原本是隱形）
   BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
   SPRAY_DMG: 24, SPRAY_SLOW: 0.6, // 第 69 版：散彈槍絕招每顆 24（原本 40），連射時移動速度 0.6 倍
   SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 24, /* 第 83 版（Yen）：每秒扣血 16→24，所有場地的河和海都一樣 */ POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
@@ -924,6 +925,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['選貓咪', 'Pick a Cat', 'ネコをえらぶ', '고양이 고르기'],
     ['帶兩把武器', 'Bring 2 Weapons', 'ぶきを2つ持っていく', '무기 2개 챙기기'],
     ['滾刷變超寬 5 秒！', 'Super-wide roller for 5 s!', '5秒間ローラーが超ワイド！', '5초 동안 롤러가 엄청 넓어져요!'],
+    ['滾刷變超寬、超快 6 秒！不耗墨，還能滾上牆！', 'Super-wide, super-fast roller for 6 s! No ink used, and it rolls up walls!', '6秒間ローラーが超ワイド＆超はやい！インクを使わず、かべも登れる！', '6초 동안 롤러가 엄청 넓고 빨라요! 잉크도 안 들고 벽도 굴러 올라가요!'],
     ['上面還沒塗到！先射墨水把上面塗成你的顏色', 'The part above isn\'t painted yet! Shoot ink up there first', '上がまだぬれてないよ！先にインクでぬろう', '위쪽이 아직 안 칠해졌어요! 먼저 잉크로 칠해요'],
     ['下一場電腦會弱一點喔！', 'The CPU will be a little easier next match!', '次の試合はCPUが少し弱くなるよ！', '다음 판은 컴퓨터가 조금 약해져요!'],
     ['絕招用完才能換武器', 'Finish your special before switching weapons', 'ひっさつわざ中は武器を変えられないよ', '필살기가 끝나야 무기를 바꿀 수 있어요'],
@@ -3988,6 +3990,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const hand = new THREE.Group(); hand.position.set(-0.85, 2.3, 0.95); body.add(hand);
     const weapons = { W01: weaponModel('W01', mTeam), W02: weaponModel('W02', mTeam), W03: weaponModel('W03', mTeam), W04: weaponModel('W04', mTeam), W05: weaponModel('W05', mTeamGloss) };
     Object.values(weapons).forEach((w) => { w.visible = false; hand.add(w); });
+    // 第 99 版（Yen）：電腦版按 3 換成墨水彈時，手上拿的是一顆墨水彈（四面體＋尖端黃色小球），不是槍
+    const handBomb = new THREE.Group(); { const tet = new THREE.TetrahedronGeometry(0.62, 0), bm = std(0xffd23f, 0.25), bg = new THREE.SphereGeometry(0.18, 10, 8), seen = [], pos = tet.attributes.position;
+      const body0 = new THREE.Mesh(tet, mTeamGloss); body0.castShadow = true; handBomb.add(body0);
+      for (let k = 0; k < pos.count; k++) { const v = new THREE.Vector3().fromBufferAttribute(pos, k); if (seen.some((q) => q.distanceToSquared(v) < 1e-4)) continue; seen.push(v); const b = new THREE.Mesh(bg, bm); b.position.copy(v).multiplyScalar(1.08); handBomb.add(b); } }
+    handBomb.position.set(0, 0, 0.55); handBomb.visible = false; hand.add(handBomb);
 
     // 墨貓形態（原創「魷魚貓」，Yen 2026-11-17：要更像魷魚）：往上尖尖的魷魚身體、頂端兩片三角形的鰭（做成貓耳朵的樣子，裡面粉紅色），
     // 下半部是大圓眼睛和貓咪的鼻子、ω 嘴、鬍鬚，底下三條長長的觸手尾巴（Yen：三條尾巴、不要有手），觸手尾端是扁扁的槳。
@@ -4046,7 +4053,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       text = SC.tr(text); SC.i18n.fit(g, text, 236, 44); g.textAlign = 'center'; g.textBaseline = 'middle'; // 名字太長就縮小
       g.lineJoin = 'round'; g.lineWidth = 12; g.strokeStyle = '#1b1430'; g.strokeText(text, 128, 50); g.fillStyle = css; g.fillText(text, 128, 50); tagTex.needsUpdate = true;
     };
-    cat.setWeapon = (id) => { cat.weaponId = id; Object.keys(weapons).forEach((k) => (weapons[k].visible = k === id)); };
+    cat.setWeapon = (id) => { cat.weaponId = id; Object.keys(weapons).forEach((k) => (weapons[k].visible = k === id && !cat.bombOn)); };
+    cat.holdBomb = (on, wind) => { cat.bombWind = on ? wind : 0; if (!!on === !!cat.bombOn) return; cat.bombOn = !!on; handBomb.visible = cat.bombOn; cat.setWeapon(cat.weaponId); };
     cat.muzzle = (out) => { const w = weapons[cat.weaponId]; out.set(0, 0, w ? w.userData.muzzle : 1); return hand.localToWorld(out); };
 
     // s: { speed, onGround, vy, form:'biped'|'cat', submerged, pitch, firing, rolling, charge, t }
@@ -4085,14 +4093,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       let aim = -Math.PI / 2 - s.pitch * 0.9 + cat.recoil * 0.25, hx = -s.pitch * 0.9 - cat.recoil * 0.2;
       if (roller) {
         // 滾刷：甩的時候先舉過頭再往前砸下去；推的時候刷頭壓在地上，不跟著準星上下
-        cat.swing = Math.max(0, cat.swing - dt / 0.34);
+        cat.swing = Math.max(0, cat.swing - dt / (cat.swingAir ? 0.5 : 0.34)); // 第 99 版：跳打比較慢（舉起、停一下、劈下）
         cat.press = SC.damp(cat.press || 0, s.rolling ? 1 : 0, 14, dt);
         hx = SC.lerp(SC.clamp(-s.pitch * 0.5, -0.5, 0.35), 0.16, cat.press); aim = -Math.PI / 2 + 0.35 * cat.press - SC.clamp(s.pitch, -0.6, 0.6) * 0.4 * (1 - cat.press);
         if (cat.swing > 0) {
-          const u = 1 - cat.swing, k = u < 0.3 ? -2.1 * (u / 0.3) : SC.lerp(-2.1, 0.45, 1 - Math.pow(1 - (u - 0.3) / 0.7, 3));
-          hx += k; aim += k * 0.8;
+          const u = 1 - cat.swing; let k;
+          if (cat.swingAir) { // 第 99 版（Yen）：跳打＝把滾刷舉到正上方（垂直朝上），再往下垂直劈下；0.2 秒時劈下、墨水潑出去
+            const e = (t) => 1 - Math.pow(1 - SC.clamp(t, 0, 1), 3);
+            k = u < 0.32 ? -2 * e(u / 0.32) : u < 0.4 ? -2 : u < 0.56 ? SC.lerp(-2, 1.75, Math.pow((u - 0.4) / 0.16, 1.6)) : SC.lerp(1.75, 0, e((u - 0.56) / 0.44) * e((u - 0.56) / 0.44));
+            aim = -Math.PI / 2 + k * 0.8; hx = k * 0.75;
+          } else { k = u < 0.3 ? -2.1 * (u / 0.3) : SC.lerp(-2.1, 0.45, 1 - Math.pow(1 - (u - 0.3) / 0.7, 3)); hx += k; aim += k * 0.8; }
         }
       }
+      if (cat.bombOn) { aim = -Math.PI / 2 - SC.clamp(s.pitch, -0.8, 0.8) * 0.7 - (cat.bombWind || 0) * 1.5; hx = (cat.bombWind || 0) * 0.6; handBomb.rotation.y += dt * 1.5; } // 拿著墨水彈；按住瞄準時手往後舉、準備丟
       armR.rotation.x = aim + 0.25; hand.rotation.x = hx;
       hand.position.z = 0.95 - (roller ? 0 : cat.recoil * 0.3);
       if (cat.weaponId === 'W04') { // 散彈槍上膛（第 59 版）：開槍後槍口往上抬、左手扶住護木往後拉「咔」、再推回去「嚓」，共 0.8 秒
@@ -5552,7 +5565,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const KINDS = ['maomao', 'shuang', 'banban', 'taro'], PI = Math.PI;
   // 事件欄位裡要跟著場地翻轉的 x／z 分量，以及面向角
   // 兩個一組的 (x, z)。絕招（S、X）以前漏了，對面那隊看到的位置會左右顛倒（2026-11-19 修正）
-  const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], g: [0, 2, 3, 5], S: [0, 2], X: [0, 2], m: [0, 2], n: [0, 1, 2, 3], q: [0, 2] }, YAW = { w: 3, m: 3, q: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
+  const FLIP = { p: [0, 2, 3, 5], w: [0, 2], r: [0, 1, 2, 3], z: [0, 2, 3, 5], b: [0, 2, 3, 5], g: [0, 2, 3, 5], S: [0, 2], X: [0, 2], m: [0, 2], n: [0, 1, 2, 3], q: [0, 2], W: [0, 2, 3, 4] }, YAW = { w: 3, m: 3, q: 3 }, S_FLIP = [0, 2, 3, 5], S_YAW = 6, S_LEN = 15;
   const QROOMS = 16; let qT = null, qSent = null;
   // 聊天（Yen 2026-11-20）：貼圖在每種房間都能用；自由打字只在用房號開的好友房（TEXT_IN = 'friend'），隨機配對房陌生人不能打字給小朋友看。
   // 訊息放在 presence 的 cm 欄位：最近 15 秒內自己送的幾則，[流水號, 's' 貼圖編號 | 'x' 文字]；收的人用流水號去重。
@@ -9212,7 +9225,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const t1 = new V3(), t2 = new V3(), t3 = new V3(), viewDir = new V3(), PMAX = 1.5;
   const WEAPONS = ['W01', 'W02', 'W03', 'W04', 'W05'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special', 'W04', 'W05'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
   let slowT = 0, slowK = 0.35, countdownT = 0, endT = 0, lastCount = 0, finalOn = false, swingSeq = 0, vic = null, judged = false, splatSfxAt = 0, resultsShown = false, nextSprayAt = 0, spraySerial = 0;
-  G.cam = cam; G.colors = colors;
+  G.cam = cam; G.colors = colors; G.dbg = { proj: projectiles, bombs }; // 測試用
 
   const fwd = (yaw, out) => out.set(Math.sin(yaw), 0, Math.cos(yaw));
   const H = (x, z) => W.height(x, z);
@@ -9301,7 +9314,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
     W.setTeamColors(...colors.slice(0, G.teams)); INK.reset(); SC.wallInk.reset(W.noInk);
     G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); if (a.subArr) scene.remove(a.subArr); if (a.bladeAim) scene.remove(a.bladeAim, a.bladeAim.userData.tip); if (a.spRing) scene.remove(a.spRing); if (a.xray) scene.remove(a.xray); }); SC.swimTrail.clear(); document.body.classList.remove('wlock'); // 第 85 版：上一場絕招的圈、透視剪影、灰武器鈕都清掉
-    projectiles.length = 0; growQ.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false)); RP.buf.length = 0; RP.burst = -1; G.replaying = null; rpBombs(null);
+    projectiles.length = 0; growQ.length = 0; chopQ.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false)); RP.buf.length = 0; RP.burst = -1; G.replaying = null; rpBombs(null);
     const others = Object.keys(SC.CAT_KINDS).filter((k) => k !== G.opts.kind), other = G.demo ? (G.opts.kind === 'maomao' ? 'shuang' : 'maomao') : others[(Math.random() * others.length) | 0]; // 對手隊隨機挑另一種貓（同一種貓固定同一隊）
     G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.targets = []; G.popped = 0;
     if (net && net.cpus.length) G.opts.difficulty = net.df; // 一起打電腦：電腦強度照房主選的
@@ -9613,8 +9626,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   function swing(a) {
-    const w = C.W02; a.ink -= w.swingInk; a.lastShotAt = G.time; a.nextShotAt = G.time + w.swingInterval; a.rollFrom = G.time + w.rollDelay; a.cat.recoil = 1.6; a.cat.swing = 1;
-    const yaw = a.isPlayer ? cam.yaw : a.yaw, air = a.onGround ? 0 : 1; // 玩家朝準星的方向甩，不管身體剛才面向哪裡
+    const w = C.W02, air = a.onGround ? 0 : 1; if (!(a.wideUntil > G.time)) a.ink -= w.swingInk; a.lastShotAt = G.time; a.nextShotAt = G.time + w.swingInterval; a.rollFrom = G.time + w.rollDelay; a.cat.recoil = 1.6; a.cat.swing = 1; a.cat.swingAir = air;
+    const yaw = a.isPlayer ? cam.yaw : a.yaw; // 玩家朝準星的方向甩，不管身體剛才面向哪裡
     const m = muzzle(a, t1), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a); if (near(a) > 0.1) A.sfx.swing();
     if (G.mode === 'boss') BS.onRoller(a.pos);
     flecks(a, m.x, m.y, m.z, yaw, a.pitch, boost, seed, air);
@@ -9622,13 +9635,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   // 滾刷甩出的七道墨水。用種子產生亂數，連線時每台裝置甩出來的形狀才會一樣。
   // 站在地上是橫的一排（九道），在空中是直的一道（又窄又遠）。
-  function flecks(a, mx, my, mz, yaw0, pitch0, boost, seed, air) {
+  function flecks(a, mx, my, mz, yaw0, pitch0, boost, seed, air, late) {
+    if (air && !late) { chopQ.push({ at: G.time + CHOP_T, a, args: [yaw0, pitch0, boost, seed] }); return; } // 第 99 版（Yen）：跳打先把滾刷舉到正上方，劈下來的那一下才潑出墨水
     let s = seed | 0; const rnd = () => { s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const w = C.W02, id = ++swingSeq;
     for (let k = -4; k <= 4; k++) {
       const yaw = yaw0 + k * (air ? 0.022 : 0.15) + (rnd() - 0.5) * 0.07, sp = air ? 46 + (k + 4) * 4 + rnd() * 4 : 42 + rnd() * 14, pitch = (air ? 0.27 : 0.32) + pitch0 * 0.6 + rnd() * 0.15;
       projectiles.push({ x: mx, y: my - 0.6, z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
-        dmg: w.swingDamage, r: w.swingRadius * C.PAINT * boost, range: air ? w.airRange : w.swingRange, g: air ? 92 : 105, travel: 0, drip: air ? 0.012 : 0.02, life: 0, vr: 0.7, color: colors[a.team], cause: 'W02', group: id });
+        dmg: w.swingDamage, r: w.swingRadius * C.PAINT * boost, range: air ? w.airRange : w.swingRange, g: air ? 92 : 105, travel: 0, drip: air ? 0.012 : 0.02, life: 0, vr: 1.05, trail: 0, color: colors[a.team], cause: 'W02', group: id }); // 第 99 版（Yen）：墨點大一點、後面拖一串小水滴，看得出潑了多少墨
     }
   }
 
@@ -9637,7 +9651,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const w = C.W02; fwd(a.yaw, t1); const fx = a.pos.x + t1.x * 2.7, fz = a.pos.z + t1.z * 2.7;
     if (!a.rollPt) { a.rollPt = { x: fx, z: fz }; return; }
     const d = Math.hypot(fx - a.rollPt.x, fz - a.rollPt.z); if (d < 0.5) return;
-    const cost = Math.min(d, 6) * w.rollInk;
+    const cost = a.wideUntil > G.time ? 0 : Math.min(d, 6) * w.rollInk; // 第 99 版（Yen）：絕招期間滾刷不耗墨
     if (a.ink < cost) { a.rollPt.x = fx; a.rollPt.z = fz; a.rolling = false; if (a.isPlayer) SC.ui.lowInk(); return; }
     a.ink -= cost; a.lastShotAt = G.time;
     const r = w.rollRadius * C.PAINT * paintBoost(a) * wideK(a), x0 = d > 8 ? fx : a.rollPt.x, z0 = d > 8 ? fz : a.rollPt.z; // 瞬間移動太遠（重生）就不要拉一條線
@@ -9723,6 +9737,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.ink -= b.ink; a.lastShotAt = G.time; a.nextBombAt = G.time + 0.8; a.protectUntil = Math.min(a.protectUntil, G.time + 0.5);
     const m = muzzle(a, t1), tgt = t2.copy(a.aim), pow = a.ctl.bombPow, maxD = pow >= 0 ? b.far : (b.speed * b.speed) / b.gravity * 0.96, d = Math.hypot(tgt.x - m.x, tgt.z - m.z);
     a.ctl.bombPow = -1;
+    if (pow >= 0 && a.isPlayer && !I.isTouch) { const v = lobVel(pow, t3); spawnBomb(a, m.x, m.y, m.z, v.x, v.y, v.z); if (netOn()) nev(a, 'b', m.x, m.y, m.z, v.x, v.y, v.z); return; }
     if (pow >= 0) bombTarget(a, m, pow, tgt); // 玩家：短按丟近、按越久丟越遠，方向跟著準星
     else if (d > maxD) { tgt.x = m.x + ((tgt.x - m.x) / d) * maxD; tgt.z = m.z + ((tgt.z - m.z) / d) * maxD; tgt.y = Math.min(H(tgt.x, tgt.z), m.y + 10); }
     // 用「拋物線飛多久」來算初速：近的低低拋、遠的高高拋，落點就是準星指的地方（不會因為初速太大而平平地飛過頭）
@@ -9737,15 +9752,29 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     out.set(m.x + (dx / l) * D, 0, m.z + (dz / l) * D); out.y = H(out.x, out.z); if (out.y > m.y + 10 || out.y < -4) out.y = Math.max(-1, Math.min(out.y, m.y + 10));
     return out;
   }
+  // 第 99 版（Yen）：電腦版的墨水彈照鏡頭方向丟：往上看就往上拋、往下看就平平丟（站在城牆上也能朝上丟），按越久丟越用力
+  const LOB_LIFT = 0.62, LOB_V0 = 34, LOB_V1 = 88;
+  function lobVel(pow, out) { const th = SC.clamp(cam.pitch + LOB_LIFT, -0.6, 1.4), v = SC.lerp(LOB_V0, LOB_V1, SC.clamp(pow, 0, 1)); return out.set(Math.sin(cam.yaw) * Math.cos(th) * v, Math.sin(th) * v, Math.cos(cam.yaw) * Math.cos(th) * v); }
+  // 照墨水彈的物理一步一步算出飛行路線，回傳落點（碰到地面或牆就停）
+  const lobPath = [];
+  function lobSim(m, v, out) { let x = m.x, y = m.y, z = m.z, vx = v.x, vy = v.y, vz = v.z; const dt = 1 / 60; lobPath.length = 0;
+    for (let i = 0; i < 240; i++) { vy -= C.BOMB.gravity * dt; const nx = x + vx * dt, nz = z + vz * dt; if (H(nx, nz) > y + 1.2) break; x = nx; z = nz; y += vy * dt; lobPath.push(x, y, z); if (y <= H(x, z) + 0.9 || y < -8) break; }
+    return out.set(x, Math.max(-5, H(x, z)), z); }
   // 按住墨水彈時，地上畫出會落在哪裡（一圈爆炸範圍＋一串小點拋物線）
   let bombAim = null;
   function bombPreview() {
     const p = player(), hold = I.bombHold ? I.bombHold() : -1, on = hold >= 0 && p && p.alive && G.state === 'play' && !G.demo && p.ink >= C.BOMB.ink && p.spT == null;
+    if (p && p.cat.holdBomb) p.cat.holdBomb(!I.isTouch && I.bombSlot && p.alive && G.state === 'play' && p.form === 'biped' && G.time >= p.nextBombAt - 0.5, Math.max(0, hold)); // 第 99 版：換成墨水彈時手上拿著墨水彈（丟出去後 0.3 秒手上再冒出一顆）
     if (!bombAim) { const R = C.BOMB.radius * C.PAINT, mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.75, depthWrite: false, side: THREE.DoubleSide }), ring = new THREE.Mesh(new THREE.RingGeometry(R - 0.9, R, 48), mat);
       ring.rotation.x = -Math.PI / 2; const fill = new THREE.Mesh(new THREE.CircleGeometry(R - 0.9, 48), mat.clone()); fill.material.opacity = 0.2; ring.add(fill); scene.add(ring);
       const dg = new THREE.SphereGeometry(0.32, 8, 6), dots = []; for (let i = 0; i < 14; i++) { const d = new THREE.Mesh(dg, mat); scene.add(d); dots.push(d); } bombAim = { ring, fill, dots }; }
     const A2 = bombAim; A2.ring.visible = on; A2.dots.forEach((d) => (d.visible = on)); if (!on) return;
-    const m = muzzle(p, t1), tgt = bombTarget(p, m, hold, t2), col = colors[p.team];
+    const col = colors[p.team];
+    if (!I.isTouch) { const m = muzzle(p, t1), tgt = lobSim(m, lobVel(hold, t3), t2), n = lobPath.length / 3;
+      A2.ring.material.color.copy(col); A2.fill.material.color.copy(col); A2.ring.position.set(tgt.x, tgt.y + 0.25, tgt.z); A2.ring.scale.setScalar(0.92 + Math.sin(G.time * 12) * 0.05);
+      A2.dots.forEach((d, i) => { const j = Math.min(n - 1, Math.round(((i + 1) / (A2.dots.length + 1)) * n)); if (j < 0) { d.visible = false; return; } d.position.set(lobPath[j * 3], lobPath[j * 3 + 1], lobPath[j * 3 + 2]); });
+      return; }
+    const m = muzzle(p, t1), tgt = bombTarget(p, m, hold, t2);
     A2.ring.material.color.copy(col); A2.fill.material.color.copy(col); A2.ring.position.set(tgt.x, tgt.y + 0.25, tgt.z); A2.ring.scale.setScalar(0.92 + Math.sin(G.time * 12) * 0.05);
     const Dd = Math.hypot(tgt.x - m.x, tgt.z - m.z), T = SC.clamp(0.32 + Dd * 0.0125, 0.36, 0.92), g = C.BOMB.gravity, vy = (tgt.y - m.y + 0.5 * g * T * T) / T;
     A2.dots.forEach((d, i) => { const t = (T * (i + 1)) / (A2.dots.length + 1); d.position.set(m.x + (tgt.x - m.x) * (t / T), m.y + vy * t - 0.5 * g * t * t, m.z + (tgt.z - m.z) * (t / T)); });
@@ -9796,8 +9825,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
   }
 
-  const growQ = [];
+  const growQ = [], chopQ = [], CHOP_T = 0.2;
   function updateProjectiles(dt) {
+    for (let i = chopQ.length - 1; i >= 0; i--) { const q = chopQ[i]; if (G.time < q.at && G.time > q.at - 1) continue; chopQ.splice(i, 1); const b = q.a; if (!b.alive) continue;
+      const m = muzzle(b, t1); flecks(b, m.x, m.y + 1.2, m.z, q.args[0], q.args[1], q.args[2], q.args[3], 1, true); }
     for (let i = growQ.length - 1; i >= 0; i--) { const q = growQ[i]; if (G.time >= q.at || G.time < q.at - 1) { INK.by = q.by; INK.splat(...q.a); growQ.splice(i, 1); } } INK.by = null;
     for (let i = projectiles.length - 1; i >= 0; i--) {
       const p = projectiles[i]; let dead = false; p.life += dt; INK.by = p.owner;
@@ -9830,6 +9861,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         p.drip -= sdt;
         if (p.drip <= 0) { p.drip = 0.055; if (h > -4 && p.y - h < 16) INK.stamp(p.team, p.x, h, p.z, (1.3 + Math.random() * 0.9) * (p.noHit ? 1 : C.PAINT)); }
       }
+      if (p.trail != null && !dead && (p.trail -= dt) <= 0) { p.trail = 0.035; SC.fx.burst(p.x, p.y, p.z, p.color, 2, 3, 0.42, 0, 0.55, 1.4); } // 滾刷墨水後面拖的小水滴
       if (dead || p.life > 3) projectiles.splice(i, 1);
     }
     SC.fx.drawBlobs(projectiles);
@@ -9859,14 +9891,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (k >= 1) { a.crest = a.climb = null; a.onGround = true; a.jumps = 0; a.pos.y = H(a.pos.x, a.pos.z); a.cat.squash = 0.4; if (a.isPlayer) A.sfx.land(); }
       return true;
     }
-    if (!wantCat || !a.alive || a.spT != null) { a.climb = null; return false; }
+    const rollSp = a.weapon === 'W02' && a.wideUntil > G.time && ctl.fire && a.form === 'biped'; // 第 99 版（Yen）：滾刷絕招可以直接滾上牆、沿著牆滾，不用先塗墨
+    if ((!wantCat && !rollSp) || !a.alive || a.spT != null) { a.climb = null; return false; }
     let w = a.climb;
     if (!w) { // 往牆推的時候找前面的牆
       const ml = Math.hypot(ctl.mx, ctl.mz); if (ml < 0.3) return false;
       const dx = ctl.mx / ml, dz = ctl.mz / ml, y = a.pos.y + 1.2, ox = a.pos.x, oz = a.pos.z, ix = ox + dx * (R + 1.4), iz = oz + dz * (R + 1.4);
       if (H(ix, iz) < a.pos.y + C.STEP + 0.6) return false;
       const f = SC.wallInk.face(ox, oz, ix, iz, y); if (!f || -(dx * f.nx + dz * f.nz) < 0.5) return false;
-      if (![0, 1.2, 2.4, 3.6].some((d) => SC.wallInk.owner(f.x, y + d, f.z) === own)) return false; // 第 97 版：前面附近有自己的墨就能開始爬（不用剛好塗在正前方）
+      if (!rollSp && ![0, 1.2, 2.4, 3.6].some((d) => SC.wallInk.owner(f.x, y + d, f.z) === own)) return false; // 第 97 版：前面附近有自己的墨就能開始爬（不用剛好塗在正前方）
       w = { x: f.x, z: f.z, nx: f.nx, nz: f.nz }; if (a.isPlayer) A.sfx.dive();
     }
     const inward = -(ctl.mx * w.nx + ctl.mz * w.nz);
@@ -9876,13 +9909,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (ctl.jump) { ctl.jump = false; if (a.isPlayer) A.sfx.jump(1); // 第 97 版（Yen）：在牆上按跳＝往上跳一下（約 9 高），離牆頂差一點時直接跳上去；跳完不能再連跳，免得不塗墨就跳上城牆
       if (top - a.pos.y <= 9) { a.crest = { t: 0, x0: a.pos.x, y0: a.pos.y, z0: a.pos.z, x1: w.x - w.nx * (R + 1.6), y1: top, z1: w.z - w.nz * (R + 1.6) }; return true; }
       a.climb = null; a.vel.set(-w.nx * 1.5, V0, -w.nz * 1.5); a.onGround = false; a.jumps = C.MAX_JUMPS; a.launchT = 0.22; a.lastJumpAt = G.time; a.gateT = G.time; return false; }
-    a.climb = w; a.onGround = false; a.jumps = 0; a.vel.set(0, 0, 0); a.ground = 'own'; a.submerged = true;
+    a.climb = w; a.onGround = false; a.jumps = 0; a.vel.set(0, 0, 0); a.ground = 'own'; a.submerged = !rollSp; const cs = rollSp ? 13 * C.ROLL_SP_SPEED : 13;
     a.pos.x = w.x + w.nx * (R + 0.15); a.pos.z = w.z + w.nz * (R + 0.15);
     if (inward > 0.25 && a.pos.y >= top - 2.2) { a.crest = { t: 0, x0: a.pos.x, y0: a.pos.y, z0: a.pos.z, x1: w.x - w.nx * (R + 1.6), y1: top, z1: w.z - w.nz * (R + 1.6) }; return true; }
-    let vy = inward > 0.25 ? 13 : inward < -0.25 ? -8 : 0;
+    let vy = inward > 0.25 ? cs : inward < -0.25 ? -8 : 0;
     // 第 97 版：上面 4 以內的小空隙、離牆頂 6 以內都爬得過去，不用塗滿。
     // 第 97 版（Yen「按照慣性跳上去」）：往上爬到墨水沒了、離牆頂不到 14，就順著衝勁跳出牆面、翻上去
-    if (vy > 0 && a.pos.y < top - 6 && ![2, 3.2, 4.4, 5.6].some((d) => SC.wallInk.owner(w.x, a.pos.y + d + vy * dt, w.z) === own)) {
+    if (vy > 0 && !rollSp && a.pos.y < top - 6 && ![2, 3.2, 4.4, 5.6].some((d) => SC.wallInk.owner(w.x, a.pos.y + d + vy * dt, w.z) === own)) {
       if (top - a.pos.y <= 14) { a.climb = null; a.vel.set(-w.nx * 3, Math.sqrt(2 * C.GRAVITY * (top - a.pos.y + 2.5)), -w.nz * 3); a.onGround = false; a.jumps = C.MAX_JUMPS; a.launchT = 0.22; a.lastJumpAt = G.time; a.gateT = G.time; if (a.isPlayer) A.sfx.jump(1); return false; }
       vy = 0; a.climbStuck = (a.climbStuck || 0) + dt;
       if (a.isPlayer && a.climbStuck > 0.8 && G.time - (a.stuckFxAt || -9) > 0.45) { a.stuckFxAt = G.time; SC.fx.burst(w.x, a.pos.y + 3.2, w.z, WHITE, 10, 7, 0.45, 0.2, 0.6, 0); SC.fx.pop(w.x, a.pos.y + 3.2, w.z, WHITE, 3, 0.12);
@@ -9890,14 +9923,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else a.climbStuck = 0;
     // 第 96 版（Yen 11/21 14:44）：在牆上也能左右移動（沿著牆面橫移 13，旁邊要是自己的顏色、而且牆還在；牆轉角時重新貼齊牆面）
     const ux = -w.nz, uz = w.nx, side = ctl.mx * ux + ctl.mz * uz; let moved = 0;
-    if (Math.abs(side) > 0.25) { const st = Math.sign(side) * 13 * dt, cx = w.x + ux * st, cz = w.z + uz * st, cy = a.pos.y + 1.2;
-      if (H(cx - w.nx * 0.8, cz - w.nz * 0.8) > cy && [[0, 0], [1.2, 0], [2.4, 0], [0, 1.2], [0, -1.2], [1.2, 1.2], [1.2, -1.2]].some(([du, dv]) => SC.wallInk.owner(cx + ux * Math.sign(side) * du, cy + dv, cz + uz * Math.sign(side) * du) === own)) {
+    if (Math.abs(side) > 0.25) { const st = Math.sign(side) * cs * dt, cx = w.x + ux * st, cz = w.z + uz * st, cy = a.pos.y + 1.2;
+      if (H(cx - w.nx * 0.8, cz - w.nz * 0.8) > cy && (rollSp || [[0, 0], [1.2, 0], [2.4, 0], [0, 1.2], [0, -1.2], [1.2, 1.2], [1.2, -1.2]].some(([du, dv]) => SC.wallInk.owner(cx + ux * Math.sign(side) * du, cy + dv, cz + uz * Math.sign(side) * du) === own))) {
         const f = SC.wallInk.face(cx + w.nx * 2, cz + w.nz * 2, cx - w.nx * 2, cz - w.nz * 2, cy);
         if (f && f.nx * w.nx + f.nz * w.nz > 0.5) { w.x = f.x; w.z = f.z; w.nx = f.nx; w.nz = f.nz; } else { w.x = cx; w.z = cz; }
-        a.pos.x = w.x + w.nx * (R + 0.15); a.pos.z = w.z + w.nz * (R + 0.15); moved = 13;
+        a.pos.x = w.x + w.nx * (R + 0.15); a.pos.z = w.z + w.nz * (R + 0.15); moved = cs;
       } else if (a.pos.y <= H(a.pos.x, a.pos.z) + 0.3) { a.climb = null; a.onGround = true; return false; } } // 在牆腳往旁邊走、旁邊沒有墨：離開牆面用走的
     a.pos.y += vy * dt; a.speed = Math.max(Math.abs(vy), moved);
     const g = H(a.pos.x, a.pos.z); if (a.pos.y <= g) { a.pos.y = g; if (vy < 0 || inward < -0.25) { a.climb = null; a.onGround = true; return false; } }
+    if (rollSp) { const lp = a.wallRollPt; if (!lp || Math.hypot(a.pos.x - lp.x, a.pos.y - lp.y, a.pos.z - lp.z) >= 1.3) { // 滾刷絕招：滾過的牆面塗成自己的顏色
+      a.wallRollPt = { x: a.pos.x, y: a.pos.y, z: a.pos.z }; const r = SC.clamp(C.W02.rollRadius * C.PAINT * wideK(a) * 0.42, 2, 6);
+      SC.wallInk.paint(a.team, w.x, a.pos.y + 1, w.z, w.nx, w.nz, r, colors[a.team]); if (netOn()) nev(a, 'W', w.x, a.pos.y + 1, w.z, w.nx, w.nz, r);
+      if (a.isPlayer && (a.rollSfx -= 1.3) <= 0) { a.rollSfx = 3.2; A.sfx.roll(); } } }
     if ((vy || moved) && (a.swimT -= dt) <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x - w.nx * R, a.pos.y + 1, a.pos.z - w.nz * R, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); }
     return true;
   }
@@ -9973,6 +10010,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (a.ground === 'enemy') sp *= C.ENEMY_INK_WALK_MULT;
     else if (a.ground === 'air') sp = Math.min(a.airSpeed, C.WALK_SPEED * 1.25);
     if (a.charge >= 0) sp *= 0.55; if (a.rolling) sp *= SC.lerp(C.W02.rollSpeedMin, C.W02.rollSpeedMax, a.rollK); // 滾刷越推越快
+    if (a.weapon === 'W02' && a.wideUntil > now && a.form === 'biped') sp *= C.ROLL_SP_SPEED; // 第 99 版（Yen）：滾刷絕招期間跑得快 1.5 倍
     if (a.ai) sp *= aiD().speed;
     if (a.inWater) sp *= C.SEA_SLOW; // 第 66 版（Yen）：海盜船掉進海裡變慢
     if (a.sprayUntil > now) sp *= C.SPRAY_SLOW; // 第 69 版：散彈槍絕招連射時走比較慢（防守、邊打邊退）
@@ -10044,7 +10082,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         else if (ctl.fire && now >= a.nextShotAt) slash(a);
       }
     } else if (a.weapon === 'W02') {
-      if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= C.W02.swingInk) swing(a); else if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } }
+      if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= C.W02.swingInk || a.wideUntil > now) swing(a); else if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } }
       if (ctl.fire && canAct && now >= a.rollFrom && a.onGround) { a.rolling = true; roll(a); }
     } else {
       const w = C.W03;
@@ -10177,7 +10215,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, col, 30, 24, 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.2, a.pos.z, col, 6, 0.35);
     if (n > 0.05 && !G.demo) A.sfx.spUp(n * 0.7);
     if (kind === 'invis') { a.invisUntil = now + 6; if (a.isPlayer) SC.ui.tip('隱形 6 秒！對手看不到你', 2.4); }
-    else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬 5 秒！', 2.4); }
+    else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬、超快 6 秒！不耗墨，還能滾上牆！', 2.8); }
     else if (kind === 'xray') { a.xrayUntil = now + 8; if (a.isPlayer) { SC.ui.tip('透視 8 秒！牆後面的對手會變成紅色', 2.4); SC.ui.flash('rgba(255,40,40,.35)', 0.3); } }
     else if (kind === 'spray') { a.sprayUntil = now + 3; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('四面八方亂掃射！', 2); }
     else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.bladeAir = !a.inWater && a.pos.y - H(a.pos.x, a.pos.z) > 4; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
@@ -10451,7 +10489,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (type === 'p') {
       if (projectiles.length < 500) projectiles.push({ x: d[0], y: d[1], z: d[2], vx: d[3], vy: d[4], vz: d[5], team: a.team, owner: a, dmg: 0, r: SC.clamp(d[6], 1, 10), range: C.W01.range, g: C.W01.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.8, flash: true, color: colors[a.team], cause: 'W01' });
       a.cat.recoil = 1; A.sfx.shot(near(a)); if (near(a) > 0.15) SC.fx.pop(d[0], d[1], d[2], WHITE, 1.9, 0.06);
-    } else if (type === 'w') { if (projectiles.length < 500) flecks(a, d[0], d[1], d[2], d[3], SC.clamp(d[4], -1.3, 1.3), SC.clamp(d[5], 1, 1.2), d[6], d[7] ? 1 : 0); a.cat.swing = 1; a.cat.recoil = 1.6; if (near(a) > 0.1) A.sfx.swing(); }
+    } else if (type === 'w') { if (projectiles.length < 500) flecks(a, d[0], d[1], d[2], d[3], SC.clamp(d[4], -1.3, 1.3), SC.clamp(d[5], 1, 1.2), d[6], d[7] ? 1 : 0); a.cat.swing = 1; a.cat.swingAir = d[7] ? 1 : 0; a.cat.recoil = 1.6; if (near(a) > 0.1) A.sfx.swing(); }
+    else if (type === 'W') { SC.wallInk.paint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 7), colors[a.team]); } // 第 99 版：滾刷絕招滾上牆塗的墨
     else if (type === 'r') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 12) { rollPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 16)); SC.fx.burst(d[2], d[4] + 0.4, d[3], colors[a.team], 2, 9, 0.35); } }
     else if (type === 'z') { const dir = new V3(d[3], d[4], d[5]); if (dir.lengthSq() > 0.5) sniperShot(a, new V3(d[0], d[1], d[2]), dir.normalize(), SC.clamp(d[6], 0, 1), SC.clamp(d[7], 1, 1.2), { len: d[8], hit: d[9] }); }
     else if (type === 'g') { const l = Math.hypot(d[3], d[4], d[5]); if (l > 0.5 && projectiles.length < 500) { pellets(a, d[0], d[1], d[2], d[3] / l, d[4] / l, d[5] / l, SC.clamp(d[6], 1, 1.2), d[7], 0); a.cat.recoil = 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a)); } }
