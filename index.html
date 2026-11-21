@@ -115,6 +115,7 @@ button { font: inherit; color: inherit; }
 .w-chip.bomb .wi { width: 32px; height: 32px; }
 .w-chip.on { border-color: #fff; background: var(--a); color: #fff; box-shadow: var(--pop); transform: translateY(-4px) rotate(-2deg); text-shadow: 0 1px 0 var(--navy); }
 .w-chip.on kbd { background: var(--navy); }
+.w-chip.on.off { border-color: rgba(255, 255, 255, .45); background: var(--navy); box-shadow: none; transform: none; } .w-chip.on.off .wi { background: rgba(255, 255, 255, .1); } /* 第 98 版：選了墨水彈時，原本的武器不亮 */
 .w-chip.bomb { margin-left: 8px; }
 
 .h-tip { position: absolute; left: 50%; bottom: calc(96px + var(--sab)); transform: translate(-50%, 12px); max-width: min(560px, calc(100% - var(--gl) - var(--gr))); background: var(--navy); border: 3px solid var(--sun); color: #fff; padding: 9px 16px; border-radius: 16px; font-size: 15px; line-height: 1.45; text-align: center; opacity: 0; transition: opacity .25s, transform .25s; text-wrap: balance; }
@@ -806,7 +807,8 @@ SC.CFG = {
   HEAD_Y: 3.3, HEAD_MULT: 7 / 3, // 第 63 版（Yen 選「改傷害數字」）：漆彈槍打身體一發 30、打頭一發 70
   // Yen 2026-11-19：丟更遠（初速 54→72，最遠約 26→47），落地後滾一小段（落地保留約 0.3 的水平速度、每秒衰減）再停住
   // Yen 2026-11-14：墨水彈加強。爆炸塗地半徑 6→7（再乘 PAINT），傷害範圍 8.4→11，中心 5 以內直接擊倒，外圈 60
-  BOMB: { ink: 20 / INK_LAST, speed: 72, gravity: 105, fuse: 2, roll: 0.32, rollDrag: 3.6, armDelay: 1.05, radius: 9.5, damageRadius: 14.5, nearRadius: 6.5, near: 12, far: 66, holdFull: 0.9, damage: 60, nearDamage: 100, maxFlight: 3 },
+  BOMB: { ink: 20 / INK_LAST, speed: 72, gravity: 105, fuse: 2, roll: 0.32, rollDrag: 3.6, armDelay: 1.05, radius: 12.35, damageRadius: 18.85, nearRadius: 8.45, near: 12, far: 66, holdFull: 0.9, damage: 78, nearDamage: 100, // 第 98 版（Yen）：爆炸威力和範圍再 ×1.3（9.5→12.35、14.5→18.85、60→78）
+    maxFlight: 3 },
 
   // 場地：長軸 X，A 隊在 -X、B 隊在 +X。
   HX: 110, HZ: 62, RIVER: 12, CELL: 0.5,
@@ -1081,6 +1083,11 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['滑鼠', 'Mouse', 'マウス', '마우스'],
     ['瞄準（點一下畫面鎖定游標）', 'Aim (click the screen to lock the pointer)', 'ねらう（画面をクリックでカーソル固定）', '조준 (화면을 클릭하면 커서 고정)'],
     ['左鍵', 'Left click', '左クリック', '왼쪽 클릭'],
+    ['右鍵', 'Right click', '右クリック', '오른쪽 클릭'],
+    ['狙擊槍：打開／關閉狙擊鏡（放大 4 倍）', 'Sniper: open / close the scope (4x zoom)', 'スナイパー：スコープを開く／閉じる（4倍）', '저격총: 조준경 켜기/끄기 (4배)'],
+    ['3＋左鍵（按住）', '3 + Left click (hold)', '3＋左クリック（長おし）', '3 + 왼쪽 클릭 (꾹)'],
+    ['換成墨水彈：按住左鍵瞄準（地上畫出落點），放開丟出去，按越久丟越遠（Q 也能直接丟）', 'Switch to ink bombs: hold left click to aim (the landing spot shows on the ground), release to throw; hold longer to throw farther (Q also throws)', 'インクボムに切りかえ：左クリック長おしでねらい（落ちる場所が地面に出る）、はなして投げる。長くおすほど遠く（Qでもすぐ投げられる）', '잉크 폭탄으로 바꾸기: 왼쪽 클릭을 꾹 눌러 조준(떨어질 곳이 땅에 보여요), 떼면 던져요. 오래 누를수록 멀리 (Q로도 바로 던져요)'],
+    ['射擊；狙擊槍按住蓄力，放開發射', 'Shoot. With the sniper, hold to charge, release to fire', 'うつ。スナイパーは長おしでためて、はなしてうつ', '쏘기. 저격총은 꾹 눌러 모으고 떼면 발사'],
     ['射擊；狙擊槍按住蓄力會放大，放開發射', 'Shoot. With the sniper, hold to charge and zoom, release to fire', 'うつ。スナイパーは長おしでためてズーム、はなすと発射', '쏘기. 저격총은 꾹 누르면 모으며 확대, 떼면 발사'],
     ['Shift（按住）', 'Shift (hold)', 'Shift（長おし）', 'Shift (꾹 누르기)'],
     ['變墨貓，在自己的墨水裡潛行、補墨水', 'Become an ink cat: swim in your own ink and refill', 'インクネコになって、自分のインクにもぐって進み、インクを補充', '잉크 고양이가 되어 내 잉크 속을 헤엄치고 잉크를 채워요'],
@@ -4222,7 +4229,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const bombDown = () => { if (bombAt < 0) bombAt = performance.now() / 1000; };
   const bombUp = () => { if (bombAt < 0) return; I.bombPow = I.bombHold(); bombAt = -1; I.bomb = true; };
   I.bombHold = () => (bombAt < 0 ? -1 : SC.clamp((performance.now() / 1000 - bombAt - 0.1) / SC.CFG.BOMB.holdFull, 0, 1));
-  I.cancelActions = () => { bombAt = -1; I.bomb = false; I.sp = false; I.jump = false; I.fireTap = false; }; // 重生時丟掉倒下前按的招式（第 60 版）
+  // 第 98 版（Yen 11/21 17:36，電腦版）：右鍵開關狙擊鏡（I.scope）；3 換成墨水彈（I.bombSlot），按住左鍵瞄準、放開丟
+  I.scope = false; I.bombSlot = false; I.weapon = null;
+  const setBombSlot = (on) => { I.bombSlot = !!on; if (on) { I.scope = false; mouseFire = false; } if (SC.ui && SC.ui.bombSlot) SC.ui.bombSlot(I.bombSlot); }; I.setBombSlot = setBombSlot;
+  I.cancelActions = () => { I.scope = false; bombAt = -1; I.bomb = false; I.sp = false; I.jump = false; I.fireTap = false; }; // 重生時丟掉倒下前按的招式（第 60 版）
   I.consume = () => { I.fireTap = false; I.jump = false; I.bomb = false; I.sp = false; I.swap = 0; I.select = null; I.pause = false; I.lookX = 0; I.lookY = 0; };
 
   I.setTouch = (on) => {
@@ -4263,9 +4273,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         case 'ShiftLeft': case 'ShiftRight': keyCat = true; break; // 第 65 版（Yen）：Q 改成丟墨水彈，墨貓用 Shift
         case 'KeyQ': case 'KeyG': case 'KeyE': bombDown(); break;
         case 'KeyF': case 'KeyR': I.sp = true; break; // 絕招
-        case 'Tab': I.swap = 1; e.preventDefault(); break;
-        case 'Digit1': case 'Numpad1': I.select = slots[0]; break; // 第 64 版：1、2 就是帶的第一、第二把（Yen）
-        case 'Digit2': case 'Numpad2': I.select = slots[1]; break;
+        case 'Tab': if (I.bombSlot) setBombSlot(false); else I.swap = 1; e.preventDefault(); break;
+        case 'Digit1': case 'Numpad1': setBombSlot(false); I.select = slots[0]; break; // 第 64 版：1、2 就是帶的第一、第二把（Yen）
+        case 'Digit2': case 'Numpad2': setBombSlot(false); I.select = slots[1]; break;
+        case 'Digit3': case 'Numpad3': setBombSlot(true); break;
         case 'Escape': case 'KeyP': I.pause = true; break;
         case 'KeyM': SC.ui.toggleMute(); break;
         case 'ArrowUp': case 'ArrowDown': e.preventDefault(); break;
@@ -4281,10 +4292,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     canvas.addEventListener('mousedown', (e) => {
       if (I.isTouch || !I.active) return;
       if (!I.locked && canvas.requestPointerLock) { try { const p = canvas.requestPointerLock(); if (p && p.catch) p.catch(() => {}); } catch (err) {} }
-      if (e.button === 0) mouseFire = true;
-      if (e.button === 2) bombDown();
+      if (e.button === 0) { if (I.bombSlot) bombDown(); else mouseFire = true; }
+      if (e.button === 2 && I.weapon === 'W03' && !I.bombSlot) { I.scope = !I.scope; if (SC.audio) SC.audio.sfx.ui(); }
     });
-    window.addEventListener('mouseup', (e) => { if (e.button === 0) mouseFire = false; if (e.button === 2) bombUp(); });
+    window.addEventListener('mouseup', (e) => { if (e.button === 0) { mouseFire = false; if (bombAt >= 0) bombUp(); } });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     window.addEventListener('mousemove', (e) => {
       if (I.isTouch || !I.active) return;
@@ -4293,7 +4304,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       I.lookX += (e.movementX || 0) * 0.004 * k; I.lookY += (e.movementY || 0) * 0.004 * k;
       const fx = e.clientX / window.innerWidth; edgeTurn = fx < 0.06 ? -1 : fx > 0.94 ? 1 : 0;
     });
-    canvas.addEventListener('wheel', (e) => { if (I.active) { I.swap = e.deltaY > 0 ? 1 : -1; e.preventDefault(); } }, { passive: false });
+    canvas.addEventListener('wheel', (e) => { if (I.active) { if (I.bombSlot) setBombSlot(false); else I.swap = e.deltaY > 0 ? 1 : -1; e.preventDefault(); } }, { passive: false });
     document.addEventListener('pointerlockchange', () => {
       const was = I.locked; I.locked = document.pointerLockElement === canvas; edgeTurn = 0;
       if (was && !I.locked && I.active && !I.isTouch && !document.hidden) I.pause = true; // 按 Esc 解除鎖定就暫停
@@ -4397,7 +4408,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   I.setLoadout = (lo) => { slots = lo.slice(0, 2); if (layer) { const box = layer.querySelector('#t-wpns'); lo.forEach((w) => { const b = box && box.querySelector('.t-w[data-w="' + w + '"]'); if (b) box.appendChild(b); }); } if (layer) layer.querySelectorAll('.t-w').forEach((b) => (b.hidden = !lo.includes(b.dataset.w))); }; // 第 63 版：只顯示帶的兩把
-  I.setWeapon = (id) => { if (layer) layer.querySelectorAll('.t-w').forEach((b) => b.classList.toggle('on', b.dataset.w === id)); };
+  I.setWeapon = (id) => { if (id !== 'W03') I.scope = false; I.weapon = id; if (layer) layer.querySelectorAll('.t-w').forEach((b) => b.classList.toggle('on', b.dataset.w === id)); };
   I.clearLatch = () => { catLatched = false; const el = document.getElementById('t-cat'); if (el) el.classList.remove('latched'); };
 
   I.init = (cv) => {
@@ -9270,6 +9281,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // opts: { kind, weapon, difficulty, mode: 'versus'｜'sandbox'｜'boss'｜'net', roster: '1v1'｜'2v2', demo, net: SC.net.match }
   G.start = (opts) => {
+    if (I.setBombSlot) I.setBombSlot(false); I.scope = false; // 第 98 版：每一場開始都回到第一把武器、狙擊鏡關著
     if (opts.weapon && !opts.loadout) G.opts.loadout = null; Object.assign(G.opts, opts); G.opts.tut = !!opts.tut; G.demo = !!opts.demo; if (!G.opts.tut && SC.tut && SC.tut.active) SC.tut.stop(); G.mode = G.demo ? 'versus' : G.opts.mode || 'versus'; slowT = 0; cam.fin = null; G.cine = false; vic = null; judged = false; hugEnd();
     const net = netOn() ? G.opts.net : null, boss = G.mode === 'boss', solo = boss || G.mode === 'sandbox', duo = G.demo || G.opts.roster !== '1v1';
     const all = SC.bossList(); BS = (boss && all[(+G.opts.stage || 1) - 1]) || SC.boss; let off = false; all.forEach((m) => { if (m && m !== BS && m.setActive(false, scene)) off = true; });
@@ -10581,8 +10593,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const p = viewer(), aspect = camera.aspect; G.watching = null;
     const baseFov = aspect < 1 ? 78 : 60;
     // 狙擊蓄力時放大：一按就先 1.8 倍，蓄滿到 SCOPE_ZOOM 倍；鏡頭移到貓咪頭部，角色不會擋住準星
-    const charging = p && p.isPlayer && !G.demo && p.alive && p.weapon === 'W03' && p.charge >= 0 && G.state === 'play';
-    const ck = charging ? SC.clamp(p.charge / C.W03.fullCharge, 0, 1) : 0;
+    // 第 98 版（Yen）：電腦版改成按右鍵開關狙擊鏡（一開就 4 倍），蓄力不再自動放大；觸控版照舊按住蓄力放大
+    const sniping = p && p.isPlayer && !G.demo && p.alive && p.weapon === 'W03' && G.state === 'play', charging = sniping && (I.isTouch ? p.charge >= 0 : I.scope);
+    const ck = charging ? (I.isTouch ? SC.clamp(p.charge / C.W03.fullCharge, 0, 1) : 1) : 0;
     cam.zoom = SC.damp(cam.zoom, charging ? 1.8 + (SCOPE_ZOOM - 1.8) * ck * (2 - ck) : 1, charging ? 14 : 10, dt);
     const scopeK = SC.clamp((cam.zoom - 1) / 0.8, 0, 1);
     camera.fov = (2 * Math.atan(Math.tan((baseFov * Math.PI) / 360) / cam.zoom) * 180) / Math.PI;
@@ -11031,7 +11044,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.trickIcon = (k) => TRICK[k] || '';
 
   const HELP = {
-    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍按住蓄力會放大，放開發射'], ['Shift（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['Q／右鍵（按住）', '丟墨水彈：短按丟近，按越久丟越遠'], ['1 2／Tab／滾輪', '在帶的兩把武器之間切換（墨刀：按住連砍，跳起來再按一下往前衝刺斬）'], ['Esc／P', '暫停'], ['M', '靜音']],
+    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍按住蓄力，放開發射'], ['右鍵', '狙擊槍：打開／關閉狙擊鏡（放大 4 倍）'], ['Shift（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['3＋左鍵（按住）', '換成墨水彈：按住左鍵瞄準（地上畫出落點），放開丟出去，按越久丟越遠（Q 也能直接丟）'], ['1 2／Tab／滾輪', '在帶的兩把武器之間切換（墨刀：按住連砍，跳起來再按一下往前衝刺斬）'], ['Esc／P', '暫停'], ['M', '靜音']],
     touch: [['左半邊', '按住拖曳出搖桿來移動'], ['墨貓鈕（左下）', '按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動'], ['射擊鈕', '短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準'], ['狙擊槍', '按住射擊鈕蓄力會放大，放開發射，一發擊倒'], ['按著墨貓＋點射擊鈕', '墨貓跳，落地前都維持墨貓'], ['右半邊', '拖曳轉動視角瞄準'], ['墨水彈', '朝準星的方向丟：短按丟近，按越久丟越遠'], ['墨刀', '按住射擊鈕連續砍；跳起來後按住射擊鈕＝往前衝刺斬'], ['切換', '點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍、墨刀']],
   };
 
@@ -11062,7 +11075,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-scope" id="scope"></div>
       <div class="h-cross" id="cross"><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div><div class="h-hs" id="hs-pop">爆頭！</div>
       <div class="h-weapons" id="weapons">
-        ${['W01', 'W02', 'W03', 'W04', 'W05'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>Q</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Shift</kbd><b>墨貓</b></span></div>
+        ${['W01', 'W02', 'W03', 'W04', 'W05'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>3</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Shift</kbd><b>墨貓</b></span></div>
       </div>
       <div class="h-tip" id="tip"></div>
       <div class="h-trick" id="trick-card"></div>
@@ -11408,6 +11421,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const net = G().mode === 'net'; $('pause-title').textContent = net ? '對戰還在進行中' : '暫停中'; $('btn-restart').hidden = net; $('btn-quit').textContent = net ? '離開這場，回房間' : '回主選單';
     els['m-pause'].hidden = !p; if (!p) els['m-help'].hidden = true;
   };
+  ui.bombSlot = (on) => { const bc = els.weapons && els.weapons.querySelector('.w-chip.bomb'); if (!bc) return; bc.classList.toggle('on', on); els.weapons.querySelectorAll('.w-chip[data-w]').forEach((c) => c.classList.toggle('off', on)); }; // 第 98 版：選了 3（墨水彈）時亮起來
   ui.onWeapon = (id) => { els.weapons.querySelectorAll('.w-chip').forEach((c) => c.classList.toggle('on', c.dataset.w === id)); els.cross.dataset.w = id; SC.input.setWeapon(id); };
   ui.scope = (k) => { if (!els.scope) return; const v = Math.round(k * 20) / 20; if (last.scope !== v) { last.scope = v; els.scope.style.opacity = v; els.cross.classList.toggle('scoped', v > 0.5); } };
   ui.hurt = () => { hurtK = 1; };
@@ -12176,7 +12190,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ],
     ecpayOpen: false, // 綠界收款服務審核通過後改成 true（審核中時贊助頁會顯示 10300023）
     donateUrl: 'https://p.ecpay.com.tw/FDC2624', // 綠界實況主收款的贊助網址（一個網址、贊助者自己輸入金額）：各方案沒有自己的 url 時都連到這裡
-    paypal: 'https://www.paypal.com/ncp/payment/KLQB22CD7ZXL4', // 國外贊助：PayPal 付款連結（商業帳號，客戶自填金額，不用 PayPal 帳號也能刷卡）；填了才出現
+    paypal: 'https://paypal.me/pompiyen', // 國外贊助用的 PayPal.Me 連結（例：'https://paypal.me/xxx'），填了才出現
     donateNote: '遊戲免費遊玩，贊助用於支持開發與營運。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。',
     // Xsolla（Yen 2026-11-20：先備用串接，以後可能開付費選項）。不用自己的伺服器：
     //   Firebase 用 Google/Facebook 登入時拿到的存取權杖 → Xsolla Login「用社群權杖登入」換成 Xsolla 使用者 JWT
@@ -12224,7 +12238,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['台灣贊助（綠界）：', 'From Taiwan (ECPay):', '台湾から（ECPay）：', '대만에서 (ECPay):'],
     ['幣別新台幣，可用信用卡、ATM 轉帳、超商代碼付款。', 'Currency TWD. Card, ATM transfer or convenience store code.', '通貨は台湾ドル。カード・ATM振込・コンビニ払い。', '통화는 대만 달러. 카드, ATM 이체, 편의점 결제.'],
     ['綠界付款頁只有中文，海外的朋友建議用 PayPal。', 'The ECPay page is in Chinese only and made for Taiwan. From abroad, PayPal is easier.', 'ECPay の支払いページは中国語のみで台湾向けです。海外からは PayPal が便利です。', 'ECPay 결제 페이지는 중국어만 지원하는 대만용이에요. 해외에서는 PayPal이 편해요.'],
-    ['金額自己填，不用 PayPal 帳號也能直接刷卡（以台幣計價，會自動換算）。', 'Enter any amount. No PayPal account needed: pay by card directly (priced in TWD, converted automatically).', '金額は自由。PayPal アカウントなしでもカードで払えます（台湾ドル建て、自動換算）。', '금액은 자유. PayPal 계정 없이도 카드로 바로 결제할 수 있어요 (대만 달러 기준, 자동 환산).'],
+    ['可用你自己的貨幣，以信用卡或 PayPal 帳戶付款。', 'Pay in your own currency by card or PayPal account.', 'お使いの通貨で、カードか PayPal アカウントで支払えます。', '본인 통화로 카드 또는 PayPal 계정으로 결제할 수 있어요.'],
     ['請先登入。', 'Please sign in first.', '先にログインしてください。', '먼저 로그인하세요.'],
     ['付款頁面打不開，等一下再試一次。', 'Could not open the payment page. Try again later.', '支払いページを開けません。しばらくしてからもう一度。', '결제 페이지를 열 수 없어요. 잠시 후 다시 시도하세요.'],
     ['好友', 'Friends', 'フレンド', '친구'],
@@ -12554,7 +12568,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     } else {
       const tiers = `<div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: CONFIG.ecpayOpen ? d.url || CONFIG.donateUrl : '' }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>`;
       const tw = `<p class="ac-sub">台灣贊助（綠界）：</p>${tiers}<p class="ac-note">幣別新台幣，可用信用卡、ATM 轉帳、超商代碼付款。</p>`;
-      const pp = CONFIG.paypal ? `<p class="ac-sub">國外贊助（信用卡或 PayPal）：</p><div class="ac-row"><a class="d pp" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}PayPal</a></div><p class="ac-note">金額自己填，不用 PayPal 帳號也能直接刷卡（以台幣計價，會自動換算）。</p>` : '';
+      const pp = CONFIG.paypal ? `<p class="ac-sub">國外贊助（信用卡或 PayPal）：</p><div class="ac-row"><a class="d pp" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}PayPal</a></div><p class="ac-note">可用你自己的貨幣，以信用卡或 PayPal 帳戶付款。</p>` : '';
       // 綠界頁只有中文、以台灣付款方式為主：非中文介面時把 PayPal 放最前面，並提醒綠界頁是中文
       const intl = SC.i18n && SC.i18n.lang && SC.i18n.lang !== 'zh' && pp;
       h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p>${intl ? pp + tw + '<p class="ac-note">綠界付款頁只有中文，海外的朋友建議用 PayPal。</p>' : tw + pp}${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
