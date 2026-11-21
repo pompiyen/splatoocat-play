@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='76e294cf68ff';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='32f5405430e1';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -13355,7 +13355,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const i = weekly.last.findIndex((r) => r.uid === uid); weekly.status = i < 0 ? '' : i < 3 ? 'top3' : 'top10'; weekly.loaded = weekId(n);
         try { localStorage.setItem(ST_KEY, JSON.stringify({ wk: weekId(n), s: weekly.status })); } catch (e) {}
       } catch (e) { /* 讀不到就先不顯示 */ }
-      weekly.busy = false; paintBadge(); if (((ov && !ov.hidden) || host()) && tab === 'week') openPanel(tab);
+      weekly.busy = false; paintBadge(); if (ov && !ov.hidden && tab === 'week') openPanel(tab, true); else if (host() && tab === 'week') openPanel(tab);
     },
     mine: () => { if (weekly.status && weekly.loaded === weekId()) return weekly.status; try { const o = JSON.parse(localStorage.getItem(ST_KEY) || 'null'); return o && o.wk === weekId() ? o.s || '' : ''; } catch (e) { return ''; } },
   };
@@ -13385,12 +13385,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 積分賽的牌位／排行／徽章直接放在選單版面裡（Yen 2026-11-21 19:43：不要彈出視窗）
   const host = () => { const h = document.getElementById('rk-opt'); return h && !h.hidden ? h : null; };
   const onTab = (e) => { const tb = e.target.closest('[data-tab]'); if (!tb) return false; openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return true; };
-  const openPanel = (want) => {
+  const openPanel = (want, pop) => { // pop：標題上的毛線球按鈕一定用彈出視窗（Yen 11-21 21:49）
     style(); const s = load(), t = tierOf(s.p); if (typeof want === 'string') tab = want;
-    const inl = host();
-    if (!inl && typeof want !== 'string' && SC.ui && SC.ui.pickRanked && SC.ui.pickRanked()) return; // 標題上的牌位按鈕：切到積分賽，積分就在版面裡
+    const inl = pop === true ? null : host();
     if (inl && !inl.dataset.rk) { inl.dataset.rk = '1'; inl.addEventListener('click', onTab); }
-    if (!inl && !ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
+    if (!inl && !ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab, true); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
     const nxt = t >= TOP ? '' : ` / ${(t + 1) * PER}`, wkp = s.wk && s.wk.id === weekId() ? s.wk.p : 0, f = FRAME[weekly.mine()];
     const tabs = `<div class="rkd-tabs">${[['rank', '🏅', '牌位'], ['week', '📅', '本週排行'], ['ach', '🎖️', '徽章']].map(([k, i, n]) => `<button type="button" data-tab="${k}" class="${tab === k ? 'on' : ''}"><em>${i}</em>${tr(n)}</button>`).join('')}</div>`;
     const head = `<div class="rkd-head"><span class="rkd-i">${icon(t)}${f ? `<i class="rkd-fr">${f.i}</i>` : ''}</span><div><b>${tr(TIERS[t].n)}</b>${stars(s.p)}<small>${tr('積分')} ${s.p}${nxt}　·　${s.m} ${tr('場')}${f ? '　·　' + f.i + ' ' + tr(f.n) : ''}</small></div></div>`;
@@ -13469,13 +13468,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   const mount = () => {
     const title = document.getElementById('m-title'); if (!title) return setTimeout(mount, 300);
-    style(); badge = document.createElement('button'); badge.type = 'button'; badge.className = 'rkd-badge'; badge.setAttribute('translate', 'no'); badge.onclick = openPanel; title.appendChild(badge); paintBadge();
+    style(); badge = document.createElement('button'); badge.type = 'button'; badge.className = 'rkd-badge'; badge.setAttribute('translate', 'no'); badge.onclick = () => openPanel('rank', true); title.appendChild(badge); paintBadge();
     let tries = 0; const dock = () => { const bar = title.querySelector('.ac-bar'); if (bar) bar.prepend(badge); else if (++tries < 20) setTimeout(dock, 250); }; dock(); // 公開版：排在愛心和帳號按鈕左邊
     window.addEventListener('storage', (e) => { if (e.key === KEY) paintBadge(); });
     if (SC.account && SC.account.onChange) SC.account.onChange((u) => { if (u) setTimeout(() => weekly.load(), 2500); });
   };
   hook(); mount();
-  if (SC.i18n && SC.i18n.onChange) SC.i18n.onChange.push(() => { paintBadge(); if (host() || (ov && !ov.hidden)) openPanel(tab); }); // 換語言：牌位版面用新語言重畫
+  if (SC.i18n && SC.i18n.onChange) SC.i18n.onChange.push(() => { paintBadge(); if (ov && !ov.hidden) openPanel(tab, true); else if (host()) openPanel(tab); }); // 換語言：牌位版面用新語言重畫
   const api = (SC.ranked = { load, score, tierOf, TIERS, ACH, weekly, weekId, track, open: openPanel, paint: paintBadge, _show: showResult, done: false });
 })();
 
