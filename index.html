@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='7d02220abcc7';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='0543f183f792';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -44,7 +44,7 @@ button { font: inherit; color: inherit; }
 .h-vig { position: absolute; inset: 0; opacity: 0; transition: opacity .12s linear;
   background: radial-gradient(ellipse at center, transparent 44%, color-mix(in srgb, var(--b) 70%, transparent) 100%); }
 
-.h-top { position: absolute; top: calc(8px + var(--sat)); left: 50%; transform: translateX(0); display: grid; grid-template-columns: auto auto auto; grid-template-areas: "ra clock rb" "score score score"; gap: 5px 8px; align-items: center; justify-items: center; }
+.h-top { position: absolute; top: calc(8px + var(--sat)); left: 50%; transform: translateX(-50%); display: grid; grid-template-columns: auto auto auto; grid-template-areas: "ra clock rb" "score score score"; gap: 5px 8px; align-items: center; justify-items: center; }
 .h-clock { grid-area: clock; }
 .h-timer { font: 400 30px/1 var(--f-display); font-variant-numeric: tabular-nums; background: var(--navy); color: #fff; padding: 7px 16px 6px; border-radius: 16px 20px 16px 22px; border: 3px solid #fff; box-shadow: var(--pop); transform: rotate(-2deg); min-width: 96px; text-align: center; }
 .h-timer.final { background: var(--danger); animation: pulse .5s ease-in-out infinite alternate; }
@@ -1136,6 +1136,21 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 #btn-cat-mode::before { content: '🐾'; margin-right: 6px; }
 #pick-rule .pick .rule-ic { width: 38px; height: 32px; display: block; margin: 0 auto 2px; }
 @media (max-width: 370px) { #m-title .logo { font-size: 28px; } }
+/* 第 140.3 版（介面第二輪）：上方隊伍頭像和計時器置中，不會跑到右邊被切掉或壓到小地圖；直式手機靠右排、人多時頭像疊在一起 */
+@media (max-width: 560px) {
+  .h-top { left: auto; right: var(--gr); transform: none; }
+  .h-roster { gap: 0; } .h-roster .chip + .chip { margin-left: -9px; }
+}
+/* 結算先看誰贏：贏的那隊柱子上有大皇冠，標題前有獎盃／雨滴圖示；成績表收起來，按 📊 才打開 */
+.verdict[data-r="win"]::before { content: '🏆'; margin-right: .15em; } .verdict[data-r="tie"]::before { content: '🤝'; margin-right: .15em; }
+.pod-col { position: relative; } .pod-crown { position: absolute; left: 50%; top: -34px; width: 44px; transform: translateX(-50%) rotate(-8deg); animation: crownBob 1s ease-in-out infinite alternate; filter: drop-shadow(0 3px 0 rgba(27, 20, 48, .5)); z-index: 2; }
+.pod-crown svg { width: 100%; height: auto; display: block; }
+@keyframes crownBob { to { transform: translateX(-50%) rotate(8deg) translateY(-6px); } }
+#m-results.has-pod .res-bar { display: none; }
+#m-results:not(.show-board) #res-stats .board, #m-results:not(.show-board) .board-rule { display: none; }
+#m-results:not(.show-board) #res-stats.has-board:not(:has(.zb-res)) { display: none; }
+#btn-board { min-width: 0; padding-inline: 14px; font-size: 22px; line-height: 1; } #btn-board[hidden] { display: none; }
+#m-results.show-board #btn-board { background: var(--sun); }
 
 </style>
 <div id="app">
@@ -14401,7 +14416,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="res-bottom">
         <div class="res-row"><div class="res-pod" id="res-pod" aria-hidden="true" hidden></div><div class="res-stats" id="res-stats"></div></div>
         <div class="res-rank" id="res-rank" hidden></div>
-        <div class="actions"><button type="button" class="btn primary" id="btn-again">再來一場</button><button type="button" class="btn" id="btn-menu">回主選單</button></div>
+        <div class="actions"><button type="button" class="btn primary" id="btn-again">再來一場</button><button type="button" class="btn" id="btn-menu">回主選單</button><button type="button" class="btn" id="btn-board" aria-label="成績表" title="成績表" hidden>📊</button></div>
       </div>
     </div>
     <div class="rotate-hint" id="rotate-hint"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="10" y="4" width="12" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M6 26a12 12 0 0 0 20 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M24 22l2.6 4.4-5 .6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>把裝置轉成橫向，畫面更寬、更好瞄準</span></div>
@@ -14549,7 +14564,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ui.tutDone = (then) => { if (SC.stk) ui.stkToast(SC.stk.award()); if (then) G().start({ ...then, demo: false }); else toMenu(); };
     ui.stkToast = (got) => { const t = document.createElement('div'); t.className = 'stk-toast'; t.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}`; $('ui').appendChild(t); SC.audio.sfx.squeak && SC.audio.sfx.squeak(); setTimeout(() => t.remove(), 3200); };
     on('btn-stk', () => SC.stk && SC.stk.open());
-    on('btn-start', begin); on('btn-again', begin); on('btn-restart', begin);
+    on('btn-start', begin); on('btn-again', begin); on('btn-restart', begin); on('btn-board', () => els['m-results'].classList.toggle('show-board'));
     // 聊天（Yen 2026-11-20）：貼圖大家都能按；打字只在好友房（SC.net.canType）。別人打的字一律用 textContent 放進畫面
     const STK = [['👋', '嗨！'], ['👍', '加油！'], ['🎉', '好球！'], ['😄', '好好玩！'], ['😮', '哇！'], ['😭', '哭哭'], ['🔁', '再來一場！'], ['❤️', '謝謝！']];
     const chatWho = (c) => { if (c.me) return '你'; const L = SC.net.list, i = L.findIndex((r) => r.peer === c.peer), r = L[i]; return (r && r.nick) || '玩家' + ((i >= 0 ? i : c.i || 0) + 1); };
@@ -14868,12 +14883,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     box.classList.toggle('many', many); box.innerHTML = Array.from({ length: n }, (_, t) => {
       const tc = '#' + g.colors[t].getHexString(), mood = w === 'tie' ? 'tie' : w === t ? 'win' : 'lose', hgt = top > 0 ? 0.16 + 0.84 * (val(t) / top) : 0.16;
       const cats = rows.filter((r) => r.team === t && !r.gone).map((r, k) => podCat(r.a.kind || 'maomao', tc, mood, r.me).replace('class="pod-cat', `style="--d:${(k * 0.13).toFixed(2)}s" class="pod-cat`)).join('');
-      return `<div class="pod-col ${mood}" style="--tc:${tc}"><div class="pod-cats">${cats}</div><div class="pod-bar" style="--h:${hgt.toFixed(3)}"><b>${lab(t)}</b></div></div>`;
+      return `<div class="pod-col ${mood}" style="--tc:${tc}">${mood === 'win' && !zb ? '<div class="pod-crown"><svg viewBox="0 0 24 18" aria-hidden="true"><path d="M2 16 1 4l6 5 5-8 5 8 6-5-1 12z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6" stroke-linejoin="round"/></svg></div>' : ''}<div class="pod-cats">${cats}</div><div class="pod-bar" style="--h:${hgt.toFixed(3)}"><b>${lab(t)}</b></div></div>`;
     }).join('');
     box.hidden = false;
   }
   ui.onResults = () => {
-    const g = G(), w = g.winner, p = g.player(); resPodium(g); els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['m-results'].classList.toggle('zb', g.rule === 'zombie'); els['m-results'].classList.toggle('is-net', g.mode === 'net'); praiseV = null; els.praise.hidden = true;
+    const g = G(), w = g.winner, p = g.player(); resPodium(g); els['m-results'].classList.toggle('has-pod', !$('res-pod').hidden); els['m-results'].classList.remove('show-board'); $('btn-board').hidden = g.mode === 'boss'; /* 第 140.3 版：成績表先收起來，小朋友先看到誰贏 */ els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['m-results'].classList.toggle('zb', g.rule === 'zombie'); els['m-results'].classList.toggle('is-net', g.mode === 'net'); praiseV = null; els.praise.hidden = true;
     { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } /* 第 91 版：每打完一場得到一張貼紙 */ els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
