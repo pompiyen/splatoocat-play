@@ -2698,11 +2698,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const top = H(x - nx * 0.8, z - nz * 0.8), base = H(x + nx * 0.8, z + nz * 0.8); if (top - base < 1.2) return false;
     y = SC.clamp(y, base + 0.2, top - 0.2);
     const ux = -nz, uz = nx; // 沿著牆面的橫向
-    for (let u = -r; u <= r; u += Q * 0.5) for (let v = -r; v <= r; v += Q * 0.5) if (u * u + v * v <= r * r && y + v > base - 0.5 && y + v < top + 0.5) own.set(key(x + ux * u, y + v, z + uz * u), team + 1);
-    for (let v = 0.3; v < 3; v += Q * 0.5) own.set(key(x, y - r - v, z), team + 1); // 往下流的那一條也算
+    // 第 95 版（Yen：城垛塗的樣子不對）：這一點真的有朝外的牆面嗎？墨水片和記錄只放在真的牆面上，不會比城垛這種窄牆還大、飄在空中
+    const wallAt = (px, pz, yy) => H(px - nx * 0.8, pz - nz * 0.8) > yy && H(px + nx * 0.8, pz + nz * 0.8) < yy - 0.3;
+    const want = r * 1.15 * (0.9 + Math.random() * 0.25); let L = 0, R = 0;
+    while (L < want && wallAt(x - ux * (L + 0.4), z - uz * (L + 0.4), y)) L += 0.4;
+    while (R < want && wallAt(x + ux * (R + 0.4), z + uz * (R + 0.4), y)) R += 0.4;
+    const hw = Math.max(0.5, Math.min(want, (L + R) / 2 + 0.2)), cu = SC.clamp((R - L) / 2, -want, want), hv = Math.max(0.5, Math.min(hw * 1.1, (top - base) / 2 + 0.15)), cy = SC.clamp(y, base + hv - 0.15, top - hv + 0.15);
+    for (let u = -r; u <= r; u += Q * 0.5) for (let v = -r; v <= r; v += Q * 0.5) { const px = x + ux * u, pz = z + uz * u; if (u * u + v * v <= r * r && wallAt(px, pz, y + v)) own.set(key(px, y + v, pz), team + 1); }
+    for (let v = 0.3; v < 3; v += Q * 0.5) if (wallAt(x, z, y - r - v)) own.set(key(x, y - r - v, z), team + 1); // 往下流的那一條也算
     const i = next; next = (next + 1) % CAP; used = Math.min(CAP, used + 1);
-    n3.set(nx, 0, nz); q.setFromUnitVectors(Z, n3); qs.setFromAxisAngle(Z, Math.random() * 0.6 - 0.3); q.multiply(qs);
-    const sz = r * 2.3 * (0.9 + Math.random() * 0.25); s3.set(sz, sz * 1.1, 1); p3.set(x + nx * 0.05, y, z + nz * 0.05);
+    n3.set(nx, 0, nz); q.setFromUnitVectors(Z, n3); qs.setFromAxisAngle(Z, Math.random() * 0.4 - 0.2); q.multiply(qs);
+    s3.set(hw * 2, hv * 2, 1); p3.set(x + ux * cu + nx * 0.05, cy, z + uz * cu + nz * 0.05);
     m4.compose(p3, q, s3); mesh.setMatrixAt(i, m4); mesh.setColorAt(i, col.copy(color)); mesh.count = used;
     mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true; return true;
   };
@@ -2753,7 +2759,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   world.noInk = (x, z) => { const g = world.noInks; for (let i = 0; i < g.length; i++) if (inBox(g[i], x, z, 0.3)) return true; return false; };
   world.height = (x, z) => {
     if (world.alt) return world.alt(x, z); // 魔王關卡用自己的高度函式
-    if (outOf(world.lim, x, z)) return 60;
+    if (outOf(world.lim, x, z)) return 200; // 第 95 版：場地外面當成 200 高的牆（原本 60 比 62 高的城牆矮，從城牆上可以走出場外）
     let h = world.base ? world.base(x, z) : x > -C.RIVER && x < C.RIVER ? -12 : 0; // 每張場地自己的地形（-12 是水）
     const prims = world.prims;
     for (let i = 0; i < prims.length; i++) {
@@ -2916,7 +2922,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       castle: (p, k) => { // 高城牆：石磚紋，頂上一圈深色邊
         const m = k.box(p, { r: 0.5 }), w = p.x1 - p.x0, d = p.z1 - p.z0, lm = k.plain(0xa79fc2, 0.9);
         for (let y = 3; y < p.h - 1; y += 3.2) { const ln = new THREE.Mesh(new THREE.BoxGeometry(w + 0.08, 0.28, d + 0.08), lm); ln.position.y = y; m.add(ln); }
-        const cap = new THREE.Mesh(new THREE.BoxGeometry(w + 0.6, 0.7, d + 0.6), k.plain(0x8d84ad, 0.8)); cap.position.y = p.h - 0.3; m.add(cap);
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(w + 0.6, 0.7, d + 0.6), SC.ink.patch(new THREE.MeshStandardMaterial({ color: 0x8d84ad, roughness: 0.8 }))); // 第 95 版：牆頂蓋子也會顯示墨水（原本蓋住了城牆頂的墨） cap.position.y = p.h - 0.3; m.add(cap);
         const flag = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 3), k.plain(p.team ? 0x7fd8ff : 0xff8fc8, 0.5)); flag.rotation.z = -Math.PI / 2; flag.position.set(0, p.h + 9, 0); m.add(flag);
         const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 10, 8), k.plain(0xe9cfa3, 0.6)); const bx = (p.team ? 1 : -1) * (w / 2 - 1.2); pole.position.set(bx, p.h + 5, d / 2 - 1.2); m.add(pole); flag.position.set(bx + 1.6, p.h + 9, d / 2 - 1.2); // 第 92 版：旗子移到角落，不擋站在牆上狙擊的視線
       },
@@ -9807,11 +9813,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   // 第 91 版（Yen）：對戰場地的牆壁也塗得上墨水。ox/oz 是牆外、ix/iz 是牆裡的點
-  function wallPaint(team, ox, oz, ix, iz, y, r, col) { if (G.mode === 'boss') return false; const f = SC.wallInk.face(ox, oz, ix, iz, y); return !!(f && SC.wallInk.paint(team, f.x, y, f.z, f.nx, f.nz, r, col)); }
+  function wallPaint(team, ox, oz, ix, iz, y, r, col) { if (G.mode === 'boss' || W.outOf(W.lim, ix, iz)) return false; /* 第 95 版：場地外面的隱形牆不塗 */ const f = SC.wallInk.face(ox, oz, ix, iz, y); return !!(f && SC.wallInk.paint(team, f.x, y, f.z, f.nx, f.nz, r, col)); }
   // ---------- 角色更新 ----------
   function blocked(a, x, z) {
     const lim = a.pos.y + (a.onGround ? C.STEP : 0.3), r = C.ACTOR_RADIUS;
-    if (W.gates.length && G.mode !== 'boss' && !(G.time - (a.gateT ?? -9) < 2.5)) { for (const [gx, gz] of [[x, z], [x + r, z], [x - r, z], [x, z + r], [x, z - r]]) if (W.gated(gx, gz) && !W.gated(a.pos.x, a.pos.z)) return true; } // 第 91 版：高城牆只能用墨貓爬上去（剛從上面下來 2.5 秒內可以跳回去）
+    if (W.gates.length && G.mode !== 'boss' && !(G.time - (a.gateT ?? -9) < 2.5)) { for (const [ox, oz] of [[0, 0], [r, 0], [-r, 0], [0, r], [0, -r]]) if (W.gated(x + ox, z + oz) && !W.gated(a.pos.x + ox, a.pos.z + oz)) return true; } // 第 91 版：高城牆只能用墨貓爬上去（剛從上面下來 2.5 秒內可以跳回去）。第 95 版：只擋「往牆裡走」，貼在牆邊時往外走不會被擋住（原本會卡死）
     const hits = (px, pz) => (H(px + r, pz) > lim) + (H(px - r, pz) > lim) + (H(px, pz + r) > lim) + (H(px, pz - r) > lim);
     if (H(x, z) > lim) return true;
     const n = hits(x, z); if (!n) return false;
@@ -9840,6 +9846,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       w = { x: f.x, z: f.z, nx: f.nx, nz: f.nz }; if (a.isPlayer) A.sfx.dive();
     }
     const inward = -(ctl.mx * w.nx + ctl.mz * w.nz);
+    if (inward < -0.25 && a.pos.y <= H(a.pos.x, a.pos.z) + 0.3) { a.climb = null; a.onGround = true; return false; } // 第 95 版：爬到牆腳再往外推就離開牆面（原本會一直貼在牆上動不了）
     if (ctl.jump) { a.climb = null; a.vel.set(w.nx * 24, V0 * 0.85, w.nz * 24); a.onGround = false; a.jumps = 1; a.launchT = 0.22; a.lastJumpAt = G.time; ctl.jump = false; if (a.isPlayer) A.sfx.jump(1); return false; }
     const top = H(w.x - w.nx * 1.2, w.z - w.nz * 1.2);
     a.climb = w; a.onGround = false; a.jumps = 0; a.vel.set(0, 0, 0); a.ground = 'own'; a.submerged = true;
