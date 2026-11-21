@@ -10207,7 +10207,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const loadout = () => { const l = (G.opts.loadout || (G.opts.weapon ? [G.opts.weapon] : [])).filter((w, i, arr) => WEAPONS.includes(w) && arr.indexOf(w) === i); return l.length >= 2 ? l.slice(0, 2) : l.length ? [l[0], l[0] === 'W01' ? 'W02' : 'W01'] : ['W01', 'W02']; };
   G.loadout = loadout;
   // 第 102 版（Yen）：倒下等重生時點武器（或按 1～5）就換成那一把：帶的兩把裡有就直接拿，沒有就換掉手上那一把，重生時拿著它出來
-  G.pickWeapon = (w) => { const p = player(); if (!p || p.alive || G.demo || !WEAPONS.includes(w)) return; let lo = loadout();
+  G.noDeadPick = () => G.mode === 'net' && !!(SC.net && SC.net.ranked); // 第 109.2 版（Yen 11/21 21:26）：積分賽倒下等重生時不能換武器（其他模式照舊可以）
+  G.pickWeapon = (w) => { const p = player(); if (!p || p.alive || G.demo || !WEAPONS.includes(w) || G.noDeadPick()) return; let lo = loadout();
     if (!lo.includes(w)) { lo = lo.slice(); lo[Math.max(0, lo.indexOf(p.weapon))] = w; G.opts.loadout = lo; if (SC.ui.applyLoadout) SC.ui.applyLoadout(); }
     if (p.weapon !== w) { p.weapon = w; p.cat.setWeapon(w); SC.ui.onWeapon(w); if (A) A.sfx.ui(); } };
   G.watched = watched;
@@ -12891,7 +12892,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (g.replaying) { const f = document.createElement('i'); f.className = 'rp-dot'; box.appendChild(f); const t = document.createElement('span'); t.textContent = '重播'; box.appendChild(t); return; }
       if (w) { const f = document.createElement('i'); f.innerHTML = ui.face(w.cat && w.cat.kind); box.appendChild(f); const t = document.createElement('span'); t.textContent = `正在看${w.name}的畫面`; box.appendChild(t); }
     });
-    { const pk = !p.alive && g.state === 'play' && !g.spec && !(g.mode === 'boss' && p.deaths >= C.BOSS_LIVES); // 第 102 版：倒下時的選武器列
+    { const pk = !p.alive && g.state === 'play' && !g.spec && !(g.mode === 'boss' && p.deaths >= C.BOSS_LIVES) && !(g.noDeadPick && g.noDeadPick()); // 第 102 版：倒下時的選武器列
       set('kp', pk ? p.weapon + '|' + g.loadout().join(',') : '', (v) => { els['ko-pick'].hidden = !v; if (!v) return; const lo = g.loadout(); els['ko-pick'].querySelectorAll('.kp').forEach((b) => { b.classList.toggle('on', b.dataset.w === p.weapon); b.classList.toggle('has', lo.includes(b.dataset.w)); }); }); }
     if (!p.alive) set('ko', g.mode === 'boss' && p.deaths >= C.BOSS_LIVES ? -9 : Math.ceil(p.respawnAt - g.time), (v) => { els['ko-n'].textContent = v > 0 ? v + ' 秒後回到出生台' : ''; });
     // 準星：狙擊蓄力環、命中標記
