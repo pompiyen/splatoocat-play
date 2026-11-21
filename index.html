@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='bf4bc9664d4b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='ef26446bcf8e';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1023,6 +1023,18 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .zb-buff { display: flex; align-items: center; gap: 2px; padding: 2px 8px 2px 4px; border-radius: 999px; background: #ffd23f; color: var(--navy); font: 400 15px/1 var(--f-display); box-shadow: 0 2px 0 #b8860b; animation: zbDyn 0.9s ease-in-out infinite; }
 .zb-buff[hidden] { display: none; }
 .zb-buff i { font-style: normal; font-size: 18px; }
+/* 第 125 版：殭屍保衛戰「下一步」指標（祭壇、齒輪、神兵、最後魔王；畫面外就貼在邊上指過去） */
+.zb-guide { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; z-index: 3; display: none; }
+.zb-guide.on { display: block; }
+.zg-bub { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 1px; background: #fff8d6; border: 3px solid #1b1430; border-radius: 18px; padding: 4px 9px 3px; box-shadow: 0 3px 0 #1b1430; }
+.zg-ic { font-size: 30px; line-height: 1; font-style: normal; }
+.zg-t { font: 400 13px/1.1 var(--f-display); color: var(--navy, #1b1430); white-space: nowrap; }
+.zg-arr { position: absolute; left: 0; top: 30px; width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 18px solid #ffd23f; filter: drop-shadow(0 2px 0 #1b1430); }
+.zb-guide.edge .zg-arr { top: 0; }
+.zb-guide.edge .zg-bub { animation: zgPulse 0.7s ease-in-out infinite alternate; }
+.zb-guide.pop:not(.edge) .zg-bub { animation: zgPop 0.5s ease-out; }
+@keyframes zgPop { 0% { transform: translate(-50%, -50%) scale(0.3); } 60% { transform: translate(-50%, -50%) scale(1.25); } 100% { transform: translate(-50%, -50%) scale(1); } }
+@keyframes zgPulse { from { transform: translate(-50%, -50%) scale(0.92); } to { transform: translate(-50%, -50%) scale(1.08); } }
 
 </style>
 <div id="app">
@@ -4145,6 +4157,124 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
   };
 
+  // 第 125 版（Yen 11-22「多加3張殭屍地圖…先不要做得太大 目的要緊湊 多變 好玩」）：三張小一點的殭屍地圖。
+  // 中間的城堡（廣場、小鴨台、四個城門斜坡、小橋、城垛、四座瞭望塔、護城河）跟小鴨堡壘一模一樣，殭屍、小鴨、機槍都照舊；外圈只有一半寬（老鼠洞在 112～120，不是 190），而且每張打法不一樣。
+  // zb：給 07z_zombie.js 的設定（hole 老鼠洞多遠、ha 八個洞的角度、dig 鑽地鼠冒出來的範圍、drop 神兵掉落範圍、alt 祭壇範圍、tank 魔王出場多遠）。
+  const zCore = (out) => { // 小鴨堡壘中間的城堡（照抄 zfort）
+    const Q = Math.PI / 2, S = ZS, CH = 5 * S, ob = (r, a, o) => { const [x, z] = pol(r, a); return { t: 'obox', x, z, a, team: -1, ...o }; };
+    out.push({ t: 'cyl', x: 0, z: 0, r: ZF.court, h: CH, look: 'court', team: -1 }, { t: 'cyl', x: 0, z: 0, r: 5.5 * S, h: 5.6 * S, look: 'pedestal', team: -1 });
+    for (let g = 0; g < 4; g++) { const a = g * Q;
+      out.push(ob(22.6 * S, a, { t: 'oramp', hu: 2.8 * S, hv: 4.6 * S, h0: CH, h1: 0.6, look: 'stone' }), ob(29 * S, a, { hu: 3.6 * S, hv: 4.6 * S, h: 0.6, look: 'bridge' }));
+      for (let s = 0; s < 6; s++) { const b = a + 0.27 + (s / 5) * (Q - 0.54); out.push(ob(19.3 * S, b, { a: b + Q, hu: 1.85 * S, hv: 0.75 * S, h: CH + 2.4, look: 'wall' })); }
+      out.push({ t: 'cyl', ...xz(13.5 * S, a + Q / 2), r: 2.4 * S, h: 12 * S, look: 'tower', team: -1 }); }
+    return out;
+  };
+  const zMoat = (r) => r >= ZF.moat0 && r <= ZF.moat1;
+  const zArches = (k, angs, r, rimCol, eyeCol) => { // 老鼠洞（跟小鴨堡壘一樣的拱門，顏色每張不同）
+    const holeM = new THREE.MeshBasicMaterial({ color: 0x2a1d3a }), rimM = k.plain(rimCol, 0.5), eyeM = new THREE.MeshBasicMaterial({ color: eyeCol || 0xb6ff6a }), r0 = k.rnd;
+    angs.forEach((a) => { const g = new THREE.Group(); g.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); g.rotation.y = -a - Math.PI / 2; g.scale.setScalar(ZS * 0.85); k.root.add(g);
+      const arch = new THREE.Shape(); arch.moveTo(-6, 0); arch.lineTo(-6, 5); arch.absarc(0, 5, 6, Math.PI, 0, true); arch.lineTo(6, 0); arch.lineTo(-6, 0);
+      const rim = new THREE.Mesh(new THREE.ExtrudeGeometry(arch, { depth: 2.2, bevelEnabled: true, bevelSize: 0.6, bevelThickness: 0.5, bevelSegments: 2 }), rimM); rim.position.z = -1.5; g.add(rim);
+      const inner = new THREE.Shape(); inner.moveTo(-4.4, 0); inner.lineTo(-4.4, 5); inner.absarc(0, 5, 4.4, Math.PI, 0, true); inner.lineTo(4.4, 0); inner.lineTo(-4.4, 0);
+      const hole = new THREE.Mesh(new THREE.ShapeGeometry(inner), holeM); hole.position.z = 1.3; g.add(hole);
+      const eyes = new THREE.Group(); [-1.2, 1.2].forEach((x) => { const e = new THREE.Mesh(new THREE.SphereGeometry(0.55, 10, 8), eyeM); e.position.set(x, 4.6, 1.5); e.scale.z = 0.3; eyes.add(e); }); g.add(eyes);
+      const ph = r0() * 9; k.tick((t) => { const b = (t * 0.7 + ph) % 4; eyes.visible = !(b > 3.75); eyes.position.x = Math.sin(t * 0.8 + ph) * 1.4; }); });
+  };
+  const ZQ = Math.PI / 2, zMake = MAPS.zfort.make, zLook = MAPS.zfort.look, zSpawns = MAPS.zfort.spawns;
+  const zBase = { teams: 2, holeW: 0, baseIn: 999, zombie: true, gridStep: 2, spawns: zSpawns, vic: { x: 0, z: 40 * ZS } };
+  // 7b. 糖果小島：四周是草莓牛奶海（掉下去會漂），島上軟糖、杯子蛋糕台、棒棒糖。八個洞都有，殭屍從四面八方來，但路很短，很快就到城門。
+  const CI_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i / 8) * TAU);
+  MAPS.zcandy = { ...zBase, name: '糖果小島', water: '草莓牛奶海', lim: { x: 150, z: 150, r: 150 },
+    zb: { hole: 116, ha: CI_ANG, dig: [74, 34], drop: [30, 96], alt: [70, 52], tank: 100 },
+    gen: () => { const out = zCore([]);
+      for (let g = 0; g < 4; g++) { const a = g * ZQ;
+        [[80, 0.25], [80, 0.75], [104, 0.5]].forEach(([r, f]) => out.push({ t: 'cyl', ...xz(r, a + ZQ * f), r: 4.6, h: 4.2, look: 'gum', team: -1 })); // 軟糖：躲得到後面、跳得上去
+        out.push({ t: 'cyl', ...xz(98, a + ZQ * 0.22), r: 7, h: 7.5, look: 'cupcake', team: -1 }, { t: 'cyl', ...xz(98, a + ZQ * 0.78), r: 7, h: 7.5, look: 'cupcake', team: -1 }); // 杯子蛋糕台：站上去往路上打
+        [[90, 0.1], [90, -0.1], [112, 0.06], [112, -0.06]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 1.1, h: 11, look: 'lolly', team: -1 })); } // 路兩邊的棒棒糖
+      return out; },
+    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; if (r > 134) return -12; let h = 0; if (r > 70) for (let k = 0; k < 4; k++) { const a = k * ZQ + ZQ / 2 + 0.3; h += bump(x, z, Math.cos(a) * 92, Math.sin(a) * 92, 16, 2.4); } return h; },
+    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0xffb3d1; if (r < ZF.moat0) return 0xfff0f6; if (r > 128) return 0xfff3c4;
+      const a = Math.atan2(z, x), q = Math.abs(((a / (Math.PI / 4)) % 1 + 1) % 1 - 0.5) * 2, lane = (1 - q) * r * (Math.PI / 4);
+      return lane < 8 ? 0xf2c58a : (Math.floor(x / 12) + Math.floor(z / 12)) % 2 ? 0xbff2d8 : 0xffd6ea; },
+    sky: [0x8fa8ff, 0xffc3e6, 0xfff0d6], fog: 0xffe3f1, hemi: [0xfff0fa, 0xffe6d6],
+    river: { color: 0xff9ec8, rough: 0.12 },
+    look: { ...zLook, court: 0xfff3f8, stone: 0xffd0e6, wall: 0xff7aa8, tower: 0x8fd8ff, bridge: 0xffc26b, gum: 0x7fe0a6, cupcake: 0xd99a5c, lolly: 0xffffff },
+    rough: { ground: 0.8 },
+    ground: (g) => { tiles(g, '#ffe9f3', ['#fff6fa', '#ffe0ee'], 24); },
+    fence: [0xff9ebb, 0xfff3c4, 0x8fd8ff, 0xc9b5ff],
+    make: { ...zMake,
+      gum: (p, k) => { const m = k.cyl(p); m.scale.set(1, 1, 1); const top = k.add(new THREE.SphereGeometry(p.r, 18, 10, 0, TAU, 0, Math.PI / 2), k.mat('gum'), p.x, p.h - 0.2, p.z); top.scale.y = 0.45; for (let i = 0; i < 7; i++) { const a = i * 0.9 + p.x; k.add(new THREE.BoxGeometry(0.6, 0.3, 0.3), k.plain(0xffffff, 0.4), p.x + Math.cos(a) * p.r * 0.5, p.h + 1, p.z + Math.sin(a) * p.r * 0.5); } },
+      cupcake: (p, k) => { k.cyl(p); const cr = k.add(new THREE.SphereGeometry(p.r * 1.04, 20, 10, 0, TAU, 0, Math.PI / 2), k.plain(0xfff3f8, 0.35), p.x, p.h - 0.3, p.z); cr.scale.y = 0.35; k.add(new THREE.SphereGeometry(1.2, 12, 8), k.plain(0xff3b5c, 0.3), p.x, p.h + 2.1, p.z); },
+      lolly: (p, k) => { k.add(new THREE.CylinderGeometry(0.35, 0.35, p.h, 8), k.plain(0xffffff, 0.4), p.x, p.h / 2, p.z); const d = k.add(new THREE.CylinderGeometry(3.2, 3.2, 0.9, 28), k.plain([0xff6b8b, 0x8fd8ff, 0xffd23f][Math.abs(Math.round(p.x + p.z)) % 3], 0.35), p.x, p.h + 2.6, p.z); d.rotation.order = 'YXZ'; d.rotation.y = Math.atan2(p.x, p.z); d.rotation.x = Math.PI / 2; const sw = k.add(new THREE.TorusGeometry(1.8, 0.35, 6, 24), k.plain(0xffffff, 0.35), p.x, p.h + 2.6, p.z); sw.rotation.y = Math.atan2(p.x, p.z); },
+    },
+    outside: (k) => { k.floor(0xff9ec8); const r = k.rnd;
+      for (let i = 0; i < 14; i++) { const a = (i / 14) * TAU + r() * 0.2, d = 230 + r() * 90, s = 12 + r() * 10; const isl = k.add(new THREE.SphereGeometry(s, 16, 10, 0, TAU, 0, Math.PI / 2), k.plain([0xbff2d8, 0xffd6ea, 0xfff3c4][i % 3], 0.8), Math.cos(a) * d, -3, Math.sin(a) * d); isl.scale.y = 0.6; } // 遠處的小糖果島
+      zArches(k, CI_ANG, 124, 0xff7aa8); k.clouds(0xfff0f8); },
+  };
+  // 7c. 雪人十字路：只有四條直直的雪路通到城門（每條路兩個洞），路中間有雪人可以躲；路和路中間是高高的雪坡，站上去可以從旁邊打路上的殭屍。
+  const SN_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i >> 1) * ZQ + (i & 1 ? 0.13 : -0.13));
+  const snowRidge = (x, z) => { const r = Math.hypot(x, z); if (r < 70) return 0; const a = Math.atan2(z, x), q = Math.abs(((a / ZQ) % 1 + 1) % 1 - 0.5) * 2, lat = (1 - q) * r * (ZQ / 2), t = SC.clamp((lat - 21) / 12, 0, 1) * SC.clamp((r - 70) / 10, 0, 1); return t * t * (3 - 2 * t) * 7.5; }; // 離最近的雪路多遠：超過 21 開始變高，最高 7.5
+  MAPS.zsnow = { ...zBase, name: '雪人十字路', water: '冰河', lim: { x: 136, z: 136, r: 136 }, fenceCap: 0xffffff,
+    zb: { hole: 120, ha: SN_ANG, dig: [76, 40], drop: [30, 100], alt: [70, 50], tank: 104 },
+    gen: () => { const out = zCore([]);
+      for (let g = 0; g < 4; g++) { const a = g * ZQ;
+        [[84, 0.1], [84, -0.1], [104, 0.05], [104, -0.05]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 3.2, h: 7.5, look: 'snowman', team: -1 })); // 路上的雪人：躲在後面打
+        [[96, 0.5], [114, 0.36], [114, 0.64]].forEach(([r, f]) => out.push({ t: 'cyl', ...xz(r, a + ZQ * f), r: 2.4, h: 14, look: 'pine', team: -1 })); // 雪坡上的松樹
+        out.push({ t: 'obox', ...xz(80, a + ZQ * 0.5), a: a + ZQ * 0.5, hu: 5, hv: 3, h: 11, look: 'ice', team: -1 }); } // 雪坡上的冰塊台：最高的地方
+      return out; },
+    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; return snowRidge(x, z); },
+    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0x9fe0ff; if (r < ZF.moat0) return 0xeef6ff; if (h > 0.6) return (Math.floor(x / 10) + Math.floor(z / 10)) % 2 ? 0xffffff : 0xf2f8ff; return r > ZF.moat1 ? 0xcfe2f3 : 0xe6f0fb; },
+    sky: [0x6f9cff, 0xbfe3ff, 0xf4f9ff], fog: 0xe6f2ff, hemi: [0xf4f9ff, 0xd9e6ff],
+    river: { color: 0x8fd3ff, rough: 0.05 },
+    look: { ...zLook, court: 0xf4f8ff, stone: 0xd6e6ff, wall: 0x6f8fd8, tower: 0xff9ebb, bridge: 0xc89a6a, snowman: 0xffffff, pine: 0x3f9a6a, ice: 0xbfeaff },
+    rough: { ground: 0.9 },
+    ground: (g) => { tiles(g, '#eef5ff', ['#ffffff', '#e4eefb'], 26); },
+    fence: [0x8fd8ff, 0xffffff, 0xc9b5ff, 0x9be7d0],
+    make: { ...zMake,
+      snowman: (p, k) => { const w = k.plain(0xffffff, 0.75), b = k.add(new THREE.SphereGeometry(p.r, 18, 12), w, p.x, p.r * 0.9, p.z), h2 = k.add(new THREE.SphereGeometry(p.r * 0.68, 16, 10), w, p.x, p.r * 2.25, p.z); b.castShadow = h2.castShadow = true;
+        const yaw = Math.atan2(-p.x, -p.z), f = (u, y, s, c) => { const m = k.add(new THREE.SphereGeometry(s, 8, 6), k.plain(c, 0.5), p.x + Math.sin(yaw) * p.r * 0.62 + Math.cos(yaw) * u, y, p.z + Math.cos(yaw) * p.r * 0.62 - Math.sin(yaw) * u); return m; };
+        f(-0.7, p.r * 2.45, 0.28, 0x1b1430); f(0.7, p.r * 2.45, 0.28, 0x1b1430); const n = k.add(new THREE.ConeGeometry(0.35, 1.6, 8), k.plain(0xff8a3d, 0.5), p.x + Math.sin(yaw) * p.r * 0.75, p.r * 2.2, p.z + Math.cos(yaw) * p.r * 0.75); n.lookAt(p.x + Math.sin(yaw) * 9, p.r * 2.2, p.z + Math.cos(yaw) * 9); n.rotateX(Math.PI / 2);
+        k.add(new THREE.CylinderGeometry(p.r * 0.5, p.r * 0.5, 1.6, 16), k.plain(0xff6b8b, 0.6), p.x, p.r * 2.9, p.z); },
+      pine: (p, k) => { const h0 = SC.world.MAPS.zsnow.base(p.x, p.z); k.add(new THREE.CylinderGeometry(0.7, 0.9, 4, 8), k.plain(0x8b5e3c, 0.8), p.x, h0 + 2, p.z); [0, 1, 2].forEach((i) => { const c = k.add(new THREE.ConeGeometry(p.r * 2.2 - i * 0.9, 4.4, 12), k.mat('pine'), p.x, h0 + 5 + i * 2.8, p.z); c.castShadow = true; k.add(new THREE.ConeGeometry(p.r * 1.3 - i * 0.6, 1.4, 12), k.plain(0xffffff, 0.8), p.x, h0 + 6.6 + i * 2.8, p.z); }); },
+      ice: (p, k) => { const m = k.obox(p, { r: 0.8 }); m.material = m.material.clone(); m.material.transparent = true; m.material.opacity = 0.85; m.material.roughness = 0.1; },
+    },
+    outside: (k) => { k.floor(0xf4f9ff); const r = k.rnd;
+      for (let i = 0; i < 18; i++) { const a = (i / 18) * TAU + r() * 0.15, d = 200 + r() * 120, s = 30 + r() * 30; const m = k.add(new THREE.ConeGeometry(s, s * 1.4, 6), k.plain(0xe8f1ff, 0.9), Math.cos(a) * d, s * 0.6, Math.sin(a) * d); k.add(new THREE.ConeGeometry(s * 0.45, s * 0.5, 6), k.plain(0xffffff, 0.9), m.position.x, s * 1.15, m.position.z); } // 遠處的雪山
+      zArches(k, SN_ANG, 128, 0x8fd8ff); k.clouds(0xffffff); },
+  };
+  // 7d. 玩具房：老鼠洞只在四個斜角，殭屍要走斜的繞到城門；地上一堆大積木疊成高低台階、蠟筆柱、大皮球，跳上跳下打。
+  const TY_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i >> 1) * ZQ + ZQ / 2 + (i & 1 ? 0.12 : -0.12));
+  MAPS.ztoy = { ...zBase, name: '玩具房', water: '浴缸泡泡水', lim: { x: 128, z: 128, r: 128 },
+    zb: { hole: 112, ha: TY_ANG, dig: [74, 30], drop: [30, 90], alt: [70, 44], tank: 98 },
+    gen: () => { const out = zCore([]), ob = (r, a, o) => ({ t: 'obox', ...xz(r, a), a, team: -1, ...o });
+      for (let g = 0; g < 4; g++) { const a = g * ZQ;
+        [-1, 1].forEach((s) => { [[76, 4], [86, 8], [96, 12]].forEach(([r, h], i) => out.push(ob(r, a + s * (0.36 + i * 0.03), { hu: 4.2, hv: 4.2, h, look: 'block' + ((g + i + (s > 0 ? 1 : 0)) % 4) }))); }); // 積木台階：一階一階跳上去，最上面 12 高
+        out.push({ t: 'cyl', ...xz(104, a + ZQ / 2), r: 6, h: 10, look: 'ball', team: -1 }); // 斜角路中間的大皮球（殭屍會爬過去）
+        [[108, 0.22], [108, -0.22]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 2, h: 16, look: 'crayon' + ((g + (d > 0 ? 1 : 0)) % 4), team: -1 })); } // 城門路兩邊的蠟筆柱
+      return out; },
+    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; return 0; },
+    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0x9be7ff; if (r < ZF.moat0) return 0xfff1d8; if (r > 70 && r < 86) return 0xff9ebb; // 地毯的粉紅圈
+      return Math.floor(((x * 0.7 + z * 0.7) + 400) / 9) % 2 ? 0xe2b07a : 0xd6a06a; }, // 木頭地板
+    sky: [0xffd7a8, 0xffe8cc, 0xfff6e8], fog: 0xfff0dc, hemi: [0xfff6e8, 0xffe0c0],
+    river: { color: 0x9be7ff, rough: 0.06 },
+    look: { ...zLook, court: 0xfff1d8, stone: 0xffd86b, wall: 0x4ea8ff, tower: 0xff6b8b, bridge: 0xff9a3c, block0: 0xff6b8b, block1: 0x4ecbff, block2: 0xffd23f, block3: 0x5fe0a0, ball: 0xff4a5a, crayon0: 0xff4a5a, crayon1: 0x4e8bff, crayon2: 0xffc93c, crayon3: 0x8b6bff },
+    rough: { ground: 0.7 },
+    ground: (g) => { tiles(g, '#f4d8b0', ['#fbe6c6', '#eccb9c'], 24); },
+    fence: [0xff6b8b, 0x4ecbff, 0xffd23f, 0x5fe0a0],
+    make: { ...zMake,
+      ...Object.fromEntries([0, 1, 2, 3].map((i) => ['block' + i, (p, k) => { const m = k.obox(p, { r: 0.7 }); const d = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.8, 16), k.mat('block' + i)); d.position.y = p.h + 0.3; [[-1.8, -1.8], [1.8, -1.8], [-1.8, 1.8], [1.8, 1.8]].forEach(([u, v]) => { const c = d.clone(); c.position.x = u; c.position.z = v; m.add(c); }); }])), // 積木上面的小圓凸
+      ball: (p, k) => { const b = k.add(new THREE.SphereGeometry(p.h / 2 + 0.6, 24, 16), k.mat('ball'), p.x, p.h / 2, p.z); b.castShadow = true; const st = k.add(new THREE.TorusGeometry(p.h / 2 + 0.65, 0.7, 8, 40), k.plain(0xffffff, 0.4), p.x, p.h / 2, p.z); st.rotation.y = Math.atan2(p.x, p.z); k.tick((t) => { b.rotation.y = t * 0.3; }); },
+      ...Object.fromEntries([0, 1, 2, 3].map((i) => ['crayon' + i, (p, k) => { k.add(new THREE.CylinderGeometry(p.r, p.r, p.h - 3, 16), k.mat('crayon' + i), p.x, (p.h - 3) / 2, p.z); k.add(new THREE.CylinderGeometry(p.r * 1.03, p.r * 1.03, 1.4, 16), k.plain(0xffffff, 0.5), p.x, p.h * 0.55, p.z); k.add(new THREE.ConeGeometry(p.r, 3, 16), k.mat('crayon' + i), p.x, p.h - 1.5, p.z); }])),
+    },
+    outside: (k) => { k.floor(0xd6a06a); // 房間：四面牆、窗戶、大床邊
+      const wall = k.plain(0xfff0c8, 0.9), trim = k.plain(0xff9ebb, 0.6);
+      [0, 1, 2, 3].forEach((i) => { const a = i * ZQ, d = 230, m = k.add(new THREE.BoxGeometry(470, 160, 6), wall, Math.cos(a) * d, 76, Math.sin(a) * d); m.rotation.y = -a + ZQ; const t = k.add(new THREE.BoxGeometry(470, 6, 8), trim, Math.cos(a) * (d - 2), 3, Math.sin(a) * (d - 2)); t.rotation.y = -a + ZQ; });
+      const win = k.add(new THREE.PlaneGeometry(90, 60), new THREE.MeshBasicMaterial({ color: 0x9fdcff, fog: false }), 0, 90, -226); [[0, 90, 92, 4], [0, 90, 4, 62]].forEach(([x, y, w, h]) => k.add(new THREE.BoxGeometry(w, h, 2), k.plain(0xffffff, 0.5), x, y, -225)); void win;
+      const bed = k.add(new THREE.BoxGeometry(110, 34, 70), k.plain(0x8fd8ff, 0.9), 150, 17, 150); bed.rotation.y = 0.4; k.add(new THREE.BoxGeometry(40, 14, 28), k.plain(0xffffff, 0.9), 150, 40, 150).rotation.y = 0.4;
+      zArches(k, TY_ANG, 120, 0xffd23f); },
+  };
+  world.ZMAPS = ['zfort', 'zcandy', 'zsnow', 'ztoy'];
+
   world.MAPS = MAPS;
   world.MAP_KEYS = ['park', 'candy', 'ship', 'fair', 'skate', 'round'];
   world.teamAng = teamAng;
@@ -6196,7 +6326,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     prof = { n, k, w: p.w, u }; if (N.state === 'lobby') send({ n: N.quick && !N.ranked ? '' : n, k, w: p.w, u }); // 配對房不送暱稱（積分賽例外：要登入，送帳號名字，Yen 11-22）
   };
   // 分隊（Yen 2026-11-19）：mix 'rand'＝開打時隨機分隊，'pick'＝房主指定（點玩家換隊，沒指定的照進房順序輪流）。asg：peer → 隊伍
-  const hostPatch = () => ({ vc: N.vc ? 1 : 0, zb: N.zb ? 1 : 0, df: N.dif, r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
+  const hostPatch = () => ({ vc: N.vc ? 1 : 0, zb: N.zb ? 1 : 0, zm: N.zmap, df: N.dif, r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
   // 這場要上場的人分到哪一隊：回傳 [{ peer, team }]。兩隊每隊最多 2 人、兩隊都要有人；三方對戰每人一隊
   N.lineup = (rand) => {
     if (N.vc) return N.list.slice(0, N.zbOn() ? 6 : 4).map((r, i) => ({ peer: r.peer, i, team: 0 })); // 一起打電腦：真人都在第 1 隊
@@ -6222,6 +6352,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.setVc = (on, zb) => { if (!N.isHost) return; N.vc = !!on; N.zb = !!on && !!zb; send(hostPatch()); sig = ''; };
   N.setRule = (rule) => { if (!N.isHost) return; N.rule = rule === 'knockout' ? 'knockout' : 'turf'; send(hostPatch()); sig = ''; };
   const okMap = (v) => v === 'random' || (SC.world.MAPS && !!SC.world.MAPS[v]);
+  const okZmap = (v) => v === 'zrand' || (SC.world.ZMAPS || ['zfort']).includes(v); N.zmap = 'zfort'; /* 第 125 版：殭屍地圖（房主選；zrand 開打時抽） */
+  N.setZmap = (v) => { if (!N.isHost || !okZmap(v)) return; N.zmap = v; send(hostPatch()); sig = ''; };
   N.setMap = (v) => { if (!N.isHost || !okMap(v)) return; N.map = v; send(hostPatch()); sig = ''; }; // 房主選場地（Yen 2026-11-17）
   N.setTri = (on) => { if (!N.isHost) return; N.tri = !!on; send(hostPatch()); sig = ''; }; // 3 人時：三方對戰或 2 對 1
   // tri＝每人一隊（3～6 人；Yen 2026-11-19 先要三方、再要四方以上）。兩隊模式最多 4 人
@@ -6237,7 +6369,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const sdOf = (pl) => pl.map((e) => { const r = N.list.find((x) => x.peer === e[0]); return r && typeof r.q.sd === 'string' ? r.q.sd.slice(0, 16) : ''; });
   N.start = (dif = N.dif) => {
     if (!room || !N.isHost || N.list.length < N.minStart() || N.live) return;
-    if (N.zbOn()) { const L = N.list.slice(0, 6), pl = L.map((r, i) => [r.peer, 0, i]); return send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: 'zombie', map: 'zfort', n: 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L.map((r) => ({ peer: r.peer, team: 0 })), 2), vc: Math.max(0, 4 - pl.length), df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } }); } // 殭屍保衛戰：真人都在第 1 隊，電腦隊友補到 4 隻
+    if (N.zbOn()) { const L = N.list.slice(0, 6), pl = L.map((r, i) => [r.peer, 0, i]); return send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: 'zombie', map: N.zmap === 'zrand' || !okZmap(N.zmap) ? (SC.world.ZMAPS || ['zfort'])[(Math.random() * (SC.world.ZMAPS || ['zfort']).length) | 0] : N.zmap, n: 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L.map((r) => ({ peer: r.peer, team: 0 })), 2), vc: Math.max(0, 4 - pl.length), df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } }); } // 殭屍保衛戰：真人都在第 1 隊，電腦隊友補到 4 隻
     const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
     send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.ranked ? 'mix' : N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } });
   };
@@ -6258,7 +6390,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
     const nC = Math.max(0, Math.min(4, h.vc | 0)), ck = Array.isArray(h.kd) && KINDS.includes(h.kd[1]) ? h.kd[1] : 'shuang';
     const zb = h.rule === 'zombie', cpus = Array.from({ length: nC }, (_, k) => zb ? { idx: h.pl.length + k, team: 0, slot: h.pl.length + k, kind: Array.isArray(h.kd) && KINDS.includes(h.kd[0]) ? h.kd[0] : 'maomao', cpu: true } : { idx: h.pl.length + k, team: (1 - g0 + nT) % nT, slot: k, kind: ck, cpu: true });
-    N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' || h.rule === 'mix' || h.rule === 'zombie' ? h.rule : 'turf', map: zb ? 'zfort' : nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
+    N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' || h.rule === 'mix' || h.rule === 'zombie' ? h.rule : 'turf', map: zb ? (okZmap(h.map) && h.map !== 'zrand' ? h.map : 'zfort') : nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock; N.match.rj = !!rec; rjSaveT = 0; offT = 0;
     if (N.onBegin) N.onBegin(N.match);
     if (rec && G().netResume) G().netResume(rec); // 接著剛剛那場打：分數、時間照存下來的
@@ -6308,6 +6440,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!N.isHost && host && (host.q.vc === 0 || host.q.vc === 1)) { N.vc = !!host.q.vc; N.zb = N.vc && host.q.zb === 1; }
     if (!N.isHost && host && SC.DIFFICULTY[host.q.df]) N.dif = host.q.df;
     if (!N.isHost && host && okMap(host.q.mp)) N.map = host.q.mp;
+    if (!N.isHost && host && okZmap(host.q.zm)) N.zmap = host.q.zm;
     if (!N.isHost && host && (host.q.tm === 0 || host.q.tm === 2 || host.q.tm === 3)) N.tri = host.q.tm ? host.q.tm === 3 : null;
     if (!N.isHost && host && (host.q.mx === 'rand' || host.q.mx === 'pick')) N.mix = host.q.mx;
     if (!N.isHost && host && Array.isArray(host.q.as)) { const a = {}; host.q.as.forEach((e) => { if (Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] <= 2) a[e[0]] = e[1]; }); N.asg = a; }
@@ -6338,7 +6471,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (qT != null && qT <= 0) { qT = null; qSent = null; send({ qs: null }); N.start(); }
       }
     } else if (N.quick && N.isHost && qSent != null) { qT = null; qSent = null; send({ qs: null }); }
-    const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer] + (r.q.rd === 1 ? 'R' : '')).join('|') + N.vc + N.zb + N.dif + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + N.qs + (m ? m.id + m.over : '');
+    const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer] + (r.q.rd === 1 ? 'R' : '')).join('|') + N.vc + N.zb + N.dif + N.rule + N.map + N.zmap + N.tri + N.mix + N.live + N.state + N.online + N.qs + (m ? m.id + m.over : '');
     if (s2 !== sig) { sig = s2; changed(); }
     if (h && h.st === 'play' && (!m || m.id !== h.id) && !done.has(h.id) && myPeer) {
       if (h.pl.some((e) => e[0] === myPeer)) return begin(h, list);
@@ -9876,7 +10009,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function dynTick(now) { if (now < DYN.from || now > LEN) return; if (now < dynT) return; if (!dynT) { dynT = now + DYN.every; dynS = Z.shield; dynKl = Z.killed; return; } const loss = (dynS - Z.shield) / SHIELD, kl = Z.killed - dynKl, mx = dif === DIF.easy ? DYN.maxEasy : DYN.max; if (loss < DYN.easyLoss && kl >= DYN.kills * crewK() * zDyn()) Z.dyn = Math.min(mx, zDyn() + DYN.step); else if (loss > DYN.hardLoss) Z.dyn = Math.max(1, zDyn() - DYN.down); Z.dyn = Math.round(Z.dyn * 100) / 100; dynT = now + DYN.every; dynS = Z.shield; dynKl = Z.killed; }
   const crewK = () => { const g = G(); let n = 0; if (g && g.actors) for (const a of g.actors) if (a.team === 0 && !a.isTarget && !a.gone && a.cat) n++; return Math.max(4, Math.min(6, n)) / 4; };
   let ctx = null, scene = null, duck = null, nextId = 1, spawnT = 0, dif = DIF.normal, authWas = false, chewSfxAt = 0, quackAt = 0, endT = 0, endFx = null, holeFx = [], marks = [], seenAt = 0, lastBite = false;
-  const holeAng = (i) => (i / 8) * TAU, gateAng = (b) => b * Q;
+  const ZDEF = { hole: 95 * S, ha: null, dig: [84, 70], drop: [30, 140], alt: [34, 80], tank: 60 * S }; let MP = ZDEF; /* 第 125 版：每張殭屍地圖自己的老鼠洞距離、角度（04_world.js 的 zb） */
+  const holeAng = (i) => (MP.ha ? MP.ha[i & 7] : (i / 8) * TAU), gateAng = (b) => b * Q;
   const H = (x, z) => SC.world.height(x, z);
   const G = () => SC.game;
   const auth = () => !(G().mode === 'net') || SC.net.referee;
@@ -10016,18 +10150,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const nearGate = (a) => { const k = Math.round(a / Q); return ((k % 4) + 4) % 4; };
   function spawnAt(ty, hole) {
     if (Z.list.filter((q) => q.st !== 'dead').length >= Math.min(POOL - 4, Math.round((dif.max || MAXZ) * crewK() * zDyn()))) return null;
-    const a = holeAng(hole) + (Math.random() - 0.5) * 0.08, r = 95 * S, x = Math.cos(a) * r, z = Math.sin(a) * r;
-    let br = nearGate(a); if (hole % 2) br = Math.random() < 0.5 ? nearGate(a - 0.4) : nearGate(a + 0.4); // 斜角的洞：隨機走左邊或右邊的橋
+    const a = holeAng(hole) + (Math.random() - 0.5) * 0.08, r = MP.hole, x = Math.cos(a) * r, z = Math.sin(a) * r;
+    let br = nearGate(a); if (Math.abs((((a / Q) % 1) + 1) % 1 - 0.5) < 0.25) br = Math.random() < 0.5 ? nearGate(a - 0.4) : nearGate(a + 0.4); // 斜角的洞：隨機走左邊或右邊的橋
     const q = make(ty, x, z, { br, hop: 0.5 }); if (q) { ctx.burst(x, q.y + 1, z, ctx.colors[1], 10, 12, 0.5); } return q;
   }
-  function spawnFly(a) { const r = 92 * S, x = Math.cos(a) * r, z = Math.sin(a) * r; return make(TI.balloon, x, z, { y: 24 + Math.random() * 6, st: 'fly' }); }
+  function spawnFly(a) { const r = MP.hole - 3 * S, x = Math.cos(a) * r, z = Math.sin(a) * r; return make(TI.balloon, x, z, { y: 24 + Math.random() * 6, st: 'fly' }); }
   function spawnDig() { // 第 108 版（Yen）：不從堡壘裡冒出來，改從護城河外面的草地鑽出來（避開起司塊、乾草），再走橋進城
-    let x = 0, z = 0, a = 0; for (let k = 0; k < 12; k++) { a = Math.random() * TAU; const r = 84 + Math.random() * 70; x = Math.cos(a) * r; z = Math.sin(a) * r; const h = H(x, z); if (h > -2 && h < 2.6) break; }
+    let x = 0, z = 0, a = 0; for (let k = 0; k < 12; k++) { a = Math.random() * TAU; const r = MP.dig[0] + Math.random() * MP.dig[1]; x = Math.cos(a) * r; z = Math.sin(a) * r; const h = H(x, z); if (h > -2 && h < 2.6) break; }
     return make(TI.dig, x, z, { st: 'under', und: 2.6, ph: 0, br: nearGate(a), y: H(x, z) - 3 }); }
 
   // ---------- 開始、結束 ----------
   Z.start = (c) => {
-    ctx = c; scene = c.scene; Z.on = true; Z.stop(true); Z.on = true; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
+    ctx = c; scene = c.scene; MP = { ...ZDEF, ...((SC.world.MAPS[SC.world.key] || {}).zb || {}) }; Z.on = true; Z.stop(true); Z.on = true; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
     dif = DIF[c.dif] || DIF.normal;
     if (!duck) { duck = SC.duck.make(); duck.g.scale.setScalar(1); }
     scene.add(duck.g); duck.g.position.set(0, PED, 0); duck.g.rotation.set(0, 0, 0); duck.g.scale.setScalar(S); duck.fortSet((DOME_Y + (COURT - PED)) / S, DOME_S, c.colors[1]); // 小鴨和罩子一起放大 duck.g.visible = true;
@@ -10036,12 +10170,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       m.position.y = 30; g.add(m); const ex = new THREE.Sprite(new THREE.SpriteMaterial({ map: bangTex(), depthTest: false, transparent: true })); ex.scale.set(9, 9, 1); ex.position.y = 22; ex.renderOrder = 9; g.add(ex); g.userData.ex = ex;
       g.position.set(Math.cos(a) * 93 * S, 0, Math.sin(a) * 93 * S); g.visible = false; scene.add(g); holeFx.push(g);
     }
-    holeFx.forEach((g) => { if (g.parent !== scene) scene.add(g); g.visible = false; g.userData.on = 0; });
+    holeFx.forEach((g, i) => { if (g.parent !== scene) scene.add(g); g.visible = false; g.userData.on = 0; const a = holeAng(i); g.position.set(Math.cos(a) * (MP.hole - 2 * S), 0, Math.sin(a) * (MP.hole - 2 * S)); });
     hud(true); setCard(null);
   };
   Z.stop = (keep) => {
     rain.forEach((q) => { if (q.ring) { scene && scene.remove(q.ring); scene && scene.remove(q.d); } }); rain = []; bossEdge(0); if (turObj) { turObj.forEach((o) => { scene && scene.remove(o.g, o.ln); }); turObj = null; } if (altObj) { scene && scene.remove(altObj.grp); altObj = null; } spots.forEach((q) => scene && scene.remove(q.cone, q.pool)); spots.length = 0; if (spotEl) spotEl.classList.remove('on');
-    Z.list.forEach((q) => { freeTarget(q); dropMesh(q); }); Z.list.length = 0; if (alarmEl) alarmEl.classList.remove('on'); if (alarm3) { alarm3.ring.visible = alarm3.bang.visible = false; } Z.puds = []; for (const [, o] of pudObj) scene && scene.remove(o); pudObj.clear(); Z.pows = []; for (const [, o] of powObj) scene && scene.remove(o); powObj.clear(); if (SC.zbHero) SC.zbHero.reset(); if (pawFx) { scene && scene.remove(pawFx.g); pawFx = null; } fxHide(); if (helpEl) helpEl.classList.remove('on'); marks.forEach((m) => scene && scene.remove(m.o)); marks.length = 0; ghosts.forEach((q) => scene && scene.remove(q.g)); ghosts.length = 0;
+    Z.list.forEach((q) => { freeTarget(q); dropMesh(q); }); Z.list.length = 0; if (alarmEl) alarmEl.classList.remove('on'); if (alarm3) { alarm3.ring.visible = alarm3.bang.visible = false; } Z.puds = []; for (const [, o] of pudObj) scene && scene.remove(o); pudObj.clear(); Z.pows = []; for (const [, o] of powObj) scene && scene.remove(o); powObj.clear(); if (SC.zbHero) SC.zbHero.reset(); if (pawFx) { scene && scene.remove(pawFx.g); pawFx = null; } fxHide(); if (helpEl) helpEl.classList.remove('on'); if (guideEl) guideEl.classList.remove('on'); guideGoal = null; marks.forEach((m) => scene && scene.remove(m.o)); marks.length = 0; ghosts.forEach((q) => scene && scene.remove(q.g)); ghosts.length = 0;
     if (!keep) { Z.on = false; if (duck && duck.g.parent) duck.g.parent.remove(duck.g); holeFx.forEach((g) => (g.visible = false)); hud(false); setCard(null); }
   };
   function bangTex(c = '#ff4a5a') { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const g = cv.getContext('2d'); g.fillStyle = c; g.strokeStyle = '#fff'; g.lineWidth = 10; g.beginPath(); g.arc(64, 64, 52, 0, TAU); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.font = '900 86px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('!', 64, 70); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
@@ -10193,7 +10327,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (z.cd > 0) return false; const near = nearCat(z, X.slamR + 2, cats), far = nearCat(z, X.R, cats), any = far || nearCat(z, 400, cats);
       if (!any) { z.cd = 0.4; return false; } /* 整張地圖都沒有貓（都潛墨或死掉）：繼續開過去咬防護罩 */
       const mv = TANK_SEQ[(z.kk = (z.kk || 0) + 1) % TANK_SEQ.length]; z.actT = 0; z.vx = z.vz = 0;
-      if (mv === 'charge') { const c = any, dx = c.pos.x - z.x, dz = c.pos.z - z.z, d = Math.hypot(dx, dz) || 1, L = SC.clamp(d + 24, 50, CH.len); let ex = z.x + (dx / d) * L, ez = z.z + (dz / d) * L; const r = Math.hypot(ex, ez); if (r > CH.maxR) { ex *= CH.maxR / r; ez *= CH.maxR / r; } z.ax = Math.round(ex); z.az = Math.round(ez); if (isBurp(z)) z.ax += 6; z.act = 4; return true; }
+      if (mv === 'charge') { const c = any, dx = c.pos.x - z.x, dz = c.pos.z - z.z, d = Math.hypot(dx, dz) || 1, L = SC.clamp(d + 24, 50, CH.len); let ex = z.x + (dx / d) * L, ez = z.z + (dz / d) * L; const r = Math.hypot(ex, ez), mR = Math.min(CH.maxR, MP.hole - 6); if (r > mR) { ex *= mR / r; ez *= mR / r; } z.ax = Math.round(ex); z.az = Math.round(ez); if (isBurp(z)) z.ax += 6; z.act = 4; return true; }
       if (mv === 'quake') { z.ax = Math.round(z.x); z.az = Math.round(z.z); z.q0 = z.y; z.act = 6; return true; }
       if (mv === 'rain') { z.ax = Math.round(z.x); z.az = Math.round(z.z); z.act = 7; return true; }
       z.act = 1; if ((mv === 'slam' && near) || z.st === 'eat' && near) { z.ax = Math.round(z.x); z.az = Math.round(z.z); return true; } /* 搥地 */
@@ -10251,7 +10385,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (n) A.p = Math.min(1, A.p + (dt / ALT.T) * Math.min(ALT.cap, Math.pow(n, 0.6))); else A.p = Math.max(0, A.p - dt * 0.03);
       if (A.p >= 1) { Z.altDone = { seq: A.seq, k: A.k }; A.life = 0; A.p = 0; } else if (A.life <= 0) A.p = 0; return; }
     if ((altT -= dt) > 0) return; altT = ALT.gap;
-    for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = 34 + Math.random() * 80, x = Math.cos(a) * r, z = Math.sin(a) * r, h = H(x, z); if (h < -0.5 || h > 3) continue; Z.alt = { seq: A.seq + 1, x: Math.round(x), z: Math.round(z), p: 0, k: (Math.random() * 3) | 0, life: ALT.life }; return; }
+    for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = MP.alt[0] + Math.random() * MP.alt[1], x = Math.cos(a) * r, z = Math.sin(a) * r, h = H(x, z); if (h < -0.5 || h > 3) continue; Z.alt = { seq: A.seq + 1, x: Math.round(x), z: Math.round(z), p: 0, k: (Math.random() * 3) | 0, life: ALT.life }; return; }
   }
   /* 每台：收到「祭壇集滿了」→ 這台的貓（玩家、電腦隊友）拿到加成 */
   let gearTip = 0; function gearHint() { if (gearTip || G().state !== 'play' || !Z.pows.some((q) => q.k === GEAR)) return; gearTip = 1; SC.ui.tip('撿到齒輪 ⚙️ 就能打開城裡的自動機槍！', 5); }
@@ -10259,7 +10393,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (g.state === 'play') { SC.ui.banner(BUFF_NAME[D.k], 2.2, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } }
   Z.buffOf = (a) => a && a.buffUntil > G().time && Z.on ? a.buffK : -1;
   function dropPow(near) { /* 第 124 版（Yen「每過一段時間神兵會散落在四處」）：整張地圖到處都會掉（不只城裡）；也會掉齒輪 */
-    if (Z.pows.length >= POW.max) return; for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = near ? DOME_R + 7 + Math.random() * 12 : 30 + Math.random() * 140, x = Math.cos(a) * r, z = Math.sin(a) * r, h = H(x, z); if (near ? h < COURT - 2 : h < -1 || h > COURT + 3) continue; Z.pows.push({ id: powId++, k: !near && Math.random() < POW.gearDrop ? GEAR : (Math.random() * (POW_COL.length - 1)) | 0, x, z, life: POW.life, born: G().time }); return; }
+    if (Z.pows.length >= POW.max) return; for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = near ? DOME_R + 7 + Math.random() * 12 : MP.drop[0] + Math.random() * MP.drop[1], x = Math.cos(a) * r, z = Math.sin(a) * r, h = H(x, z); if (near ? h < COURT - 2 : h < -1 || h > COURT + 3) continue; Z.pows.push({ id: powId++, k: !near && Math.random() < POW.gearDrop ? GEAR : (Math.random() * (POW_COL.length - 1)) | 0, x, z, life: POW.life, born: G().time }); return; }
   }
   function dropAt(x, z, k) { if (Z.pows.length >= POW.max || H(x, z) < -1) return; Z.pows.push({ id: powId++, k, x, z, life: POW.life, born: G().time }); }
   function claimPow(pk, a) { // 碰到神兵：自己這台馬上拿到手上；裁判把地上的收掉（別台先藏起來、通知裁判）
@@ -10339,7 +10473,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (E.k === 'big') holes.forEach((h) => spawnAt(TI.big, h));
     if (E.k === 'swarm') for (let i = 0; i < n; i++) Z.burstQ.push([TI.mini, holes[i % holes.length]]);
     if (E.k === 'king' || E.k === 'tank') { dropPow(true); dropAt(TUR_P[0][0] * 0.6, TUR_P[0][1] * 0.6, GEAR); } // 大王出場時送一個神兵＋一個齒輪（城裡）
-    if (E.k === 'tank') { const a = holeAng(holes[0] || 0), r = 60 * S, tq = make(TI.tank, Math.cos(a) * r, Math.sin(a) * r, { br: nearGate(a), hop: 0.5, hp: Math.round(TY[TI.tank].hp * dif.hp * crewK() * zDyn()) }); if (tq) { tq.max = tq.hp; tq.kk = 4; tq.cd = 2.5; } for (const q of Z.list) if (q !== tq && q.st !== 'dead' && !TY[q.ty].boss) { if (q.st !== 'under') pop(q, null, false); kill(q); } Z.burstQ = []; Z.shield = Math.min(SHIELD, Z.shield + SHIELD * BOSS_HEAL); return; } /* 魔王一出場：小殭屍都嚇跑了（全部啵掉），小鴨的防護罩補回 25%，大家專心打魔王 */ /* 第 122 版：最後魔王一定出場（不受同時數量限制），血量跟著人數、這場強度；一出場先跳一次大地震 */
+    if (E.k === 'tank') { const a = holeAng(holes[0] || 0), r = MP.tank, tq = make(TI.tank, Math.cos(a) * r, Math.sin(a) * r, { br: nearGate(a), hop: 0.5, hp: Math.round(TY[TI.tank].hp * dif.hp * crewK() * zDyn()) }); if (tq) { tq.max = tq.hp; tq.kk = 4; tq.cd = 2.5; } for (const q of Z.list) if (q !== tq && q.st !== 'dead' && !TY[q.ty].boss) { if (q.st !== 'under') pop(q, null, false); kill(q); } Z.burstQ = []; Z.shield = Math.min(SHIELD, Z.shield + SHIELD * BOSS_HEAL); return; } /* 魔王一出場：小殭屍都嚇跑了（全部啵掉），小鴨的防護罩補回 25%，大家專心打魔王 */ /* 第 122 版：最後魔王一定出場（不受同時數量限制），血量跟著人數、這場強度；一出場先跳一次大地震 */
     const nb = E.k === 'balloon' ? n : E.balloon || 0; for (let i = 0; i < nb; i++) spawnFly(Math.random() * TAU);
     if (E.k === 'dig') for (let i = 0; i < n; i++) spawnDig();
     if (TI[E.k] != null && TY[TI[E.k]].spk && E.k !== 'tank') for (let i = 0; i < n; i++) Z.burstQ.push([TI[E.k], holes[i % holes.length]]);
@@ -10755,7 +10889,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const k = Z.shield / SHIELD;
     if (cam) duck.fortCam(Math.hypot(cam.position.x, cam.position.y - (COURT + DOME_Y), cam.position.z) < DOME_R + 1.5); // 鏡頭跑進罩子裡：罩子變透明，不擋畫面
     if (!endFx) { duck.fortTick(dt, now, k, chewing > 0, chewing > 0 ? 'scared' : 'calm'); if (chewing && now - quackAt > (k < 0.35 ? 1.1 : 2.6) && playing) { quackAt = now; SC.audio.sfx.quack(); } }
-    hudTick(k, chewing); alarm(chewing, cam, now, playing);
+    hudTick(k, chewing); alarm(chewing, cam, now, playing); guideTick(cam, now, playing, chewing > 0);
     if (Z.end && !endFx) endStart(Z.end === 1);
     if (endFx) endTick(dt, now);
   };
@@ -10828,7 +10962,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const id = zs[i], code = zs[i + 1], ty = (code & 15) | (((code >> 18) & 1) << 4), st = ST[(code >> 8) & 7] || 'walk', act = ((code >> 12) & 3) | (((code >> 19) & 1) << 2); if (!TY[ty]) continue; seen.add(id); got++;
       if (Z.gone.has(id) && st !== 'dead') { const q = Z.list.find((q) => q.id === id); if (!q || q.st === 'dead') continue; } /* 這台已經看到它被打爆：這場都不讓它復活 */
       let z = Z.list.find((q) => q.id === id); const x = zs[i + 2] / 10, zz = zs[i + 3] / 10, y = zs[i + 4] / 10, cnt = zs[i + 6] >> 1;
-      if (!z) { if (st === 'dead' || Z.gone.has(id)) continue; z = make(ty, x, zz, { id, st, y: st === 'under' ? H(x, zz) - 3 : y, und: st === 'under' ? -y : 0, n: cnt, act }); if (st === 'walk' && Math.hypot(x, zz) > 88 * S) z.hop = 0.5; }
+      if (!z) { if (st === 'dead' || Z.gone.has(id)) continue; z = make(ty, x, zz, { id, st, y: st === 'under' ? H(x, zz) - 3 : y, und: st === 'under' ? -y : 0, n: cnt, act }); if (st === 'walk' && Math.hypot(x, zz) > MP.hole - 7 * S) z.hop = 0.5; }
       z.br = (code >> 4) & 3; z.ph = (code >> 6) & 3; z.onTop = !!(code & 2048); z.nx = x; z.nz = zz; z.ny = st === 'under' ? null : y; if (st === 'under') z.und = -y;
       if (act !== z.act) { z.act = act; z.actT = 0; } z.ax = zs[i + 7]; z.az = zs[i + 8]; z.dz = code & 16384 ? Math.max(z.dz || 0, 0.3) : 0; z.bubOn = !!(code & 32768); z.ice = code & 65536 ? 1 : 0; z.hunting = code & 131072 ? 1 : 0;
       z.hp = (zs[i + 5] / 100) * z.max; if (TY[z.ty].k === 'big') z.stompN = cnt; else z.n = cnt; z.warn = zs[i + 6] & 1 ? 0.5 : 0;
@@ -10893,6 +11027,33 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     { const p = g.player && g.player(), bk = Z.buffOf(p), bs = bk >= 0 ? Math.ceil(p.buffUntil - g.time) : 0, key = bk + ':' + bs; if (L.bf !== key) { L.bf = key; H_.buff.hidden = bk < 0; if (bk >= 0) { H_.buff.querySelector('i').textContent = BUFF_IC[bk]; H_.buff.querySelector('b').textContent = bs; } } } /* 第 124 版：祭壇加成剩幾秒 */
     const tk = Math.round(SC.clamp(g.time / LEN, 0, 1) * 400); if (L.tk !== tk) { L.tk = tk; H_.done.style.width = tk / 4 + '%'; H_.paw.style.left = tk / 4 + '%'; H_.evs.forEach((e, i) => e.classList.toggle('past', g.time >= EVENTS[i].t)); }
   }
+  /* 第 125 版（Yen「讓使用者在進行遊戲的時候不用進行思考就知道下一步要怎麼做」）：畫面上永遠只有一個「下一步」指標。
+     順序：小鴨被咬（大紅箭頭，原本的）＞ 祭壇（站上去集氣）＞ 齒輪（開機槍）＞ 神兵（手上沒有時）＞ 最後魔王。
+     東西在畫面裡：頭上一個會跳的圖示泡泡＋往下的箭頭；不在畫面裡：泡泡貼在畫面邊上，箭頭指過去。 */
+  const GUIDE_TXT = { alt: '站上去', gear: '撿齒輪', pow: '撿神兵', tank: '打魔王' };
+  let guideEl = null, guideAt = 0, guideGoal = null; const gv = new V3();
+  function guidePick(g, p) {
+    if (!p || !p.alive || p.zbHold) return null; const px = p.pos.x, pz = p.pos.z, A = Z.alt;
+    if (A.life > 0.6 && Math.hypot(px - A.x, pz - A.z) > ALT.R * 0.75) return { k: 'alt', ic: BUFF_IC[A.k] || '⭐', x: A.x, y: H(A.x, A.z) + 4, z: A.z };
+    const hasHero = SC.zbHero && SC.zbHero.has(p), turFull = Z.tur.every((t) => t > TUR.max - TUR.T); let best = null, bd = 1e9;
+    for (const q of Z.pows) { if (q.claimed) continue; const gear = q.k === GEAR; if (gear ? turFull : hasHero) continue; const d = Math.hypot(q.x - px, q.z - pz) * (gear ? 0.75 : 1); if (d < bd) { bd = d; best = q; } }
+    if (best) return { k: best.k === GEAR ? 'gear' : 'pow', ic: best.k === GEAR ? '⚙️' : (SC.zbHero && SC.zbHero.K[best.k] || {}).ic || '🎁', x: best.x, y: H(best.x, best.z) + 5, z: best.z, id: best.id };
+    const tk = Z.list.find((z) => TY[z.ty].k === 'tank' && z.st !== 'dead' && !z.predDead); if (tk) return { k: 'tank', ic: '👊', x: tk.x, y: tk.y + 9 * TY[tk.ty].s, z: tk.z, tk };
+    return null;
+  }
+  function guideTick(cam, now, playing, alarmOn) {
+    const hudEl = document.getElementById('hud'); if (!hudEl || !cam) return; const g = G(), p = g.player && g.player();
+    if (!guideEl) { guideEl = document.createElement('div'); guideEl.className = 'zb-guide'; guideEl.innerHTML = '<div class="zg-bub"><i class="zg-ic"></i><b class="zg-t"></b></div><i class="zg-arr"></i>'; hudEl.appendChild(guideEl); guideEl._ic = guideEl.querySelector('.zg-ic'); guideEl._t = guideEl.querySelector('.zg-t'); guideEl._a = guideEl.querySelector('.zg-arr'); }
+    if (now - guideAt > 0.25) { guideAt = now; const was = guideGoal && guideGoal.k + (guideGoal.id || ''); guideGoal = playing && !alarmOn && !Z.end ? guidePick(g, p) : null; const k = guideGoal && guideGoal.k + (guideGoal.id || '');
+      if (k !== was && guideGoal) { guideEl._ic.textContent = guideGoal.ic; guideEl._t.textContent = GUIDE_TXT[guideGoal.k]; guideEl.classList.remove('pop'); void guideEl.offsetWidth; guideEl.classList.add('pop'); } }
+    const G0 = guideGoal; guideEl.classList.toggle('on', !!G0); if (!G0) return;
+    if (G0.tk) { G0.x = G0.tk.x; G0.z = G0.tk.z; G0.y = G0.tk.y + 9 * TY[G0.tk.ty].s; } else if (G0.k === 'alt') { G0.x = Z.alt.x; G0.z = Z.alt.z; }
+    gv.set(G0.x, G0.y, G0.z).project(cam); const behind = gv.z > 1; let sx = behind ? -gv.x : gv.x, sy = behind ? -gv.y : gv.y; const ex = 0.8, ey = sy < 0 ? 0.3 : 0.6; /* 下面有按鈕、上面有防護罩條：泡泡不要蓋到 */
+    const inView = !behind && Math.abs(sx) < ex && Math.abs(sy) < ey; if (!inView) { const m = Math.max(Math.abs(sx) / ex, Math.abs(sy) / ey, 1e-3); sx /= m; sy /= m; }
+    const W = hudEl.clientWidth || innerWidth, Hh = hudEl.clientHeight || innerHeight, bob = Math.sin(now * 6) * 6;
+    guideEl.style.transform = `translate(${((sx + 1) / 2) * W}px, ${((1 - sy) / 2) * Hh + (inView ? bob - 46 : 0)}px)`; guideEl.classList.toggle('edge', !inView);
+    guideEl._a.style.transform = inView ? 'translate(-50%, 0) rotate(0deg)' : `translate(-50%, -50%) rotate(${Math.atan2(sx * W, sy * Hh) * 180 / Math.PI}deg) translateY(-62px) rotate(180deg)`;
+  }
   Z.hudOn = () => !!(H_ && Z.on);
   // 第 110 版（Yen 22:19）：防護罩被咬的明顯警示（不用讀字）：畫面四周紅色閃光、往被咬方向的大紅箭頭（箭頭上是小鴨的臉）、嗚嗚警報聲；
   // 場上小鴨頭上一個會跳的大「！」、罩子底下一圈紅光。被咬越多隻，閃得越快
@@ -10924,7 +11085,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!Z.on) return; const now = performance.now() / 1000;
     c.fillStyle = Z.shield / SHIELD < 0.3 && Math.sin(now * 10) > 0 ? '#ff5a7a' : '#ffd93b'; c.strokeStyle = '#1b1430'; c.lineWidth = 1.4; c.beginPath(); c.arc(mx(0), my(0), 4.2, 0, 7); c.fill(); c.stroke();
     for (const z of Z.list) { if (z.st === 'dead' || z.predDead) continue; const t = TY[z.ty]; c.fillStyle = z.st === 'under' ? '#b07a4a' : t.fly ? '#7fd3ff' : t.k === 'big' ? '#4fbf3a' : t.sp2 ? '#' + t.body.toString(16).padStart(6, '0') : '#7ee05a'; c.beginPath(); c.arc(mx(z.x), my(z.z), t.k === 'big' ? 4.4 : t.k === 'fat' ? 2.8 : 2, 0, 7); c.fill(); if (t.k === 'big') c.stroke(); }
-    if (Z.evPh === 1 && Math.sin(now * 12) > 0) (Z.evHoles || []).forEach((h) => { const a = holeAng(h); c.fillStyle = '#ff4a5a'; c.beginPath(); c.arc(mx(Math.cos(a) * 92 * S), my(Math.sin(a) * 92 * S), 5, 0, 7); c.fill(); });
+    if (Z.evPh === 1 && Math.sin(now * 12) > 0) (Z.evHoles || []).forEach((h) => { const a = holeAng(h); c.fillStyle = '#ff4a5a'; c.beginPath(); c.arc(mx(Math.cos(a) * (MP.hole - 3 * S)), my(Math.sin(a) * (MP.hole - 3 * S)), 5, 0, 7); c.fill(); });
   };
   // 電腦隊友要打的殭屍、沒事時站哪裡守
   Z.enemies = () => Z.list.filter((z) => (z.st === 'walk' || z.st === 'eat' || z.st === 'fly') && !z.predDead && z.tg).map((z) => z.tg);
@@ -10938,6 +11099,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // ---------- 文字（四種語言）----------
   SC.i18n.add([['小鴨被咬了！快回去救！', 'The duck is being bitten! Go save it!', 'アヒルがかじられてる！もどってたすけて！', '오리가 물리고 있어! 빨리 구해 줘!']]);
+  SC.i18n.add([['站上去', 'Stand here', 'のってね', '올라서'], ['撿齒輪', 'Grab gear', 'ギアをひろう', '톱니 줍기'], ['撿神兵', 'Grab weapon', 'ぶきをひろう', '무기 줍기'], ['打魔王', 'Hit the boss', 'ボスをたおせ', '보스를 때려'], ['殭屍地圖', 'Zombie map', 'ゾンビマップ', '좀비 맵'], ['糖果小島', 'Candy Isle', 'キャンディ島', '사탕 섬'], ['雪人十字路', 'Snowman Crossing', 'ゆきだるま十字路', '눈사람 사거리'], ['玩具房', 'Toy Room', 'おもちゃ部屋', '장난감 방'], ['草莓牛奶海', 'Strawberry Milk Sea', 'いちごミルクの海', '딸기우유 바다'], ['冰河', 'Icy River', 'こおりの川', '얼음 강'], ['浴缸泡泡水', 'Bubble Bath', 'あわあわおふろ', '거품 목욕물']]); /* 第 125 版 */
   SC.i18n.add([
     ['超級肌肉坦克鼠來了！', 'Super Muscle Tank Mouse incoming!', 'ムキムキ戦車ネズミが来た！', '슈퍼 근육 탱크 쥐가 온다!'],
     ['打倒肌肉坦克鼠了！', 'Muscle Tank Mouse defeated!', 'ムキムキ戦車ネズミをたおした！', '근육 탱크 쥐를 물리쳤다!'],
@@ -13315,6 +13477,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['round', '時鐘廣場', MAP_SVG(`<circle cx="32" cy="23" r="19" fill="#d4f5c6" ${MS}/><circle cx="32" cy="23" r="11" fill="none" stroke="#7fd3ff" stroke-width="4"/><circle cx="32" cy="23" r="6" fill="#b9a5ff" ${MS}/><path d="M32 23v-4M32 23h3" stroke="#1b1430" stroke-width="1.8" stroke-linecap="round"/><circle cx="14" cy="23" r="3" fill="#fff" ${MS}/><circle cx="50" cy="23" r="3" fill="#fff" ${MS}/>`)],
     ['skate', '滑板場', MAP_SVG(`<path d="M3 8v20q0 12 12 12h34q12 0 12-12V8h-8v18q0 6-6 6H17q-6 0-6-6V8z" fill="#f2c48a" ${MS}/><path d="M3 8h8M53 8h8" stroke="#dfe6f2" stroke-width="3"/><rect x="20" y="16" width="24" height="4" rx="2" fill="#8b6bff" ${MS} transform="rotate(-12 32 18)"/><circle cx="24" cy="23" r="2.4" fill="#ff6b8b" ${MS}/><circle cx="39" cy="20" r="2.4" fill="#ff6b8b" ${MS}/>`)],
   ];
+  const ZMAP_PICKS = [ /* 第 125 版：殭屍保衛戰的四張地圖 */
+    ['zrand', '隨機', MAP_PICKS[0][2]],
+    ['zfort', '小鴨堡壘', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#9cdb84" ${MS}/><path d="M14 33V17h6v5h6v-5h12v5h6v-5h6v16z" fill="#a64b32" ${MS}/><path d="M27 33v-7a5 5 0 0 1 10 0v7z" fill="#1b1430"/><circle cx="32" cy="10" r="6" fill="#ffd23f" ${MS}/><path d="M37 10l5 1-5 2z" fill="#ff9a3c"/>`)],
+    ['zcandy', '糖果小島', MAP_SVG(`<path d="M2 36q8-4 15 0t15 0 15 0 15 0v6H2z" fill="#ff9ec8" ${MS}/><ellipse cx="32" cy="33" rx="22" ry="6" fill="#bff2d8" ${MS}/><rect x="17" y="10" width="2.6" height="22" fill="#fff" ${MS}/><circle cx="18.3" cy="11" r="7" fill="#ff6b8b" ${MS}/><path d="M38 31v-7h14v7z" fill="#d99a5c" ${MS}/><path d="M37 24q8-9 16 0z" fill="#fff3f8" ${MS}/><circle cx="45" cy="16" r="2.4" fill="#ff3b5c"/>`)],
+    ['zsnow', '雪人十字路', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#cfe2f3" ${MS}/><circle cx="24" cy="27" r="8" fill="#fff" ${MS}/><circle cx="24" cy="14" r="6" fill="#fff" ${MS}/><circle cx="22" cy="13" r="1" fill="#1b1430"/><circle cx="26" cy="13" r="1" fill="#1b1430"/><path d="M24 15l5 1-5 1z" fill="#ff8a3d"/><rect x="19" y="5" width="10" height="4" rx="1" fill="#ff6b8b" ${MS}/><path d="M46 33l-9 0 9-22 9 22z" fill="#3f9a6a" ${MS}/>`)],
+    ['ztoy', '玩具房', MAP_SVG(`<rect x="3" y="35" width="58" height="6" rx="3" fill="#e2b07a" ${MS}/><rect x="8" y="23" width="12" height="12" rx="2" fill="#ff6b8b" ${MS}/><rect x="20" y="13" width="12" height="22" rx="2" fill="#4ecbff" ${MS}/><rect x="32" y="25" width="10" height="10" rx="2" fill="#ffd23f" ${MS}/><circle cx="52" cy="27" r="8" fill="#ff4a5a" ${MS}/><path d="M44 27h16" stroke="#fff" stroke-width="2.4"/>`)],
+  ];
   ui.bossFace2 = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M17 22l-3-9 9 5z" fill="#ff8a3d" stroke="#1b1430" stroke-width="2.5" stroke-linejoin="round"/><path d="M47 22l3-9-9 5z" fill="#ff8a3d" stroke="#1b1430" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="39" r="22" fill="#ffe3c2" stroke="#1b1430" stroke-width="3"/><path d="M21 20q-2-13 11-13t11 13z" fill="#fff" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="36" r="5" fill="#fff" stroke="#1b1430" stroke-width="2"/><circle cx="40" cy="36" r="5" fill="#fff" stroke="#1b1430" stroke-width="2"/><circle cx="24.5" cy="36.5" r="2.6" fill="#1b1430"/><circle cx="40.5" cy="36.5" r="2.6" fill="#1b1430"/><path d="M25 45q7 8 14 0z" fill="#7a2240" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><circle cx="16" cy="44" r="3.2" fill="#ff9fb4" opacity=".85"/><circle cx="48" cy="44" r="3.2" fill="#ff9fb4" opacity=".85"/></svg>`;
   ui.bossFace3 = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 24l-2 14 12-6z" fill="#ffb6c8" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><path d="M52 24l2 14-12-6z" fill="#ffb6c8" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="41" r="19" fill="#ffb6c8" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="37" r="3" fill="#1b1430"/><circle cx="40" cy="37" r="3" fill="#1b1430"/><ellipse cx="32" cy="46" rx="7.5" ry="5.5" fill="#ff8fab" stroke="#1b1430" stroke-width="2.5"/><ellipse cx="29" cy="46" rx="1.5" ry="2.2" fill="#a8405e"/><ellipse cx="35" cy="46" rx="1.5" ry="2.2" fill="#a8405e"/><path d="M17 25h30l-2-9H19z" fill="#fff" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><rect x="15" y="23" width="34" height="5" rx="2" fill="#1b1430"/><path d="M32 14l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z" fill="#ffc93c"/></svg>`;
   ui.bossFace4 = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="23" cy="13" rx="5" ry="12" fill="#f4e6d4" stroke="#1b1430" stroke-width="3" transform="rotate(-10 23 13)"/><ellipse cx="41" cy="13" rx="5" ry="12" fill="#f4e6d4" stroke="#1b1430" stroke-width="3" transform="rotate(10 41 13)"/><ellipse cx="23" cy="13" rx="2.2" ry="8" fill="#ffa3b8" transform="rotate(-10 23 13)"/><ellipse cx="41" cy="13" rx="2.2" ry="8" fill="#ffa3b8" transform="rotate(10 41 13)"/><circle cx="32" cy="42" r="18" fill="#f4e6d4" stroke="#1b1430" stroke-width="3"/><circle cx="25" cy="40" r="3" fill="#1b1430"/><circle cx="39" cy="40" r="3" fill="#1b1430"/><circle cx="32" cy="46" r="2.4" fill="#ff6f91"/><rect x="29" y="49" width="3" height="5" rx="1" fill="#fff" stroke="#1b1430" stroke-width="1.4"/><rect x="32" y="49" width="3" height="5" rx="1" fill="#fff" stroke="#1b1430" stroke-width="1.4"/><path d="M15 31q0-16 17-16t17 16z" fill="#ffd23f" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/><rect x="12" y="29" width="40" height="5" rx="2.5" fill="#ffd23f" stroke="#1b1430" stroke-width="2.5"/><circle cx="32" cy="22" r="3.6" fill="#fff6c0" stroke="#1b1430" stroke-width="2"/></svg>`;
@@ -13418,6 +13587,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           <div class="opt" id="ink-opt"><h3>墨水顏色</h3><div class="row ink-row" id="pick-ink">
             <button type="button" class="pick ink-pick" data-v="random" aria-label="隨機顏色">${SPLAT('rand')}</button>
             ${SC.PALETTES.flatMap((p) => [p.a, p.b]).map((c) => `<button type="button" class="pick ink-pick" data-v="${c.hex}" aria-label="${c.name}" title="${c.name}" style="--ic:#${c.hex.toString(16).padStart(6, '0')}">${SPLAT()}</button>`).join('')}</div></div>
+          <div class="opt" id="zmap-opt" hidden><h3>殭屍地圖</h3><div class="row map-row" id="pick-zmap">${ZMAP_PICKS.map(([v, label, svg]) => `<button type="button" class="pick ico-pick map-pick" data-v="${v}" aria-label="${label}">${svg}<b>${label}</b></button>`).join('')}</div></div>
           <div class="opt" id="map-opt"><h3>場地</h3><div class="row map-row" id="pick-map">${MAP_PICKS.map(([v, label, svg]) => `<button type="button" class="pick ico-pick map-pick" data-v="${v}" aria-label="${label}">${svg}<b>${label}</b></button>`).join('')}</div></div>
           <div class="opt-duo" id="versus-opts">
             <div class="opt slim"><h3>人數</h3><div class="row" id="pick-roster">
@@ -13567,7 +13737,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const me = n.list.find((r) => r.isMe), waiting = n.live && !n.played(n.live), mixed = n.mixed(), ready = n.state === 'lobby' && me && n.isHost && n.list.length >= n.minStart() && !n.live && !mixed;
       start.disabled = !ready; start.textContent = !inRoom ? (sel.rk ? '先按開始配對' : '先開房間或加入房間') : mixed ? '🔄 有人要重新整理' : n.isHost || !me ? '開始對戰' : '等房主開始';
       if (!inRoom) start.hidden = true; start.classList.toggle('wait', inRoom && !ready); $('net-quick').classList.toggle('nudge', !inRoom && !n.busy && !rkUi); // 第 121.2 版：還沒進房時下一步是「隨機配對」，它在跳；開戰鈕等進了房間才出現
-      if (!inRoom) return;
+      if (!inRoom) { $('zmap-opt').hidden = true; return; }
       $('net-ready').hidden = true; // 積分賽的「即刻開戰」改用上面的大按鈕 $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
       const tri = n.triOn(), vc = !!n.vc, zb = n.zbOn(), rand = n.mix === 'rand' && !vc, L = n.lineup(false);
@@ -13590,7 +13760,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         b2.querySelector('b').textContent = k === 3 ? '2 對 1' : '兩隊對戰'; } // 3 人以上：每人一隊或兩隊
       $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.triOn() ? '3' : '2')); b.disabled = !n.isHost; });
       $('pick-rule').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (zb ? 'zombie' : n.rule)); b.disabled = !n.isHost; });
-      mapSync(); if (zb) { $('pick-rule').hidden = false; $('map-opt').hidden = true; $('pick-mix').hidden = true; $('pick-teams').hidden = true; } // 殭屍保衛戰（Yen 22:00：放在規則這排，跟塗地戰、擊倒戰並排）：固定小鴨堡壘
+      mapSync(); $('zmap-opt').hidden = !zb; if (zb) $('pick-zmap').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.zmap); b.disabled = !n.isHost; }); if (zb) { $('pick-rule').hidden = false; $('map-opt').hidden = true; $('pick-mix').hidden = true; $('pick-teams').hidden = true; } // 殭屍保衛戰（Yen 22:00：放在規則這排，跟塗地戰、擊倒戰並排）：固定小鴨堡壘
       $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.list.length === 5 ? '5 個人要等第 6 個人加入，才能 3 對 3 開打' : n.qs != null ? `${n.qs} 秒後開打` : `${RK_FMT[n.list.length] || ''}：大家都按「即刻開戰」就開打`) : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : zb && n.isHost && n.list.length < 4 ? '一個人也能開打，空位由電腦隊友補上' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
       if (n.ranked) { $('rk-go-msg').textContent = $('net-msg2').textContent; const cd = n.qs != null && !n.live && n.state === 'lobby' && !els['m-title'].hidden; $('rk-wpn').hidden = !cd; if (cd) { $('rk-wpn-n').textContent = n.qs; if (ui.wpnSync) ui.wpnSync(); } } // Yen 11-22：配到人、大家按即刻開戰後倒數 10 秒，這時候選武器
     };
@@ -13631,6 +13801,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['kind', 'difficulty', 'mode', 'roster', 'vrule', 'ink', 'stage'].forEach((k) => pick('pick-' + k, k)); // 武器不在選單選，進場後再換
     $('pick-world').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; const w = +b.dataset.v; if (worldOf(sel.stage) !== w) { const all = SC.bossList(); let i = (w - 1) * 5; while (i < w * 5 - 1 && !all[i]) i++; sel.stage = String(i + 1); } renderStages(); modeSync(); click(); });
     renderStages();
+    $('pick-zmap').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b || b.disabled) return; click(); SC.net.setZmap(b.dataset.v); netSync(); });
     $('pick-map').addEventListener('click', (e) => {
       const b = e.target.closest('.pick'); if (!b || b.disabled) return; click();
       const v = b.dataset.v;
