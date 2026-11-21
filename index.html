@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='1247b47d9a40';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='16ee6d6ffda2';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -927,6 +927,30 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .t-fire[data-hero] > * { visibility: hidden; }
 .t-fire[data-hero]::after { content: attr(data-hero); position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 40px; }
 @media (max-width: 760px) { #zb-hero { top: 34%; left: 10px; } #zb-hero .zh-ring { width: 70px; height: 70px; } #zb-hero .zh-ic { font-size: 34px; } }
+
+/* Yen 11-22：積分賽的開始配對鈕放大放在模式下面；配到人後倒數 10 秒選武器 */
+.rk-go { display: grid; gap: 8px; }
+.rk-go[hidden] { display: none; }
+.rk-go-btn { width: 100%; min-height: 96px; display: flex; align-items: center; justify-content: center; gap: 12px; font: 400 36px/1 var(--f-display); color: var(--navy); background: linear-gradient(#ffe680, var(--sun) 55%, #ffb800); border: 4px solid var(--navy); border-radius: 26px; box-shadow: 0 8px 0 var(--navy), 0 0 0 6px rgba(255, 210, 63, .35); animation: rkGo 1.2s ease-in-out infinite; }
+.rk-go-btn .bolt { width: 44px; height: 54px; flex: none; }
+.rk-go-btn.wait { background: #3ad07a; animation: none; }
+.rk-go-btn:disabled { opacity: .6; animation: none; }
+.rk-go-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 var(--navy); }
+@keyframes rkGo { 50% { transform: scale(1.035); box-shadow: 0 8px 0 var(--navy), 0 0 0 12px rgba(255, 210, 63, .2); } }
+.rk-go-msg { margin: 0; text-align: center; font: 700 16px/1.3 var(--f-body); color: var(--cream); }
+.rk-go-msg:empty { display: none; }
+.rk-wpn { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgba(27, 20, 48, .78); }
+.rk-wpn[hidden] { display: none; }
+.rk-wpn-card { width: min(560px, 100%); background: var(--navy-2); border: 4px solid var(--sun); border-radius: 26px; padding: 18px 14px 20px; text-align: center; }
+.rk-wpn-card h3 { margin: 6px 0 12px; font: 400 24px/1.1 var(--f-display); color: var(--cream); }
+.rk-wpn-n { width: 96px; height: 96px; margin: -62px auto 0; border-radius: 50%; display: grid; place-items: center; background: var(--pink); color: #fff; border: 5px solid var(--navy); font: 400 54px/1 var(--f-display); box-shadow: 0 6px 0 var(--navy); }
+.rk-wpn .row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.rk-wpn .wpn-pick { position: relative; padding: 10px 4px 8px; row-gap: 4px; }
+.rk-wpn .wpn-pick .wi { width: 64px; height: 64px; max-width: 100%; background: rgba(255, 255, 255, .1); border-radius: 14px; padding: 3px; }
+.rk-wpn .wpn-pick.on .wi { background: #fff; }
+.rk-wpn .wpn-pick b { font-size: 13px; line-height: 1.1; }
+@media (max-width: 560px) { .rk-go-btn { min-height: 84px; font-size: 30px; } .rk-wpn .row { grid-template-columns: repeat(3, minmax(0, 1fr)); } .rk-wpn .wpn-pick .wi { width: 56px; height: 56px; } }
+.rk-go-btn.wait .bolt { display: none; }
 
 </style>
 <div id="app">
@@ -6202,7 +6226,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (i >= (N.ranked ? N.rsize : 4)) { const q = N.quick, rk = N.ranked, qr = N.qrule; N.leave(); N.quickJoin(q + 1, rk, qr); return; } // 擠進來超過人數：換下一間
       if (N.isHost) { // 房主倒數自動開打：2 人等 15 秒，4 人到齊 4 秒
         if (N.ranked && N.rkDone) qT = null; // 積分賽一間房只打一場（Yen 23:16）：打完不再自動開下一場
-        else if (N.ranked) { const all = N.rankOk(list.length) && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 3; qT -= dt; } } // 積分賽：人到齊、大家都準備好，3 秒後開打 // Yen 11-21：大家都按「即刻開戰」就照現有人數開打（5 人要等第 6 人）
+        else if (N.ranked) { const all = N.rankOk(list.length) && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 10; qT -= dt; } } // 積分賽：人到齊、大家都準備好，10 秒後開打（Yen 11-22：這 10 秒用來選武器） // Yen 11-21：大家都按「即刻開戰」就照現有人數開打（5 人要等第 6 人）
         else if (list.length < 2) qT = null; else { if (qT == null) qT = 15; if (list.length >= 4) qT = Math.min(qT, 4); qT -= dt; }
         const qs = qT == null ? null : Math.max(0, Math.ceil(qT)); if (qs !== qSent) { qSent = qs; send({ qs }); }
         if (qT != null && qT <= 0) { qT = null; qSent = null; send({ qs: null }); N.start(); }
@@ -12946,6 +12970,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             <button type="button" class="pick ico-pick" data-v="boss">${ICON.boss}<b>魔王關卡</b><small>十五隻大魔王</small></button>
             <button type="button" class="pick ico-pick" data-v="net">${ICON.net}<b>連線對戰</b><small>和朋友開房間</small></button>
             <button type="button" class="pick ico-pick" data-v="ranked">${ICON.ranked}<b>積分賽</b><small>配對拿積分升牌位</small></button></div></div>
+          <div class="rk-go" id="rk-go" hidden><button type="button" class="btn rk-go-btn" id="rk-go-btn"><svg class="bolt" viewBox="0 0 40 48" aria-hidden="true"><path d="M24 2L6 28h12l-4 18 20-28H22z" fill="#ffd23f" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/></svg><b>開始配對</b></button><p class="rk-go-msg" id="rk-go-msg" role="status"></p></div>
           <div class="opt" id="rk-opt" hidden></div>
           <div class="opt" id="stage-opt" hidden><h3>選魔王</h3><div class="row" id="pick-world">${WORLDS.map((w, i) => `<button type="button" class="pick ico-pick world-pick w${i + 1}" data-v="${i + 1}" aria-label="世界 ${i + 1} ${w.name}">${w.icon}<b>世界 ${i + 1}</b><small>${w.name}</small></button>`).join('')}</div><div class="row" id="pick-stage"></div></div>
           <div class="opt" id="kind-opt"><h3>選貓咪</h3><div class="row" id="pick-kind">
@@ -12953,6 +12978,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             <button type="button" class="pick cat-pick" data-v="shuang">${ui.face('shuang')}<b>雙雙</b><small>布偶貓・藍眼睛</small></button>
             <button type="button" class="pick cat-pick" data-v="banban">${ui.face('banban')}<b>班班</b><small>梨花貓・棕色斑紋</small></button>
             <button type="button" class="pick cat-pick" data-v="taro">${ui.face('taro')}<b>太郎</b><small>橘虎斑・帥氣擔當</small></button></div></div>
+          <div class="rk-wpn" id="rk-wpn" hidden><div class="rk-wpn-card"><div class="rk-wpn-n" id="rk-wpn-n"></div><h3>帶兩把武器</h3><div class="row">${['W01', 'W02', 'W03', 'W04', 'W05'].map((w) => `<button type="button" class="pick wpn-pick" data-v="${w}" aria-label="${C[w].name}"><i class="wslot"></i>${ui.icon(w)}<b>${C[w].name}</b></button>`).join('')}</div></div></div>
           <div class="opt" id="wpn-opt"><h3>帶兩把武器</h3><div class="row" id="pick-wpn">${['W01', 'W02', 'W03', 'W04', 'W05'].map((w) => `<button type="button" class="pick wpn-pick" data-v="${w}" aria-label="${C[w].name}"><i class="wslot"></i>${ui.icon(w)}<b>${C[w].name}</b></button>`).join('')}</div></div>
           <div class="opt" id="ink-opt"><h3>墨水顏色</h3><div class="row ink-row" id="pick-ink">
             <button type="button" class="pick ink-pick" data-v="random" aria-label="隨機顏色">${SPLAT('rand')}</button>
@@ -13087,16 +13113,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const RK_FMT = { 2: '1 對 1', 3: '三方對戰', 4: '2 對 2', 6: '3 對 3' }; // 積分賽照人數決定（Yen 11-21）
     const netSync = () => {
       const n = SC.net, on = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', start = $('btn-start');
+      const rkUi = on && !!sel.rk; $('rk-go').hidden = !rkUi; start.hidden = rkUi; $('rk-wpn').hidden = true; $('rk-go-msg').textContent = ''; // Yen 11-22：積分賽的開始配對鈕放大、放在模式下面；底下的開戰鈕收起來
       $('net-opts').hidden = !on; els['m-title'].classList.toggle('net-on', on); start.disabled = false; mapSync(); if (!on) return; // 連線對戰不用先選武器，對戰中隨時切換
       $('net-out').hidden = inRoom; $('net-in').hidden = !inRoom;
       { const rk = !!sel.rk, lock = rk && SC.account && SC.account.needed && !SC.account.user, q = $('net-quick'); // 積分賽：只有「開始配對」，沒有開房間和房號
-        $('net-create').parentNode.hidden = rk; $('net-nick').parentNode.hidden = rk; q.classList.toggle('rk', rk); q.querySelector('b').textContent = lock ? '登入後開始' : rk ? '開始配對' : '隨機配對'; $('net-quick2').hidden = true; $('net-quick2').querySelector('b').textContent = '擊倒戰配對'; els['m-title'].querySelector('#net-opts h3').textContent = rk ? '積分賽' : '連線房間'; }
+        $('net-create').parentNode.hidden = rk; $('net-nick').parentNode.hidden = rk; q.classList.toggle('rk', rk); q.parentNode.hidden = rk; q.querySelector('b').textContent = lock ? '登入後開始' : rk ? '開始配對' : '隨機配對';
+        { const g = $('rk-go-btn'); g.querySelector('b').textContent = lock ? '登入後開始' : !inRoom ? '開始配對' : n.rkDone ? '開始配對' : n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; g.classList.toggle('wait', inRoom && n.ready && !n.rkDone); g.disabled = !inRoom && n.state !== 'idle' || !!n.busy || n.state === 'joining'; } $('net-quick2').hidden = true; $('net-quick2').querySelector('b').textContent = '擊倒戰配對'; els['m-title'].querySelector('#net-opts h3').textContent = rk ? '積分賽' : '連線房間'; }
       $('net-msg').textContent = n.state === 'check' ? '正在檢查能不能連線…' : n.state === 'none' ? window.SC_PUBLIC ? '這台裝置現在不能連線。' : '這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。' : n.msg || (window.SC_PUBLIC && SC.relay.stats && n.code ? '中繼站：' + (SC.relay.stats.up.join('、') || '重新連線中') : '');
       ['net-create', 'net-join', 'net-code', 'net-quick', 'net-quick2'].forEach((id) => ($(id).disabled = n.state !== 'idle' || n.busy));
       const me = n.list.find((r) => r.isMe), waiting = n.live && !n.played(n.live), mixed = n.mixed(), ready = n.state === 'lobby' && me && n.isHost && n.list.length >= n.minStart() && !n.live && !mixed;
       start.disabled = !ready; start.textContent = !inRoom ? (sel.rk ? '先按開始配對' : '先開房間或加入房間') : mixed ? '🔄 有人要重新整理' : n.isHost || !me ? '開始對戰' : '等房主開始';
       if (!inRoom) return;
-      $('net-ready').hidden = !n.ranked; $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
+      $('net-ready').hidden = true; // 積分賽的「即刻開戰」改用上面的大按鈕 $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
       const tri = n.triOn(), vc = !!n.vc, zb = n.zbOn(), rand = n.mix === 'rand' && !vc, L = n.lineup(false);
       n.list.forEach((r, i) => {
@@ -13120,10 +13148,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       $('pick-rule').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (zb ? 'zombie' : n.rule)); b.disabled = !n.isHost; });
       mapSync(); if (zb) { $('pick-rule').hidden = false; $('map-opt').hidden = true; $('pick-mix').hidden = true; $('pick-teams').hidden = true; } // 殭屍保衛戰（Yen 22:00：放在規則這排，跟塗地戰、擊倒戰並排）：固定小鴨堡壘
       $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.list.length === 5 ? '5 個人要等第 6 個人加入，才能 3 對 3 開打' : n.qs != null ? `${n.qs} 秒後開打` : `${RK_FMT[n.list.length] || ''}：大家都按「即刻開戰」就開打`) : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : zb && n.isHost && n.list.length < 4 ? '一個人也能開打，空位由電腦隊友補上' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
+      if (n.ranked) { $('rk-go-msg').textContent = $('net-msg2').textContent; const cd = n.qs != null && !n.live && n.state === 'lobby' && !els['m-title'].hidden; $('rk-wpn').hidden = !cd; if (cd) { $('rk-wpn-n').textContent = n.qs; if (ui.wpnSync) ui.wpnSync(); } } // Yen 11-22：配到人、大家按即刻開戰後倒數 10 秒，這時候選武器
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
-      { const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '開始教學' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
+      { const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('wpn-opt').hidden = modeKey() === 'ranked'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '開始教學' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
       SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); netSync();
     };
     // 選關：世界列 + 這個世界的五張魔王卡
@@ -13137,8 +13166,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
     ui.renderStages = renderStages;
     // 第 63 版：帶兩把武器。點一把就放進第 1 格（開場拿這把），原本第 1 格的移到第 2 格
-    const wpnSync = () => { const lo = sel.loadout; $('pick-wpn').querySelectorAll('.pick').forEach((b) => { const i = lo.indexOf(b.dataset.v); b.classList.toggle('on', i >= 0); b.querySelector('.wslot').textContent = i >= 0 ? i + 1 : ''; }); G().opts.loadout = lo.slice(); sel.weapon = lo[0]; };
-    $('pick-wpn').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; sel.loadout = [b.dataset.v, ...sel.loadout.filter((w) => w !== b.dataset.v)].slice(0, 2); wpnSync(); click(); save(); });
+    const wpnSync = () => { const lo = sel.loadout; document.querySelectorAll('#pick-wpn .pick, #rk-wpn .pick').forEach((b) => { const i = lo.indexOf(b.dataset.v); b.classList.toggle('on', i >= 0); b.querySelector('.wslot').textContent = i >= 0 ? i + 1 : ''; }); G().opts.loadout = lo.slice(); sel.weapon = lo[0]; };
+    ['pick-wpn', 'rk-wpn'].forEach((id) => $(id).addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; sel.loadout = [b.dataset.v, ...sel.loadout.filter((w) => w !== b.dataset.v)].slice(0, 2); wpnSync(); click(); save(); }));
     ui.wpnSync = wpnSync;
     const pick = (groupId, key) => {
       const g = $(groupId), sync = () => g.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === (key === 'mode' ? modeKey() : sel[key])));
@@ -13203,6 +13232,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     function myNick() { const acc = SC.account && SC.account.user && SC.account.name ? SC.net.clean(SC.account.name()) : ''; return (sel.rk ? acc || nick : nick || acc) || ''; } // Yen 11-22：積分賽用帳號名字（積分賽沒有暱稱欄，以前都變成「玩家N」）
     const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === 'all') lastRk = rule; SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
     on('net-quick', () => quick(sel.rk ? 'all' : 'turf')); on('net-quick2', () => quick(sel.rk ? '2v2' : 'knockout')); // Yen 22:01：外面只留一顆「隨機配對」（塗地戰）；擊倒戰、殭屍保衛戰在房間裡的規則那排選
+    on('rk-go-btn', () => { const n = SC.net; if (n.state === 'lobby' && n.ranked) { if (n.rkDone) ui.rankedAgain(); else n.setReady(!n.ready); } else quick('all'); });
     on('net-ready', () => SC.net.setReady(!SC.net.ready)); let lastRk = 'all'; ui.rankedAgain = () => quick(lastRk); // Yen 22:00：1 對 1、2 對 2，要大家按準備 // 積分賽（Yen 21:35）：塗地和擊倒合併成一個配對，每場隨機 // Yen 11-21：一般連線配對也分塗地戰、擊倒戰（這行的註解原本夾在中間，把準備鈕和 rankedAgain 吃掉了）
     on('net-create', () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.create(); });
     on('net-join', () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.open($('net-code').value); });
