@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='0299b59119ca';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='eb76afd5d6b5';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -10493,7 +10493,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if ((fx * dx + fz * dz) / d > 0.45) { amt *= from.ai ? 0.45 : 0.3; const ly = z.y + 2.5 * t.s; ctx.burst(z.x + fx * 1.9 * t.s, ly, z.z + fz * 1.9 * t.s, new THREE.Color(0xfff2a8), 6, 12, 0.3); if (z.m && z.m.lid) z.lidHitT = 0.25; if (from.isPlayer && performance.now() - (lidDingAt || 0) > 120) { lidDingAt = performance.now(); SC.audio.sfx.metal && SC.audio.sfx.metal(); } }
     }
     if (from.isPlayer) { (SC.audio.sfx.hitW || SC.audio.sfx.hit)(cause); SC.ui.hitMarker(false); }
-    shove(z, from, ZKB[cause] ?? 6);
+    shove(z, from, ZKB[cause] ?? 6); zFeel(z, ZFEEL[cause]);
     if (!auth()) { // 自己先預測：打到 0 就先演打爆，1.2 秒內沒消失就還原
       const base = z.pred != null && g.time - z.predAt < 1.2 ? z.pred : z.hp; z.pred = base - amt; z.predAt = g.time;
       const fin = z.pred <= 0 && !t.cap; ctx.sendHit(from, z.id, fin ? 999 : Math.round(amt), cause); /* 第 115 版：自己這台打爆的，就直接跟裁判說「打爆了」（前面幾發如果在網路上掉了，也不會變回來） */
@@ -10505,6 +10505,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 第 130.1 版（Yen 11-22 02:44「殭屍被打會後退」）：被打到就往後退。裁判那台真的移動（其他台跟著同步），
      不是裁判的那台先在畫面上往後晃一下（z.ox/z.oz 只動模型），不用等網路。魔王、巨人只退一點點。 */
   const ZKB = { W01: 3.5, W02: 12, W03: 16, W04: 2.4, W05: 10, bomb: 18, special: 18, hero: 8 }, ZKB_MAX = 24;
+  /* 第 135.1 版（Yen「每個武器打擊的感受都不同」）：殭屍被不同武器打到的樣子不同：sq＝被打扁多少、up＝彈起來多高。
+     神兵：雙管大砲打得又扁又遠、機關槍一直小抖、火箭砲炸飛起來、橡皮鴨彈一下、拖鞋拍扁、肉球大槌整隻搥扁 */
+  const ZFEEL = { W01: [0.25, 0], W02: [0.7, 1.2], W03: [0.6, 0.6], W04: [0.45, 0.4], W05: [0.5, 0], bomb: [0.5, 2.4], special: [0.6, 2.4] };
+  const HFEEL = { cannon: [0.85, 1.8, 20], gatling: [0.22, 0, 3], rocket: [0.5, 3.2, 15], duck: [0.3, 1.2, 5], mech: [0.4, 0.4, 8], slipper: [0.75, 0, 12], yarn: [0, 0, 0], paw: [1.1, 0, 4] };
+  function zFeel(z, f) { if (!f || z.st === 'dead' || z.st === 'under') return; const t = TY[z.ty], big = t.boss || t.giant || t.k === 'king' || t.k === 'tank' ? 0.3 : 1; z.sq = Math.max(z.sq || 0, f[0] * big); if (f[1] && (z.bT == null || z.bT > 0.25)) { z.bT = 0; z.bH = f[1] * big; } }
+  function heroFeel(a) { const k = a && a.heroK != null && SC.zbHero && SC.zbHero.K[a.heroK] ? SC.zbHero.K[a.heroK].k : null; return HFEEL[k] || [0.4, 0, ZKB.hero]; }
   function shove(z, from, k) {
     if (!k || !from || z.st === 'dead' || z.st === 'under') return; const fp = from.pos || from; if (fp.x == null) return; const t = TY[z.ty];
     if (t.boss || t.giant || t.k === 'king' || t.k === 'tank') k *= 0.15; else if (t.k === 'big' || (t.s || 1) > 1.6) k *= 0.45;
@@ -10546,7 +10552,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   Z.netHit = (from, id, amt) => { if (!auth()) return; if (id <= -TUR_ID) { const k = -id - TUR_ID; if (k === BR.id) brPress(); else if (k >= 20 && k < 23) barRepair(k - 20); else turOn(k); return; } if (id < 0) { const pk = Z.pows.find((q) => q.id === -id); if (pk) firePow(pk); return; } const z = Z.list.find((q) => q.id === id); if (!z) return; if (amt >= 1000) { amt -= 1000; freezeZ(z); } if (from && !from.isPlayer) shove(z, from, 8); damage(z, SC.clamp(amt, 0, 999), from); }; /* 1000 以上＝冰冰槍：先凍住再扣血 */
   function freezeZ(z) { if (z.st === 'dead' || z.st === 'under') return; const s = TY[z.ty].boss ? 1.5 : 3; z.dz = Math.max(z.dz || 0, s); z.ice = Math.max(z.ice || 0, s); }
   Z.heroHit = (z, amt, a, frz) => { /* 第 116 版：神兵打到殭屍（自己這台算，跟一般子彈一樣先預測打爆） */
-    const g = G(); if (!z || z.st === 'dead' || z.st === 'under' || z.predDead || g.state !== 'play') return false; const t = TY[z.ty]; if (t.boss || t.k === 'big') amt *= HERO_BOSS; if (Z.buffOf(a) === 0) amt *= 1.6; if (onInk(z)) amt *= INKZ.dmg; /* 第 122 版（Yen）：神兵打大魔王只有一半威力 */ if (t.cap) amt = Math.min(amt, t.cap); z.flash = 1; shove(z, a, ZKB.hero);
+    const g = G(); if (!z || z.st === 'dead' || z.st === 'under' || z.predDead || g.state !== 'play') return false; const t = TY[z.ty]; if (t.boss || t.k === 'big') amt *= HERO_BOSS; if (Z.buffOf(a) === 0) amt *= 1.6; if (onInk(z)) amt *= INKZ.dmg; /* 第 122 版（Yen）：神兵打大魔王只有一半威力 */ if (t.cap) amt = Math.min(amt, t.cap); z.flash = 1; { const hf = heroFeel(a); shove(z, a, hf[2]); zFeel(z, hf); }
     if (!auth()) { const base = z.pred != null && g.time - z.predAt < 1.2 ? z.pred : z.hp; z.pred = base - amt * (z.dz > 0 ? DIZZY.dmgK : 1); z.predAt = g.time; const fin = z.pred <= 0 && !t.cap; ctx.sendHit(a, z.id, (frz ? 1000 : 0) + (fin ? 999 : Math.round(amt)), 'special');
       if (z.pred <= 0 && !z.predDead && !t.cap) { z.predDead = g.time; z.predSent = g.time; z.predFrom = a; z.predCause = 'special'; sawDead(z); pop(z, a, true); } return true; }
     if (frz) freezeZ(z); damage(z, amt, a); return true;
@@ -11196,7 +11202,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const sp = Math.hypot(z.vx, z.vz), eat = z.st === 'eat';
       const wy = eat ? Math.atan2(-z.x, -z.z) : sp > 0.5 ? Math.atan2(z.vx, z.vz) : z.yaw; z.yaw += SC.angDiff(z.yaw, wy) * Math.min(1, dt * 8);
       const GT = GAIT[t.k] || GAIT.walk, w = now * (eat ? 14 : (2 + sp * 0.9) * GT.f) + z.wave, hop = z.hop > 0 ? Math.sin((1 - z.hop / 0.6) * Math.PI) * 3 : 0;
-      m.g.position.set(z.x + (z.ox || 0), z.y + hop + (eat ? 0 : GT.bob(w) * t.s), z.z + (z.oz || 0)); m.g.scale.setScalar(z.k || 1); m.g.rotation.y = z.yaw + (eat ? 0 : GT.yaw ? GT.yaw(w, now) : 0);
+      m.g.position.set(z.x + (z.ox || 0), z.y + hop + (eat ? 0 : GT.bob(w) * t.s), z.z + (z.oz || 0)); { const zk = z.k || 1, sq = z.sq || 0; m.g.scale.set(zk * (1 + sq * 0.3), zk * (1 - sq * 0.4), zk * (1 + sq * 0.3)); if (sq) { z.sq = sq * Math.exp(-9 * dt); if (z.sq < 0.01) z.sq = 0; } if (z.bT != null) { z.bT += dt; const u = z.bT / 0.42; if (u >= 1) z.bT = null; else m.g.position.y += z.bH * 4 * u * (1 - u); } } /* 第 135.1 版：被打扁、被打得彈起來（只動模型） */ m.g.rotation.y = z.yaw + (eat ? 0 : GT.yaw ? GT.yaw(w, now) : 0);
       m.body.rotation.z = eat ? Math.sin(w) * 0.05 : GT.rz(w); m.body.rotation.x = eat ? 0.28 + Math.max(0, Math.sin(w)) * 0.22 : GT.rx(w);
       if (z.chomp > 0) z.chomp = Math.max(0, z.chomp - dt * 4); const sq = 1 + (z.chomp || 0) * 0.15 + (eat ? Math.max(0, Math.sin(w)) * 0.06 : GT.sq ? GT.sq(w) : 0), SH = GT.shape || ONE3; m.body.scale.set(t.s * sq * SH[0], (t.s / sq) * SH[1], t.s * sq * SH[2]);
       if (!eat && GT.step && sp > 0.5) { const st = Math.floor(w / Math.PI); if (st !== z.stepN) { z.stepN = st; GT.step(z, t); } } /* 第 117 版：每種殭屍走路的樣子都不一樣（GAIT） */
@@ -12239,7 +12245,21 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function hitFx(t, from, cause) {
     if (t.cat && t.cat.hitFlash) t.cat.hitFlash(); const hr = HITR[cause]; if (hr && t.cat) t.cat.squash = Math.max(t.cat.squash, hr[0]); /* 第 130.1 版（Yen 11-22 02:44「被打的反應更大」）：依武器把貓打扁、身上噴一團攻擊者顏色的墨花 */
     if (hr && from && from.team !== t.team && !G.demo && near(t) > 0.1 && G.time - (t.splashAt ?? -9) > 0.07) { t.splashAt = G.time; const c = colors[from.team], y = t.pos.y + 2.4; SC.fx.pop(t.pos.x, y, t.pos.z, c, hr[2], 0.1); SC.fx.burst(t.pos.x, y, t.pos.z, c, hr[1], 20, 0.62, 0.9, 0.7); } if (from && from.team !== t.team) t.hitBy = from; t.hitStop = Math.max(t.hitStop || 0, 0.05); if (t.cat && t.cat.face) t.cat.face('hurt', 0.25); // 第 86 版：被打的那隻單獨頓 50 毫秒、瞇眼「> <」
-    if (!G.demo && near(t) > 0.1) { SC.fx.pop(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 2.4, 0.07); SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 3, 18, 0.28); }
+    if (!G.demo && near(t) > 0.1) { SC.fx.pop(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 2.4, 0.07); SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, WHITE, 3, 18, 0.28); if (hr && from && from.pos && from.team !== t.team) feelFx(t, from, cause); }
+  }
+  /* 第 135.1 版（Yen 11-22 03:07「每個武器打擊的感受都不同」）：每把武器打中時各有自己的樣子（準星都不動）
+     漆彈槍＝連打：連續打中同一隻，墨花一下比一下大；滾刷＝輾過：腳下一圈墨水波＋貓被壓得很扁；狙擊＝貫穿：一道墨水從背後穿出去＋白色星光；
+     散彈＝炸開：身上好幾處同時開花，一次中 4 顆以上腳下炸一圈；墨刀＝斬：一條斜斜的墨水刀痕劃過身體；墨水彈、絕招＝大圈震波 */
+  const FEEL_OFF = [[0.9, 0.5], [-0.8, 0.9], [0.4, -0.7], [-0.5, -0.3], [0.1, 1.2], [1.1, -0.2]];
+  function feelFx(t, from, cause) {
+    const c = colors[from.team], x = t.pos.x, y = t.pos.y + 2.4, z = t.pos.z, gy = Math.max(H(x, z), t.pos.y) + 0.25;
+    let dx = x - from.pos.x, dz = z - from.pos.z; const d = Math.hypot(dx, dz) || 1; dx /= d; dz /= d; const px = -dz, pz = dx;
+    if (cause === 'W01') { t.stackN = G.time - (t.stackAt ?? -9) < 0.45 ? Math.min(6, (t.stackN || 0) + 1) : 0; t.stackAt = G.time; const k = 1 + t.stackN * 0.22; SC.fx.pop(x - dx * 0.6, y, z - dz * 0.6, c, 1.6 * k, 0.09); if (t.stackN >= 3) SC.fx.burst(x, y, z, c, 3 + t.stackN, 14, 0.4 * k, 0.8, 0.5); }
+    else if (cause === 'W02') { if (t.cat) t.cat.squash = Math.max(t.cat.squash, 1.25); SC.fx.ring(x, gy, z, c, 4.2, 0.32); SC.fx.burst(x, gy + 0.3, z, c, 12, 16, 0.55, 0.3, 0.6); }
+    else if (cause === 'W03') { for (let i = 1; i <= 4; i++) SC.fx.pop(x + dx * i * 0.9, y + 0.1 * i, z + dz * i * 0.9, c, 2.6 - i * 0.4, 0.12); SC.fx.burst(x + dx * 2.2, y, z + dz * 2.2, c, 16, 26, 0.5, 0.4, 0.6); SC.fx.pop(x - dx * 0.8, y + 0.3, z - dz * 0.8, WHITE, 5.2, 0.07); }
+    else if (cause === 'W04') { t.pelN = t.pelAt === G.time ? t.pelN + 1 : 1; t.pelAt = G.time; const o = FEEL_OFF[(t.pelN - 1) % FEEL_OFF.length]; SC.fx.pop(x + px * o[0] - dx * 0.7, y + o[1], z + pz * o[0] - dz * 0.7, c, 1.9, 0.1); if (t.pelN === 4) { SC.fx.ring(x, gy, z, c, 5, 0.3); SC.fx.burst(x, y, z, c, 14, 24, 0.5, 0.6, 0.6); } }
+    else if (cause === 'W05') { const sw = (t.slashN = ((t.slashN || 0) + 1) % 2) ? 1 : -1; for (let i = -3; i <= 3; i++) SC.fx.pop(x + px * i * 0.55 * sw - dx * 0.7, y + i * 0.42, z + pz * i * 0.55 * sw - dz * 0.7, i === 0 ? WHITE : c, 1.5 - Math.abs(i) * 0.12, 0.11); }
+    else if (cause === 'bomb' || cause === 'special') { SC.fx.ring(x, gy, z, c, 5.5, 0.4); SC.fx.ring(x, gy + 0.1, z, WHITE, 3.2, 0.25); }
   }
   // 被打到往後退一點（在被打的人自己那台算，連線時位置照常同步）。漆彈槍一下退一點點，滾刷、墨水彈退比較多
   const KNOCK = { W01: 1.8, W02: 6, W03: 5, W04: 1.3, W05: 3, bomb: 9, sp: 0 }; /* 第 130.1 版（Yen）：狙擊打中也會把人打退 */
