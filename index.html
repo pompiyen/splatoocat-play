@@ -810,7 +810,7 @@ SC.CFG = {
   // 滾刷：按一下往前甩一排墨水（空中是直的一道），按住就把刷頭壓在地上往前推，邊走邊塗出一條連續的寬帶，越推越快
   W02: { id: 'W02', name: '滾刷', swingInk: 8 / INK_LAST, rollInk: 0.42 / INK_LAST, swingInterval: 0.5, rollDelay: 0.2, swingRange: 19, airRange: 40, // 跳起來甩：直的一道、噴得遠（Yen 11/14，像漆彈大作戰的跳甩）
     
-    swingRadius: 3.4, rollerHalf: 7.4, rollRadius: 3.85, rollSpeedMin: 1.08, rollSpeedMax: 1.38, rollRamp: 0.7, swingDamage: 48, rollDamage: 100, rollHitInterval: 0.4 },
+    swingRadius: 3.4, rollerHalf: 5.8, /* 第 103 版（Yen）：刷頭看起來是實際塗墨寬度的 9 成（塗出的帶子半寬約 1.12×rollRadius×PAINT≈6.5） */ rollRadius: 3.85, rollSpeedMin: 1.08, rollSpeedMax: 1.38, rollRamp: 0.7, swingDamage: 48, rollDamage: 100, rollHitInterval: 0.4 },
   W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, playerCharge: 0.35, deskInterval: 1, /* 第 100 版（Yen）：玩家不用集氣（電腦版左鍵一按就射、平板按住 0.35 秒就滿）；電腦按了就射的版本每發間隔 1 秒 */ minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
    
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
