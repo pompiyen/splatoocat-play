@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='800f97f7c61c';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='1aaba8f5883b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1137,7 +1137,7 @@ SC.CFG = {
   // 第 82 版（Yen）：滾刷絕招改成刷頭寬度 2.2 倍、5 秒（原本是隱形）
   BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
   SPRAY_DMG: 31.2, SPRAY_SLOW: 0.6, // 舊的轉圈亂射（只剩舊版連線事件 q 用）；連射時移動速度 0.6 倍
-  SPRAY_SHOTS: 6, SPRAY_GAP: 0.13, SPRAY_K: 1.3, // 第 121.1 版（Yen 11-22 00:30 威力 1.3 倍、00:35 改成快速連射六發散彈）：六發一般散彈，每顆 28×1.3＝36.4，不耗墨，約 0.8 秒打完
+  SPRAY_SHOTS: 6, SPRAY_GAP: 0.13, SPRAY_K: 1.3, SPRAY_BIG: 2.6, SPRAY_KICK: 9, /* 第 127.1 版（Yen 11-22 02:00）：六發超大散彈（看起來 2.6 倍大，塗地、打中範圍 1.5 倍），每發往後推 */ // 第 121.1 版（Yen 11-22 00:30 威力 1.3 倍、00:35 改成快速連射六發散彈）：六發一般散彈，每顆 28×1.3＝36.4，不耗墨，約 0.8 秒打完
   SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 24, /* 第 83 版（Yen）：每秒扣血 16→24，所有場地的河和海都一樣 */ POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
   SP_R: 18, SP_HEIGHT: 22, SP_KILL_H: 50, // SP_KILL_H：往上多高都會被打到（五段跳最高約 48）
   BOSS_LIVES: 3, // Yen 2026-11-17：魔王關只有三條命，三次都被擊倒就挑戰失敗
@@ -11879,20 +11879,23 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 散彈槍：用種子決定每顆的偏移，連線時每台噴出來的形狀一樣
   function fireW04(a, sp) { // sp：絕招的六連發（不耗墨，每顆威力 C.SPRAY_K 倍）
     const w = C.W04, m = muzzle(a, t1), dir = t2.copy(aimPt(a)).sub(m).normalize(), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a);
-    pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, (a.ai ? aiD().dmg : 1) * (sp ? C.SPRAY_K : 1));
-    if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed);
-    if (zBuff(a) === 2) { pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7, (a.ai ? aiD().dmg : 1) * (sp ? C.SPRAY_K : 1)); if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7); }
-    if (sp) { a.lastShotAt = G.time; a.cat.recoil = 2.2; a.cat.reload = 1; A.sfx.shotgun(near(a) * 1.15); cam.shake = a.isPlayer && !G.demo ? Math.min(1, cam.shake + 0.22) : cam.shake; if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 3.6, 0.08); return; }
+    pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, (a.ai ? aiD().dmg : 1) * (sp ? C.SPRAY_K : 1), sp);
+    if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, sp ? 1 : 0);
+    if (zBuff(a) === 2) { pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7, (a.ai ? aiD().dmg : 1) * (sp ? C.SPRAY_K : 1), sp); if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7, sp ? 1 : 0); }
+    if (sp) { a.lastShotAt = G.time; a.cat.recoil = 3; a.cat.reload = 1; A.sfx.shotgun(Math.min(1, near(a) * 1.3)); cam.shake = a.isPlayer && !G.demo ? Math.min(1, cam.shake + 0.38) : cam.shake; if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 5.5, 0.1);
+      { const hl = Math.hypot(dir.x, dir.z) || 1; a.kx = (a.kx || 0) - (dir.x / hl) * C.SPRAY_KICK; a.kz = (a.kz || 0) - (dir.z / hl) * C.SPRAY_KICK; } /* 第 127.1 版（Yen）：每發都有後座力，人往後退 */
+      if (a.isPlayer && !G.demo) cam.kickAt = G.time; return; } /* 鏡頭往上跳一下（跟狙擊一樣，只動畫面不動準星） */
     a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a));
     if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 3, 0.08);
   }
-  function pellets(a, mx, my, mz, dx, dy, dz, boost, seed, dmgK) {
+  function pellets(a, mx, my, mz, dx, dy, dz, boost, seed, dmgK, big) { /* 第 127.1 版（Yen 11-22 02:00）：big＝絕招的超大散彈，子彈、塗地、打中範圍都變大 */
+    const bv = big ? C.SPRAY_BIG : 1;
     let s = seed | 0; const rnd = () => { s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
     const w = C.W04, yaw0 = Math.atan2(dx, dz), pitch0 = Math.asin(SC.clamp(dy, -1, 1));
     for (let k = 0; k < w.pellets; k++) {
-      const ang = (k / w.pellets) * Math.PI * 2 + rnd() * 0.8, rr = k === 0 ? 0 : (0.35 + rnd() * 0.65) * w.spread, yaw = yaw0 + Math.cos(ang) * rr, pitch = pitch0 + Math.sin(ang) * rr * 0.6 + 0.03, sp = w.speed * (0.9 + rnd() * 0.2);
+      const ang = (k / w.pellets) * Math.PI * 2 + rnd() * 0.8, rr = k === 0 ? 0 : (0.35 + rnd() * 0.65) * w.spread * (big ? 1.15 : 1), yaw = yaw0 + Math.cos(ang) * rr, pitch = pitch0 + Math.sin(ang) * rr * 0.6 + 0.03, sp = w.speed * (0.9 + rnd() * 0.2);
       projectiles.push({ x: mx, y: my, z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
-        dmg: w.damage * dmgK, r: w.radius * C.PAINT * boost, range: w.range * (0.85 + rnd() * 0.3), g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.6, flash: k === 0, color: colors[a.team], cause: 'W04', pad: w.hitPad });
+        dmg: w.damage * dmgK, r: w.radius * C.PAINT * boost * (big ? 1.5 : 1), range: w.range * (0.85 + rnd() * 0.3) * (big ? 1.1 : 1), g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.6 * bv, flash: k === 0, color: colors[a.team], cause: 'W04', pad: w.hitPad * (big ? 1.5 : 1) });
     }
   }
 
@@ -12867,7 +12870,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (type === 'W') { SC.wallInk.paint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 7), colors[a.team]); } // 第 99 版：滾刷絕招滾上牆塗的墨
     else if (type === 'r') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 12) { rollPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 16)); SC.fx.burst(d[2], d[4] + 0.4, d[3], colors[a.team], 2, 9, 0.35); } }
     else if (type === 'z') { const dir = new V3(d[3], d[4], d[5]); if (dir.lengthSq() > 0.5) sniperShot(a, new V3(d[0], d[1], d[2]), dir.normalize(), SC.clamp(d[6], 0, 1), SC.clamp(d[7], 1, 1.2), { len: d[8], hit: d[9] }); }
-    else if (type === 'g') { const l = Math.hypot(d[3], d[4], d[5]); if (l > 0.5 && projectiles.length < 500) { pellets(a, d[0], d[1], d[2], d[3] / l, d[4] / l, d[5] / l, SC.clamp(d[6], 1, 1.2), d[7], 0); a.cat.recoil = 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a)); } }
+    else if (type === 'g') { const l = Math.hypot(d[3], d[4], d[5]); if (l > 0.5 && projectiles.length < 500) { pellets(a, d[0], d[1], d[2], d[3] / l, d[4] / l, d[5] / l, SC.clamp(d[6], 1, 1.2), d[7], 0, d[8] === 1); a.cat.recoil = d[8] === 1 ? 3 : 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a)); } }
     else if (type === 'm') { const k = Math.round(d[4]); if (k >= 0 && k <= 3) slashAt(a, d[0], d[1], d[2], d[3], k, SC.clamp(d[5], 1, 1.2), false); }
     else if (type === 'n') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 20) dashPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 8)); }
     else if (type === 'b') spawnBomb(a, d[0], d[1], d[2], d[3], d[4], d[5]);
