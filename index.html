@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='6835e1c7b6dc';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='76e294cf68ff';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1035,6 +1035,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const P = []; // [正規式, [en, ja, ko]]，$1 $2 … 是翻過的抓取內容
   const cache = new Map();
   const miss = new Set();
+  const rev = new Map(); // 翻好的字 → 中文原文（程式先用 SC.tr 翻好再放進畫面時，換語言才找得回原文）
   const add = (rows) => rows.forEach((r) => D.set(r[0], r.slice(1)));
   const pat = (re, out) => P.push([re, out]);
 
@@ -1056,6 +1057,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
       }
     }
     if (out == null) { out = s; miss.add(s); }
+    else if (out !== s && !D.has(out)) rev.set(out, s);
     cache.set(key, out); return out;
   };
 
@@ -1480,6 +1482,40 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['這台裝置的紀錄', 'Records on this device', 'この端末の記録', '이 기기의 기록'],
     ['大家的紀錄', "Everyone's records", 'みんなの記録', '모두의 기록'],
   ]);
+  // 語言檢查（Yen 2026-11-21 21:47「有些地方會出現語言混亂」）：補上沒翻到的字
+  add([
+    ['換模式', 'Change mode', 'モードをかえる', '모드 바꾸기'],
+    ['貼紙本', 'Sticker book', 'シール帳', '스티커북'],
+    ['貼紙', 'Sticker', 'シール', '스티커'],
+    ['還沒有', 'Not yet', 'まだない', '아직 없어요'],
+    ['氣球', 'Balloon', 'ふうせん', '풍선'],
+    ['漩渦把你噴飛了！', 'The whirlpool launched you!', 'うずまきに飛ばされた！', '소용돌이가 날려 보냈어요!'],
+    ['蓄力中，轉方向瞄準！', 'Charging, turn to aim!', 'ためてるよ、向きをかえてねらおう！', '모으는 중, 방향을 돌려 조준!'],
+    ['全螢幕玩', 'Play full screen', '全画面であそぶ', '전체 화면으로 놀기'],
+    ['點 Safari 的「分享」', 'Tap Share in Safari', 'Safari の「共有」をタップ', 'Safari의 "공유"를 눌러요'],
+    ['選「加入主畫面」', 'Choose "Add to Home Screen"', '「ホーム画面に追加」をえらぶ', '"홈 화면에 추가"를 골라요'],
+    ['從主畫面的「漆貓」打開，整個螢幕都是遊戲', 'Open the cat icon on your home screen: the game fills the whole screen', 'ホーム画面のネコのアイコンから開くと、画面いっぱいがゲームになるよ', '홈 화면의 고양이 아이콘으로 열면 화면 전체가 게임이 돼요'],
+    ['iPhone 的 Safari 不讓網頁直接全螢幕，加到主畫面後打開就沒有網址列。', "iPhone Safari doesn't let web pages go full screen, but opened from the home screen there is no address bar.", 'iPhone の Safari はウェブページを全画面にできないけど、ホーム画面から開くとアドレスバーが消えるよ。', 'iPhone Safari는 웹페이지 전체 화면을 지원하지 않지만, 홈 화면에서 열면 주소창이 없어요.'],
+    ['要先用', 'First open the game at', 'まず', '먼저'],
+    ['打開遊戲，再照上面三步做（Claude 裡面的版本不能加到主畫面）。', ', then do the three steps above (the version inside Claude cannot be added to the home screen).', 'でゲームを開いて、上の3ステップをしてね（Claude の中の版はホーム画面に追加できません）。', '에서 게임을 연 다음 위의 세 단계를 따라 해요 (Claude 안의 버전은 홈 화면에 추가할 수 없어요).'],
+    ['網路', 'network', 'ネットワーク', '네트워크'],
+    ['作者回覆', 'Reply from the maker', '作者からの返事', '만든 사람의 답장'],
+    ['💬 作者回覆', '💬 Reply from the maker', '💬 作者からの返事', '💬 만든 사람의 답장'],
+    ['✏️ 改回覆', '✏️ Edit reply', '✏️ 返事をなおす', '✏️ 답장 고치기'],
+    ['送出回覆', 'Send reply', '返事を送る', '답장 보내기'],
+    ['💬 回覆', '💬 Reply', '💬 返事', '💬 답장'],
+    ['聯絡我們', 'Contact', 'お問い合わせ', '연락처'],
+    ['聯絡我們：', 'Contact: ', 'お問い合わせ：', '연락처: '],
+  ]);
+  pat(/^牌位 (.+)$/, ['Rank $1', 'ランク $1', '랭크 $1']);
+  pat(/^(.+)，在房間裡，點了進房$/, ['$1, in a room, tap to join', '$1、へやにいるよ。タップで入る', '$1, 방에 있어요. 눌러서 들어가기']);
+  pat(/^(.+)，在線上$/, ['$1, online', '$1、オンライン', '$1, 온라인']);
+  pat(/^讀不到留言（(.+)）$/, ["Couldn't load messages ($1)", 'メッセージを読みこめません（$1）', '메시지를 불러오지 못했어요 ($1)']);
+  pat(/^回覆沒送出去（(.+)）$/, ["The reply wasn't sent ($1)", '返事を送れませんでした（$1）', '답장을 보내지 못했어요 ($1)']);
+  pat(/^登入沒有成功（(.+)）$/, ["Sign-in didn't work ($1)", 'ログインできませんでした（$1）', '로그인하지 못했어요 ($1)']);
+  pat(/^已登入（(.+)）$/, ['Signed in ($1)', 'ログイン中（$1）', '로그인됨 ($1)']);
+  pat(/^共 (\d+) 則・按了贊助按鈕的 (\d+) 則$/, ['$1 in all · $2 pressed a support button', '全部で $1 件・応援ボタンを押した $2 件', '모두 $1개 · 후원 버튼을 누른 $2개']);
+  pat(/^回覆給 (.+)$/, ['Reply to $1', '$1 への返事', '$1에게 답장']);
   // 第 N 名（英文要 1st 2nd 3rd）
   const ord = (n) => (n % 100 > 10 && n % 100 < 14 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
   P.find((p) => String(p[0]) === String(/^第 (\d+) 名$/))[1] = (m, li) => ['$1' + ord(+m[1]) + ' place', '$1位', '$1위'][li];
@@ -1494,16 +1530,18 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const doText = (n) => {
     const v = n.nodeValue; if (!v) return;
     if (wrote.get(n) === v) return; // 自己剛寫的
-    if (!CJK.test(v) && !orig.has(n)) return;
+    const src = !D.has(v) && rev.has(v) ? rev.get(v) : v; // 已經是翻好的字：記住中文原文
+    if (!CJK.test(src) && !orig.has(n)) return;
     if (skip(n.parentNode)) return;
-    orig.set(n, v); const t = tr(v); wrote.set(n, t); if (t !== v) n.nodeValue = t;
+    orig.set(n, src); const t = tr(src); wrote.set(n, t); if (t !== v) n.nodeValue = t;
   };
   const doAttr = (el, a) => {
     const v = el.getAttribute(a); if (v == null) return;
     let o = aOrig.get(el); if (o && o[a] && o[a][1] === v) return;
-    if (!CJK.test(v)) return;
+    const src = !D.has(v) && rev.has(v) ? rev.get(v) : v;
+    if (!CJK.test(src)) return;
     if (!o) aOrig.set(el, (o = {}));
-    const t = tr(v); o[a] = [v, t]; if (t !== v) el.setAttribute(a, t);
+    const t = tr(src); o[a] = [src, t]; if (t !== v) el.setAttribute(a, t);
   };
   const walk = (root) => {
     if (root.nodeType === 3) return doText(root);
@@ -12543,7 +12581,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     on('btn-quit', toMenu); on('btn-menu', () => { SC.net.leave(); toMenu(); });
     const help = (mode) => { els['help-list'].innerHTML = HELP[mode].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(''); $('tab-desk').classList.toggle('on', mode === 'desk'); $('tab-touch').classList.toggle('on', mode === 'touch'); };
     const openHelp = () => { help(SC.input.isTouch ? 'touch' : 'desk'); els['m-help'].hidden = false; };
-    $('pick-lang').addEventListener('change', (e) => { SC.i18n.set(e.target.value); $('lang-cur').textContent = SC.i18n.LABEL[SC.i18n.lang]; }); // 換語言：畫面上的字從原文重翻（01a_i18n.js）
+    $('pick-lang').addEventListener('change', (e) => { SC.i18n.set(e.target.value); $('lang-cur').textContent = SC.i18n.LABEL[SC.i18n.lang]; const g = G(); if (g.demo && !els['m-title'].hidden) g.start({ demo: true, map: SC.world.key }); }); // 換語言：畫面上的字從原文重翻（01a_i18n.js）
     on('btn-help', openHelp); on('btn-help2', openHelp); on('btn-help-close', () => (els['m-help'].hidden = true));
     on('tab-desk', () => help('desk')); on('tab-touch', () => help('touch'));
     // 全螢幕：瀏覽器支援才顯示（iPhone 的 Safari 不開放網頁全螢幕）
@@ -13097,6 +13135,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const tierOf = (p) => Math.min(TOP, Math.floor(p / PER));
   const starsOf = (p) => (tierOf(p) >= TOP ? 0 : Math.floor((p % PER) / STEP)); // 這個牌位已經拿到幾顆星（0～3，第四顆滿了就升牌位）
   const tr = (s) => (SC.tr ? SC.tr(s) : s);
+  // 括號、冒號照語言用全形或半形（Yen 11-21 21:47 語言混亂：英文、韓文不要出現「（」「：」「・」）
+  const cjkP = () => !SC.i18n || SC.i18n.lang === 'zh' || SC.i18n.lang === 'ja';
+  const par = (x) => (cjkP() ? `（${x}）` : ` (${x})`), cl = () => (cjkP() ? '：' : ': '), dot = () => (cjkP() ? '・' : ', ');
 
   if (SC.i18n && SC.i18n.add) SC.i18n.add([
     ['毛線球', 'Yarn Ball', '毛糸玉', '털실 뭉치'], ['小魚乾', 'Fish Snack', '小魚', '멸치'], ['鈴鐺', 'Bell', '鈴', '방울'],
@@ -13314,7 +13355,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const i = weekly.last.findIndex((r) => r.uid === uid); weekly.status = i < 0 ? '' : i < 3 ? 'top3' : 'top10'; weekly.loaded = weekId(n);
         try { localStorage.setItem(ST_KEY, JSON.stringify({ wk: weekId(n), s: weekly.status })); } catch (e) {}
       } catch (e) { /* 讀不到就先不顯示 */ }
-      weekly.busy = false; paintBadge(); if (ov && !ov.hidden && tab === 'week') openPanel(tab, true); else if (host() && tab === 'week') openPanel(tab);
+      weekly.busy = false; paintBadge(); if (((ov && !ov.hidden) || host()) && tab === 'week') openPanel(tab);
     },
     mine: () => { if (weekly.status && weekly.loaded === weekId()) return weekly.status; try { const o = JSON.parse(localStorage.getItem(ST_KEY) || 'null'); return o && o.wk === weekId() ? o.s || '' : ''; } catch (e) { return ''; } },
   };
@@ -13344,11 +13385,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 積分賽的牌位／排行／徽章直接放在選單版面裡（Yen 2026-11-21 19:43：不要彈出視窗）
   const host = () => { const h = document.getElementById('rk-opt'); return h && !h.hidden ? h : null; };
   const onTab = (e) => { const tb = e.target.closest('[data-tab]'); if (!tb) return false; openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return true; };
-  const openPanel = (want, pop) => { // pop：標題上的毛線球按鈕一定用彈出視窗（Yen 11-21 21:49）
+  const openPanel = (want) => {
     style(); const s = load(), t = tierOf(s.p); if (typeof want === 'string') tab = want;
-    const inl = pop === true ? null : host();
+    const inl = host();
+    if (!inl && typeof want !== 'string' && SC.ui && SC.ui.pickRanked && SC.ui.pickRanked()) return; // 標題上的牌位按鈕：切到積分賽，積分就在版面裡
     if (inl && !inl.dataset.rk) { inl.dataset.rk = '1'; inl.addEventListener('click', onTab); }
-    if (!inl && !ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab, true); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
+    if (!inl && !ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
     const nxt = t >= TOP ? '' : ` / ${(t + 1) * PER}`, wkp = s.wk && s.wk.id === weekId() ? s.wk.p : 0, f = FRAME[weekly.mine()];
     const tabs = `<div class="rkd-tabs">${[['rank', '🏅', '牌位'], ['week', '📅', '本週排行'], ['ach', '🎖️', '徽章']].map(([k, i, n]) => `<button type="button" data-tab="${k}" class="${tab === k ? 'on' : ''}"><em>${i}</em>${tr(n)}</button>`).join('')}</div>`;
     const head = `<div class="rkd-head"><span class="rkd-i">${icon(t)}${f ? `<i class="rkd-fr">${f.i}</i>` : ''}</span><div><b>${tr(TIERS[t].n)}</b>${stars(s.p)}<small>${tr('積分')} ${s.p}${nxt}　·　${s.m} ${tr('場')}${f ? '　·　' + f.i + ' ' + tr(f.n) : ''}</small></div></div>`;
@@ -13364,10 +13406,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       body = `<div class="rkd-ach">${ACH.map((x) => `<div class="${s.a[x.id] ? 'on' : ''}"><em>${x.i}</em><b>${tr(x.n)}</b><small>${tr(x.d)}</small>${s.a[x.id] ? `<i>×${s.a[x.id]}</i>` : ''}</div>`).join('')}</div><p class="rkd-foot"><span>🎖️ ${tr('只在積分賽拿得到')}</span></p>`;
     } else {
       body = `<div class="rkd-lad">${TIERS.map((x, i) => `<div class="${i === t ? 'me' : i < t ? 'done' : ''}"><span class="rkd-i">${icon(i)}</span><span>${tr(x.n)}</span><span>${i * PER}</span></div>`).join('')}</div>
-      <div class="rkd-h">${tr('怎麼拿分')}<small>　${tr('現在的牌位')}：${tr('加分')} ×${GAIN[t]}</small></div>
+      <div class="rkd-h">${tr('怎麼拿分')}<small>　${tr('現在的牌位')}${cl()}${tr('加分')} ×${GAIN[t]}</small></div>
       <div class="rkd-how">
         <div><em>🏆</em>${tr('贏')}<b>+${PLACE2.win}</b></div><div><em>🤝</em>${tr('平手')}<b>+${PLACE2.tie}</b></div><div><em>🙂</em>${tr('輸')}<b>0</b></div>
-        <div><em>💥</em>${tr('擊倒')}（1v1・${tr('三方')}）<b>+${FMT[2].KO}</b></div><div><em>💥</em>${tr('擊倒')}（2v2）<b>+${FMT[4].KO}</b></div><div><em>💥</em>${tr('擊倒')}（3v3）<b>+${FMT[6].KO}</b></div><div><em>🔥</em>${tr('贏的那場擊倒')}<b>×${WIN_KO}</b></div><div><em>🎨</em>${tr('塗地（全場每 2%）')}<b>+1</b></div><div><em>🎟️</em>${tr('入場費')}<b class="${ENTRY[t] ? 'neg' : ''}">${ENTRY[t] ? '−' + ENTRY[t] : '0'}</b></div><div><em>✋</em>${tr('助攻')}（2v2・3v3）<b>+${FMT[4].AST}</b></div><div><em>👑</em>MVP（2v2・3v3）<b>+${FMT[4].MVP}</b></div><div><em>🥈</em>${tr('三方第二名')}<b>+${PLACE3[1]}</b></div>
+        <div><em>💥</em>${tr('擊倒')}${par('1v1' + dot() + tr('三方'))}<b>+${FMT[2].KO}</b></div><div><em>💥</em>${tr('擊倒')}${par('2v2')}<b>+${FMT[4].KO}</b></div><div><em>💥</em>${tr('擊倒')}${par('3v3')}<b>+${FMT[6].KO}</b></div><div><em>🔥</em>${tr('贏的那場擊倒')}<b>×${WIN_KO}</b></div><div><em>🎨</em>${tr('塗地（全場每 2%）')}<b>+1</b></div><div><em>🎟️</em>${tr('入場費')}<b class="${ENTRY[t] ? 'neg' : ''}">${ENTRY[t] ? '−' + ENTRY[t] : '0'}</b></div><div><em>✋</em>${tr('助攻')}${par('2v2' + dot() + '3v3')}<b>+${FMT[4].AST}</b></div><div><em>👑</em>MVP${par('2v2' + dot() + '3v3')}<b>+${FMT[4].MVP}</b></div><div><em>🥈</em>${tr('三方第二名')}<b>+${PLACE3[1]}</b></div>
       </div>
       <p class="rkd-foot"><span>🏅 ${tr('只有積分賽算分')}</span><span>📈 ${tr('牌位越高，加分越少、輸了扣越多')}</span><span>🛡️ ${tr('鈴鐺以下不會掉牌位')}</span><span>🛡️ ${tr('升上肉球以上有 3 場保護')}</span>${s.pr > 0 ? `<span>🛡️×${s.pr}</span>` : ''}</p>`;
     }
@@ -13427,12 +13469,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   const mount = () => {
     const title = document.getElementById('m-title'); if (!title) return setTimeout(mount, 300);
-    style(); badge = document.createElement('button'); badge.type = 'button'; badge.className = 'rkd-badge'; badge.setAttribute('translate', 'no'); badge.onclick = () => openPanel('rank', true); title.appendChild(badge); paintBadge();
+    style(); badge = document.createElement('button'); badge.type = 'button'; badge.className = 'rkd-badge'; badge.setAttribute('translate', 'no'); badge.onclick = openPanel; title.appendChild(badge); paintBadge();
     let tries = 0; const dock = () => { const bar = title.querySelector('.ac-bar'); if (bar) bar.prepend(badge); else if (++tries < 20) setTimeout(dock, 250); }; dock(); // 公開版：排在愛心和帳號按鈕左邊
     window.addEventListener('storage', (e) => { if (e.key === KEY) paintBadge(); });
     if (SC.account && SC.account.onChange) SC.account.onChange((u) => { if (u) setTimeout(() => weekly.load(), 2500); });
   };
   hook(); mount();
+  if (SC.i18n && SC.i18n.onChange) SC.i18n.onChange.push(() => { paintBadge(); if (host() || (ov && !ov.hidden)) openPanel(tab); }); // 換語言：牌位版面用新語言重畫
   const api = (SC.ranked = { load, score, tierOf, TIERS, ACH, weekly, weekId, track, open: openPanel, paint: paintBadge, _show: showResult, done: false });
 })();
 
@@ -13924,6 +13967,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const close = () => { if (wrap) { if (view === 'friends') friends.watch(false); wrap.remove(); wrap = null; view = ''; } };
   account.db = useFb ? () => load() : null; // 給 09y_ranked.js 的每週排行榜用
   account.open = (v) => open(v || 'acc'); account.cloud = () => cloud.push();
+  if (SC.i18n && SC.i18n.onChange) SC.i18n.onChange.push(() => { if (wrap) paint(); }); // 換語言：開著的帳號／好友／愛心面板重畫（ATM 那排只有中文才有）
   const open = (v) => {
     close(); view = v; err = ''; fr.msg = ''; if (v === 'friends') friends.watch(true); if (v === 'donate' && account.user) cheer.loadMine();
     wrap = document.createElement('div'); wrap.className = 'ac-wrap';
@@ -13955,7 +13999,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const pays = cheer.inbox.filter((c) => c.pay).length;
         h += `<p class="ac-sub">共 ${cheer.inbox.length} 則・按了贊助按鈕的 ${pays} 則</p>`;
         h += cheer.inbox.length ? `<ul class="ch-list">${cheer.inbox.map((c) => `<li class="${c.pay ? 'paid' : ''}"><div><b translate="no">${esc(c.n || '?')}</b><small>${esc(PAYTAG[c.pay] || PAYTAG[''])}・${c.t ? new Date(c.t).toLocaleString() : ''}${c.lang && c.lang !== 'zh' ? '・' + esc(c.lang) : ''}</small></div><p translate="no">${esc(c.m)}</p>`
-          + (c.r && !c.edit ? `<p class="ch-rep" translate="no"><b>💬 作者回覆</b>${esc(c.r)}</p><button type="button" class="ch-rb" data-rp="${esc(c.id)}">✏️ 改回覆</button>` : c.edit ? `<div class="ch-rf"><textarea maxlength="400" data-rt="${esc(c.id)}" placeholder="回覆給 ${esc(c.n || '?')}">${esc(c.r || '')}</textarea><button type="button" data-rs="${esc(c.id)}">送出回覆</button></div>` : `<button type="button" class="ch-rb" data-rp="${esc(c.id)}">💬 回覆</button>`) + `</li>`).join('')}</ul>` : `<p class="ac-note">還沒有留言。</p>`;
+          + (c.r && !c.edit ? `<p class="ch-rep"><b>💬 作者回覆</b><span translate="no">${esc(c.r)}</span></p><button type="button" class="ch-rb" data-rp="${esc(c.id)}">✏️ 改回覆</button>` : c.edit ? `<div class="ch-rf"><textarea maxlength="400" data-rt="${esc(c.id)}" placeholder="回覆給 ${esc(c.n || '?')}">${esc(c.r || '')}</textarea><button type="button" data-rs="${esc(c.id)}">送出回覆</button></div>` : `<button type="button" class="ch-rb" data-rp="${esc(c.id)}">💬 回覆</button>`) + `</li>`).join('')}</ul>` : `<p class="ac-note">還沒有留言。</p>`;
         h += `<p class="ac-note">標「愛心贊助」的留言只代表對方按了贊助按鈕，有沒有真的付款請到 PayPal 的交易明細核對。</p>`;
       }
       h += `<div class="ac-row"><button type="button" data-ch="back">← 回愛心</button></div>`;
@@ -13964,7 +14008,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (!cheer.mine) h += `<p>讀取中…</p>`;
       else {
         if (cheer.mineErr) h += `<p class="ac-err">${esc(cheer.mineErr)}</p>`;
-        h += cheer.mine.length ? `<ul class="ch-list">${cheer.mine.map((c) => `<li class="${c.pay ? 'paid' : ''}"><div><b>${esc(PAYTAG[c.pay] || PAYTAG[''])}</b><small>${c.t ? new Date(c.t).toLocaleString() : ''}</small></div><p translate="no">${esc(c.m)}</p>${c.r ? `<p class="ch-rep${c.rt > cheer.seenAt ? ' new' : ''}" translate="no"><b>💬 作者回覆</b>${esc(c.r)}</p>` : ''}</li>`).join('')}</ul>` : `<p class="ac-note">還沒有送過留言。</p>`;
+        h += cheer.mine.length ? `<ul class="ch-list">${cheer.mine.map((c) => `<li class="${c.pay ? 'paid' : ''}"><div><b>${esc(PAYTAG[c.pay] || PAYTAG[''])}</b><small>${c.t ? new Date(c.t).toLocaleString() : ''}</small></div><p translate="no">${esc(c.m)}</p>${c.r ? `<p class="ch-rep${c.rt > cheer.seenAt ? ' new' : ''}"><b>💬 作者回覆</b><span translate="no">${esc(c.r)}</span></p>` : ''}</li>`).join('')}</ul>` : `<p class="ac-note">還沒有送過留言。</p>`;
         if (cheer.mine.some((c) => c.pay)) h += `<p class="ac-note">你按了贊助按鈕的留言會標上付款方式；實際有沒有付款、付多少，網站看不到。</p>`;
       }
       h += `<div class="ac-row"><button type="button" data-ch="back">← 回愛心</button></div>`;
@@ -14039,7 +14083,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (CONFIG.donate.length || (useFb && CONFIG.xsolla)) { const b = document.createElement('button'); b.type = 'button'; b.className = 'ac-btn heart'; b.setAttribute('aria-label', '贊助'); b.innerHTML = I_HEART; b.onclick = () => open('donate'); bar.appendChild(b); }
     if (useFb) { frBtn = document.createElement('button'); frBtn.type = 'button'; frBtn.className = 'ac-btn fr'; frBtn.setAttribute('aria-label', '好友'); frBtn.innerHTML = I_FR; frBtn.hidden = !account.user; frBtn.onclick = () => open('friends'); bar.appendChild(frBtn); }
     if (CONFIG.firebase || demo) { accBtn = document.createElement('button'); accBtn.type = 'button'; accBtn.className = 'ac-btn'; accBtn.setAttribute('aria-label', '帳號'); accBtn.onclick = () => open('acc'); bar.appendChild(accBtn); }
-    if (CONFIG.contact) { const c = document.createElement('div'); c.className = 'ac-contact'; c.setAttribute('translate', 'no'); const em = /@/.test(CONFIG.contact); c.innerHTML = `${esc(SC.tr ? SC.tr('聯絡我們') : '聯絡我們')}：<a href="${em ? 'mailto:' : 'tel:'}${esc(CONFIG.contact.replace(/\s/g, ''))}">${esc(CONFIG.contact)}</a>`; if (CONFIG.donate.length) { const d = document.createElement('button'); d.type = 'button'; d.textContent = SC.tr ? SC.tr('贊助方案') : '贊助方案'; d.onclick = () => open('donate'); c.appendChild(d); } (title.querySelector('.title-card') || title).appendChild(c); }
+    if (CONFIG.contact) { const c = document.createElement('div'); c.className = 'ac-contact'; const em = /@/.test(CONFIG.contact); c.innerHTML = `<span>聯絡我們：</span><a translate="no" href="${em ? 'mailto:' : 'tel:'}${esc(CONFIG.contact.replace(/\s/g, ''))}">${esc(CONFIG.contact)}</a>`; if (CONFIG.donate.length) { const d = document.createElement('button'); d.type = 'button'; d.textContent = '贊助方案'; d.onclick = () => open('donate'); c.appendChild(d); } (title.querySelector('.title-card') || title).appendChild(c); }
     paint();
   };
   if (on && (CONFIG.firebase || CONFIG.donate.length || CONFIG.contact)) { // Xsolla 要搭配 Firebase 登入，所以不單獨判斷
