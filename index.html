@@ -13211,6 +13211,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const useFb = on && !!CONFIG.firebase;
 
   if (SC.i18n && SC.i18n.add) SC.i18n.add([
+    ['💝 愛心贊助', '💝 Support', '💝 支援', '💝 후원'],
     ['📜 我的留言紀錄', '📜 My messages', '📜 わたしのメッセージ', '📜 내 메시지 기록'], ['還沒有送過留言。', 'No messages yet.', 'まだ送っていません。', '아직 보낸 메시지가 없어요.'],
     ['💬 作者回覆', '💬 Reply from the maker', '💬 作者からの返事', '💬 제작자의 답장'], ['有新回覆', 'New reply', '新しい返事', '새 답장'],
     ['你按了贊助按鈕的留言會標上付款方式；實際有沒有付款、付多少，網站看不到。', 'Messages sent with a support button show the payment type. The site can\'t see whether or how much you actually paid.', '支援ボタンで送ったメッセージには支払い方法が付きます。実際に払ったか・金額はサイトには分かりません。', '후원 버튼으로 보낸 메시지에는 결제 방식이 표시돼요. 실제 결제 여부와 금액은 사이트에서 알 수 없어요.'],
@@ -13237,7 +13238,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['只有作者看得到。', 'Only the maker can see these.', '作者だけが見られます。', '제작자만 볼 수 있어요.'],
     ['讀取中…', 'Loading…', '読み込み中…', '불러오는 중…'],
     ['還沒有留言。', 'No messages yet.', 'まだメッセージはありません。', '아직 메시지가 없어요.'],
-    ['標「信用卡贊助／PayPal 贊助」的留言只代表對方按了那個按鈕，有沒有真的付款請到 PayPal 的交易明細核對。', 'A “Card/PayPal support” tag only means they pressed that button. Check PayPal transactions to see if they paid.', '「カード／PayPal 支援」の表示はボタンを押したことだけを示します。支払いは PayPal の取引履歴で確認してください。', '"카드/PayPal 후원" 표시는 버튼을 눌렀다는 뜻일 뿐이에요. 실제 결제는 PayPal 거래 내역에서 확인하세요.'],
+    ['標「愛心贊助」的留言只代表對方按了贊助按鈕，有沒有真的付款請到 PayPal 的交易明細核對。', 'A “Card/PayPal support” tag only means they pressed that button. Check PayPal transactions to see if they paid.', '「カード／PayPal 支援」の表示はボタンを押したことだけを示します。支払いは PayPal の取引履歴で確認してください。', '"카드/PayPal 후원" 표시는 버튼을 눌렀다는 뜻일 뿐이에요. 실제 결제는 PayPal 거래 내역에서 확인하세요.'],
     ['← 回愛心', '← Back', '← もどる', '← 돌아가기'],
     ['剛剛送過了，等 30 秒再送一次。', 'You just sent one. Wait 30 seconds.', 'さっき送りました。30秒待ってね。', '방금 보냈어요. 30초 뒤에 다시 보내요.'],
     ['留言送出了！付款頁已經在新分頁打開，謝謝你的贊助！', 'Message sent! The payment page opened in a new tab. Thank you for your support!', 'メッセージを送りました！支払いページは新しいタブで開いています。支援ありがとう！', '메시지를 보냈어요! 결제 페이지가 새 탭에 열렸어요. 후원 고마워요!'],
@@ -13617,7 +13618,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     paint();
   };
   const I_APPLE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>';
-  const PAYTAG = { card: '💳 信用卡贊助', paypal: '🅿️ PayPal 贊助', applepay: 'Apple Pay 贊助', ecpay: '🏪 綠界贊助', '': '💌 愛心' };
+  const PAYTAG = { card: '💳 信用卡贊助', paypal: '💝 愛心贊助', applepay: 'Apple Pay 贊助', ecpay: '🏪 綠界贊助', '': '💌 愛心' };
   let accBtn = null, frBtn = null, wrap = null, view = '', err = '', renaming = false;
   const badge = () => { if (!frBtn) return; const n = fr.list.filter((f) => f.on).length; let b = frBtn.querySelector('.ac-dot'); if (!n) { if (b) b.remove(); return; } if (!b) { b = document.createElement('i'); b.className = 'ac-dot'; frBtn.appendChild(b); } b.textContent = n > 9 ? '9+' : String(n); };
 
@@ -13656,7 +13657,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         h += `<p class="ac-sub">共 ${cheer.inbox.length} 則・按了贊助按鈕的 ${pays} 則</p>`;
         h += cheer.inbox.length ? `<ul class="ch-list">${cheer.inbox.map((c) => `<li class="${c.pay ? 'paid' : ''}"><div><b translate="no">${esc(c.n || '?')}</b><small>${esc(PAYTAG[c.pay] || PAYTAG[''])}・${c.t ? new Date(c.t).toLocaleString() : ''}${c.lang && c.lang !== 'zh' ? '・' + esc(c.lang) : ''}</small></div><p translate="no">${esc(c.m)}</p>`
           + (c.r && !c.edit ? `<p class="ch-rep" translate="no"><b>💬 作者回覆</b>${esc(c.r)}</p><button type="button" class="ch-rb" data-rp="${esc(c.id)}">✏️ 改回覆</button>` : c.edit ? `<div class="ch-rf"><textarea maxlength="400" data-rt="${esc(c.id)}" placeholder="回覆給 ${esc(c.n || '?')}">${esc(c.r || '')}</textarea><button type="button" data-rs="${esc(c.id)}">送出回覆</button></div>` : `<button type="button" class="ch-rb" data-rp="${esc(c.id)}">💬 回覆</button>`) + `</li>`).join('')}</ul>` : `<p class="ac-note">還沒有留言。</p>`;
-        h += `<p class="ac-note">標「信用卡贊助／PayPal 贊助」的留言只代表對方按了那個按鈕，有沒有真的付款請到 PayPal 的交易明細核對。</p>`;
+        h += `<p class="ac-note">標「愛心贊助」的留言只代表對方按了贊助按鈕，有沒有真的付款請到 PayPal 的交易明細核對。</p>`;
       }
       h += `<div class="ac-row"><button type="button" data-ch="back">← 回愛心</button></div>`;
     } else if (view === 'mine') {
@@ -13686,8 +13687,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (cheer.msg) h += `<p class="${cheer.ok ? 'fr-ok' : 'ac-err'}">${esc(cheer.msg)}</p>`;
       }
       if (CONFIG.paypal) {
-        h += `<div class="ac-row"><button type="button" class="d give" data-ch="give" aria-expanded="${cheer.give}">${I_HEART}愛心贊助留言</button></div>`;
-        if (cheer.give) h += `<div class="ac-row ac-three"><a class="d pp" data-pay="card" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">💳 信用卡</a><a class="d pp" data-pay="paypal" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener"><b class="ppw">Pay<i>Pal</i></b></a><a class="d pp ap" data-pay="applepay" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener"><b class="apw" translate="no" aria-label="Apple Pay">${I_APPLE}Pay</b></a></div>`;
+        h += `<div class="ac-row"><a class="d give" data-pay="paypal" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}愛心贊助留言</a></div>`; // Yen 11-21 20:58：直接開 PayPal 付款頁（那頁本身就有 PayPal、Apple Pay、信用卡）
       }
       if (zh && CONFIG.donate.length) h += `<button type="button" class="ac-more" data-ch="more" aria-expanded="${cheer.more}">ATM、超商贊助（限台灣）<span>${cheer.more ? '▴' : '▾'}</span></button>` + (cheer.more ? tiers + (CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : '') : '');
       if (useFb && u2) h += `<div class="ac-row"><button type="button" class="ch-mine" data-ch="mine">📜 我的留言紀錄${cheer.mine && cheer.mine.length ? ` (${cheer.mine.length})` : ''}${cheer.newReply() ? `<i class="ch-new">有新回覆</i>` : ''}</button></div>`;
