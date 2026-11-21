@@ -9644,16 +9644,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   // 滾刷甩出的七道墨水。用種子產生亂數，連線時每台裝置甩出來的形狀才會一樣。
   // 站在地上是橫的一排（九道），在空中是直的一道（又窄又遠）。
-  function flecks(a, mx, my, mz, yaw0, pitch0, boost, seed, air, late) {
-    if (air && !late) { chopQ.push({ at: G.time + CHOP_T, a, args: [yaw0, pitch0, boost, seed] }); return; } // 第 99 版（Yen）：跳打先把滾刷舉到正上方，劈下來的那一下才潑出墨水
+  function flecks(a, mx, my, mz, yaw0, pitch0, boost, seed, air, only, gid) {
+    // 第 99 版（Yen）：跳打先把滾刷舉到正上方，劈下來的時候才潑出墨水。
+    // 第 101 版（Yen「還是從下往上潑」）：九道墨水沿著劈下的弧線，從頭頂上方開始、由上往下依序甩出（0.2～0.29 秒），每一道都是往前、往下飛，不再往上拋。
+    if (air && only == null) { const id = ++swingSeq; for (let k = -4; k <= 4; k++) chopQ.push({ at: G.time + CHOP_T + (4 - k) * 0.011, a, k, id, args: [yaw0, pitch0, boost, seed] }); return; }
     let s = seed | 0; const rnd = () => { s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-    const w = C.W02, id = ++swingSeq;
+    const w = C.W02, id = gid || ++swingSeq, fx = Math.sin(yaw0), fz = Math.cos(yaw0);
     for (let k = -4; k <= 4; k++) {
-      const yaw = yaw0 + k * (air ? 0.022 : 0.15) + (rnd() - 0.5) * 0.07, sp = air ? 46 + (k + 4) * 4 + rnd() * 4 : 42 + rnd() * 14, pitch = (air ? 0.27 : 0.32) + pitch0 * 0.6 + rnd() * 0.15;
-      projectiles.push({ x: mx, y: my - 0.6 + (air ? (k + 4) * 0.55 - 1.4 : 0), z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
-        dmg: w.swingDamage, r: w.swingRadius * C.PAINT * boost, range: air ? w.airRange : w.swingRange, g: air ? 92 : 105, travel: 0, drip: air ? 0.012 : 0.02, life: 0, vr: 1.05, trail: 0, color: colors[a.team], cause: 'W02', group: id }); // 第 99 版（Yen）：墨點大一點、後面拖一串小水滴，看得出潑了多少墨
+      const r1 = rnd(), r2 = rnd(), r3 = rnd(); if (only != null && k !== only) continue;
+      let x = mx, y = my - 0.6, z = mz, yaw, sp, pitch;
+      if (air) { // mx,my,mz＝肩膀；k=4 在頭頂正上方（最快、飛最遠），k=-4 在身體前面低處
+        const f = (4 - k) / 8, th = SC.lerp(0.2, 1.75, f), R = 4.4; x += fx * R * Math.sin(th); y = my + R * Math.cos(th); z += fz * R * Math.sin(th);
+        yaw = yaw0 + (r1 - 0.5) * 0.05; sp = 50 + (k + 4) * 4 + r2 * 4; pitch = SC.lerp(-0.24, 0.04, f) + SC.clamp(pitch0, -0.6, 0.6) * 0.3 + (r3 - 0.5) * 0.05;
+      } else { yaw = yaw0 + k * 0.15 + (r1 - 0.5) * 0.07; sp = 42 + r2 * 14; pitch = 0.32 + pitch0 * 0.6 + r3 * 0.15; }
+      projectiles.push({ x, y, z, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
+        dmg: w.swingDamage, r: w.swingRadius * C.PAINT * boost, range: air ? w.airRange : w.swingRange, g: air ? 58 : 105, travel: 0, drip: air ? 0.012 : 0.02, life: 0, vr: 1.05, trail: 0, color: colors[a.team], cause: 'W02', group: id }); // 第 99 版（Yen）：墨點大一點、後面拖一串小水滴，看得出潑了多少墨
+      if (air) SC.fx.burst(x, y, z, colors[a.team], 3, 10, 0.4, 0.2);
     }
   }
+
 
   // 推滾刷：刷頭在身體前面 2.7。照「走過的距離」塗，不是照時間，所以不管跑多快、畫面幾格，地上都是一條不中斷的寬帶。
   function roll(a) {
@@ -9836,10 +9845,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
   }
 
-  const growQ = [], chopQ = [], CHOP_T = 0.23;
+  const growQ = [], chopQ = [], CHOP_T = 0.2;
   function updateProjectiles(dt) {
     for (let i = chopQ.length - 1; i >= 0; i--) { const q = chopQ[i]; if (G.time < q.at && G.time > q.at - 1) continue; chopQ.splice(i, 1); const b = q.a; if (!b.alive) continue;
-      const m = muzzle(b, t1); flecks(b, m.x, m.y + 1.2, m.z, q.args[0], q.args[1], q.args[2], q.args[3], 1, true); SC.fx.burst(m.x, m.y + 1, m.z, colors[b.team], 16, 16, 0.5, 0.3); } // 第 100 版：劈下去的那一下，墨水排成一道直直的牆往前潑，刷頭那裡濺一大片
+      const fx = Math.sin(q.args[0]), fz = Math.cos(q.args[0]); flecks(b, b.pos.x - fz * 0.85, b.pos.y + 3.2, b.pos.z + fx * 0.85, q.args[0], q.args[1], q.args[2], q.args[3], 1, q.k, q.id); } // 肩膀位置＋舉起時的方向
     for (let i = growQ.length - 1; i >= 0; i--) { const q = growQ[i]; if (G.time >= q.at || G.time < q.at - 1) { INK.by = q.by; INK.splat(...q.a); growQ.splice(i, 1); } } INK.by = null;
     for (let i = projectiles.length - 1; i >= 0; i--) {
       const p = projectiles[i]; let dead = false; p.life += dt; INK.by = p.owner;
