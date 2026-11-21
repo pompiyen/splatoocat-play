@@ -636,6 +636,21 @@ body.noink .hud-weapons .w-chip.bomb:last-child, body.noink .w-chip.bomb:last-of
 /* 第 87 版（試玩報告）：結算時贏、輸、平手各有一個大圖示，不識字也看得出結果 */
 .verdict::before { display: block; font-size: .85em; line-height: 1.1; -webkit-text-stroke: 0; text-shadow: none; margin-bottom: .08em; }
 .verdict[data-r="win"]::before { content: '🏆'; } .verdict[data-r="lose"]::before { content: '🌧️'; } .verdict[data-r="tie"]::before { content: '🤝'; }
+/* 第 88 版：被打的方向。畫面中心往攻擊者的方向亮一道紅色弧光 0.6 秒 */
+.h-dir { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; z-index: 1; }
+.h-dir i { position: absolute; left: -42vmin; top: -42vmin; width: 84vmin; height: 84vmin; border-radius: 50%; border: 14px solid transparent; border-top-color: rgba(255, 46, 46, .92); transform: rotate(var(--a)); filter: drop-shadow(0 0 10px rgba(255, 40, 40, .9)); animation: hdirFade .6s ease-out forwards; }
+@keyframes hdirFade { 0% { opacity: 0; transform: rotate(var(--a)) scale(1.12); } 12% { opacity: 1; transform: rotate(var(--a)) scale(1); } 100% { opacity: 0; transform: rotate(var(--a)) scale(.96); } }
+/* 第 88 版：血量低時「墨貓」鈕也會跳，教孩子潛進墨水回血 */
+body.lowhp #t-cat { animation: inkNudge .77s ease-in-out infinite; box-shadow: 0 0 0 4px #ff6b8a, 0 0 22px 8px rgba(255, 90, 120, .7); }
+body.lowhp #t-cat::before { content: '❤'; position: absolute; left: -14px; top: -22px; font-size: 26px; line-height: 1; color: #ff4d6d; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .5)); animation: hpBeat .77s ease-in-out infinite; }
+body.lowhp .hud-weapons .w-chip.bomb:last-child, body.lowhp .w-chip.bomb:last-of-type { animation: inkNudge .77s ease-in-out infinite; border-color: #ff6b8a; }
+@keyframes hpBeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.35); } 30% { transform: scale(1); } 45% { transform: scale(1.2); } }
+/* 第 88 版：暫停選單加圖示，看圖就知道 */
+#btn-resume::before { content: '▶'; margin-right: 10px; }
+#btn-restart::before { content: '↻'; margin-right: 8px; font-size: 1.2em; }
+#btn-help2::before { content: '?'; display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; margin-right: 8px; border-radius: 50%; background: #fff; color: var(--navy); font-size: .9em; }
+#btn-quit::before { content: '🏠'; margin-right: 8px; }
+#m-pause .col .btn { min-height: 56px; font-size: 20px; }
 
 </style>
 <div id="app">
@@ -2147,6 +2162,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     pat() { tone('sine', 420, 300, 0.09, 0.22); noise(0.06, 0.06, 900, 500, 2); }, // 摸摸頭
     aww() { [784, 988, 1175].forEach((f, i) => tone('triangle', f, f, 0.22, 0.14, i * 0.09)); }, // 抱抱
     squeak() { tone('sine', 1700, 2500, 0.07, 0.16); tone('sine', 2100, 2900, 0.06, 0.12, 0.09); },
+    heart() { tone('sine', 78, 52, 0.11, 0.3); tone('sine', 70, 46, 0.1, 0.22, 0.2); }, // 第 88 版：血量低的「撲通、撲通」
+    warn() { [0, 0.22].forEach((d) => { tone('square', 880, 660, 0.14, 0.09, d); tone('triangle', 1320, 990, 0.14, 0.12, d); }); }, // 第 88 版：對手的絕招要砸下來了「嗚咿、嗚咿」
     respawn() { tone('sine', 300, 900, 0.25, 0.26); noise(0.25, 0.14, 400, 3000, 1.2); },
   };
 })();
@@ -4016,6 +4033,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const keys = {};
   let canvas, layer, stickEl, nubEl, edgeTurn = 0, mouseFire = false, keyCat = false, slots = ['W01', 'W02'];
   const ptr = new Map(); // pointerId → { role, x, y, sx, sy }
+  I.lookHeld = () => { for (const q of ptr.values()) if (q.role !== 'stick' && !(q.role === 'cat' && q.drag)) return true; return false; }; // 第 88 版：有手指在瞄準（右邊拖曳或按著射擊鈕）時，輔助瞄準才會跟著對手走
   const held = { fire: false, cat: false };
   let catLatched = false, fireGesture = null; // 射擊鈕的手勢：{ at, x, y, active }
   const TAP_SECONDS = 0.32, TAP_SLOP = 24; // 第 86 版（手感報告）：一按就開火；放開時按不到 0.32 秒算「點一下＝跳」（小孩點得慢，原本 0.24）
@@ -9201,7 +9219,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     t.hp -= amount; t.lastHitAt = G.time; if (from && from !== t && from.team !== t.team && t.dmgBy) t.dmgBy.set(from, G.time); // 助攻：倒下前 5 秒內打過他的人
     SC.fx.burst(t.pos.x, t.pos.y + 2.6, t.pos.z, from ? colors[from.team] : WHITE, 6, 14, 0.45); hitFx(t, from);
     knock(t, from, cause);
-    if (t.isPlayer) { A.sfx.hurt(); cam.shake = Math.max(cam.shake, Math.min(0.6, cam.shake + 0.2)); SC.ui.hurt(); } // 被打時震得輕一點，連續被打也不會頂到最大（不頭暈）
+    if (t.isPlayer) { A.sfx.hurt(); cam.shake = Math.max(cam.shake, Math.min(0.6, cam.shake + 0.2)); SC.ui.hurt(); if (from && from.pos && from !== t && SC.ui.hurtDir) { const dx = from.pos.x - t.pos.x, dz = from.pos.z - t.pos.z, sy = Math.sin(cam.yaw), cy = Math.cos(cam.yaw); SC.ui.hurtDir(Math.atan2(-dx * cy + dz * sy, dx * sy + dz * cy)); } } // 第 88 版：畫面邊緣朝攻擊者的方向亮紅色弧光。被打時震得輕一點，連續被打也不會頂到最大（不頭暈）
     if (from && from.isPlayer) { A.sfx.hit(); A.sfx.metal(); SC.ui.hitMarker(t.hp <= 0); } // 打中人：叮的金屬聲＋準星變紅
     if (t.hp <= 0) ko(t, from, cause);
     return true;
@@ -9280,7 +9298,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const paintBoost = (a) => (G.time - a.lastJumpAt < C.JUMP_PAINT_SECONDS ? C.JUMP_PAINT_RADIUS_MULT : 1);
 
   function fireW01(a) {
-    const w = C.W01, m = muzzle(a, t1), tgt = t2.copy(a.aim), d = tgt.distanceTo(m);
+    const w = C.W01, m = muzzle(a, t1), tgt = t2.copy(aimPt(a)), d = tgt.distanceTo(m);
     if (d > w.range) tgt.sub(m).multiplyScalar(w.range / d).add(m);
     const v = jitter(ballistic(m, tgt, w.speed, w.gravity, t3), a.onGround ? 0.03 : 0.065, 0.018);
     const r = w.radius * C.PAINT * paintBoost(a);
@@ -9292,7 +9310,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // 散彈槍：用種子決定每顆的偏移，連線時每台噴出來的形狀一樣
   function fireW04(a) {
-    const w = C.W04, m = muzzle(a, t1), dir = t2.copy(a.aim).sub(m).normalize(), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a);
+    const w = C.W04, m = muzzle(a, t1), dir = t2.copy(aimPt(a)).sub(m).normalize(), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a);
     pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, a.ai ? aiD().dmg : 1);
     if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed);
     a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a));
@@ -9687,8 +9705,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else { a.vel.x = SC.damp(a.vel.x, ctl.mx * k * sp, acc, dt); a.vel.z = SC.damp(a.vel.z, ctl.mz * k * sp, acc, dt); }
 
     // 五段跳
-    if (ctl.jump && (a.onGround || a.jumps < C.MAX_JUMPS)) {
-      a.vel.y = a.onGround ? V0 : V1; a.jumps = a.onGround ? 1 : a.jumps + 1; a.onGround = false; a.lastJumpAt = now; a.cat.squash = -0.6;
+    // 第 88 版（手感報告）：土狼時間＋跳躍緩衝。走下平台 0.1 秒內按跳還算地面跳；跳完五段還沒落地時按的跳，落地 0.12 秒內自動跳
+    const coy = !a.onGround && a.offAt > a.lastJumpAt && now - a.offAt >= 0 && now - a.offAt < 0.1, gnd = a.onGround || coy, jb = now - (a.jbuf ?? -9), buf = a.onGround && jb >= 0 && jb < 0.12;
+    if (ctl.jump && !gnd && a.jumps >= C.MAX_JUMPS) a.jbuf = now;
+    if ((ctl.jump || buf) && (gnd || a.jumps < C.MAX_JUMPS)) {
+      a.jbuf = -9; a.vel.y = gnd ? V0 : V1; a.jumps = gnd ? 1 : a.jumps + 1; a.onGround = false; a.lastJumpAt = now; a.cat.squash = -0.6;
       if (a.isPlayer) A.sfx.jump(a.jumps);
       SC.fx.burst(a.pos.x, a.pos.y + 0.2, a.pos.z, a.jumps > 1 || a.ground === 'own' ? colors[a.team] : WHITE, a.jumps > 1 ? 6 : 4, 9, 0.32, 0.1);
     }
@@ -9698,7 +9719,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const nz = a.pos.z + a.vel.z * dt; if (blocked(a, a.pos.x, nz)) a.vel.z = 0; else a.pos.z = nz;
     if ((a.kx || a.kz) && !(a.hitStop > 0)) { const kx = a.pos.x + a.kx * dt, kz = a.pos.z + a.kz * dt; if (!blocked(a, kx, a.pos.z)) a.pos.x = kx; if (!blocked(a, a.pos.x, kz)) a.pos.z = kz; const f = Math.exp(-7 * dt); a.kx *= f; a.kz *= f; if (Math.hypot(a.kx, a.kz) < 0.2) a.kx = a.kz = 0; } // 被打退
     const g0 = H(a.pos.x, a.pos.z), sea = W.swim && G.mode !== 'boss' && g0 < C.SEA_Y, g = sea ? C.SEA_Y : g0; // 海盜船：海面浮得起來（不再直接掉下去）
-    if (a.onGround) { if (g < a.pos.y - 1.1) { a.onGround = false; a.jumps = Math.max(a.jumps, 1); a.vel.y = 0; } else a.pos.y = g; }
+    if (a.onGround) { if (g < a.pos.y - 1.1) { a.onGround = false; a.jumps = Math.max(a.jumps, 1); a.vel.y = 0; a.offAt = now; } else a.pos.y = g; }
     else {
       a.pos.y += a.vel.y * dt;
       if (a.pos.y <= g) { a.pos.y = g; if (a.vel.y <= 0) { a.onGround = true; a.jumps = 0; a.cat.squash = SC.clamp(-a.vel.y / 90, 0.2, 0.9); a.vel.y = 0; if (a.isPlayer) A.sfx.land(); } }
@@ -9789,6 +9810,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         for (let i = 0; i < 26; i++) { const th = Math.random() * 6.283, ph = Math.random() * 1.35, r = R * SC.rand(0.9, 1.05); SC.fx.burst(p.x + Math.cos(th) * Math.sin(ph) * r, p.y + Math.cos(ph) * r * SP_DOME_Y, p.z + Math.sin(th) * Math.sin(ph) * r, d.col, 3, 5, 0.75, 0, 1.1, 1.2); } }
       if (t > 0.72) { d.on = false; m.visible = false; } }
   }
+  // 地板上的攻擊範圍：粗框、半透明底色、往中間縮的提示圈，往下砸時閃得更快。
+  // 第 88 版（試玩報告：孩子 27% 的倒下是被絕招砸到）：對手的絕招一飛起來就在地上閃紅色，比自己的早 0.2 秒出現
+  const RED = new THREE.Color(0xff2a2a);
+  function spRingShow(a, ring, t, x, gy, z) {
+    const me = viewer(), foe = !!me && me.team !== a.team && !G.demo, t0 = foe ? 0 : SP_UP * 0.4;
+    if (t < t0 || t >= SP_DOWN) { ring.visible = false; return; }
+    ring.visible = true; ring.position.set(x, gy + 0.15, z); const k = Math.min(1, (t - t0) / 0.3), e = 1 - Math.pow(1 - k, 3), dive = t >= SP_HOLD ? (t - SP_HOLD) / (SP_DOWN - SP_HOLD) : 0, pulse = 0.5 + 0.5 * Math.sin(t * (dive ? 46 : 18));
+    ring.scale.setScalar(0.3 + e * 0.7); ring.material.opacity = 0.65 + pulse * 0.35; ring.userData.fill.material.opacity = 0.16 + pulse * 0.12 + dive * 0.2 + (foe ? 0.08 : 0);
+    if (foe) { const c = pulse > 0.5 ? RED : colors[a.team]; ring.material.color.copy(c); ring.userData.fill.material.color.copy(RED); }
+    const sk = ring.userData.sweep, q = (t * 1.6) % 1; sk.scale.setScalar(1 - q * 0.85); sk.material.opacity = 0.75 * (1 - q);
+  }
+  function spWarn(a, x, z) { const me = viewer(); if (!me || G.demo || me.team === a.team || !me.alive) return; if (Math.hypot(me.pos.x - x, me.pos.z - z) < C.SP_R + 14) A.sfx.warn(); }
   function spRingOf(a) {
     if (!a.spRing) { const m = new THREE.Mesh(new THREE.RingGeometry(C.SP_R - 1.6, C.SP_R, 64), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.6, depthWrite: false, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.renderOrder = 2;
       const fill = new THREE.Mesh(new THREE.CircleGeometry(C.SP_R - 1.6, 64), m.material.clone()); fill.material.opacity = 0.18; m.add(fill); m.userData.fill = fill;
@@ -9939,7 +9972,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.spT = 0; a.sp = 0; a.dash = null; a.sp0 = { x: a.pos.x, y: a.pos.y, z: a.pos.z, g: H(a.pos.x, a.pos.z) }; a.form = 'biped'; a.submerged = false; a.charge = -1; a.rolling = false; if (a.rollPt) rollEnd(a);
     a.vel.set(0, 0, 0); a.onGround = false; a.protectUntil = 0; a.cat.squash = -0.8;
     if (a.isPlayer) { a.spPitch = cam.pitch; SC.ui.spUsed(); }
-    if (near(a) > 0.05 && !G.demo) A.sfx.spUp(near(a));
+    if (near(a) > 0.05 && !G.demo) A.sfx.spUp(near(a)); spWarn(a, a.pos.x, a.pos.z);
     SC.fx.burst(a.pos.x, a.pos.y + 0.5, a.pos.z, colors[a.team], 30, 24, 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.2, a.pos.z, colors[a.team], 6, 0.35);
     if (netOn()) nev(a, 'S', a.pos.x, a.pos.y, a.pos.z);
   }
@@ -9951,11 +9984,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (t < SP_HOLD) { a.pos.y = top + Math.sin(t * 30) * 0.15; a.yaw += dt * 22; a.cat.squash = 0.5; }
     else if (t < SP_DOWN) { const k = (t - SP_HOLD) / (SP_DOWN - SP_HOLD); a.pos.y = top - (top - s0.y) * k * k; a.cat.squash = -0.7; SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, colors[a.team], 3, 4, 0.3, 0.1); }
     else a.pos.y = s0.y;
-    if (t >= SP_UP * 0.4 && t < SP_DOWN) { // 地板上的攻擊範圍：粗框、半透明底色、往中間縮的提示圈，往下砸時閃得更快
-      ring.visible = true; ring.position.set(s0.x, s0.g + 0.15, s0.z); const k = Math.min(1, (t - SP_UP * 0.4) / 0.3), e = 1 - Math.pow(1 - k, 3), dive = t >= SP_HOLD ? (t - SP_HOLD) / (SP_DOWN - SP_HOLD) : 0, pulse = 0.5 + 0.5 * Math.sin(t * (dive ? 46 : 18));
-      ring.scale.setScalar(0.3 + e * 0.7); ring.material.opacity = 0.65 + pulse * 0.35; ring.userData.fill.material.opacity = 0.16 + pulse * 0.12 + dive * 0.2;
-      const sk = ring.userData.sweep, q = (t * 1.6) % 1; sk.scale.setScalar(1 - q * 0.85); sk.material.opacity = 0.75 * (1 - q); }
-    else ring.visible = false;
+    spRingShow(a, ring, t, s0.x, s0.g, s0.z);
     if (t0 < SP_UP && t >= SP_UP) { if (near(a) > 0.05 && !G.demo) A.sfx.spDome(near(a)); SC.fx.ring(s0.x, s0.g + 0.3, s0.z, colors[a.team], C.SP_R, 0.3); }
     if (t0 < SP_HOLD && t >= SP_HOLD && near(a) > 0.05 && !G.demo) A.sfx.spDive(near(a));
     if (a.isPlayer && t < SP_DOWN) cam.pitch = SC.damp(cam.pitch, -1.15, 6, dt); // 鏡頭往下看，看得到地上的攻擊範圍
@@ -10151,7 +10180,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (type === 'm') { const k = Math.round(d[4]); if (k >= 0 && k <= 3) slashAt(a, d[0], d[1], d[2], d[3], k, SC.clamp(d[5], 1, 1.2), false); }
     else if (type === 'n') { if (Math.hypot(d[2] - d[0], d[3] - d[1]) < 20) dashPaint(a.team, d[0], d[1], d[2], d[3], d[4], SC.clamp(d[5], 1, 8)); }
     else if (type === 'b') spawnBomb(a, d[0], d[1], d[2], d[3], d[4], d[5]);
-    else if (type === 'S') { a.cat.squash = -0.8; if (near(a) > 0.05) A.sfx.spUp(near(a)); SC.fx.burst(d[0], d[1] + 0.5, d[2], colors[a.team], 30, 24, 0.6); }
+    else if (type === 'S') { a.cat.squash = -0.8; if (near(a) > 0.05) A.sfx.spUp(near(a)); SC.fx.burst(d[0], d[1] + 0.5, d[2], colors[a.team], 30, 24, 0.6); a.wsp = { x: d[0], z: d[2], g: H(d[0], d[2]), t: 0 }; spWarn(a, d[0], d[2]); } // 第 88 版：連線對手的絕招也在地上預告落點
     else if (type === 'X') spImpact(a, d[0], d[1], d[2], false);
     else if (type === 'Y') { const k = SP_KINDS[d[0] | 0]; SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, colors[a.team], 30, 24, 0.6); if (near(a) > 0.05) A.sfx.spUp(near(a) * 0.7); if (k === 'blade') { a.cat.slash = 1; a.cat.slashKind = 3; } }
     else if (type === 'q') { if (projectiles.length < 460) sprayRing(a, d[0], d[1], d[2], d[3], d[4], 0, d[5] || 10); a.sprayAng = d[3]; a.sprayUntil = G.time + 0.3; }
@@ -10203,16 +10232,30 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 準星瞄到的點：先看場景，再看有沒有對手擋在前面
     viewDir.set(s * Math.cos(cam.pitch), Math.sin(cam.pitch), c * Math.cos(cam.pitch));
     const o = cam.pos, start = cam.dist + 1.2, hit = W.raycast(o.x + viewDir.x * start, o.y + viewDir.y * start, o.z + viewDir.z * start, viewDir.x, viewDir.y, viewDir.z, 190);
-    let tt = hit ? hit.t + start : 170, slow = 1;
+    let tt = hit ? hit.t + start : 170, best = null, bA = 9, bAl = 0;
+    const wallT = hit ? hit.t + start : 999;
     for (const e of G.hit) {
       if (e.team === p.team || !e.alive || e.submerged) continue;
       t1.set(e.pos.x - o.x, e.pos.y + bodyMid(e, 2.4) - o.y, e.pos.z - o.z); const along = t1.dot(viewDir); if (along < start) continue;
       const off = Math.sqrt(Math.max(0, t1.lengthSq() - along * along));
-      if (off < 2.2 && along < tt) tt = along; if (off < 4.5 && along < 90) slow = 0.6;
+      if (off < 2.2 && along < tt) tt = along;
+      const ang = Math.atan2(Math.max(0, off - 1.2), along); // 扣掉身體半徑後的角度：近的對手不會一下就吸走
+      if (along < 90 && along < wallT + 1.5 && ang < bA && !(e.invisUntil > G.time)) { bA = ang; best = e; bAl = along; }
     }
-    I.aimSlow = slow; // 觸控時準星靠近對手會稍微放慢轉向（輕度輔助，不會自動瞄準或開火）
+    // 第 88 版（手感報告）：觸控輔助瞄準三層。減速：用角度，7° 開始、對準時 0.5 倍；跟隨：手指在瞄準時跟著對手走 35%；彎彈：見 aimPt()
+    const AS = I.isTouch && !G.demo, net = netOn(), C7 = 0.122;
+    I.aimSlow = AS && best && bA < C7 ? 1 - 0.5 * (1 - bA / C7) * (1 - bA / C7) * (1 + 2 * bA / C7) : 1;
+    if (AS && best && bA < C7 && I.lookHeld && I.lookHeld()) {
+      t1.set(best.pos.x - o.x, best.pos.y + bodyMid(best, 2.4) - o.y, best.pos.z - o.z); const ty = Math.atan2(t1.x, t1.z), tp = Math.atan2(t1.y, Math.hypot(t1.x, t1.z));
+      if (p.asT === best) { const k = net ? 0.2 : 0.35; cam.yaw += SC.clamp(SC.angDiff(p.asY, ty) * k, -0.05, 0.05); cam.pitch = SC.clamp(cam.pitch + SC.clamp((tp - p.asP) * k, -0.04, 0.04), -1.2, 0.95); }
+      p.asT = best; p.asY = ty; p.asP = tp;
+    } else p.asT = null;
     p.aim.set(o.x + viewDir.x * tt, o.y + viewDir.y * tt, o.z + viewDir.z * tt);
+    p.aimB = null; const BEND = net ? 0.0175 : 0.026, B4 = 0.07;
+    if (AS && best && bA < B4) { t1.set(best.pos.x - o.x, best.pos.y + bodyMid(best, 2.4) - o.y, best.pos.z - o.z).normalize(); const th = Math.acos(SC.clamp(t1.dot(viewDir), -1, 1)), k = th > 1e-4 ? Math.min(1, BEND / th) : 1;
+      t3.copy(viewDir).lerp(t1, k).normalize(); p.aimB = (p.aimBv || (p.aimBv = new V3())).set(o.x + t3.x * bAl, o.y + t3.y * bAl, o.z + t3.z * bAl); }
   }
+  const aimPt = (a) => (a.isPlayer && a.aimB ? a.aimB : a.aim); // 漆彈槍、散彈槍才彎彈（狙擊一發擊倒，不彎）
 
   // 第 70 版（Yen）：被擊倒後，前一半看擊倒你的對手當下的視角，後一半重播你被擊倒前的那幾秒
   const RP = { buf: [], burst: -1, bm: [] }, RP_T0 = 2.5, RP_BACK = 2.2, RP_KEEP = 3.2;
@@ -10517,6 +10560,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const now = performance.now() / 1000, rf = rpFrame();
       G.actors.forEach((a) => {
         if (rf) { if (a.subArr) a.subArr.visible = false; rpActor(a, rf, dt, now); return; }
+        if (a.wsp && a.spT == null) { a.wsp.t += dt; spRingShow(a, spRingOf(a), a.wsp.t, a.wsp.x, a.wsp.g, a.wsp.z); if (a.wsp.t >= SP_DOWN) a.wsp = null; }
         if (puffTick(a, dt) && (!a.alive || a.predKo)) return; if (!a.alive) return;
         a.visY = a.onGround ? SC.damp(a.visY, a.pos.y, 22, dt) : a.pos.y;
         a.cat.group.position.set(a.pos.x, a.visY, a.pos.z); a.cat.group.rotation.y = a.sprayUntil > G.time ? a.sprayAng : a.yaw;
@@ -10552,7 +10596,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const LIVES_HTML = ('<i>' + HEART_SVG + '</i>').repeat(3);
   const C = SC.CFG, ui = (SC.ui = {}), $ = (id) => document.getElementById(id);
   const G = () => SC.game;
-  let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'easy', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
+  let beatT = 0, lastPh = 1; let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'easy', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
 
   // 貓臉小圖示（SVG，自家角色）
 
@@ -10645,7 +10689,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const root = $('ui');
     root.insertAdjacentHTML('afterbegin', `
     <div class="hud" id="hud">
-      <div class="h-vig" id="vig"></div>
+      <div class="h-vig" id="vig"></div><div class="h-dir" id="hdir" aria-hidden="true"></div>
       <div class="h-top">
         <div class="h-roster" id="roster-a"></div>
         <div class="h-clock"><div class="h-timer" id="timer">3:00</div></div>
@@ -10790,7 +10834,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     <div class="inkcover" id="inkcover"><svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20V9q4-9 9-2t9-3 8 6 9-8 9 7 8-5 9 6 9-7 8 5 9-4 9 6 4-2v12z"/></svg><i></i></div>
     <div class="flash" id="flash"></div>`);
 
-    ['hud', 'scope', 'vig', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'ko-w', 'ko-got', 'hs-pop', 'roster-a', 'roster-b', 'my-face',
+    ['hud', 'scope', 'vig', 'hdir', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'ko-w', 'ko-got', 'hs-pop', 'roster-a', 'roster-b', 'my-face',
       'boss-phase', 'boss-fill', 'boss-pips', 'm-title', 'm-pause', 'm-help', 'm-results', 'verdict', 'res-a', 'res-b', 'res-c', 'res-bar-a', 'res-bar-b', 'res-bar-c', 'res-stats', 'help-list', 'say', 'say-t', 'flash', 'dim', 'inkcover', 'lives', 'ko-lives', 'sp-btn', 'trick-badge', 'trick-card'].forEach((id) => (els[id] = $(id)));
     mapCtx = els.minimap.getContext('2d'); mapImg = null;
     // 第 62 版：卡片上的名字（換語言後可能變長）放不下時自動縮小字，不拆成一個字一個字
@@ -10984,7 +11028,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const tri = g.teams >= 3; els.hud.classList.toggle('tri', tri); els['m-results'].classList.toggle('tri', tri);
     const L = SC.world.lim, mw = 110, mh = Math.round((110 * L.z) / L.x); if (els.minimap.height !== mh) { els.minimap.height = mh; mapImg = null; } els.minimap.classList.toggle('round', !!(L.r || L.e)); // 小地圖跟著場地形狀
     els.hud.classList.toggle('on', !g.demo); els.ko.classList.remove('on'); els.banner.classList.remove('on'); feedItems.forEach((f) => f.el.remove()); feedItems = [];
-    resultsT = -1; last = {}; hurtK = 0; els.tip.classList.remove('on');
+    resultsT = -1; last = {}; hurtK = 0; els.tip.classList.remove('on'); document.body.classList.remove('lowhp');
     $('h-spec').hidden = true; app.classList.remove('spec');
     document.getElementById('app').classList.toggle('netmode', g.mode === 'net' && !g.demo); $('h-chatbar').hidden = true; $('h-chatfeed').textContent = '';
     { const rm = $('h-room'), cd = g.mode === 'net' && !g.demo && SC.net && SC.net.code && !SC.net.quick ? SC.net.code : ''; rm.hidden = !cd; rm.textContent = cd ? '房號 ' + cd : ''; } // 第 69 版：開戰後角落顯示房號
@@ -11007,6 +11051,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.onWeapon = (id) => { els.weapons.querySelectorAll('.w-chip').forEach((c) => c.classList.toggle('on', c.dataset.w === id)); els.cross.dataset.w = id; SC.input.setWeapon(id); };
   ui.scope = (k) => { if (!els.scope) return; const v = Math.round(k * 20) / 20; if (last.scope !== v) { last.scope = v; els.scope.style.opacity = v; els.cross.classList.toggle('scoped', v > 0.5); } };
   ui.hurt = () => { hurtK = 1; };
+  ui.hurtDir = (ang) => { const box = els.hdir; if (!box) return; const now = performance.now(); for (const c of [...box.children]) if (Math.abs(SC.angDiff(+c.dataset.a, ang)) < 0.35 && now - c.dataset.t < 300) return; if (box.children.length > 3) box.firstChild.remove(); const i = document.createElement('i'); i.dataset.a = ang; i.dataset.t = now; i.style.setProperty('--a', ang + 'rad'); box.appendChild(i); setTimeout(() => i.remove(), 650); }; // 第 88 版：從哪裡被打，畫面那一邊亮紅色弧光 0.6 秒
   ui.headshot = (kill) => { const e = els['hs-pop']; e.textContent = kill ? '爆頭！' : '頭擊！'; e.classList.toggle('kill', !!kill); e.classList.remove('on'); void e.offsetWidth; e.classList.add('on'); }; // 打到頭：準星旁邊跳出「爆頭！」
   ui.hitMarker = (kill) => { hitT = kill ? 0.5 : 0.24; els.cross.classList.toggle('kill', !!kill); els.cross.classList.add('hit'); };
   ui.banner = (text, dur, big) => { els.banner.textContent = text; els.banner.classList.toggle('big', !!big); els.banner.classList.remove('on'); void els.banner.offsetWidth; els.banner.classList.add('on'); bannerT = dur; };
@@ -11270,7 +11315,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (hitT > 0) { hitT -= dt; if (hitT <= 0) els.cross.classList.remove('hit', 'kill'); }
     // 受傷與踩到對手墨水時，畫面邊緣染上對手顏色
     hurtK = Math.max(0, hurtK - dt * 2.2);
-    const vig = p.alive ? Math.min(1, (1 - p.hp / 100) * 0.9 + hurtK * 0.5 + (p.ground === 'enemy' ? 0.25 : 0)) : g.watching ? 0.22 : 0.5;
+    // 第 88 版（手感報告）：血量低於 35 時，畫面邊緣跟著心跳一下一下（每秒 1.3 下）、輕輕的心跳聲，「墨貓」鈕跟著跳，教孩子躲進墨水回血
+    const low = p.alive && p.hp < 35 && g.state === 'play' && !g.demo && !p.submerged;
+    if (low !== !!last.lowhp) { last.lowhp = low; document.body.classList.toggle('lowhp', low); if (low) beatT = 0; }
+    let beat = 0; if (low) { beatT += dt; const ph = (beatT * 1.3) % 1; if (ph < lastPh) SC.audio.sfx.heart(); lastPh = ph; beat = Math.max(0, 1 - ph * 5) + 0.6 * Math.max(0, 1 - Math.abs(ph - 0.3) * 6); } else lastPh = 1;
+    const vig = p.alive ? Math.min(1, (1 - p.hp / 100) * 0.9 + hurtK * 0.5 + beat * 0.3 + (p.ground === 'enemy' ? 0.25 : 0)) : g.watching ? 0.22 : 0.5;
     set('vig', Math.round(vig * 40), (v) => (els.vig.style.opacity = v / 40));
     for (let i = feedItems.length - 1; i >= 0; i--) { const f = feedItems[i]; f.t -= dt; if (f.t <= 0) { f.el.remove(); feedItems.splice(i, 1); } }
     mapT -= dt; if (mapT <= 0) { mapT = 0.33; drawMap(g); }
