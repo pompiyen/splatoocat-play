@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='760b7a62df9d';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='aed4a91ec2d4';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -10787,7 +10787,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : G.rule === 'zombie' ? Math.atan2(s.x, s.z) : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
     a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; bladeAimHide(a); a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
-    a.invisUntil = a.xrayUntil = a.sprayUntil = a.wideUntil = 0; a.kx = a.kz = 0; a.puff = a.hitStop = 0; a.hitBy = null; if (a.cat.face) a.cat.face(null); a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.inWater = false; a.poolCd = 0;
+    a.invisUntil = a.xrayUntil = a.sprayUntil = a.wideUntil = 0; a.kx = a.kz = 0; a.puff = a.hitStop = 0; a.hitBy = null; if (a.cat.face) a.cat.face(null); a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.predW = a.deadW = null; a.inWater = false; a.poolCd = 0;
     a.protectUntil = G.time + C.SPAWN_PROTECTION; a.cat.group.visible = true; a.nextShotAt = 0; a.cat.setInk(1);
     if (a.ai) { a.ai.target = null; a.ai.enemy = null; a.ai.refill = false; a.ai.lastOwn = null; }
     a.ctl.fire = a.ctl.jump = a.ctl.bomb = a.ctl.sp = false; a.holdBlock = !!(a.isPlayer && I.fire); // 倒下前按的絕招／墨水彈／射擊不會在重生時直接放出來，要放開再按（Yen 2026-11-20 第 60 版）
@@ -10948,17 +10948,23 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (hit && from && from !== t && from.team !== t.team && cause !== 'special' && cause !== 'fall') spGain(from, Math.min(amount, 120) * C.SP_HIT_K);
     return hit;
   }
+  // 第 116.1 版（Yen 11-21 23:23「先把對方打死後對方的攻擊轉為無效，才不會常常變互爆」）：
+  // 倒下的貓還在飛的子彈、墨水彈、墨刀都不算傷害（墨水照樣塗地）；絕招不受影響（放絕招時本來就不會被打倒）。
+  // 連線時兩邊幾乎同時打倒對方：每次打中都附上牆上時鐘（Date.now，各裝置自動對時），先打中的那一方算數，兩台判斷一致。
+  const wNow = () => Date.now() % 1e7, wDiff = (a, b) => ((((a - b) % 1e7) + 1.5e7) % 1e7) - 5e6;
+  const deadAtk = (o, born) => !!(o && o.cat && (!o.alive || o.predKo || (o.diedAt != null && born != null && o.diedAt >= born && o.diedAt <= G.time)));
   function hurt0(t, amount, from, cause) {
     if (t.bossHurt) return G.state === 'play' && t.bossHurt(amount, from, cause);
     if (t.zHurt) return G.state === 'play' && t.zHurt(amount, from, cause); // 殭屍保衛戰的殭屍鼠（07z_zombie.js）
     if (t.isTarget) return hurtTarget(t, amount, from);
+    if (from && from !== t && from.cat && t.cat && from.team !== t.team && cause !== 'special' && deadAtk(from)) return false; // 先被打倒的那隻，攻擊不算
     if ((t.ai || t.cpu) && !G.demo) amount /= aiD().tough || 1; // 瘋狂／地獄：電腦比較耐打
     amount *= towerK(t, from);
     if (netOn()) {
       if (!from || from.remote) return false; // 別人的子彈由開槍的那一方判定
       if (t.remote) { // 打到別人：通知對方自己扣體力
         if (!t.alive || t.predKo || G.state !== 'play' || G.time < t.protectUntil || baseSafe(t, from)) return false;
-        nev(from, 'h', t.idx, amount, CAUSES.indexOf(cause));
+        nev(from, 'h', t.idx, amount, CAUSES.indexOf(cause), wNow());
         // 第 63 版：對方那台確認擊倒要等一來一回（公開中繼站約一秒），這邊先用最近知道的體力算，打到 0 就先讓他倒下；1.5 秒內沒收到擊倒就還原
         const base = t.pred && G.time - t.pred.at < 0.8 ? t.pred.hp : t.hp, left = base - amount; t.pred = { hp: left, at: G.time };
         if (left <= 0) { predictKo(t, from, cause); return true; }
@@ -11008,12 +11014,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.puff = 0; a.cat.group.scale.setScalar(1); a.cat.group.visible = false; puffPop(a, a.puffCol || WHITE); return true;
   }
   function predictKo(t, from, cause) {
-    t.predKo = G.time; if (t.sight) t.sight.visible = false;
+    t.predKo = G.time; t.predW = wNow(); if (t.sight) t.sight.visible = false;
     const col = colors[from.team]; startPuff(t, col); if (from.cat && from.cat.face) from.cat.face('happy', 0.6);
     if (from.isPlayer && !G.demo) { SC.ui.onKoGot(t, cause); A.sfx.koGot(); SC.ui.hitMarker(true); if (slowT <= 0) { slowT = 0.2; slowK = 0.15; } cam.shake = Math.min(1, cam.shake + 0.35); }
   }
   function ko(t, from, cause, helpers) {
-    const pk = t.predKo; t.predKo = 0; t.pred = null;
+    const pk = t.predKo; t.predKo = 0; t.pred = null; t.diedAt = G.time; if (t.remote) t.deadW = t.predW != null ? t.predW : wNow(); // 連線：這隻倒下的時間（我先打倒他就用我打中的時間）
     t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.invisUntil = t.sprayUntil = t.xrayUntil = t.wideUntil = 0; t.spKind = null; t.respawnAt = G.time + C.RESPAWN_SECONDS; if (!pk && !(t.puff > 0)) t.cat.group.visible = false; if (t.subArr) t.subArr.visible = false; t.charge = -1; t.rolling = false;
     if (t.sight) t.sight.visible = false;
     if (!helpers) { helpers = []; if (t.dmgBy) t.dmgBy.forEach((at, e) => { if (e !== from && G.time - at < 5 && e.team !== t.team && !e.gone) helpers.push(e); }); }
@@ -11350,7 +11356,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else for (let k = 0; k < 8; k++) { const ang = (k / 8) * 6.283, cx = Math.cos(ang), cz = Math.sin(ang); for (let d = 1; d <= R; d += 1) { const x = b.x + cx * d, z = b.z + cz * d; if (H(x, z) > b.y + 1.2) { wallPaint(b.team, b.x + cx * (d - 1), b.z + cz * (d - 1), x, z, Math.max(b.y, gy) + 1.5, 2.6, colors[b.team]); break; } } } // 第 91 版：墨水彈在牆邊爆炸，牆也會塗到
     G.hit.forEach((e) => { // 中心直接擊倒，外圈扣 60
       if (e.team === b.team || !e.alive) return; const d = Math.hypot(e.pos.x - b.x, e.pos.y + bodyMid(e, 2) - b.y, e.pos.z - b.z);
-      if (d < B.damageRadius) hurt(e, (d < B.nearRadius ? B.nearDamage : B.damage) * weak, b.owner, 'bomb');
+      if (d < B.damageRadius && !deadAtk(b.owner, b.born)) hurt(e, (d < B.nearRadius ? B.nearDamage : B.damage) * weak, b.owner, 'bomb');
     });
     const n = near(b.mesh.position); if (n > 0.05 && !G.demo) { A.sfx.bomb(); cam.shake = Math.min(1, cam.shake + n * 0.6); }
   }
@@ -11394,7 +11400,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           if (p.y > e.pos.y + bodyBot(e) - (p.pad ? p.pad * 0.4 : 0) && p.y < e.pos.y + bodyTop(e) + 0.3 + (p.pad ? p.pad * 0.3 : 0) && Math.hypot(p.x - e.pos.x, p.z - e.pos.z) < bodyR(e) + (p.pad || 0.55)) { // 散彈槍每顆子彈碰到人的範圍比較大（第 74 版）
             if (!(p.group && e.lastSwing === p.group)) { if (p.group) e.lastSwing = p.group;
               const head = !e.isTarget && !e.bossHurt && e.form !== 'cat' && !(p.owner && p.owner.ai) && p.y > e.pos.y + C.HEAD_Y; // 打到頭：傷害 2.5 倍
-              if (hurt(e, p.dmg * (head ? C.HEAD_MULT : 1), p.owner, p.cause) && head && p.owner && p.owner.isPlayer) { SC.ui.headshot(!e.alive || !!e.predKo); A.sfx.headshot(); } } // 第 78 版（Yen）：打到頭打死才叫「爆頭」，沒打死叫「頭擊」
+              if (!deadAtk(p.owner, G.time - p.life) && hurt(e, p.dmg * (head ? C.HEAD_MULT : 1), p.owner, p.cause) && head && p.owner && p.owner.isPlayer) { SC.ui.headshot(!e.alive || !!e.predKo); A.sfx.headshot(); } } // 第 78 版（Yen）：打到頭打死才叫「爆頭」，沒打死叫「頭擊」
             const gy = H(e.pos.x, e.pos.z); if (gy > -4 && e.pos.y - gy < 3) INK.stamp(p.team, e.pos.x, gy, e.pos.z, p.r * 0.55);
             dead = true; break;
           }
@@ -12027,12 +12033,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.form = f & 2 ? 'cat' : 'biped'; a.submerged = !!(f & 4); a.onGround = !!(f & 8); a.rolling = !!(f & 16); a.protectUntil = f & 32 ? G.time + 0.25 : 0; a.invisUntil = f & 64 ? G.time + 0.35 : 0; a.wideUntil = f & 128 ? G.time + 0.35 : 0;
     const w = WEAPONS[s[9]] || 'W01'; if (w !== a.weapon) { a.weapon = w; a.cat.setWeapon(w); }
     a.charge = s[10] < 0 ? -1 : Math.min(s[10], 2); a.hp = s[11]; a.ink = SC.clamp(s[12], 0, 100); a.deaths = s[13]; a.credited = s[14]; if (s.length >= 18) { a.ast = s[15]; a.paint = s[16]; a.kos = s[17]; } if (G.rule === 'zombie' && s.length >= 19) SC.zb.setHold(a, s[18] | 0);
-    if (alive && !a.alive) { a.predKo = 0; a.pred = null; a.alive = true; a.pos.set(a.net.x, a.net.y, a.net.z); a.visY = a.net.y; a.yaw = a.net.yaw; a.cat.group.visible = true; }
+    if (alive && !a.alive) { a.predKo = 0; a.pred = null; a.predW = a.deadW = null; a.alive = true; a.pos.set(a.net.x, a.net.y, a.net.z); a.visY = a.net.y; a.yaw = a.net.yaw; a.cat.group.visible = true; }
     else if (!alive && a.alive) { a.alive = false; a.charge = -1; a.cat.group.visible = false; } // 沒收到擊倒事件時至少讓角色消失
   };
   function updateRemote(a, dt) {
     const n = a.net; if (!n || !a.alive) return;
-    if (a.predKo && G.time - a.predKo > 1.5) { a.predKo = 0; a.pred = null; } // 先倒下的預測沒成立（對方剛好無敵、補血），讓他出現
+    if (a.predKo && G.time - a.predKo > 1.5) { a.predKo = 0; a.pred = null; a.predW = null; } // 先倒下的預測沒成立（對方剛好無敵、補血），讓他出現
     const age = Math.min(0.15, SC.net.clock() - n.at), tx = n.x + n.vx * age, tz = n.z + n.vz * age, ty = a.onGround ? n.y : Math.max(n.y + n.vy * age, H(tx, tz));
     if (Math.hypot(tx - a.pos.x, tz - a.pos.z) > 30) a.pos.set(tx, ty, tz);
     else { const k = 1 - Math.exp(-16 * dt); a.pos.x += (tx - a.pos.x) * k; a.pos.y += (ty - a.pos.y) * k; a.pos.z += (tz - a.pos.z) * k; }
@@ -12062,7 +12068,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (type === 'q') { if (projectiles.length < 460) sprayRing(a, d[0], d[1], d[2], d[3], d[4], 0, d[5] || 10); a.sprayAng = d[3]; a.sprayUntil = G.time + 0.3; }
     else if (type === 'H') { if (SC.zbHero && G.rule === 'zombie') SC.zbHero.net(a, d); } // 第 116 版：別台的神兵
     else if (type === 'Z') SC.zb.netHit(a, d[0], d[1]); // 殭屍保衛戰：別台打到殭屍鼠，裁判這台扣血
-    else if (type === 'h') { const t = G.netActor(d[0]); if (t && !t.remote && t.alive && a.team !== t.team) damage(t, SC.clamp(d[1], 0, 100), a, CAUSES[d[2]] || 'W01'); } // 打到自己或自己這台算的電腦
+    else if (type === 'h') { const t = G.netActor(d[0]), kw = a.predW != null ? a.predW : a.deadW; if (t && !t.remote && t.alive && a.team !== t.team && !(Number.isFinite(d[3]) && kw != null && wDiff(d[3], kw) > 0)) damage(t, SC.clamp(d[1], 0, 100), a, CAUSES[d[2]] || 'W01'); } // 他打中我的時間比我打倒他還晚：不算（第 116.1 版） // 打到自己或自己這台算的電腦
     else if (type === 'k') { if (a.alive) ko(a, d[0] >= 0 ? G.netActor(d[0]) || null : null, CAUSES[d[1]] || 'fall', d.slice(2).map((i) => G.netActor(i)).filter((e) => e && e !== a)); }
   };
   // 有人離線（或離開這場）
