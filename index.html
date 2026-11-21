@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='c2b864ef934f';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='f4c3e44926a1';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -10275,7 +10275,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // 第 114 版（Yen 22:50「偶爾掉一些不同樣的一次性神兵，可以一次大清掃」）：城裡偶爾冒出發光的神兵，碰到就用掉（一次性）
   // 0 彩虹大浪：從小鴨往外一圈彩虹浪，打爆附近的殭屍；1 巨大貓掌：天上掉下一隻大貓掌，拍扁殭屍最多的那一堆；2 泡泡飛飛：每隻殭屍被泡泡包起來飛上天破掉；3 冰淇淋凍凍：全部殭屍凍住 6 秒（打它傷害 ×1.5）
-  const POW = { first: 30, gap: 60, gapR: 15, life: 30, max: 6, batch: 2, gearP: 0, gearDrop: 0, goldP: 0.01, /* 第 137 版（Yen 03:17「炮台移除 炮台齒輪移除 道具出現頻率降低」）：每 60～75 秒掉一次、金殭屍少一點、不掉齒輪 */ /* 第 128 版（Yen「神器掉太多了 炮台碎片也掉太多」）：每 40～50 秒掉 2 個、齒輪少一半以上 */ cpuWait: 12, R: 3.2, rain: 110, rainDmg: 450, pawR: 22, pawT: 0.6, bub: 1.6, ice: 6, iceBoss: 3, bossDmg: 260 };
+  const POW = { first: 80, gap: 140, gapR: 30, life: 30, max: 6, batch: 1, gearP: 0, gearDrop: 0, goldP: 0.003, /* 第 138 版（Yen 03:29「神兵很偶爾才會出現」）：第一個 80 秒才掉，之後每 140～170 秒掉一個（一場大約 2～3 個），金殭屍更少 */ /* 第 137 版（Yen 03:17「炮台移除 炮台齒輪移除 道具出現頻率降低」）：每 60～75 秒掉一次、金殭屍少一點、不掉齒輪 */ /* 第 128 版（Yen「神器掉太多了 炮台碎片也掉太多」）：每 40～50 秒掉 2 個、齒輪少一半以上 */ cpuWait: 12, R: 3.2, rain: 110, rainDmg: 450, pawR: 22, pawT: 0.6, bub: 1.6, ice: 6, iceBoss: 3, bossDmg: 260 };
   const POW_COL = [0xff5fa2, 0x5ab4ff, 0xff7a2a, 0xffd23f, 0xffd23f, 0xff8ab0, 0xff8ad8, 0xffa0b4, 0xc0c8d8]; /* 8 齒輪 */ /* 第 123 版：0 雙管大砲 1 機關槍 2 火箭砲 3 橡皮鴨 4 機甲 5 拖鞋 6 毛線球 7 肉球大槌 */ /* 第 122 版：5 雷雷鈴鐺 6 毛線球漩渦 7 肉球大槌 */ /* 第 116 版（Yen）：神兵改成撿起來拿在手上用（07z_zombie_hero.js）：0 喵喵集氣波 1 彩虹雷射 2 辣椒噴火槍 3 冰冰槍 4 墨水機甲 */
   let turT = [0, 0, 0, 0], altT = 0, altSeen = 0; Z.tur = [0, 0, 0, 0]; Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 };
   let powId = 1, powT = 0; Z.pows = []; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; let pwSeen = 0, pawAt = 0;
@@ -10416,7 +10416,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function dropMesh(z) { if (!z.m) return; if (z.fx) { Object.values(z.fx).forEach((o) => scene.remove(o)); z.fx = null; } scene.remove(z.m.g); z.m.mat.dispose(); if (z.m.bal) z.m.bal.material.dispose(); if (z.m.mound) scene.remove(z.m.mound); z.m = null; }
 
   // 子彈判定用的靶子（固定一池，放進 G.hit；有殭屍時才 alive）
-  for (let k = 0; k < POOL; k++) { const tg = { isTarget: true, id: 'zz' + k, name: '殭屍鼠', team: 1, alive: false, pos: new V3(0, -99, 0), vel: new V3(), hy0: 0, hy1: 4.6, hr: 1.6, cy: 2.4, z: null, zb: true }; tg.zHurt = (amt, from, cause) => (tg.z ? hurt(tg.z, amt, from, cause) : false); Z.targets.push(tg); }
+  for (let k = 0; k < POOL; k++) { const tg = { isTarget: true, id: 'zz' + k, name: '殭屍鼠', team: 1, alive: false, pos: new V3(0, -99, 0), vel: new V3(), hy0: 0, hy1: 4.6, hr: 1.6, cy: 2.4, z: null, zb: true }; tg.zHurt = (amt, from, cause) => (tg.z ? hurt(tg.z, amt, from, cause) : false); Z.targets.push(tg); } Z.big = (tg) => !!(tg && tg.zb && tg.z && TY[tg.z.ty].cap); /* 第 138 版：大隻／魔王殭屍（有每下傷害上限），大絕不會一刀打爆 */
   const bindTarget = (z) => { const tg = Z.targets.find((q) => !q.z); if (!tg) return; tg.z = z; z.tg = tg; const t = TY[z.ty]; tg.hy0 = t.fly ? 0 : 0; const zk = z.k || 1; tg.hy1 = 4.6 * t.s * zk + (t.fly ? 1 : 0); tg.hr = 1.35 * t.s * zk * (t.wide || 1); tg.cy = 2.3 * t.s * zk; syncTarget(z); };
   const freeTarget = (z) => { if (!z.tg) return; z.tg.z = null; z.tg.alive = false; z.tg.pos.set(0, -99, 0); z.tg = null; };
   const syncTarget = (z) => { const tg = z.tg; if (!tg) return; tg.alive = z.st === 'walk' || z.st === 'eat' || z.st === 'fly'; tg.prio = (z.st === 'eat' ? 16 : 0) + (z.act === 3 ? 34 : TY[z.ty].k === 'boom' && z.act === 1 ? 14 : 0) + (TY[z.ty].boss ? 30 : TY[z.ty].k === 'big' ? 22 : TY[z.ty].k === 'fat' ? 6 : 0) + (Math.hypot(z.x - DX, z.z - DZ) < Z.duckD ? 10 : 0); tg.pos.set(z.x, z.y, z.z); tg.vel.set(z.vx || 0, 0, z.vz || 0); if (TY[z.ty].fly && z.st === 'fly') { tg.hy0 = 0; tg.hy1 = 10 * TY[z.ty].s; tg.hr = 2.2; tg.cy = 6; } }; // prio：電腦隊友先打在咬的、大胃王、靠近小鴨的
@@ -10741,7 +10741,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     bridgeSim(dt); cpSim(dt); for (let i = 0; i < 4; i++) { if (Z.tur[i] <= 0) continue; Z.tur[i] = Math.max(0, Z.tur[i] - dt); if ((turT[i] -= dt) > 0) continue; turT[i] = TUR.gap; const z = turTarget(i); if (z) damage(z, Math.min(TUR.dmg, TY[z.ty].cap || TUR.dmg), null); }
   }
   function turTarget(i) { const [x, zz] = TUR_P[i]; let best = null, bd = TUR.R; for (const z of Z.list) { if (z.st !== 'walk' && z.st !== 'eat' && z.st !== 'fly' || z.predDead) continue; const d = Math.hypot(z.x - x, z.z - zz); if (d < bd) { bd = d; best = z; } } return best; }
-  const CMB = { n: 400, idle: 20 }; /* 第 134 版（Yen 02:51「不是佔祭壇可以得到buff 改成combo 50隻全隊可以隨機buff」）：全隊連續打倒 50 隻 → 大家隨機拿一種加成 20 秒；10 秒沒打倒殭屍 combo 歸零。祭壇拿掉了。 */
+  const CMB = { n: 150, idle: 20 }; /* 第 138 版（Yen 03:30「combo 150 給加成」） */ /* 第 134 版（Yen 02:51「不是佔祭壇可以得到buff 改成combo 50隻全隊可以隨機buff」）：全隊連續打倒 50 隻 → 大家隨機拿一種加成 20 秒；10 秒沒打倒殭屍 combo 歸零。祭壇拿掉了。 */
   let cmbK = 0, cmbT = 0;
   function altarSim(dt, now, g) { /* 裁判：算全隊 combo（借 Z.alt.p 傳給別台：0～1） */
     const A = Z.alt; A.life = 0; if (now > LEN + OVER) return;
@@ -10752,7 +10752,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 每台：收到「祭壇集滿了」→ 這台的貓（玩家、電腦隊友）拿到加成 */
   let inkTip = 0; function inkHint() { const g = G(), p = g.player && g.player(); if (g.state !== 'play' || !p) return; if (!(inkTip & 1) && g.time > 20) { inkTip |= 1; SC.ui.tip('殭屍踩到我們的墨水會變慢、更好打！', 4.5); } else if (!(inkTip & 2) && SC.zbHero && SC.zbHero.has(p) && g.time > 24) { inkTip |= 2; SC.ui.tip('神兵快沒電？潛進自己的墨水就會充電！', 4.5); } }
   let gearTip = 0; function gearHint() { if (gearTip || G().state !== 'play' || !Z.pows.some((q) => q.k === GEAR)) return; gearTip = 1; SC.ui.tip('撿齒輪 ⚙️，拿去放在砲台上，砲台就會自動射擊！', 5); }
-  function buffTick() { gearHint(); inkHint(); if (!altTip && G().state === 'play' && G().time > 8) { altTip = 1; SC.ui.tip('連續打倒 400 隻殭屍，大家都會變強！', 5); } const D = Z.altDone, g = G(); if (!D.seq || D.seq === altSeen) return; altSeen = D.seq; for (const a of g.actors) if (!a.remote && !a.gone && !a.isTarget && a.team === 0) { a.buffK = D.k; a.buffUntil = g.time + ALT.buff; if (a.alive) { ctx.burst(a.pos.x, a.pos.y + 3, a.pos.z, new THREE.Color(0xffe14a), 30, 20, 0.7); ctx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, new THREE.Color(0xffe14a), 6, 0.5); } }
+  function buffTick() { gearHint(); inkHint(); if (!altTip && G().state === 'play' && G().time > 8) { altTip = 1; SC.ui.tip('連續打倒 150 隻殭屍，大家都會變強！', 5); } const D = Z.altDone, g = G(); if (!D.seq || D.seq === altSeen) return; altSeen = D.seq; for (const a of g.actors) if (!a.remote && !a.gone && !a.isTarget && a.team === 0) { a.buffK = D.k; a.buffUntil = g.time + ALT.buff; if (a.alive) { ctx.burst(a.pos.x, a.pos.y + 3, a.pos.z, new THREE.Color(0xffe14a), 30, 20, 0.7); ctx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, new THREE.Color(0xffe14a), 6, 0.5); } }
     if (g.state === 'play') { SC.ui.banner(BUFF_NAME[D.k], 2.2, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } }
   Z.buffOf = (a) => a && a.buffUntil > G().time && Z.on ? a.buffK : -1;
   function dropPow(near) { /* 第 124 版（Yen「每過一段時間神兵會散落在四處」）：整張地圖到處都會掉（不只城裡）；也會掉齒輪 */
@@ -11654,7 +11654,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['打倒一隻鑽牆鼠！', 'One drill mouse down!', 'ドリルネズミを 1 ぴきたおした！', '드릴쥐 한 마리 쓰러뜨렸어!'],
     ['鑽牆鼠全部打倒了！', 'All drill mice are down!', 'ドリルネズミをぜんぶたおした！', '드릴쥐를 모두 쓰러뜨렸어!'],
     ['最後魔王 鑽牆鼠', 'Final boss: Drill Mice', 'さいごのボス ドリルネズミ', '최종 보스 드릴쥐'],
-    ['連續打倒 400 隻殭屍，大家都會變強！', 'Pop 400 zombies in a row and everyone gets stronger!', 'ゾンビを 400 ひきつづけてたおすと、みんなパワーアップ！', '좀비를 연속으로 400마리 쓰러뜨리면 모두 강해져요!'],
+    ['高爆裂彈 8 秒！打到哪裡就炸到哪裡', 'Blast rounds for 8 s! Every shot explodes!', 'ばくはつ弾 8びょう！あたったところがドカン！', '폭발탄 8초! 맞은 곳이 펑 터져요!'],
+    ['瞬影連斬！', 'Shadow-step slashes!', 'しゅんかんれんぞくぎり！', '순간이동 연속 베기!'],
+    ['超大滾刷 8 秒！壓到殭屍直接打爆！', 'Giant roller for 8 s! Roll over zombies to pop them!', 'きょだいローラー 8びょう！ゾンビをひいたらいっぱつ！', '거대 롤러 8초! 좀비를 밀면 바로 펑!'],
+    ['連續打倒 150 隻殭屍，大家都會變強！', 'Pop 150 zombies in a row and everyone gets stronger!', 'ゾンビを 150 ひきつづけてたおすと、みんなパワーアップ！', '좀비를 연속으로 150마리 쓰러뜨리면 모두 강해져요!'],
     ['站上祭壇集滿光，大家都會變強！', 'Stand on the altar until it fills up and everyone gets stronger!', 'さいだんにのってひかりをためると、みんなパワーアップ！', '제단 위에 서서 빛을 채우면 모두 강해져요!'],
     ['自動機槍啟動！', 'Auto turret on!', 'じどうマシンガン、スタート！', '자동 기관총 작동!'],
     ['攻擊變強！', 'Power up!', 'こうげきアップ！', '공격력 업!'],
@@ -12061,7 +12064,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : G.rule === 'zombie' ? Math.atan2(s.x, s.z) : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
     a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; bladeAimHide(a); a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
-    a.invisUntil = a.xrayUntil = a.sprayUntil = a.wideUntil = 0; a.kx = a.kz = 0; a.puff = a.hitStop = 0; a.hitBy = null; if (a.cat.face) a.cat.face(null); a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.predW = a.deadW = null; a.killBy = a.killW = a.hitFrom = null; a.inWater = false; a.poolCd = 0;
+    a.invisUntil = a.xrayUntil = a.heUntil = a.sprayUntil = a.wideUntil = 0; a.blink = null; a.kx = a.kz = 0; a.puff = a.hitStop = 0; a.hitBy = null; if (a.cat.face) a.cat.face(null); a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.predW = a.deadW = null; a.killBy = a.killW = a.hitFrom = null; a.inWater = false; a.poolCd = 0;
     a.protectUntil = G.time + C.SPAWN_PROTECTION; a.cat.group.visible = true; a.nextShotAt = 0; a.cat.setInk(1);
     if (a.ai) { a.ai.target = null; a.ai.enemy = null; a.ai.refill = false; a.ai.lastOwn = null; }
     a.ctl.fire = a.ctl.jump = a.ctl.bomb = a.ctl.sp = false; a.holdBlock = !!(a.isPlayer && I.fire); // 倒下前按的絕招／墨水彈／射擊不會在重生時直接放出來，要放開再按（Yen 2026-11-20 第 60 版）
@@ -12310,7 +12313,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function ko(t, from, cause, helpers) {
     const pk = t.predKo; t.predKo = 0; t.pred = null; t.diedAt = G.time; t.killW = t.hitFrom && t.hitFrom === from && t.hitW != null ? t.hitW : null; t.killBy = t.killW != null ? from : null; t.killHp = t.hitHp; t.hitFrom = null; if (t.remote) t.deadW = t.predW != null ? t.predW : wNow(); // 連線：這隻倒下的時間（我先打倒他就用我打中的時間）
-    t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.invisUntil = t.sprayUntil = t.xrayUntil = t.wideUntil = 0; t.spKind = null; t.respawnAt = G.time + C.RESPAWN_SECONDS; if (!pk && !(t.puff > 0)) t.cat.group.visible = false; if (t.subArr) t.subArr.visible = false; t.charge = -1; t.rolling = false;
+    t.alive = false; t.hp = 0; t.dash = null; t.deaths++; t.invisUntil = t.sprayUntil = t.xrayUntil = t.heUntil = t.wideUntil = 0; t.spKind = null; t.blink = null; t.respawnAt = G.time + C.RESPAWN_SECONDS; if (!pk && !(t.puff > 0)) t.cat.group.visible = false; if (t.subArr) t.subArr.visible = false; t.charge = -1; t.rolling = false;
     if (t.sight) t.sight.visible = false;
     if (!helpers) { helpers = []; if (t.dmgBy) t.dmgBy.forEach((at, e) => { if (e !== from && G.time - at < 5 && e.team !== t.team && !e.gone) helpers.push(e); }); }
     if (t.dmgBy) t.dmgBy.clear(); helpers.forEach((e) => e.ast++);
@@ -12517,7 +12520,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.isPlayer && (a.rollSfx -= d) <= 0) { a.rollSfx = 3.2; A.sfx.roll(); }
     G.hit.forEach((e) => {
       if (e.team === a.team || !e.alive || Math.abs(e.pos.y - a.pos.y) > 4) return;
-      const ex = e.pos.x - fx, ez = e.pos.z - fz; if (Math.abs(ex * t1.z - ez * t1.x) < C.W02.rollerHalf * wideK(a) + bodyR(e) && Math.abs(ex * t1.x + ez * t1.z) < 2.4 + bodyR(e) && /* 第 102 版：刷頭整條都會壓到人（跟看到的寬度一樣） */ G.time - (a.rollHit[e.id] || -9) > w.rollHitInterval) { a.rollHit[e.id] = G.time; hurt(e, w.rollDamage, a, 'W02'); }
+      const ex = e.pos.x - fx, ez = e.pos.z - fz; if (Math.abs(ex * t1.z - ez * t1.x) < C.W02.rollerHalf * wideK(a) + bodyR(e) && Math.abs(ex * t1.x + ez * t1.z) < 2.4 + bodyR(e) && /* 第 102 版：刷頭整條都會壓到人（跟看到的寬度一樣） */ G.time - (a.rollHit[e.id] || -9) > w.rollHitInterval) { a.rollHit[e.id] = G.time; if (e.zb && a.wideUntil > G.time && zMode()) { if (zBig(e)) { a.rollHit[e.id] = G.time + ZSP.rollGap - w.rollHitInterval; hurt(e, ZSP.rollBig, a, 'W02'); } else hurt(e, 999, a, 'special'); } /* 第 138 版：超大滾刷壓到小殭屍直接打爆 */ else hurt(e, w.rollDamage, a, 'W02'); }
     });
   }
   function rollEnd(a) {
@@ -12573,19 +12576,21 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 狙擊槍的一槍：沿線塗地、判定命中、畫光束。replay 是連線時別人開的槍（{ len, hit }），照他那邊算好的長度重播，不再判定命中。
   function sniperShot(a, m, dir, c, boost, replay) {
     const w = C.W03, range = sniperRange(a, c), dmg = SC.lerp(w.minDamage, w.maxDamage, c), rad = SC.lerp(w.minRadius, w.maxRadius, c) * C.PAINT * boost, end = new V3();
-    const maxT = replay ? Math.min(420, replay.len) : range;
+    const maxT = replay ? Math.min(420, replay.len) : range, zm = zMode(), pierced = zm && !replay ? [] : null; /* 第 138 版：殭屍模式狙擊會穿過殭屍一路打下去 */
     let hitActor = null, t = 0, paintT = 0; INK.by = a;
     for (; t <= maxT; t += 1) {
       const x = m.x + dir.x * t, y = m.y + dir.y * t, z = m.z + dir.z * t, h = H(x, z); end.set(x, y, z);
       for (const e of G.hit) {
         if (replay || e.team === a.team || !e.alive) continue;
-        if (y > e.pos.y + bodyBot(e) - 0.4 && y < e.pos.y + bodyTop(e) + 0.4 && Math.hypot(x - e.pos.x, z - e.pos.z) < bodyR(e) + 0.9) { hitActor = e; break; }
+        if (y > e.pos.y + bodyBot(e) - 0.4 && y < e.pos.y + bodyTop(e) + 0.4 && Math.hypot(x - e.pos.x, z - e.pos.z) < bodyR(e) + 0.9) { if (pierced && e.zb) { if (!pierced.includes(e)) pierced.push(e); continue; } hitActor = e; break; }
       }
       if (hitActor) break;
       if (y <= h) { if (G.mode === 'boss') { if (h - y > 1.5) BS.paintWall(a.team, x, y, z, rad * 1.2); BS.onImpact(x, y, z, 'W03'); }
         const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (h - y > 1.5) wallPaint(a.team, bx, bz, x, z, y, rad * 0.9, colors[a.team]); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
       if (t >= paintT) { paintT = t + 2.4; if (h > -4 && y - h < 18) INK.stamp(a.team, x, h, z, rad); if (G.mode !== 'boss') sniperWallTrail(a.team, x, y, z, dir, rad * 0.7, colors[a.team]); }
     }
+    if (pierced) for (const e of pierced) { const ex = e.pos.x, ez = e.pos.z; hurt(e, dmg, a, 'W03'); const gh = H(ex, ez); if (gh > -4) INK.splat(a.team, ex, gh, ez, rad * 0.8); SC.fx.burst(ex, e.pos.y + 2.5, ez, colors[a.team], 8, 14, 0.4); }
+    if (zm && a.heUntil > G.time) { if (pierced && pierced[0]) heBlast(a, pierced[0].pos.x, pierced[0].pos.y + 1, pierced[0].pos.z, true); heBlast(a, end.x, end.y, end.z, !replay); } /* 高爆裂彈：打到的第一隻殭屍和子彈盡頭都會大爆炸 */
     if (hitActor) { hurt(hitActor, dmg, a, 'W03'); INK.splat(a.team, hitActor.pos.x, H(hitActor.pos.x, hitActor.pos.z), hitActor.pos.z, rad); }
     else if (replay && replay.hit) { const gh = H(end.x, end.z); if (gh > -4) INK.splat(a.team, end.x, gh, end.z, rad); }
     INK.by = null; SC.fx.beam(m, end, colors[a.team], 0.3 + c * 0.45); SC.fx.burst(end.x, end.y + 0.3, end.z, colors[a.team], 10, 16, 0.5); SC.fx.pop(m.x, m.y, m.z, WHITE, 2.6 + c * 1.6, 0.09); SC.fx.pop(end.x, end.y + 0.3, end.z, colors[a.team], 3 + c * 2, 0.14);
@@ -12593,6 +12598,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     return { len: t, hit: hitActor };
   }
 
+  function heBlast(a, x, y, z, judge) { // 第 138 版：狙擊大絕的高爆裂彈爆炸（殭屍模式）
+    const R = ZSP.heR, col = colors[a.team], gh = H(x, z), gy = gh > -4 && y - gh < 8 ? gh : y;
+    SC.fx.ring(x, gy + 0.3, z, col, R, 0.45); SC.fx.ring(x, gy + 0.5, z, new THREE.Color(0xffb347), R * 0.7, 0.3); SC.fx.burst(x, gy + 1, z, col, 40, 34, 0.8, 0.3, 1.4); SC.fx.burst(x, gy + 1.5, z, new THREE.Color(0xffd36b), 22, 28, 0.5); SC.fx.pop(x, gy + 2, z, WHITE, 7, 0.12);
+    INK.by = a; if (gh > -4) INK.splat(a.team, x, gh, z, 5.5 * C.PAINT); INK.by = null;
+    const n = near(t3.set(x, gy, z)); if (n > 0.05 && !G.demo) { A.sfx.bomb(); cam.shake = Math.min(1, cam.shake + 0.35 * n); }
+    if (!judge) return;
+    G.hit.forEach((e) => { if (!e.zb || !e.alive || e.team === a.team) return; if (Math.hypot(e.pos.x - x, e.pos.z - z) < R + bodyR(e) && Math.abs(e.pos.y - gy) < 9) hurt(e, zBig(e) ? ZSP.heBig : ZSP.heDmg, a, 'bomb'); });
+  }
   function throwBomb(a) {
     const b = C.BOMB;
     if (G.time < a.nextBombAt) return;
@@ -13017,7 +13030,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   // ---------- 第 63 版：每把武器自己的絕招（魔王關和電腦還是用砸地） ----------
   // 漆彈槍：砸地。滾刷：隱形 6 秒。狙擊槍：透視 8 秒（牆後的對手變紅色）。散彈槍：朝準星快速連射六發散彈（第 121.1 版，原本是轉圈亂射 3 秒）。墨刀：往前劃一條墨水直線，再沿著線衝殺過去。
-  const wideK = (a) => (a.wideUntil > G.time ? C.ROLL_WIDE : 1); // 滾刷絕招：刷頭變寬
+  /* 第 138 版（Yen 03:29，只改殭屍模式）：狙擊穿透殭屍、狙擊大絕＝高爆裂彈、墨刀大絕＝瞬移連斬、滾刷大絕＝超大滾刷直接壓扁殭屍（大魔王只扣血） */
+  const zMode = () => G.rule === 'zombie' && G.mode !== 'boss', zBig = (e) => !!(SC.zb && SC.zb.big && SC.zb.big(e));
+  const ZSP = { heT: 8, heR: 11, heDmg: 220, heBig: 110, blinkN: 10, blinkR: 70, blinkGap: 0.16, blinkSplash: 6, blinkBig: 200, blinkBigN: 3, rollK: 3.4, rollBig: 70, rollGap: 0.3 };
+  const wideK = (a) => (a.wideUntil > G.time ? (zMode() ? ZSP.rollK : C.ROLL_WIDE) : 1); // 滾刷絕招：刷頭變寬（殭屍模式更大）
   const SP_KIND = { W02: 'wide', W03: 'xray', W04: 'spray', W05: 'blade' }, SP_KINDS = ['slam', 'invis', 'xray', 'spray', 'blade', 'wide'];
   const XRAY_MAT = new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false });
   // 狙擊槍絕招（第 64 版，Yen）：整個場地變灰階、半透明，人（貓咪）保留顏色，更顯眼。場地材質加一段灰階 shader（同一個 uniform），開場時先編好
@@ -13033,7 +13049,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     grayLists.set(root, list);
   }
   function grayTick(dt) {
-    const me = viewer(), want = me && !G.demo && me.alive && me.xrayUntil > G.time ? 1 : 0;
+    const me = viewer(), want = me && !G.demo && me.alive && me.xrayUntil > G.time && !zMode() ? 1 : 0; /* 第 138 版：殭屍模式狙擊大絕是高爆裂彈，不變灰 */
     if (want && !grayLists.has(W.root)) grayPatch(W.root);
     if (grayRoot && grayRoot !== W.root) { grayF = 0; grayApply(grayRoot, 0); grayRoot = null; }
     const f = SC.damp(grayF, want, 8, dt), was = grayF; grayF = Math.abs(f - want) < 0.01 ? want : f; if (grayF === was) return;
@@ -13085,7 +13101,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, col, 30, 24, 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.2, a.pos.z, col, 6, 0.35);
     if (n > 0.05 && !G.demo) A.sfx.spUp(n * 0.7);
     if (kind === 'invis') { a.invisUntil = now + 6; if (a.isPlayer) SC.ui.tip('隱形 6 秒！對手看不到你', 2.4); }
-    else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; a.spDur = C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬、超快 8 秒！不耗墨，還能滾上牆！', 2.8); }
+    else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; a.spDur = C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip(zMode() ? '超大滾刷 8 秒！壓到殭屍直接打爆！' : '滾刷變超寬、超快 8 秒！不耗墨，還能滾上牆！', 2.8); }
+    else if (kind === 'xray' && zMode()) { a.xrayUntil = a.heUntil = now + ZSP.heT; a.spDur = ZSP.heT; if (a.isPlayer) { SC.ui.tip('高爆裂彈 8 秒！打到哪裡就炸到哪裡', 2.4); SC.ui.flash('rgba(255,170,60,.35)', 0.3); } }
+    else if (kind === 'blade' && zMode()) { a.spKind = 'blink'; a.spT = 0; a.blade = null; a.blink = { n: 0, next: 0.25, hit: new Map() }; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.squash = -0.5; a.protectUntil = Math.max(a.protectUntil, now + 0.6); if (a.isPlayer) SC.ui.tip('瞬影連斬！', 1.2); }
     else if (kind === 'xray') { a.xrayUntil = now + 8; a.spDur = 8; if (a.isPlayer) { SC.ui.tip('透視 8 秒！牆後面的對手會變成紅色', 2.4); SC.ui.flash('rgba(255,40,40,.35)', 0.3); } }
     else if (kind === 'spray') { a.sprayN = C.SPRAY_SHOTS; a.spDur = C.SPRAY_SHOTS * C.SPRAY_GAP + 0.3; a.sprayUntil = now + a.spDur; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('散彈十連發！', 1.6); }
     else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.bladeAir = !a.inWater && a.pos.y - H(a.pos.x, a.pos.z) > 4; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
@@ -13151,6 +13169,27 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (k >= 1) { a.spT = null; a.spKind = null; a.onGround = true; a.jumps = 0; a.cat.slash = 0; SC.fx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, col, 8, 0.35);
       if (B.air) { a.pos.y = H(a.pos.x, a.pos.z); INK.by = a; INK.stamp(a.team, a.pos.x, a.pos.y, a.pos.z, 4.5 * C.PAINT); INK.by = null; SC.fx.burst(a.pos.x, a.pos.y + 0.5, a.pos.z, col, 24, 22, 0.5); const n = near(a); if (n > 0.05 && !G.demo) { A.sfx.spSlam(n * 0.4); cam.shake = Math.min(1, cam.shake + 0.25 * n); } } }
   }
+  G.testSpecial = (a) => startSpecial(a);; G.testSnipe = (a, x, y, z, dx, dy, dz) => sniperShot(a, new V3(x, y, z), new V3(dx, dy, dz).normalize(), 1, 1, null); /* 測試用 */
+  // 第 138 版（Yen 03:29）：殭屍模式墨刀大絕「瞬影連斬」：一閃一閃瞬移到最近的殭屍背後砍一刀，最多 10 刀；過程中不會被咬
+  function blinkSpecial(a, dt) {
+    const B = a.blink, t = (a.spT += dt), col = colors[a.team];
+    a.vel.set(0, 0, 0); a.speed = 0; a.protectUntil = Math.max(a.protectUntil, G.time + 0.5);
+    if (t < B.next) { a.cat.squash = t < 0.25 ? -0.5 - 0.2 * Math.sin(t * 40) : a.cat.squash; return; }
+    let best = null, bd = ZSP.blinkR;
+    if (B.n < ZSP.blinkN) for (const e of G.hit) { if (!e.zb || !e.alive || e.team === a.team || (B.hit.get(e) || 0) >= (zBig(e) ? ZSP.blinkBigN : 1)) continue; const d = Math.hypot(e.pos.x - a.pos.x, e.pos.z - a.pos.z); if (d < bd && Math.abs(e.pos.y - a.pos.y) < 14) { bd = d; best = e; } }
+    if (!best) { a.spT = null; a.spKind = null; a.blink = null; a.cat.slash = 0; a.onGround = true; a.jumps = 0; a.protectUntil = Math.max(a.protectUntil, G.time + 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, col, 8, 0.35); return; }
+    if (near(a) > 0.05) { SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, col, 16, 10, 0.45, 0.1); SC.fx.pop(a.pos.x, a.pos.y + 2.4, a.pos.z, col, 3.2, 0.14); } // 原地留下殘影
+    const dx = best.pos.x - a.pos.x, dz = best.pos.z - a.pos.z, d = Math.hypot(dx, dz) || 1, r = bodyR(best) + 2.4;
+    let nx = best.pos.x + (dx / d) * r, nz = best.pos.z + (dz / d) * r; if (H(nx, nz) > best.pos.y + 3 || W.outOf(W.lim, nx, nz)) { nx = best.pos.x - (dx / d) * r; nz = best.pos.z - (dz / d) * r; } // 閃到殭屍背後，背後是牆就閃到前面
+    if (!(H(nx, nz) > best.pos.y + 3)) { a.pos.x = nx; a.pos.z = nz; a.pos.y = Math.max(H(nx, nz), best.pos.y); }
+    a.yaw = Math.atan2(best.pos.x - a.pos.x, best.pos.z - a.pos.z); a.visY = a.pos.y;
+    B.hit.set(best, (B.hit.get(best) || 0) + 1); B.n++; B.next = t + ZSP.blinkGap;
+    a.cat.slash = 1; a.cat.slashKind = 1 + (B.n % 2); a.cat.squash = 0.3;
+    hurt(best, zBig(best) ? ZSP.blinkBig : 999, a, zBig(best) ? 'W05' : 'special');
+    for (const e of G.hit) if (e !== best && e.zb && e.alive && e.team !== a.team && !zBig(e) && Math.hypot(e.pos.x - best.pos.x, e.pos.z - best.pos.z) < ZSP.blinkSplash + bodyR(e)) hurt(e, 999, a, 'special'); // 旁邊擠在一起的小殭屍一起砍到
+    INK.by = a; const gh = H(best.pos.x, best.pos.z); if (gh > -4) INK.splat(a.team, best.pos.x, gh, best.pos.z, 3.6 * C.PAINT); INK.by = null;
+    const n = near(a); if (n > 0.05) { SC.fx.burst(best.pos.x, best.pos.y + 2.5, best.pos.z, col, 18, 22, 0.45); SC.fx.burst(best.pos.x, best.pos.y + 2.5, best.pos.z, WHITE, 8, 18, 0.3); if (!G.demo) A.sfx.slash(n, 2); }
+  }
   function startSpecial(a) {
     const kind = G.mode === 'boss' || a.ai ? 'slam' : SP_KIND[a.weapon] || 'slam';
     if (kind !== 'slam') return startWeaponSpecial(a, kind);
@@ -13164,6 +13203,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function special(a, dt) {
     if (a.spKind === 'blade') return bladeSpecial(a, dt);
+    if (a.spKind === 'blink') return blinkSpecial(a, dt);
     const s0 = a.sp0, t0 = a.spT, t = (a.spT += dt), top = s0.y + C.SP_HEIGHT, ring = spRingOf(a);
     a.vel.set(0, 0, 0); a.pos.x = s0.x; a.pos.z = s0.z; a.speed = 0;
     if (t < SP_UP) { const k = t / SP_UP; a.pos.y = s0.y + C.SP_HEIGHT * (1 - (1 - k) * (1 - k)); a.yaw += dt * 14; if (Math.random() < 0.7) SC.fx.burst(a.pos.x, a.pos.y, a.pos.z, colors[a.team], 2, 6, 0.4, 0.2); }
@@ -13372,7 +13412,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (type === 'b') spawnBomb(a, d[0], d[1], d[2], d[3], d[4], d[5]);
     else if (type === 'S') { a.cat.squash = -0.8; if (near(a) > 0.05) A.sfx.spUp(near(a)); SC.fx.burst(d[0], d[1] + 0.5, d[2], colors[a.team], 30, 24, 0.6); a.wsp = { x: d[0], z: d[2], g: H(d[0], d[2]), t: 0 }; spWarn(a, d[0], d[2]); } // 第 88 版：連線對手的絕招也在地上預告落點
     else if (type === 'X') spImpact(a, d[0], d[1], d[2], false);
-    else if (type === 'Y') { const k = SP_KINDS[d[0] | 0]; SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, colors[a.team], 30, 24, 0.6); if (near(a) > 0.05) A.sfx.spUp(near(a) * 0.7); if (k === 'blade') { a.cat.slash = 1; a.cat.slashKind = 3; } }
+    else if (type === 'Y') { const k = SP_KINDS[d[0] | 0]; SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, colors[a.team], 30, 24, 0.6); if (near(a) > 0.05) A.sfx.spUp(near(a) * 0.7); if (k === 'blade') { a.cat.slash = 1; a.cat.slashKind = 3; } if (k === 'xray' && zMode()) a.heUntil = G.time + ZSP.heT; }
     else if (type === 'q') { if (projectiles.length < 460) sprayRing(a, d[0], d[1], d[2], d[3], d[4], 0, d[5] || 10); a.sprayAng = d[3]; a.sprayUntil = G.time + 0.3; }
     else if (type === 'H') { if (SC.zbHero && G.rule === 'zombie') SC.zbHero.net(a, d); } // 第 116 版：別台的神兵
     else if (type === 'Z') SC.zb.netHit(a, d[0], d[1]); // 殭屍保衛戰：別台打到殭屍鼠，裁判這台扣血
@@ -13824,7 +13864,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (hp < 40 && a.alive && Math.random() < dt * 5 && near(a) > 0.1 && a.cat.group.visible) SC.fx.burst(a.pos.x, a.visY + 2.2, a.pos.z, a.hitBy ? colors[a.hitBy.team] : colors[a.team], 1, 2, 0.32, -0.4); // 快倒了：身上滴墨
         if (a.cat.setWide) a.cat.setWide(wideK(a)); if (a.cat.setGhost) a.cat.setGhost(inv || hide); // 第 65 版（Yen）：滾刷絕招改成大家都看得到 30% 的淡影子
         subArrow(a, swim && !still && a.cat.group.visible, now); // 第 71 版（Yen）：潛墨移動時頭上跟著一個立體箭頭
-        xrayOf(a, me && foe && me.xrayUntil > G.time && a.alive && !a.predKo);
+        xrayOf(a, me && foe && me.xrayUntil > G.time && !zMode() && a.alive && !a.predKo);
         if (a.cat.spGlow) a.cat.spGlow(a.alive && a.wideUntil > G.time);
         a.cat.setInk(a.ink / 100); if (a.cat.lod) a.cat.lod(a.isPlayer ? 0 : camera.position.distanceTo(a.pos));
         a.cat.animate(hs ? 0 : dt, { speed: a.speed, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged, pitch: a.pitch, rolling: a.rolling && a.alive, charge: a.charge < 0 ? 0 : Math.min(1, a.charge / fullC(a)), t: now });
