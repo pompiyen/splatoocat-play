@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='e172ee696656';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='800f97f7c61c';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -4188,48 +4188,65 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   const ZQ = Math.PI / 2, zMake = MAPS.zfort.make, zLook = MAPS.zfort.look, zSpawns = MAPS.zfort.spawns;
   const zBase = { teams: 2, holeW: 0, baseIn: 999, zombie: true, gridStep: 2, spawns: zSpawns, vic: { x: 0, z: 40 * ZS } };
-  // 7b. 糖果小島：四周是草莓牛奶海（掉下去會漂），島上軟糖、杯子蛋糕台、棒棒糖。八個洞都有，殭屍從四面八方來，但路很短，很快就到城門。
-  const CI_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i / 8) * TAU);
-  MAPS.zcandy = { ...zBase, name: '糖果小島', water: '草莓牛奶海', lim: { x: 150, z: 150, r: 150 },
-    zb: { n: 0.85, hole: 116, ha: CI_ANG, dig: [74, 34], drop: [30, 96], tank: 100 },
+  // 第 127 版（Yen「地圖要是不同地形」）：三張地圖改成三種完全不同的地形（中間城堡不變，殭屍、小鴨、機槍照舊）。
+  // 參考一般關卡設計的好玩地形：高低差（高地看得遠）、窄橋（守在必經之路）、繞路（側面偷打）、危險地形（掉海裡）、彈跳裝置（跳上高台）。
+  const zWhirl = (k, pools) => pools.forEach((p, i) => { // 海裡的漩渦（游進去會被噴回城堡）
+    const cv = document.createElement('canvas'); cv.width = cv.height = 256; const g = cv.getContext('2d'); g.translate(128, 128);
+    const grd = g.createRadialGradient(0, 0, 4, 0, 0, 128); grd.addColorStop(0, '#fff0f8'); grd.addColorStop(0.35, '#ff8fc4'); grd.addColorStop(1, 'rgba(255,120,190,0)'); g.fillStyle = grd; g.beginPath(); g.arc(0, 0, 128, 0, 7); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineCap = 'round'; for (let arm = 0; arm < 4; arm++) { g.lineWidth = 7; g.beginPath(); for (let t = 0; t <= 1.001; t += 0.02) { const r = 8 + t * 112, an = arm * Math.PI / 2 + t * 5.2; t ? g.lineTo(Math.cos(an) * r, Math.sin(an) * r) : g.moveTo(Math.cos(an) * r, Math.sin(an) * r); } g.stroke(); }
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.CircleGeometry(6.5, 40), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.set(p.x, -5.35, p.z); m.renderOrder = 2; k.root.add(m);
+    k.tick((t) => { m.rotation.z = -t * 2.4 * (i ? -1 : 1); }); });
+  // 7b. 糖果群島（海島＋窄橋）：城堡在一座大島上，四周是草莓牛奶海。老鼠洞在四座外圍小島上，殭屍只能走四座細細的拐杖糖長橋過來，守住橋頭就好。
+  // 海上有一顆顆軟糖踏腳石，可以跳過去從側面打橋上的殭屍；掉進海裡會一直扣血，游進漩渦會被噴回城堡。
+  const CI_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i >> 1) * ZQ + (i & 1 ? 0.09 : -0.09));
+  const CI = { isl: 86, out: 120, outR: 16 }, ciLand = (x, z) => { const r = Math.hypot(x, z); if (r <= CI.isl) return true; for (let g = 0; g < 4; g++) { const a = g * ZQ; if (Math.hypot(x - Math.cos(a) * CI.out, z - Math.sin(a) * CI.out) < CI.outR) return true; } return false; };
+  MAPS.zcandy = { ...zBase, name: '糖果群島', water: '草莓牛奶海', lim: { x: 142, z: 142, r: 142 }, swim: true,
+    pools: [{ x: 70, z: 70 }, { x: -70, z: -70 }],
+    zb: { n: 0.85, hole: 124, ha: CI_ANG, dig: [66, 18], drop: [30, 74], tank: 96 },
     gen: () => { const out = zCore([]);
       for (let g = 0; g < 4; g++) { const a = g * ZQ;
-        [[80, 0.25], [80, 0.75], [104, 0.5]].forEach(([r, f]) => out.push({ t: 'cyl', ...xz(r, a + ZQ * f), r: 4.6, h: 4.2, look: 'gum', team: -1 })); // 軟糖：躲得到後面、跳得上去
-        out.push({ t: 'cyl', ...xz(98, a + ZQ * 0.22), r: 7, h: 7.5, look: 'cupcake', team: -1 }, { t: 'cyl', ...xz(98, a + ZQ * 0.78), r: 7, h: 7.5, look: 'cupcake', team: -1 }); // 杯子蛋糕台：站上去往路上打
-        [[90, 0.1], [90, -0.1], [112, 0.06], [112, -0.06]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 1.1, h: 11, look: 'lolly', team: -1 })); } // 路兩邊的棒棒糖
+        out.push({ t: 'obox', ...xz(97, a), a, hu: 12, hv: 4.6, h: 0.8, look: 'bridge', team: -1 }); // 拐杖糖長橋（殭屍唯一的路）
+        [[90, 0.34], [98, 0.27], [106, 0.2], [90, -0.34], [98, -0.27], [106, -0.2]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 3.4, h: 1.6, look: 'gumstep', team: -1 })); // 海上的軟糖踏腳石
+        out.push({ t: 'cyl', ...xz(124, a + 0.2), r: 4.2, h: 4.4, look: 'gum', team: -1 }, { t: 'cyl', ...xz(124, a - 0.2), r: 4.2, h: 4.4, look: 'gum', team: -1 }); // 小島上的軟糖
+        out.push({ t: 'cyl', ...xz(76, a + ZQ / 2), r: 7, h: 7.5, look: 'cupcake', team: -1 }); // 大島四個角的杯子蛋糕台
+        [[80, 0.12], [80, -0.12]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 1.1, h: 11, look: 'lolly', team: -1 })); } // 橋頭兩邊的棒棒糖
       return out; },
-    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; if (r > 134) return -12; let h = 0; if (r > 70) for (let k = 0; k < 4; k++) { const a = k * ZQ + ZQ / 2 + 0.3; h += bump(x, z, Math.cos(a) * 92, Math.sin(a) * 92, 16, 2.4); } return h; },
-    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0xffb3d1; if (r < ZF.moat0) return 0xfff0f6; if (r > 128) return 0xfff3c4;
-      const a = Math.atan2(z, x), q = Math.abs(((a / (Math.PI / 4)) % 1 + 1) % 1 - 0.5) * 2, lane = (1 - q) * r * (Math.PI / 4);
-      return lane < 8 ? 0xf2c58a : (Math.floor(x / 12) + Math.floor(z / 12)) % 2 ? 0xbff2d8 : 0xffd6ea; },
+    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; return ciLand(x, z) ? 0.6 : -12; },
+    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0xffb3d1; if (r < ZF.moat0) return 0xfff0f6; if (r > CI.isl - 5 && r <= CI.isl || r > CI.isl && ciLand(x, z) && !ciLand(x * 1.06, z * 1.06)) return 0xfff3c4; // 沙灘
+      return (Math.floor(x / 12) + Math.floor(z / 12)) % 2 ? 0xbff2d8 : 0xffd6ea; },
     sky: [0x8fa8ff, 0xffc3e6, 0xfff0d6], fog: 0xffe3f1, hemi: [0xfff0fa, 0xffe6d6],
     river: { color: 0xff9ec8, rough: 0.12 },
-    look: { ...zLook, court: 0xfff3f8, stone: 0xffd0e6, wall: 0xff7aa8, tower: 0x8fd8ff, bridge: 0xffc26b, gum: 0x7fe0a6, cupcake: 0xd99a5c, lolly: 0xffffff },
+    look: { ...zLook, court: 0xfff3f8, stone: 0xffd0e6, wall: 0xff7aa8, tower: 0x8fd8ff, bridge: 0xffffff, gum: 0x7fe0a6, gumstep: 0xffd23f, cupcake: 0xd99a5c, lolly: 0xffffff },
     rough: { ground: 0.8 },
     ground: (g) => { tiles(g, '#ffe9f3', ['#fff6fa', '#ffe0ee'], 24); },
     fence: [0xff9ebb, 0xfff3c4, 0x8fd8ff, 0xc9b5ff],
     make: { ...zMake,
+      bridge: (p, k) => { const m = k.obox(p, { bottom: -1.6 }); for (let i = -2; i <= 2; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.12, p.hv * 2.02), k.plain(0xff4a6a, 0.4)); st.position.set(i * 4.6, p.h + 0.02, 0); m.add(st); } k.rails(m, k.local(p), 0xff4a6a); }, // 紅白拐杖糖橋
+      gumstep: (p, k) => { const m = k.add(new THREE.CylinderGeometry(p.r, p.r * 1.1, p.h + 10, 24), k.mat('gumstep'), p.x, (p.h - 10) / 2, p.z); m.castShadow = true; const top = k.add(new THREE.SphereGeometry(p.r, 18, 8, 0, TAU, 0, Math.PI / 2), k.mat('gumstep'), p.x, p.h - 0.1, p.z); top.scale.y = 0.35; },
       gum: (p, k) => { const m = k.cyl(p); m.scale.set(1, 1, 1); const top = k.add(new THREE.SphereGeometry(p.r, 18, 10, 0, TAU, 0, Math.PI / 2), k.mat('gum'), p.x, p.h - 0.2, p.z); top.scale.y = 0.45; for (let i = 0; i < 7; i++) { const a = i * 0.9 + p.x; k.add(new THREE.BoxGeometry(0.6, 0.3, 0.3), k.plain(0xffffff, 0.4), p.x + Math.cos(a) * p.r * 0.5, p.h + 1, p.z + Math.sin(a) * p.r * 0.5); } },
       cupcake: (p, k) => { k.cyl(p); const cr = k.add(new THREE.SphereGeometry(p.r * 1.04, 20, 10, 0, TAU, 0, Math.PI / 2), k.plain(0xfff3f8, 0.35), p.x, p.h - 0.3, p.z); cr.scale.y = 0.35; k.add(new THREE.SphereGeometry(1.2, 12, 8), k.plain(0xff3b5c, 0.3), p.x, p.h + 2.1, p.z); },
       lolly: (p, k) => { k.add(new THREE.CylinderGeometry(0.35, 0.35, p.h, 8), k.plain(0xffffff, 0.4), p.x, p.h / 2, p.z); const d = k.add(new THREE.CylinderGeometry(3.2, 3.2, 0.9, 28), k.plain([0xff6b8b, 0x8fd8ff, 0xffd23f][Math.abs(Math.round(p.x + p.z)) % 3], 0.35), p.x, p.h + 2.6, p.z); d.rotation.order = 'YXZ'; d.rotation.y = Math.atan2(p.x, p.z); d.rotation.x = Math.PI / 2; const sw = k.add(new THREE.TorusGeometry(1.8, 0.35, 6, 24), k.plain(0xffffff, 0.35), p.x, p.h + 2.6, p.z); sw.rotation.y = Math.atan2(p.x, p.z); },
     },
     outside: (k) => { k.floor(0xff9ec8); const r = k.rnd;
-      for (let i = 0; i < 14; i++) { const a = (i / 14) * TAU + r() * 0.2, d = 230 + r() * 90, s = 12 + r() * 10; const isl = k.add(new THREE.SphereGeometry(s, 16, 10, 0, TAU, 0, Math.PI / 2), k.plain([0xbff2d8, 0xffd6ea, 0xfff3c4][i % 3], 0.8), Math.cos(a) * d, -3, Math.sin(a) * d); isl.scale.y = 0.6; } // 遠處的小糖果島
-      zArches(k, CI_ANG, 124, 0xff7aa8); k.clouds(0xfff0f8); },
+      for (let i = 0; i < 14; i++) { const a = (i / 14) * TAU + r() * 0.2, d = 230 + r() * 90, s = 12 + r() * 10; const isl = k.add(new THREE.SphereGeometry(s, 16, 10, 0, TAU, 0, Math.PI / 2), k.plain([0xbff2d8, 0xffd6ea, 0xfff3c4][i % 3], 0.8), Math.cos(a) * d, -3, Math.sin(a) * d); isl.scale.y = 0.6; }
+      zWhirl(k, MAPS.zcandy.pools); zArches(k, CI_ANG, 131, 0xff7aa8); k.clouds(0xfff0f8); },
   };
-  // 7c. 雪人十字路：只有四條直直的雪路通到城門（每條路兩個洞），路中間有雪人可以躲；路和路中間是高高的雪坡，站上去可以從旁邊打路上的殭屍。
-  const SN_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i >> 1) * ZQ + (i & 1 ? 0.13 : -0.13));
-  const snowRidge = (x, z) => { const r = Math.hypot(x, z); if (r < 70) return 0; const a = Math.atan2(z, x), q = Math.abs(((a / ZQ) % 1 + 1) % 1 - 0.5) * 2, lat = (1 - q) * r * (ZQ / 2), t = SC.clamp((lat - 21) / 12, 0, 1) * SC.clamp((r - 70) / 10, 0, 1); return t * t * (3 - 2 * t) * 7.5; }; // 離最近的雪路多遠：超過 21 開始變高，最高 7.5
-  MAPS.zsnow = { ...zBase, name: '雪人十字路', water: '冰河', lim: { x: 136, z: 136, r: 136 }, fenceCap: 0xffffff,
-    zb: { n: 0.85, hole: 120, ha: SN_ANG, dig: [76, 40], drop: [30, 100], tank: 104 },
-    gen: () => { const out = zCore([]);
+  // 7c. 雪山梯田（高低差）：城堡在山谷底，外面是一層一層往上的雪梯田（5、10、15 高），老鼠洞在最上面。
+  // 殭屍從四條結冰的斜坡大路一路滑下來；梯田是高地，站上去可以往下打斜坡上的殭屍，越上面看得越遠，但離小鴨越遠。
+  const SN_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i >> 1) * ZQ + (i & 1 ? 0.1 : -0.1));
+  const snowH = (x, z) => { const r = Math.hypot(x, z); if (r < 70) return 0; const a = Math.atan2(z, x), q = Math.abs(((a / ZQ) % 1 + 1) % 1 - 0.5) * 2, lat = (1 - q) * r * (ZQ / 2), slope = SC.clamp((r - 70) / 46, 0, 1) * 15, step = Math.min(15, 5 * Math.ceil((r - 70) / 15)), w = SC.clamp((lat - 13) / 4, 0, 1); return slope + (Math.max(slope, step) - slope) * w; }; // 斜坡大路（寬 26）＋梯田（每 15 格高 5）
+  MAPS.zsnow = { ...zBase, name: '雪山梯田', water: '冰河', lim: { x: 134, z: 134, r: 134 }, fenceCap: 0xffffff,
+    zb: { n: 0.85, hole: 122, ha: SN_ANG, dig: [65, 10], drop: [30, 96], tank: 104 },
+    gen: () => { const out = zCore([]), bh = (x, z) => snowH(x, z);
       for (let g = 0; g < 4; g++) { const a = g * ZQ;
-        [[84, 0.1], [84, -0.1], [104, 0.05], [104, -0.05]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 3.2, h: 7.5, look: 'snowman', team: -1 })); // 路上的雪人：躲在後面打
-        [[96, 0.5], [114, 0.36], [114, 0.64]].forEach(([r, f]) => out.push({ t: 'cyl', ...xz(r, a + ZQ * f), r: 2.4, h: 14, look: 'pine', team: -1 })); // 雪坡上的松樹
-        out.push({ t: 'obox', ...xz(80, a + ZQ * 0.5), a: a + ZQ * 0.5, hu: 5, hv: 3, h: 11, look: 'ice', team: -1 }); } // 雪坡上的冰塊台：最高的地方
+        [[80, 0.12], [80, -0.12], [104, 0.08], [104, -0.08]].forEach(([r, d]) => { const p = xz(r, a + d); out.push({ t: 'cyl', ...p, r: 3, h: bh(p.x, p.z) + 7.5, look: 'snowman', team: -1 }); }); // 斜坡上的雪人：躲在後面打
+        [[100, 0.5], [118, 0.36], [118, 0.64], [84, 0.38], [84, 0.62]].forEach(([r, f]) => { const p = xz(r, a + ZQ * f); out.push({ t: 'cyl', ...p, r: 2.4, h: bh(p.x, p.z) + 10, look: 'pine', team: -1 }); }); // 梯田上的松樹
+        [[90, 0.27], [90, 0.73]].forEach(([r, f]) => { const p = xz(r, a + ZQ * f); out.push({ t: 'obox', ...p, a: a + ZQ * f, hu: 3.5, hv: 5, h: bh(p.x, p.z) + 3.5, look: 'ice', team: -1 }); }); } // 梯田邊上的冰塊矮牆：探頭打
       return out; },
-    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; return snowRidge(x, z); },
-    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0x9fe0ff; if (r < ZF.moat0) return 0xeef6ff; if (h > 0.6) return (Math.floor(x / 10) + Math.floor(z / 10)) % 2 ? 0xffffff : 0xf2f8ff; return r > ZF.moat1 ? 0xcfe2f3 : 0xe6f0fb; },
+    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; return snowH(x, z); },
+    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0x9fe0ff; if (r < ZF.moat0) return 0xeef6ff; const a = Math.atan2(z, x), q = Math.abs(((a / ZQ) % 1 + 1) % 1 - 0.5) * 2, lat = (1 - q) * r * (ZQ / 2);
+      if (r > 70 && lat < 13) return 0xa8d8f2; if (Math.abs(snowH(x * 1.03, z * 1.03) - h) > 1.6) return 0x8ea6c8; const lv = Math.round(h / 5); return [0xeef5ff, 0xffffff, 0xdde8f8, 0xffffff][lv & 3]; }, /* 冰坡藍色、梯田的崖邊灰藍色 */ // 斜坡是藍藍的冰、每層梯田顏色一點點不同
     sky: [0x6f9cff, 0xbfe3ff, 0xf4f9ff], fog: 0xe6f2ff, hemi: [0xf4f9ff, 0xd9e6ff],
     river: { color: 0x8fd3ff, rough: 0.05 },
     look: { ...zLook, court: 0xf4f8ff, stone: 0xd6e6ff, wall: 0x6f8fd8, tower: 0xff9ebb, bridge: 0xc89a6a, snowman: 0xffffff, pine: 0x3f9a6a, ice: 0xbfeaff },
@@ -4237,33 +4254,37 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ground: (g) => { tiles(g, '#eef5ff', ['#ffffff', '#e4eefb'], 26); },
     fence: [0x8fd8ff, 0xffffff, 0xc9b5ff, 0x9be7d0],
     make: { ...zMake,
-      snowman: (p, k) => { const w = k.plain(0xffffff, 0.75), b = k.add(new THREE.SphereGeometry(p.r, 18, 12), w, p.x, p.r * 0.9, p.z), h2 = k.add(new THREE.SphereGeometry(p.r * 0.68, 16, 10), w, p.x, p.r * 2.25, p.z); b.castShadow = h2.castShadow = true;
+      snowman: (p, k) => { const w = k.plain(0xffffff, 0.75), g0 = p.h - 7.5, b = k.add(new THREE.SphereGeometry(p.r, 18, 12), w, p.x, g0 + p.r * 0.9, p.z), h2 = k.add(new THREE.SphereGeometry(p.r * 0.68, 16, 10), w, p.x, g0 + p.r * 2.25, p.z); b.castShadow = h2.castShadow = true;
         const yaw = Math.atan2(-p.x, -p.z), f = (u, y, s, c) => { const m = k.add(new THREE.SphereGeometry(s, 8, 6), k.plain(c, 0.5), p.x + Math.sin(yaw) * p.r * 0.62 + Math.cos(yaw) * u, y, p.z + Math.cos(yaw) * p.r * 0.62 - Math.sin(yaw) * u); return m; };
-        f(-0.7, p.r * 2.45, 0.28, 0x1b1430); f(0.7, p.r * 2.45, 0.28, 0x1b1430); const n = k.add(new THREE.ConeGeometry(0.35, 1.6, 8), k.plain(0xff8a3d, 0.5), p.x + Math.sin(yaw) * p.r * 0.75, p.r * 2.2, p.z + Math.cos(yaw) * p.r * 0.75); n.lookAt(p.x + Math.sin(yaw) * 9, p.r * 2.2, p.z + Math.cos(yaw) * 9); n.rotateX(Math.PI / 2);
-        k.add(new THREE.CylinderGeometry(p.r * 0.5, p.r * 0.5, 1.6, 16), k.plain(0xff6b8b, 0.6), p.x, p.r * 2.9, p.z); },
+        f(-0.7, g0 + p.r * 2.45, 0.28, 0x1b1430); f(0.7, g0 + p.r * 2.45, 0.28, 0x1b1430); const n = k.add(new THREE.ConeGeometry(0.35, 1.6, 8), k.plain(0xff8a3d, 0.5), p.x + Math.sin(yaw) * p.r * 0.75, g0 + p.r * 2.2, p.z + Math.cos(yaw) * p.r * 0.75); n.lookAt(p.x + Math.sin(yaw) * 9, g0 + p.r * 2.2, p.z + Math.cos(yaw) * 9); n.rotateX(Math.PI / 2);
+        k.add(new THREE.CylinderGeometry(p.r * 0.5, p.r * 0.5, 1.6, 16), k.plain(0xff6b8b, 0.6), p.x, g0 + p.r * 2.9, p.z); },
       pine: (p, k) => { const h0 = SC.world.MAPS.zsnow.base(p.x, p.z); k.add(new THREE.CylinderGeometry(0.7, 0.9, 4, 8), k.plain(0x8b5e3c, 0.8), p.x, h0 + 2, p.z); [0, 1, 2].forEach((i) => { const c = k.add(new THREE.ConeGeometry(p.r * 2.2 - i * 0.9, 4.4, 12), k.mat('pine'), p.x, h0 + 5 + i * 2.8, p.z); c.castShadow = true; k.add(new THREE.ConeGeometry(p.r * 1.3 - i * 0.6, 1.4, 12), k.plain(0xffffff, 0.8), p.x, h0 + 6.6 + i * 2.8, p.z); }); },
       ice: (p, k) => { const m = k.obox(p, { r: 0.8 }); m.material = m.material.clone(); m.material.transparent = true; m.material.opacity = 0.85; m.material.roughness = 0.1; },
     },
     outside: (k) => { k.floor(0xf4f9ff); const r = k.rnd;
-      for (let i = 0; i < 18; i++) { const a = (i / 18) * TAU + r() * 0.15, d = 200 + r() * 120, s = 30 + r() * 30; const m = k.add(new THREE.ConeGeometry(s, s * 1.4, 6), k.plain(0xe8f1ff, 0.9), Math.cos(a) * d, s * 0.6, Math.sin(a) * d); k.add(new THREE.ConeGeometry(s * 0.45, s * 0.5, 6), k.plain(0xffffff, 0.9), m.position.x, s * 1.15, m.position.z); } // 遠處的雪山
-      zArches(k, SN_ANG, 128, 0x8fd8ff); k.clouds(0xffffff); },
+      for (let i = 0; i < 18; i++) { const a = (i / 18) * TAU + r() * 0.15, d = 200 + r() * 120, s = 30 + r() * 30; const m = k.add(new THREE.ConeGeometry(s, s * 1.4, 6), k.plain(0xe8f1ff, 0.9), Math.cos(a) * d, s * 0.6 + 10, Math.sin(a) * d); k.add(new THREE.ConeGeometry(s * 0.45, s * 0.5, 6), k.plain(0xffffff, 0.9), m.position.x, s * 1.15 + 10, m.position.z); }
+      const ar = (k2) => { zArches(k2, SN_ANG, 129, 0x8fd8ff); k2.root.children.slice(-8).forEach((g) => { g.position.y = 15; }); }; ar(k); k.clouds(0xffffff); },
   };
-  // 7d. 玩具房：老鼠洞只在四個斜角，殭屍要走斜的繞到城門；地上一堆大積木疊成高低台階、蠟筆柱、大皮球，跳上跳下打。
-  const TY_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i === 1 ? 0 : i === 5 ? Math.PI : (i >> 1) * ZQ + ZQ / 2 + (i & 1 ? 0.12 : -0.12))); /* 第 126 版（Yen 選 A）：玩具房太簡單，多兩個正對城門的洞（東、西） */
+  // 7d. 玩具房（彈跳床＋高塔）：地上是軟軟的枕頭小山，四個斜角各有一座 20 高的大積木塔，塔旁邊有彈跳床，一踩就把你彈上塔頂往下打。
+  // 老鼠洞在斜角和正東、正西，殭屍繞著塔腳走；城門邊還有積木台階、蠟筆柱、大皮球。
+  const TY_ANG = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (i === 1 ? 0 : i === 5 ? Math.PI : (i >> 1) * ZQ + ZQ / 2 + (i & 1 ? 0.12 : -0.12)));
+  const TOY_PADS = [0, 1, 2, 3].map((g) => { const a = g * ZQ + ZQ / 2, p = xz(74, a), t = xz(94, a); return { x: p.x, z: p.z, r: 3.2, tx: t.x, tz: t.z, th: 20 }; });
   MAPS.ztoy = { ...zBase, name: '玩具房', water: '浴缸泡泡水', lim: { x: 128, z: 128, r: 128 },
-    zb: { n: 0.85, hole: 112, ha: TY_ANG, dig: [74, 30], drop: [30, 90], tank: 98 },
+    zb: { n: 0.85, hole: 112, ha: TY_ANG, dig: [70, 30], drop: [30, 90], tank: 98, pads: TOY_PADS },
     gen: () => { const out = zCore([]), ob = (r, a, o) => ({ t: 'obox', ...xz(r, a), a, team: -1, ...o });
       for (let g = 0; g < 4; g++) { const a = g * ZQ;
-        [-1, 1].forEach((s) => { [[76, 4], [86, 8], [96, 12]].forEach(([r, h], i) => out.push(ob(r, a + s * (0.36 + i * 0.03), { hu: 4.2, hv: 4.2, h, look: 'block' + ((g + i + (s > 0 ? 1 : 0)) % 4) }))); }); // 積木台階：一階一階跳上去，最上面 12 高
-        out.push({ t: 'cyl', ...xz(104, a + ZQ / 2), r: 6, h: 10, look: 'ball', team: -1 }); // 斜角路中間的大皮球（殭屍會爬過去）
-        [[108, 0.22], [108, -0.22]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 2, h: 16, look: 'crayon' + ((g + (d > 0 ? 1 : 0)) % 4), team: -1 })); } // 城門路兩邊的蠟筆柱
+        [-1, 1].forEach((s) => { [[76, 4], [86, 8]].forEach(([r, h], i) => out.push(ob(r, a + s * (0.36 + i * 0.03), { hu: 4.2, hv: 4.2, h, look: 'block' + ((g + i + (s > 0 ? 1 : 0)) % 4) }))); }); // 城門邊的積木台階
+        out.push(ob(94, a + ZQ / 2, { hu: 5, hv: 5, h: 20, look: 'block' + ((g + 2) % 4) })); // 斜角的大積木塔（20 高，只能靠彈跳床上去）
+        out.push({ t: 'cyl', ...TOY_PADS[g], h: 0.9, look: 'tramp', team: -1 }); // 彈跳床
+        out.push({ t: 'cyl', ...xz(106, a + ZQ / 2 + 0.3), r: 5, h: 9, look: 'ball', team: -1 });
+        [[104, 0.22], [104, -0.22]].forEach(([r, d]) => out.push({ t: 'cyl', ...xz(r, a + d), r: 2, h: 16, look: 'crayon' + ((g + (d > 0 ? 1 : 0)) % 4), team: -1 })); }
       return out; },
-    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; return 0; },
-    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0x9be7ff; if (r < ZF.moat0) return 0xfff1d8; if (r > 70 && r < 86) return 0xff9ebb; // 地毯的粉紅圈
-      return Math.floor(((x * 0.7 + z * 0.7) + 400) / 9) % 2 ? 0xe2b07a : 0xd6a06a; }, // 木頭地板
+    base: (x, z) => { const r = Math.hypot(x, z); if (zMoat(r)) return -12; let h = 0; if (r > 66) for (let g = 0; g < 8; g++) { const a = g * ZQ / 2 + ZQ / 4; h += bump(x, z, Math.cos(a) * 92, Math.sin(a) * 92, 15, 3.5); } return h; }, // 枕頭小山（在城門和斜角之間）
+    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0x9be7ff; if (r < ZF.moat0) return 0xfff1d8; if (h > 0.8) return h > 2.4 ? 0xc9b5ff : 0xd9c9ff; if (r > 66 && r < 80) return 0xff9ebb;
+      return Math.floor(((x * 0.7 + z * 0.7) + 400) / 9) % 2 ? 0xe2b07a : 0xd6a06a; },
     sky: [0xffd7a8, 0xffe8cc, 0xfff6e8], fog: 0xfff0dc, hemi: [0xfff6e8, 0xffe0c0],
     river: { color: 0x9be7ff, rough: 0.06 },
-    look: { ...zLook, court: 0xfff1d8, stone: 0xffd86b, wall: 0x4ea8ff, tower: 0xff6b8b, bridge: 0xff9a3c, block0: 0xff6b8b, block1: 0x4ecbff, block2: 0xffd23f, block3: 0x5fe0a0, ball: 0xff4a5a, crayon0: 0xff4a5a, crayon1: 0x4e8bff, crayon2: 0xffc93c, crayon3: 0x8b6bff },
+    look: { ...zLook, court: 0xfff1d8, stone: 0xffd86b, wall: 0x4ea8ff, tower: 0xff6b8b, bridge: 0xff9a3c, block0: 0xff6b8b, block1: 0x4ecbff, block2: 0xffd23f, block3: 0x5fe0a0, ball: 0xff4a5a, crayon0: 0xff4a5a, crayon1: 0x4e8bff, crayon2: 0xffc93c, crayon3: 0x8b6bff, tramp: 0x3a3a52 },
     rough: { ground: 0.7 },
     ground: (g) => { tiles(g, '#f4d8b0', ['#fbe6c6', '#eccb9c'], 24); },
     fence: [0xff6b8b, 0x4ecbff, 0xffd23f, 0x5fe0a0],
@@ -4271,6 +4292,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       ...Object.fromEntries([0, 1, 2, 3].map((i) => ['block' + i, (p, k) => { const m = k.obox(p, { r: 0.7 }); const d = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.8, 16), k.mat('block' + i)); d.position.y = p.h + 0.3; [[-1.8, -1.8], [1.8, -1.8], [-1.8, 1.8], [1.8, 1.8]].forEach(([u, v]) => { const c = d.clone(); c.position.x = u; c.position.z = v; m.add(c); }); }])), // 積木上面的小圓凸
       ball: (p, k) => { const b = k.add(new THREE.SphereGeometry(p.h / 2 + 0.6, 24, 16), k.mat('ball'), p.x, p.h / 2, p.z); b.castShadow = true; const st = k.add(new THREE.TorusGeometry(p.h / 2 + 0.65, 0.7, 8, 40), k.plain(0xffffff, 0.4), p.x, p.h / 2, p.z); st.rotation.y = Math.atan2(p.x, p.z); k.tick((t) => { b.rotation.y = t * 0.3; }); },
       ...Object.fromEntries([0, 1, 2, 3].map((i) => ['crayon' + i, (p, k) => { k.add(new THREE.CylinderGeometry(p.r, p.r, p.h - 3, 16), k.mat('crayon' + i), p.x, (p.h - 3) / 2, p.z); k.add(new THREE.CylinderGeometry(p.r * 1.03, p.r * 1.03, 1.4, 16), k.plain(0xffffff, 0.5), p.x, p.h * 0.55, p.z); k.add(new THREE.ConeGeometry(p.r, 3, 16), k.mat('crayon' + i), p.x, p.h - 1.5, p.z); }])),
+      tramp: (p, k) => { k.add(new THREE.CylinderGeometry(p.r, p.r, 0.3, 32), k.plain(0x3a3a52, 0.6), p.x, p.h, p.z); const rim = k.add(new THREE.TorusGeometry(p.r, 0.45, 8, 40), k.plain(0x4ecbff, 0.4), p.x, p.h, p.z); rim.rotation.x = Math.PI / 2; for (let i = 0; i < 6; i++) { const a = (i / 6) * TAU; k.add(new THREE.CylinderGeometry(0.25, 0.25, p.h, 6), k.plain(0xffffff, 0.5), p.x + Math.cos(a) * p.r, p.h / 2, p.z + Math.sin(a) * p.r); }
+        const ar = new THREE.Mesh(new THREE.ConeGeometry(1.1, 2, 4), new THREE.MeshBasicMaterial({ color: 0xffd23f })); ar.position.set(p.x, p.h + 4, p.z); k.root.add(ar); k.tick((t) => { ar.position.y = p.h + 3.5 + Math.abs(Math.sin(t * 4)) * 1.5; ar.rotation.y = t * 2; }); }, // 彈跳床：上面一個一直跳的黃色箭頭
     },
     outside: (k) => { k.floor(0xd6a06a); // 房間：四面牆、窗戶、大床邊
       const wall = k.plain(0xfff0c8, 0.9), trim = k.plain(0xff9ebb, 0.6);
@@ -11102,15 +11125,22 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   Z.guardPt = (a) => { const ci = a.cpu ? G().actors.filter((c) => c.cpu && c.alive && c.team === 0).indexOf(a) : -1, altOn = Z.alt.life > 2; if (altOn && (ci === 0 || ci === 1 && !(Z.chewN > 0))) { const o = ci ? 2.2 : -2.2; return new V3(Z.alt.x + o, H(Z.alt.x, Z.alt.z), Z.alt.z + o); } /* 第 124 版：第一隻電腦隊友去站祭壇；第 126 版（Yen 選 B）：小鴨沒被咬的時候，第二隻也去幫忙集氣 */ if (ci === (altOn && !(Z.chewN > 0) ? 2 : 1)) { let best = null, bd = 90; for (const q of Z.pows) if (q.k === GEAR && !q.claimed) { const d = Math.hypot(q.x - a.pos.x, q.z - a.pos.z); if (d < bd) { bd = d; best = q; } } if (best) return new V3(best.x, H(best.x, best.z), best.z); } /* 第二隻去撿齒輪 */ return gpOld(a); };
   const gpOld = (a) => { const slot = (a.slot | 0) % 4, busy = [0, 0, 0, 0]; Z.list.forEach((z) => { if (z.st === 'walk' || z.st === 'eat') busy[z.br]++; });
     let b = slot; const top = busy.indexOf(Math.max(...busy)); if (busy[top] > busy[slot] + 3) b = top; const ga = gateAng(b) + (Math.random() - 0.5) * 0.5, r = (12 + Math.random() * 6) * S; return { x: Math.cos(ga) * r, z: Math.sin(ga) * r }; };
+  function padTick(a) { /* 第 127 版：玩具房的彈跳床：踩上去就彈到旁邊的大積木塔頂 */
+    const P = MP.pads; if (!P || !a.alive || a.vel.y > 1 || (a.padCd || 0) > G().time) return;
+    for (const q of P) { if (Math.hypot(a.pos.x - q.x, a.pos.z - q.z) > q.r || a.pos.y > H(q.x, q.z) + 1.2) continue;
+      const g = C.GRAVITY, top = q.th + 7 - a.pos.y, vy = Math.sqrt(2 * g * top), t = (vy + Math.sqrt(Math.max(0, vy * vy - 2 * g * (q.th - a.pos.y)))) / g, dx = q.tx - a.pos.x, dz = q.tz - a.pos.z;
+      a.vel.set(dx / t, vy, dz / t); a.onGround = false; a.jumps = 1; a.launchT = t; a.climb = a.crest = null; a.padCd = G().time + 1; a.form = 'biped'; a.submerged = false;
+      ctx.burst(q.x, H(q.x, q.z) + 1, q.z, new THREE.Color(0x4ecbff), 16, 18, 0.5); if (a.isPlayer || ctx.near(q.x, 0, q.z) > 0.2) SC.audio.sfx.jump && SC.audio.sfx.jump(1.6); return; }
+  }
   Z.pushOut = (a) => { // 貓不能走進防護罩
-    if (!Z.on || !a || !a.pos || endFx && !endFx.won) return; const d = Math.hypot(a.pos.x, a.pos.z), R = DOME_R + 1.4; if (d >= R || a.pos.y > COURT + DOME_Y + DOME_R) return;
+    if (!Z.on || !a || !a.pos || endFx && !endFx.won) return; if (!a.remote) padTick(a); const d = Math.hypot(a.pos.x, a.pos.z), R = DOME_R + 1.4; if (d >= R || a.pos.y > COURT + DOME_Y + DOME_R) return;
     const nx = d > 1e-3 ? a.pos.x / d : 1, nz = d > 1e-3 ? a.pos.z / d : 0; a.pos.x = nx * R; a.pos.z = nz * R; const vn = a.vel.x * nx + a.vel.z * nz; if (vn < 0) { a.vel.x -= vn * nx; a.vel.z -= vn * nz; }
   };
 
   // ---------- 文字（四種語言）----------
   SC.i18n.add([['小鴨被咬了！快回去救！', 'The duck is being bitten! Go save it!', 'アヒルがかじられてる！もどってたすけて！', '오리가 물리고 있어! 빨리 구해 줘!']]);
   SC.i18n.add([['殭屍踩到我們的墨水會變慢、更好打！', 'Zombies on our ink get slow and easy to hit!', 'ゾンビはぼくらのインクの上だとおそくなって、たおしやすい！', '좀비가 우리 잉크를 밟으면 느려지고 잡기 쉬워!'], ['神兵快沒電？潛進自己的墨水就會充電！', 'Weapon running low? Dive in your ink to recharge!', 'ぶきのでんきがない？じぶんのインクにもぐるとじゅうでん！', '무기 에너지가 없어? 우리 잉크에 잠수하면 충전돼!']]);
-  SC.i18n.add([['站上去', 'Stand here', 'のってね', '올라서'], ['撿齒輪', 'Grab gear', 'ギアをひろう', '톱니 줍기'], ['撿神兵', 'Grab weapon', 'ぶきをひろう', '무기 줍기'], ['打魔王', 'Hit the boss', 'ボスをたおせ', '보스를 때려'], ['殭屍地圖', 'Zombie map', 'ゾンビマップ', '좀비 맵'], ['糖果小島', 'Candy Isle', 'キャンディ島', '사탕 섬'], ['雪人十字路', 'Snowman Crossing', 'ゆきだるま十字路', '눈사람 사거리'], ['玩具房', 'Toy Room', 'おもちゃ部屋', '장난감 방'], ['草莓牛奶海', 'Strawberry Milk Sea', 'いちごミルクの海', '딸기우유 바다'], ['冰河', 'Icy River', 'こおりの川', '얼음 강'], ['浴缸泡泡水', 'Bubble Bath', 'あわあわおふろ', '거품 목욕물']]); /* 第 125 版 */
+  SC.i18n.add([['站上去', 'Stand here', 'のってね', '올라서'], ['撿齒輪', 'Grab gear', 'ギアをひろう', '톱니 줍기'], ['撿神兵', 'Grab weapon', 'ぶきをひろう', '무기 줍기'], ['打魔王', 'Hit the boss', 'ボスをたおせ', '보스를 때려'], ['殭屍地圖', 'Zombie map', 'ゾンビマップ', '좀비 맵'], ['糖果群島', 'Candy Islands', 'キャンディ諸島', '사탕 군도'], ['雪山梯田', 'Snowy Terraces', 'ゆきやまの段々畑', '눈산 계단밭'], ['玩具房', 'Toy Room', 'おもちゃ部屋', '장난감 방'], ['草莓牛奶海', 'Strawberry Milk Sea', 'いちごミルクの海', '딸기우유 바다'], ['冰河', 'Icy River', 'こおりの川', '얼음 강'], ['浴缸泡泡水', 'Bubble Bath', 'あわあわおふろ', '거품 목욕물']]); /* 第 125 版 */
   SC.i18n.add([
     ['超級肌肉坦克鼠來了！', 'Super Muscle Tank Mouse incoming!', 'ムキムキ戦車ネズミが来た！', '슈퍼 근육 탱크 쥐가 온다!'],
     ['打倒肌肉坦克鼠了！', 'Muscle Tank Mouse defeated!', 'ムキムキ戦車ネズミをたおした！', '근육 탱크 쥐를 물리쳤다!'],
@@ -13495,8 +13525,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const ZMAP_PICKS = [ /* 第 125 版：殭屍保衛戰的四張地圖 */
     ['zrand', '隨機', MAP_PICKS[0][2]],
     ['zfort', '小鴨堡壘', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#9cdb84" ${MS}/><path d="M14 33V17h6v5h6v-5h12v5h6v-5h6v16z" fill="#a64b32" ${MS}/><path d="M27 33v-7a5 5 0 0 1 10 0v7z" fill="#1b1430"/><circle cx="32" cy="10" r="6" fill="#ffd23f" ${MS}/><path d="M37 10l5 1-5 2z" fill="#ff9a3c"/>`)],
-    ['zcandy', '糖果小島', MAP_SVG(`<path d="M2 36q8-4 15 0t15 0 15 0 15 0v6H2z" fill="#ff9ec8" ${MS}/><ellipse cx="32" cy="33" rx="22" ry="6" fill="#bff2d8" ${MS}/><rect x="17" y="10" width="2.6" height="22" fill="#fff" ${MS}/><circle cx="18.3" cy="11" r="7" fill="#ff6b8b" ${MS}/><path d="M38 31v-7h14v7z" fill="#d99a5c" ${MS}/><path d="M37 24q8-9 16 0z" fill="#fff3f8" ${MS}/><circle cx="45" cy="16" r="2.4" fill="#ff3b5c"/>`)],
-    ['zsnow', '雪人十字路', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#cfe2f3" ${MS}/><circle cx="24" cy="27" r="8" fill="#fff" ${MS}/><circle cx="24" cy="14" r="6" fill="#fff" ${MS}/><circle cx="22" cy="13" r="1" fill="#1b1430"/><circle cx="26" cy="13" r="1" fill="#1b1430"/><path d="M24 15l5 1-5 1z" fill="#ff8a3d"/><rect x="19" y="5" width="10" height="4" rx="1" fill="#ff6b8b" ${MS}/><path d="M46 33l-9 0 9-22 9 22z" fill="#3f9a6a" ${MS}/>`)],
+    ['zcandy', '糖果群島', MAP_SVG(`<path d="M2 36q8-4 15 0t15 0 15 0 15 0v6H2z" fill="#ff9ec8" ${MS}/><ellipse cx="32" cy="33" rx="22" ry="6" fill="#bff2d8" ${MS}/><rect x="17" y="10" width="2.6" height="22" fill="#fff" ${MS}/><circle cx="18.3" cy="11" r="7" fill="#ff6b8b" ${MS}/><path d="M38 31v-7h14v7z" fill="#d99a5c" ${MS}/><path d="M37 24q8-9 16 0z" fill="#fff3f8" ${MS}/><circle cx="45" cy="16" r="2.4" fill="#ff3b5c"/>`)],
+    ['zsnow', '雪山梯田', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#cfe2f3" ${MS}/><circle cx="24" cy="27" r="8" fill="#fff" ${MS}/><circle cx="24" cy="14" r="6" fill="#fff" ${MS}/><circle cx="22" cy="13" r="1" fill="#1b1430"/><circle cx="26" cy="13" r="1" fill="#1b1430"/><path d="M24 15l5 1-5 1z" fill="#ff8a3d"/><rect x="19" y="5" width="10" height="4" rx="1" fill="#ff6b8b" ${MS}/><path d="M46 33l-9 0 9-22 9 22z" fill="#3f9a6a" ${MS}/>`)],
     ['ztoy', '玩具房', MAP_SVG(`<rect x="3" y="35" width="58" height="6" rx="3" fill="#e2b07a" ${MS}/><rect x="8" y="23" width="12" height="12" rx="2" fill="#ff6b8b" ${MS}/><rect x="20" y="13" width="12" height="22" rx="2" fill="#4ecbff" ${MS}/><rect x="32" y="25" width="10" height="10" rx="2" fill="#ffd23f" ${MS}/><circle cx="52" cy="27" r="8" fill="#ff4a5a" ${MS}/><path d="M44 27h16" stroke="#fff" stroke-width="2.4"/>`)],
   ];
   ui.bossFace2 = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M17 22l-3-9 9 5z" fill="#ff8a3d" stroke="#1b1430" stroke-width="2.5" stroke-linejoin="round"/><path d="M47 22l3-9-9 5z" fill="#ff8a3d" stroke="#1b1430" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="39" r="22" fill="#ffe3c2" stroke="#1b1430" stroke-width="3"/><path d="M21 20q-2-13 11-13t11 13z" fill="#fff" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="36" r="5" fill="#fff" stroke="#1b1430" stroke-width="2"/><circle cx="40" cy="36" r="5" fill="#fff" stroke="#1b1430" stroke-width="2"/><circle cx="24.5" cy="36.5" r="2.6" fill="#1b1430"/><circle cx="40.5" cy="36.5" r="2.6" fill="#1b1430"/><path d="M25 45q7 8 14 0z" fill="#7a2240" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><circle cx="16" cy="44" r="3.2" fill="#ff9fb4" opacity=".85"/><circle cx="48" cy="44" r="3.2" fill="#ff9fb4" opacity=".85"/></svg>`;
