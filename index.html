@@ -12248,6 +12248,37 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const useFb = on && !!CONFIG.firebase;
 
   if (SC.i18n && SC.i18n.add) SC.i18n.add([
+    ['送一顆愛心', 'Send a heart', 'ハートを送る', '하트 보내기'],
+    ['寫一句話替作者打氣，也可以一起贊助。', 'Write a few words to cheer the maker on. You can also support the game.', '作者に応援のひとことを。いっしょに支援もできます。', '제작자에게 응원 한마디를 남겨 주세요. 후원도 함께 할 수 있어요.'],
+    ['寫一句打氣的話（最多 120 字）', 'Write a cheer (up to 120 characters)', '応援のひとこと（120文字まで）', '응원 한마디 (최대 120자)'],
+    ['愛心留言', 'Heart message', 'ハートメッセージ', '하트 메시지'],
+    ['登入後才能送出留言（避免有人洗版）。贊助不用登入。', 'Sign in to send a message (keeps out spam). Supporting does not need sign-in.', 'メッセージを送るにはログインが必要です（荒らし対策）。支援はログイン不要です。', '메시지를 보내려면 로그인하세요 (도배 방지). 후원은 로그인 없이도 돼요.'],
+    ['署名：', 'Signed: ', '署名：', '이름: '],
+    ['。留言只有作者看得到，不會公開。', '. Only the maker can read it; it is never made public.', '。メッセージは作者だけが読めます。公開されません。', '. 메시지는 제작자만 볼 수 있고 공개되지 않아요.'],
+    ['💌 只送愛心留言', '💌 Just send the heart', '💌 ハートだけ送る', '💌 하트만 보내기'],
+    ['想一起贊助嗎？留言會標明你選的方式：', 'Want to support too? Your message will note the method you pick:', '支援もしますか？メッセージに選んだ方法が記されます：', '후원도 할까요? 메시지에 고른 방법이 표시돼요:'],
+    ['想贊助嗎？', 'Want to support the game?', '支援しますか？', '후원할까요?'],
+    ['💳 信用卡', '💳 Card', '💳 カード', '💳 카드'],
+    ['兩個按鈕都會打開 PayPal 的安全付款頁。用信用卡的話，在付款頁選「扣帳卡或信用卡」，不用 PayPal 帳號。金額自己填。', 'Both buttons open PayPal’s secure checkout. To pay by card, choose “Debit or Credit Card” there; no PayPal account needed. You choose the amount.', 'どちらも PayPal の安全な支払いページを開きます。カードの場合は「デビットカードまたはクレジットカード」を選べば PayPal アカウントは不要。金額は自由です。', '두 버튼 모두 PayPal 보안 결제 페이지를 열어요. 카드는 "직불 또는 신용카드"를 고르면 PayPal 계정이 필요 없어요. 금액은 자유예요.'],
+    ['以新台幣計價，國外的卡和 PayPal 會自動換算成你的貨幣；發卡銀行可能另收海外交易手續費。', 'Priced in Taiwan dollars (TWD); PayPal converts to your currency. Your card issuer may add a foreign transaction fee.', '台湾ドル建てで、PayPal があなたの通貨に自動換算します。カード会社が海外事務手数料をとる場合があります。', '대만 달러(TWD) 기준이며 PayPal이 자동 환산해요. 카드사에서 해외 결제 수수료를 받을 수 있어요.'],
+    ['在台灣的朋友：PayPal 不支援台灣帳戶付款給台灣帳戶，台灣發的卡也可能付不了，建議用下面的「其他贊助方式」。', 'From Taiwan: PayPal does not allow Taiwan-to-Taiwan payments, so Taiwan cards may fail. Please use “Other ways” below.', '台湾の方へ：PayPal は台湾から台湾への支払いに対応していないため、下の「ほかの支援方法」をご利用ください。', '대만에서: PayPal은 대만 계정 간 결제를 지원하지 않아요. 아래 "다른 후원 방법"을 이용해 주세요.'],
+    ['其他贊助方式（綠界：信用卡、ATM、超商）', 'Other ways (ECPay: card, ATM, convenience store)', 'ほかの支援方法（ECPay：カード、ATM、コンビニ）', '다른 후원 방법 (ECPay: 카드, ATM, 편의점)'],
+    ['幣別新台幣，可用台灣的信用卡、ATM 轉帳、超商代碼付款。綠界付款頁上也可以填名字和留言。', 'TWD. Taiwan cards, ATM transfer or convenience store code. You can add your name and a message on the ECPay page too.', '台湾ドル。台湾のカード、ATM、コンビニで支払えます。ECPay のページでも名前とメッセージを書けます。', '대만 달러. 대만 카드, ATM, 편의점 결제. ECPay 페이지에서도 이름과 메시지를 쓸 수 있어요.'],
+    ['📬 收到的愛心留言', '📬 Heart messages received', '📬 届いたハートメッセージ', '📬 받은 하트 메시지'],
+    ['只有作者看得到。', 'Only the maker can see these.', '作者だけが見られます。', '제작자만 볼 수 있어요.'],
+    ['讀取中…', 'Loading…', '読み込み中…', '불러오는 중…'],
+    ['還沒有留言。', 'No messages yet.', 'まだメッセージはありません。', '아직 메시지가 없어요.'],
+    ['標「信用卡贊助／PayPal 贊助」的留言只代表對方按了那個按鈕，有沒有真的付款請到 PayPal 的交易明細核對。', 'A “Card/PayPal support” tag only means they pressed that button. Check PayPal transactions to see if they paid.', '「カード／PayPal 支援」の表示はボタンを押したことだけを示します。支払いは PayPal の取引履歴で確認してください。', '"카드/PayPal 후원" 표시는 버튼을 눌렀다는 뜻일 뿐이에요. 실제 결제는 PayPal 거래 내역에서 확인하세요.'],
+    ['← 回愛心', '← Back', '← もどる', '← 돌아가기'],
+    ['剛剛送過了，等 30 秒再送一次。', 'You just sent one. Wait 30 seconds.', 'さっき送りました。30秒待ってね。', '방금 보냈어요. 30초 뒤에 다시 보내요.'],
+    ['留言送出了！付款頁已經在新分頁打開，謝謝你的贊助！', 'Message sent! The payment page opened in a new tab. Thank you for your support!', 'メッセージを送りました！支払いページは新しいタブで開いています。支援ありがとう！', '메시지를 보냈어요! 결제 페이지가 새 탭에 열렸어요. 후원 고마워요!'],
+    ['愛心送出了！謝謝你的鼓勵！', 'Heart sent! Thanks for cheering us on!', 'ハートを送りました！応援ありがとう！', '하트를 보냈어요! 응원 고마워요!'],
+    ['沒送出去，檢查網路後再試一次。', 'Not sent. Check your connection and try again.', '送れませんでした。ネットを確認してもう一度。', '보내지 못했어요. 인터넷을 확인하고 다시 해 봐요.'],
+    ['先寫一句話再送出喔。', 'Write something first.', '先にひとこと書いてね。', '먼저 한마디 써 주세요.'],
+    ['💌 愛心', '💌 Heart', '💌 ハート', '💌 하트'],
+    ['💳 信用卡贊助', '💳 Card support', '💳 カード支援', '💳 카드 후원'],
+    ['🅿️ PayPal 贊助', '🅿️ PayPal support', '🅿️ PayPal 支援', '🅿️ PayPal 후원'],
+    ['🏪 綠界贊助', '🏪 ECPay support', '🏪 ECPay 支援', '🏪 ECPay 후원'],
     ['我的名字：', 'My name: ', 'わたしの名前：', '내 이름: '], ['改名字', 'Change name', '名前を変える', '이름 바꾸기'], ['取個名字（最多 8 個字）', 'Pick a name (up to 8)', '名前をつけてね（8文字まで）', '이름을 정해요 (최대 8자)'], ['好了', 'Done', 'OK', '완료'], ['好友名單和排行榜會顯示這個名字。', 'Friends and leaderboards show this name.', 'フレンドとランキングにこの名前が出ます。', '친구 목록과 랭킹에 이 이름이 보여요.'],
     ['帳號', 'Account', 'アカウント', '계정'],
     ['贊助', 'Support', '応援する', '후원'],
@@ -12321,7 +12352,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const [{ initializeApp }, A, F] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]);
     const app = initializeApp(CONFIG.firebase), auth = A.getAuth(app), db = F.getFirestore(app);
     A.onAuthStateChanged(auth, (u) => {
-      account.user = u ? { uid: u.uid, name: u.displayName || '', photo: u.photoURL || '', via: (u.providerData[0] || {}).providerId || '' } : null;
+      account.user = u ? { uid: u.uid, name: u.displayName || '', photo: u.photoURL || '', via: (u.providerData[0] || {}).providerId || '', email: (u.emailVerified && u.email) || '' } : null; cheer.inbox = null;
       account.ready = true; emit(); paint();
       if (u) { cloud.start(u.uid); friends.start(u.uid); } else { cloud.stop(); friends.stop(); }
       if (frBtn) frBtn.hidden = !u;
@@ -12542,7 +12573,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .ac-me{display:flex;align-items:center;gap:12px;margin:10px 0}.ac-me img{width:52px;height:52px;border-radius:50%}
 .ac-err{color:#c2185b}
 .ac-row .tier{justify-content:space-between;padding:0 16px}.ac-row .tier b{color:#e5306b;font-size:19px}.ac-row .tier small{font-size:12px;color:#7a6f96;font-weight:700}.ac-row .tier:disabled{cursor:default;opacity:1;background:#fff8d6}
-.ac-row .pp{background:#ffc439}
+.ac-row .pp{background:#ffc439}.ac-two{grid-template-columns:1fr 1fr}.ppw{font-style:italic;font-weight:900;color:#003087;font-size:19px}.ppw i{color:#009cde}
+.ch-in{width:100%;min-height:76px;margin-top:10px;border:2px solid #1b1430;border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical;box-sizing:border-box}
+.ac-more{width:100%;margin-top:12px;min-height:44px;border-radius:12px;border:2px dashed #7a6f96;background:#faf8ff;font:inherit;font-size:14px;font-weight:800;color:#1b1430;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:0 12px;gap:8px;text-align:left}
+.ch-list{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}.ch-list li{border:2px solid #eee;border-radius:12px;padding:8px 10px}.ch-list li div{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.ch-list small{color:#7a6f96;font-size:11.5px;text-align:right}.ch-list p{margin:4px 0 0!important;white-space:pre-wrap;word-break:break-word}
 .ac-note{font-size:12.5px!important;color:#5b4f7a;margin-top:10px!important}
 .ac-sub{font-weight:800;margin:12px 0 4px!important}
 .ac-note+.ac-note{margin-top:4px!important}
@@ -12570,6 +12604,31 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const avatar = (u) => (u && u.photo ? `<img alt="" src="${esc(u.photo)}" referrerpolicy="no-referrer">` : I_USER);
   const I_FR = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3.6" fill="currentColor"/><circle cx="16.5" cy="9" r="3" fill="currentColor"/><path d="M1.5 20c.6-4 3.4-6.2 7-6.2s6.4 2.2 7 6.2z" fill="currentColor"/><path d="M16.2 13.6c3.3 0 5.7 2 6.3 5.6h-5.4c-.3-2.2-1.2-4-2.6-5.3.5-.2 1.1-.3 1.7-.3z" fill="currentColor"/></svg>';
+  // ---------- 愛心留言（Yen 2026-11-21 17:58）----------
+  // 按愛心先寫一句打氣的話；可以只送愛心，也可以一起贊助（標明信用卡或 PayPal）。
+  // 留言存在 Firestore cheers/，只有作者（CONFIG.contact 那個已驗證信箱登入）讀得到，不公開；要登入才能送，30 秒一則（規則擋洗版）。
+  const CHEER_MAX = 120, lang = () => (SC.i18n && SC.i18n.lang) || 'zh';
+  const cheer = { text: '', busy: false, msg: '', ok: false, more: false, inbox: null, inboxErr: '', sentAt: 0 };
+  const isAdmin = () => !!(account.user && CONFIG.contact && account.user.email && account.user.email.toLowerCase() === CONFIG.contact.toLowerCase());
+  cheer.send = async (pay) => {
+    const u = account.user, m = cheer.text.trim().slice(0, CHEER_MAX); if (!u || !m || cheer.busy) return false;
+    if (Date.now() - cheer.sentAt < 30000) { cheer.msg = '剛剛送過了，等 30 秒再送一次。'; cheer.ok = false; paint(); return false; }
+    cheer.busy = true; cheer.msg = ''; paint();
+    try {
+      const { db, F } = await load(), b = F.writeBatch(db), at = F.serverTimestamp();
+      b.set(F.doc(db, 'cheers', u.uid + '_' + Date.now().toString(36)), { uid: u.uid, n: account.name().slice(0, 16), m, pay: pay || '', lang: lang(), at });
+      b.set(F.doc(db, 'cheerLast', u.uid), { at });
+      await b.commit(); cheer.sentAt = Date.now(); cheer.text = ''; cheer.ok = true; cheer.msg = pay ? '留言送出了！付款頁已經在新分頁打開，謝謝你的贊助！' : '愛心送出了！謝謝你的鼓勵！';
+      if (SC.audio && SC.audio.sfx && SC.audio.sfx.ding) SC.audio.sfx.ding();
+    } catch (e) { cheer.ok = false; cheer.msg = (e && e.code) === 'permission-denied' ? '剛剛送過了，等 30 秒再送一次。' : '沒送出去，檢查網路後再試一次。'; }
+    cheer.busy = false; paint(); return cheer.ok;
+  };
+  cheer.load = async () => {
+    cheer.inboxErr = ''; try { const { db, F } = await load(); const snap = await F.getDocs(F.query(F.collection(db, 'cheers'), F.orderBy('at', 'desc'), F.limit(60))); cheer.inbox = snap.docs.map((d) => { const x = d.data(); return { n: x.n || '', m: x.m || '', pay: x.pay || '', lang: x.lang || '', t: x.at && x.at.toMillis ? x.at.toMillis() : 0 }; }); }
+    catch (e) { cheer.inbox = []; cheer.inboxErr = '讀不到留言（' + ((e && e.code) || '網路') + '）'; }
+    paint();
+  };
+  const PAYTAG = { card: '💳 信用卡贊助', paypal: '🅿️ PayPal 贊助', ecpay: '🏪 綠界贊助', '': '💌 愛心' };
   let accBtn = null, frBtn = null, wrap = null, view = '', err = '', renaming = false;
   const badge = () => { if (!frBtn) return; const n = fr.list.filter((f) => f.on).length; let b = frBtn.querySelector('.ac-dot'); if (!n) { if (b) b.remove(); return; } if (!b) { b = document.createElement('i'); b.className = 'ac-dot'; frBtn.appendChild(b); } b.textContent = n > 9 ? '9+' : String(n); };
 
@@ -12598,6 +12657,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (fr.msg) h += `<p class="${fr.ok ? 'fr-ok' : 'ac-err'}">${esc(fr.msg)}</p>`;
         h += fr.list.length ? `<ul class="fr-list">${fr.list.map((f) => `<li class="${f.on ? 'on' : ''}"><i class="fr-st" aria-hidden="true"></i><b translate="no">${esc(f.n || '?')}</b><small>${f.r ? '在房間裡' : f.on ? '在線上' : '離線'}</small>${f.r ? `<button type="button" class="fr-go" data-join="${esc(f.r)}">加入</button>` : ''}<button type="button" class="fr-rm" data-rm="${esc(f.uid)}" aria-label="刪除好友" title="刪除好友">×</button></li>`).join('')}</ul>` : `<p class="ac-note">還沒有好友。</p>`;
       }
+    } else if (view === 'inbox') {
+      h += `<h2>📬 收到的愛心留言</h2>`;
+      if (!isAdmin()) h += `<p>只有作者看得到。</p>`;
+      else if (!cheer.inbox) h += `<p>讀取中…</p>`;
+      else {
+        if (cheer.inboxErr) h += `<p class="ac-err">${esc(cheer.inboxErr)}</p>`;
+        h += cheer.inbox.length ? `<ul class="ch-list">${cheer.inbox.map((c) => `<li><div><b translate="no">${esc(c.n || '?')}</b><small>${esc(PAYTAG[c.pay] || PAYTAG[''])}・${c.t ? new Date(c.t).toLocaleString() : ''}${c.lang && c.lang !== 'zh' ? '・' + esc(c.lang) : ''}</small></div><p translate="no">${esc(c.m)}</p></li>`).join('')}</ul>` : `<p class="ac-note">還沒有留言。</p>`;
+        h += `<p class="ac-note">標「信用卡贊助／PayPal 贊助」的留言只代表對方按了那個按鈕，有沒有真的付款請到 PayPal 的交易明細核對。</p>`;
+      }
+      h += `<div class="ac-row"><button type="button" data-ch="back">← 回愛心</button></div>`;
     } else if (view === 'acc') {
       h += `<h2>${I_USER}帳號</h2>`;
       if (u) h += `<div class="ac-me">${u.photo ? avatar(u) : ''}<div><b translate="no">${esc(account.name())}</b> <button type="button" class="ac-ren" data-n="edit" aria-label="改名字">✏️</button><p>已登入（${u.via.includes('facebook') ? 'Facebook' : u.via.includes('google') ? 'Google' : '帳號'}）</p><p>雲端存檔：開</p></div></div><div class="ac-row"><button type="button" data-a="out">登出</button></div>`;
@@ -12605,12 +12674,23 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (u && renaming) h += `<div class="fr-add ac-name"><input id="ac-nm" maxlength="8" autocomplete="off" spellcheck="false" placeholder="取個名字（最多 8 個字）" aria-label="名字" value="${esc(account.name())}"><button type="button" data-n="save">好了</button></div><p>好友名單和排行榜會顯示這個名字。</p>`;
       if (err) h += `<p class="ac-err">${esc(err)}</p>`;
     } else {
-      const tiers = `<div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: CONFIG.ecpayOpen ? d.url || CONFIG.donateUrl : '' }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>`;
-      const tw = `<p class="ac-sub">台灣贊助（綠界）：</p>${tiers}<p class="ac-note">幣別新台幣，可用信用卡、ATM 轉帳、超商代碼付款。</p>`;
-      const pp = CONFIG.paypal ? `<p class="ac-sub">國外贊助（信用卡或 PayPal）：</p><div class="ac-row"><a class="d pp" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}PayPal</a></div><p class="ac-note">金額自己填，不用 PayPal 帳號也能直接刷卡（以台幣計價，會自動換算）。</p>` : '';
-      // 綠界頁只有中文、以台灣付款方式為主：非中文介面時把 PayPal 放最前面，並提醒綠界頁是中文
-      const intl = SC.i18n && SC.i18n.lang && SC.i18n.lang !== 'zh' && pp;
-      h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p>${intl ? pp + tw + '<p class="ac-note">綠界付款頁只有中文，海外的朋友建議用 PayPal。</p>' : tw + pp}${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
+      const u2 = account.user, zh = lang() === 'zh';
+      const tiers = `<div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: CONFIG.ecpayOpen ? d.url || CONFIG.donateUrl : '' }) && d.url ? `<a class="d tier" data-pay="ecpay" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>`;
+      h += `<h2>${I_HEART}送一顆愛心</h2><p>寫一句話替作者打氣，也可以一起贊助。</p>`;
+      if (useFb) {
+        h += `<textarea id="ch-in" class="ch-in" maxlength="${CHEER_MAX}" placeholder="寫一句打氣的話（最多 ${CHEER_MAX} 字）" aria-label="愛心留言">${esc(cheer.text)}</textarea>`;
+        if (!u2) h += `<p class="ac-note">登入後才能送出留言（避免有人洗版）。贊助不用登入。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}</div>`;
+        else h += `<p class="ac-note">署名：<b translate="no">${esc(account.name())}</b>。留言只有作者看得到，不會公開。</p><div class="ac-row"><button type="button" class="d" data-ch="free"${cheer.busy ? ' disabled' : ''}>💌 只送愛心留言</button></div>`;
+        if (cheer.msg) h += `<p class="${cheer.ok ? 'fr-ok' : 'ac-err'}">${esc(cheer.msg)}</p>`;
+      }
+      if (CONFIG.paypal) {
+        h += `<p class="ac-sub">${useFb && u2 ? '想一起贊助嗎？留言會標明你選的方式：' : '想贊助嗎？'}</p><div class="ac-row ac-two"><a class="d pp" data-pay="card" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">💳 信用卡</a><a class="d pp" data-pay="paypal" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener"><b class="ppw">Pay<i>Pal</i></b></a></div>`;
+        h += `<p class="ac-note">兩個按鈕都會打開 PayPal 的安全付款頁。用信用卡的話，在付款頁選「扣帳卡或信用卡」，不用 PayPal 帳號。金額自己填。</p><p class="ac-note">以新台幣計價，國外的卡和 PayPal 會自動換算成你的貨幣；發卡銀行可能另收海外交易手續費。</p>`;
+        if (zh) h += `<p class="ac-note">在台灣的朋友：PayPal 不支援台灣帳戶付款給台灣帳戶，台灣發的卡也可能付不了，建議用下面的「其他贊助方式」。</p>`;
+      }
+      if (zh && CONFIG.donate.length) h += `<button type="button" class="ac-more" data-ch="more" aria-expanded="${cheer.more}">其他贊助方式（綠界：信用卡、ATM、超商）<span>${cheer.more ? '▴' : '▾'}</span></button>` + (cheer.more ? `${tiers}<p class="ac-note">幣別新台幣，可用台灣的信用卡、ATM 轉帳、超商代碼付款。綠界付款頁上也可以填名字和留言。</p>` : '');
+      if (CONFIG.donateNote) h += `<p class="ac-note">${esc(CONFIG.donateNote)}</p>`;
+      if (isAdmin()) h += `<div class="ac-row"><button type="button" data-ch="inbox">📬 收到的愛心留言</button></div>`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
         if (err) h += `<p class="ac-err">${esc(err)}</p>`;
@@ -12626,6 +12706,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (fin) { fin.addEventListener('keydown', (e) => { if (e.key === 'Enter') friends.add(fin.value); }); wrap.querySelector('[data-f="add"]').onclick = () => friends.add(fin.value); }
     wrap.querySelectorAll('[data-join]').forEach((b) => (b.onclick = () => { const r = b.dataset.join; close(); if (SC.net && SC.net.joinFriend) SC.net.joinFriend(r); }));
     wrap.querySelectorAll('[data-rm]').forEach((b) => (b.onclick = () => friends.remove(b.dataset.rm)));
+    const cin = wrap.querySelector('#ch-in'); if (cin) { cin.addEventListener('input', () => { cheer.text = cin.value; }); cin.addEventListener('keydown', (e) => e.stopPropagation()); }
+    wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'back') { view = 'donate'; paint(); } }));
+    wrap.querySelectorAll('a[data-pay]').forEach((a) => a.addEventListener('click', () => { if (account.user && cheer.text.trim()) setTimeout(() => cheer.send(a.dataset.pay), 0); })); // 付款頁照常開新分頁；有寫留言就順便送出、標明付款方式
     wrap.querySelectorAll('[data-buy]').forEach((b) => (b.onclick = () => { err = ''; buy(b.dataset.buy).catch((e) => { err = e.message === 'login' ? '請先登入。' : '付款頁面打不開，等一下再試一次。' + (e.detail ? '（' + e.detail + '）' : ''); paint(); }); }));
   };
 
