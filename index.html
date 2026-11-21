@@ -2869,11 +2869,23 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       // 河上的低橋
       { t: 'box', x0: -12, x1: 12, z0: 34, z1: 44, h: 0.6, look: 'bridge' },
       // 第 91 版（Yen 11/21）：出生台後面的高城牆（朝場地那一邊有牆垛可以躲），適合狙擊。
-      // 第 92 版（Yen 11/21 12:38）：城牆可以塗墨，加高到 62（連續跳五下也跳不上去），要先把城牆塗成自己的顏色、用墨貓爬上去；
-      // 狙擊槍打到牆會一發塗出一條從地上到牆頂的路。原本靠城牆的 14 高跳台拿掉了。
-      { t: 'box', x0: -142, x1: -131, z0: -46, z1: 46, h: 62, look: 'castle', gate: 1 },
-      ...[-21.6, -16.8, -12, -7.2, -2.4, 2.4, 7.2, 12, 16.8, 21.6].map((z) => ({ t: 'box', x0: -132.6, x1: -131, z0: z - 1.3, z1: z + 1.3, h: 66, look: 'merlon', gate: 1 })),
+      // 第 92 版（Yen 11/21 12:38）：城牆可以塗墨，加高到 62（連續跳五下也跳不上去），要先把城牆塗成自己的顏色、用墨貓爬上去。
+      // 第 96 版（Yen 11/21 14:44「地形單調、沒有戰術空間」）：城牆分成幾段高低不同的地方——
+      //   兩邊走道 62；中間城門樓 67、往前凸出 2（站上去比走道高，看得更遠）；兩端角樓 74（從走道跳兩下上去，是最高的狙擊點）；
+      //   走道上有紙箱可以躲對面的狙擊；城牆前面左右各一座 16 高的半高堡台（跳得上去，當中繼站和側面掩護，從上面還是跳不上城牆）。
+      { t: 'box', x0: -142, x1: -131, z0: -46, z1: -12, h: 62, look: 'castle', gate: 1 },
+      { t: 'box', x0: -142, x1: -131, z0: 12, z1: 46, h: 62, look: 'castle', gate: 1 },
+      { t: 'box', x0: -142, x1: -129, z0: -12, z1: 12, h: 67, look: 'castle', gate: 1, flag: 1 },
+      { t: 'box', x0: -142, x1: -130, z0: 46, z1: 58, h: 74, look: 'castle', gate: 1 },
+      { t: 'box', x0: -142, x1: -130, z0: -58, z1: -46, h: 74, look: 'castle', gate: 1 },
+      ...[-43, -37, -31, -25, -19, 19, 25, 31, 37, 43].map((z) => ({ t: 'box', x0: -132.6, x1: -131, z0: z - 1.3, z1: z + 1.3, h: 66, look: 'merlon', gate: 1 })),
+      ...[-9, -3, 3, 9].map((z) => ({ t: 'box', x0: -130.6, x1: -129, z0: z - 1.3, z1: z + 1.3, h: 71, look: 'merlon', gate: 1 })),
+      ...[47.4, 56.6, -47.4, -56.6].map((z) => ({ t: 'box', x0: -131.6, x1: -130, z0: z - 1.4, z1: z + 1.4, h: 77.5, look: 'merlon', gate: 1 })),
       ...[-34, -29, 29, 34].map((z) => ({ t: 'box', x0: -142, x1: -140.4, z0: z - 1.3, z1: z + 1.3, h: 66, look: 'merlon', gate: 1 })),
+      { t: 'box', x0: -138.6, x1: -135.4, z0: -32, z1: -28.8, h: 64.6, look: 'carton', gate: 1 },
+      { t: 'box', x0: -138.6, x1: -135.4, z0: 22, z1: 25.2, h: 64.6, look: 'carton', gate: 1 },
+      { t: 'box', x0: -131, x1: -123, z0: 20, z1: 30, h: 16, look: 'castle' },
+      { t: 'box', x0: -131, x1: -123, z0: -30, z1: -20, h: 16, look: 'castle' },
     ],
     center: [
       { t: 'cyl', x: 0, z: 0, r: 11, h: 2, look: 'island' },
@@ -2923,8 +2935,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const m = k.box(p, { r: 0.5 }), w = p.x1 - p.x0, d = p.z1 - p.z0, lm = k.plain(0xa79fc2, 0.9);
         for (let y = 3; y < p.h - 1; y += 3.2) { const ln = new THREE.Mesh(new THREE.BoxGeometry(w + 0.08, 0.28, d + 0.08), lm); ln.position.y = y; m.add(ln); }
         const cap = new THREE.Mesh(new THREE.BoxGeometry(w + 0.6, 0.7, d + 0.6), SC.ink.patch(new THREE.MeshStandardMaterial({ color: 0x8d84ad, roughness: 0.8 }))); // 第 95 版：牆頂蓋子也會顯示墨水（原本蓋住了城牆頂的墨） cap.position.y = p.h - 0.3; m.add(cap);
-        const flag = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 3), k.plain(p.team ? 0x7fd8ff : 0xff8fc8, 0.5)); flag.rotation.z = -Math.PI / 2; flag.position.set(0, p.h + 9, 0); m.add(flag);
-        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 10, 8), k.plain(0xe9cfa3, 0.6)); const bx = (p.team ? 1 : -1) * (w / 2 - 1.2); pole.position.set(bx, p.h + 5, d / 2 - 1.2); m.add(pole); flag.position.set(bx + 1.6, p.h + 9, d / 2 - 1.2); // 第 92 版：旗子移到角落，不擋站在牆上狙擊的視線
+        const flag = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 3), k.plain(p.team ? 0x7fd8ff : 0xff8fc8, 0.5)); flag.rotation.z = -Math.PI / 2; flag.position.set(0, p.h + 9, 0); if (p.flag) m.add(flag);
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 10, 8), k.plain(0xe9cfa3, 0.6)); const bx = (p.team ? 1 : -1) * (w / 2 - 1.2); pole.position.set(bx, p.h + 5, d / 2 - 1.2); if (p.flag) m.add(pole); flag.position.set(bx + 1.6, p.h + 9, d / 2 - 1.2); // 第 92 版：旗子移到角落，不擋站在牆上狙擊的視線
       },
       merlon: (p, k) => k.box(p, { r: 0.35 }),
       yarn: (p, k) => { // 毛線球
@@ -9857,9 +9869,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (a.isPlayer && a.climbStuck > 0.8 && G.time - (a.stuckFxAt || -9) > 0.45) { a.stuckFxAt = G.time; SC.fx.burst(w.x, a.pos.y + 3.2, w.z, WHITE, 10, 7, 0.45, 0.2, 0.6, 0); SC.fx.pop(w.x, a.pos.y + 3.2, w.z, WHITE, 3, 0.12);
         if (G.time - (a.stuckTipAt || -9) > 4) { a.stuckTipAt = G.time; SC.ui.tip('上面還沒塗到！先射墨水把上面塗成你的顏色', 2.4); } } }
     else a.climbStuck = 0;
-    a.pos.y += vy * dt; a.speed = Math.abs(vy);
+    // 第 96 版（Yen 11/21 14:44）：在牆上也能左右移動（沿著牆面橫移 13，旁邊要是自己的顏色、而且牆還在；牆轉角時重新貼齊牆面）
+    const ux = -w.nz, uz = w.nx, side = ctl.mx * ux + ctl.mz * uz; let moved = 0;
+    if (Math.abs(side) > 0.25) { const st = Math.sign(side) * 13 * dt, cx = w.x + ux * st, cz = w.z + uz * st, cy = a.pos.y + 1.2;
+      if (H(cx - w.nx * 0.8, cz - w.nz * 0.8) > cy && SC.wallInk.owner(cx, cy, cz) === own) {
+        const f = SC.wallInk.face(cx + w.nx * 2, cz + w.nz * 2, cx - w.nx * 2, cz - w.nz * 2, cy);
+        if (f && f.nx * w.nx + f.nz * w.nz > 0.5) { w.x = f.x; w.z = f.z; w.nx = f.nx; w.nz = f.nz; } else { w.x = cx; w.z = cz; }
+        a.pos.x = w.x + w.nx * (R + 0.15); a.pos.z = w.z + w.nz * (R + 0.15); moved = 13;
+      } else if (a.pos.y <= H(a.pos.x, a.pos.z) + 0.3) { a.climb = null; a.onGround = true; return false; } } // 在牆腳往旁邊走、旁邊沒有墨：離開牆面用走的
+    a.pos.y += vy * dt; a.speed = Math.max(Math.abs(vy), moved);
     const g = H(a.pos.x, a.pos.z); if (a.pos.y <= g) { a.pos.y = g; if (vy < 0 || inward < -0.25) { a.climb = null; a.onGround = true; return false; } }
-    if (vy && (a.swimT -= dt) <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x - w.nx * R, a.pos.y + 1, a.pos.z - w.nz * R, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); }
+    if ((vy || moved) && (a.swimT -= dt) <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x - w.nx * R, a.pos.y + 1, a.pos.z - w.nz * R, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); }
     return true;
   }
   // 魔王關卡：墨貓沿著罐頭側面自己顏色的墨水往上爬（速度同 Roblox 的爬牆馬達：上 13、下 8、橫移 13）
