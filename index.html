@@ -2724,7 +2724,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 場地外面：圓形（r）、橢圓（e，半軸就是 x、z）或長方形
   const outOf = (L, x, z, pad = 0) => (L.r ? x * x + z * z > (L.r + pad) * (L.r + pad) : L.e ? (x / (L.x + pad)) ** 2 + (z / (L.z + pad)) ** 2 > 1 : x < -L.x - pad || x > L.x + pad || z < -L.z - pad || z > L.z + pad);
   world.outOf = outOf;
-  // 第 91 版：高城牆和高跳台（gate）只能爬上去，不能直接跳上去；城牆（noInk）是石頭，墨水塗不上
+  // 第 91 版：高城牆（gate）只能爬上去，不能直接跳上去；noInk 的東西墨水塗不上（第 92 版起城牆可以塗）
   const inBox = (p, x, z, e = 0) => x >= p.x0 - e && x <= p.x1 + e && z >= p.z0 - e && z <= p.z1 + e;
   world.gates = []; world.noInks = [];
   world.gated = (x, z) => { const g = world.gates; for (let i = 0; i < g.length; i++) if (inBox(g[i], x, z)) return g[i]; return null; };
@@ -2840,13 +2840,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       { t: 'cyl', x: -50, z: 66, r: 3, h: 5, look: 'yarn' },
       // 河上的低橋
       { t: 'box', x0: -12, x1: 12, z0: 34, z1: 44, h: 0.6, look: 'bridge' },
-      // 第 91 版（Yen 11/21）：出生台後面的高城牆（22 高、朝場地那一邊有牆垛可以躲），適合狙擊。
-      // 城牆是石頭、墨水塗不上去，也跳不上去：要先把旁邊高跳台（14 高）的牆塗成自己的顏色、用墨貓爬上去，再從高跳台跳上城牆。
-      { t: 'box', x0: -142, x1: -131, z0: -46, z1: 46, h: 22, look: 'castle', gate: 1, noInk: 1 },
-      ...[-21.6, -16.8, -12, -7.2, -2.4, 2.4, 7.2, 12, 16.8, 21.6].map((z) => ({ t: 'box', x0: -132.6, x1: -131, z0: z - 1.3, z1: z + 1.3, h: 26, look: 'merlon', gate: 1, noInk: 1 })),
-      ...[-34, -29, 29, 34].map((z) => ({ t: 'box', x0: -142, x1: -140.4, z0: z - 1.3, z1: z + 1.3, h: 26, look: 'merlon', gate: 1, noInk: 1 })),
-      { t: 'box', x0: -130, x1: -121, z0: 28, z1: 40, h: 14, look: 'climbT', gate: 1 },
-      { t: 'box', x0: -130, x1: -121, z0: -40, z1: -28, h: 14, look: 'climbT', gate: 1 },
+      // 第 91 版（Yen 11/21）：出生台後面的高城牆（朝場地那一邊有牆垛可以躲），適合狙擊。
+      // 第 92 版（Yen 11/21 12:38）：城牆可以塗墨，加高到 62（連續跳五下也跳不上去），要先把城牆塗成自己的顏色、用墨貓爬上去；
+      // 狙擊槍打到牆會一發塗出一條從地上到牆頂的路。原本靠城牆的 14 高跳台拿掉了。
+      { t: 'box', x0: -142, x1: -131, z0: -46, z1: 46, h: 62, look: 'castle', gate: 1 },
+      ...[-21.6, -16.8, -12, -7.2, -2.4, 2.4, 7.2, 12, 16.8, 21.6].map((z) => ({ t: 'box', x0: -132.6, x1: -131, z0: z - 1.3, z1: z + 1.3, h: 66, look: 'merlon', gate: 1 })),
+      ...[-34, -29, 29, 34].map((z) => ({ t: 'box', x0: -142, x1: -140.4, z0: z - 1.3, z1: z + 1.3, h: 66, look: 'merlon', gate: 1 })),
     ],
     center: [
       { t: 'cyl', x: 0, z: 0, r: 11, h: 2, look: 'island' },
@@ -2862,7 +2861,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ],
     sky: [0x3aa0ff, 0xa8e4ff, 0xfff3d6], fog: 0xcdeeff, hemi: [0xeaf6ff, 0xffe9c9],
     river: { color: 0xeaf7ff, rough: 0.06 },
-    look: { castle: 0xc9c3dd, merlon: 0xbdb5d6, climbT: 0xffb86b, base: 0xffffff, tier1: 0x8fe3c0, tier2: 0xb9a5ff, tier3: 0xffb3c7, bed: 0xffb3c7, wall: 0xffd97a, cushion: 0x9be7ff, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, island2: 0xffd0e8, post: 0xe9cfa3, tower: 0xb9a5ff, pad: 0xffe08a },
+    look: { castle: 0xc9c3dd, merlon: 0xbdb5d6, base: 0xffffff, tier1: 0x8fe3c0, tier2: 0xb9a5ff, tier3: 0xffb3c7, bed: 0xffb3c7, wall: 0xffd97a, cushion: 0x9be7ff, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, island2: 0xffd0e8, post: 0xe9cfa3, tower: 0xb9a5ff, pad: 0xffe08a },
     rough: { carton: 0.85, ground: 0.75 },
     ground: (g) => {
       tiles(g, '#f3d9a8', ['#ffefcf', '#ffe4b3']);
@@ -2897,13 +2896,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         for (let y = 3; y < p.h - 1; y += 3.2) { const ln = new THREE.Mesh(new THREE.BoxGeometry(w + 0.08, 0.28, d + 0.08), lm); ln.position.y = y; m.add(ln); }
         const cap = new THREE.Mesh(new THREE.BoxGeometry(w + 0.6, 0.7, d + 0.6), k.plain(0x8d84ad, 0.8)); cap.position.y = p.h - 0.3; m.add(cap);
         const flag = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 3), k.plain(p.team ? 0x7fd8ff : 0xff8fc8, 0.5)); flag.rotation.z = -Math.PI / 2; flag.position.set(0, p.h + 9, 0); m.add(flag);
-        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 10, 8), k.plain(0xe9cfa3, 0.6)); const bx = (p.team ? 1 : -1) * (w / 2 - 1.2); pole.position.set(bx, p.h + 5, 0); m.add(pole); flag.position.set(bx + 1.6, p.h + 9, 0);
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 10, 8), k.plain(0xe9cfa3, 0.6)); const bx = (p.team ? 1 : -1) * (w / 2 - 1.2); pole.position.set(bx, p.h + 5, d / 2 - 1.2); m.add(pole); flag.position.set(bx + 1.6, p.h + 9, d / 2 - 1.2); // 第 92 版：旗子移到角落，不擋站在牆上狙擊的視線
       },
       merlon: (p, k) => k.box(p, { r: 0.35 }),
-      climbT: (p, k) => { // 高跳台：塗墨爬上去的練習台，側面有貓爪向上的提示
-        const m = k.box(p, { r: 0.8 }), pm = k.plain(0xffffff, 0.6), w = p.x1 - p.x0, d = p.z1 - p.z0;
-        for (let y = 2.5; y < p.h - 1; y += 3.2) [-1, 1].forEach((s) => { const a = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.4, 3), pm); a.position.set(0, y, s * (d / 2 + 0.05)); a.scale.z = 0.15; m.add(a); const b = a.clone(); b.position.set(s * (w / 2 + 0.05), y, 0); b.scale.set(0.15, 1, 1); m.add(b); });
-      },
       yarn: (p, k) => { // 毛線球
         const cols = [0xff7aa8, 0x6fd3ff, 0xffc94a];
         const ym = SC.ink.patch(new THREE.MeshStandardMaterial({ color: cols[Math.abs(Math.round(p.x + p.z)) % 3], roughness: 0.75 }));
@@ -9652,7 +9647,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }
       if (hitActor) break;
       if (y <= h) { if (G.mode === 'boss') { if (h - y > 1.5) BS.paintWall(a.team, x, y, z, rad * 1.2); BS.onImpact(x, y, z, 'W03'); }
-        const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (h - y > 1.5) wallPaint(a.team, bx, bz, x, z, y, rad * 0.9, colors[a.team]); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
+        const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (h - y > 1.5) wallStripe(a.team, bx, bz, x, z, y, colors[a.team]); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
       if (t >= paintT) { paintT = t + 2.4; if (h > -4 && y - h < 18) INK.stamp(a.team, x, h, z, rad); }
     }
     if (hitActor) { hurt(hitActor, dmg, a, 'W03'); INK.splat(a.team, hitActor.pos.x, H(hitActor.pos.x, hitActor.pos.z), hitActor.pos.z, rad); }
@@ -9783,11 +9778,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   // 第 91 版（Yen）：對戰場地的牆壁也塗得上墨水。ox/oz 是牆外、ix/iz 是牆裡的點
+  function wallStripe(team, ox, oz, ix, iz, y, col) { // 第 92 版（Yen）：狙擊槍打到牆，一發塗出一條從地上到牆頂、墨貓可以爬的路
+    if (G.mode === 'boss') return false; const f = SC.wallInk.face(ox, oz, ix, iz, y); if (!f) return false;
+    const base = H(f.x + f.nx * 0.8, f.z + f.nz * 0.8), top = H(f.x - f.nx * 0.8, f.z - f.nz * 0.8); let ok = false;
+    for (let v = base + 1.2; v < top + 1.6; v += 2.2) ok = SC.wallInk.paint(team, f.x, Math.min(v, top - 0.4), f.z, f.nx, f.nz, 1.8, col) || ok;
+    return ok;
+  }
   function wallPaint(team, ox, oz, ix, iz, y, r, col) { if (G.mode === 'boss') return false; const f = SC.wallInk.face(ox, oz, ix, iz, y); return !!(f && SC.wallInk.paint(team, f.x, y, f.z, f.nx, f.nz, r, col)); }
   // ---------- 角色更新 ----------
   function blocked(a, x, z) {
     const lim = a.pos.y + (a.onGround ? C.STEP : 0.3), r = C.ACTOR_RADIUS;
-    if (W.gates.length && G.mode !== 'boss' && !(G.time - (a.gateT ?? -9) < 2.5)) { for (const [gx, gz] of [[x, z], [x + r, z], [x - r, z], [x, z + r], [x, z - r]]) if (W.gated(gx, gz) && !W.gated(a.pos.x, a.pos.z)) return true; } // 第 91 版：高城牆、高跳台只能用墨貓爬上去（剛從上面下來 2.5 秒內可以跳回去）
+    if (W.gates.length && G.mode !== 'boss' && !(G.time - (a.gateT ?? -9) < 2.5)) { for (const [gx, gz] of [[x, z], [x + r, z], [x - r, z], [x, z + r], [x, z - r]]) if (W.gated(gx, gz) && !W.gated(a.pos.x, a.pos.z)) return true; } // 第 91 版：高城牆只能用墨貓爬上去（剛從上面下來 2.5 秒內可以跳回去）
     const hits = (px, pz) => (H(px + r, pz) > lim) + (H(px - r, pz) > lim) + (H(px, pz + r) > lim) + (H(px, pz - r) > lim);
     if (H(x, z) > lim) return true;
     const n = hits(x, z); if (!n) return false;
@@ -10246,7 +10247,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function pickTarget(a) {
     let best = null, bs = -9; const L = W.lim;
     for (let i = 0; i < 16; i++) {
-      const x = SC.rand(-L.x + 6, L.x - 6), z = SC.rand(-L.z + 6, L.z - 6), h = H(x, z); if (h < -3 || h > 17 || W.gated(x, z) || W.gated(x + 3, z) || W.gated(x - 3, z)) continue; // 多層場地：高台上也會去塗（第 91 版：城牆、高跳台電腦上不去，不去那邊）
+      const x = SC.rand(-L.x + 6, L.x - 6), z = SC.rand(-L.z + 6, L.z - 6), h = H(x, z); if (h < -3 || h > 17 || W.gated(x, z) || W.gated(x + 3, z) || W.gated(x - 3, z)) continue; // 多層場地：高台上也會去塗（第 91 版：城牆電腦上不去，不去那邊）
       const [u, v] = W.toLocal(a.team, x, z); // u：往對手那邊推進的距離
       if (u > W.baseIn - 16 && Math.abs(v) < 24) continue; // 不去堵對手的出生台
       const o = INK.ownerAt(x, z), s = (o === a.team + 1 ? 0.1 : o > 0 ? 1.5 : 1.0) - Math.hypot(x - a.pos.x, z - a.pos.z) * 0.007 + u * 0.0016 + Math.random() * 0.3;
