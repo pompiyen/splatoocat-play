@@ -791,7 +791,7 @@ SC.CFG = {
   W02: { id: 'W02', name: '滾刷', swingInk: 8 / INK_LAST, rollInk: 0.42 / INK_LAST, swingInterval: 0.5, rollDelay: 0.2, swingRange: 19, airRange: 40, // 跳起來甩：直的一道、噴得遠（Yen 11/14，像漆彈大作戰的跳甩）
     
     swingRadius: 3.4, rollRadius: 3.85, rollSpeedMin: 1.08, rollSpeedMax: 1.38, rollRamp: 0.7, swingDamage: 48, rollDamage: 100, rollHitInterval: 0.4 },
-  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
+  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, playerCharge: 0.35, deskInterval: 1, /* 第 100 版（Yen）：玩家不用集氣（電腦版左鍵一按就射、平板按住 0.35 秒就滿）；電腦按了就射的版本每發間隔 1 秒 */ minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
    
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
@@ -1089,6 +1089,10 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['狙擊槍：打開／關閉狙擊鏡（放大 4 倍）', 'Sniper: open / close the scope (4x zoom)', 'スナイパー：スコープを開く／閉じる（4倍）', '저격총: 조준경 켜기/끄기 (4배)'],
     ['3＋左鍵（按住）', '3 + Left click (hold)', '3＋左クリック（長おし）', '3 + 왼쪽 클릭 (꾹)'],
     ['換成墨水彈：按住左鍵瞄準（地上畫出落點），放開丟出去，按越久丟越遠（Q 也能直接丟）', 'Switch to ink bombs: hold left click to aim (the landing spot shows on the ground), release to throw; hold longer to throw farther (Q also throws)', 'インクボムに切りかえ：左クリック長おしでねらい（落ちる場所が地面に出る）、はなして投げる。長くおすほど遠く（Qでもすぐ投げられる）', '잉크 폭탄으로 바꾸기: 왼쪽 클릭을 꾹 눌러 조준(떨어질 곳이 땅에 보여요), 떼면 던져요. 오래 누를수록 멀리 (Q로도 바로 던져요)'],
+    ['射擊；狙擊槍一按就射，不用蓄力', 'Shoot. The sniper fires as soon as you click, no charging', 'うつ。スナイパーはクリックですぐうてる（ためなし）', '쏘기. 저격총은 누르면 바로 쏴요(충전 없음)'],
+    ['換成墨水彈：按住左鍵瞄準（畫出飛行路線和落點），往上看就往上拋，放開丟出去，按越久丟越遠（Q 也能直接丟）', 'Switch to ink bombs: hold left click to aim (shows the flight path and landing spot), look up to lob higher, release to throw; hold longer to throw farther (Q also throws)', 'インクボムにかえる：左クリック長おしでねらう（とぶ道すじと落ちる所が出る）。上を見ると上になげる。はなすとなげる。長くおすほど遠くへ（Qでもなげられる）', '잉크 폭탄으로 바꾸기: 왼쪽 클릭을 누르고 조준(날아가는 길과 떨어질 곳 표시), 위를 보면 위로 던져요. 놓으면 던지고, 오래 누를수록 멀리(Q로도 던져요)'],
+    ['按住射擊鈕放大瞄準，放開就發射，一發擊倒', 'Hold the fire button to zoom and aim, release to fire. One hit KO', 'うつボタン長おしでズームしてねらい、はなすとうつ。一発でたおせる', '발사 버튼을 누르면 확대 조준, 놓으면 발사. 한 방에 쓰러뜨려요'],
+    ['按住墨水彈鈕會畫出飛行路線，按著往上拖就往上拋；短按丟近，按越久丟越遠', 'Hold the bomb button to see the flight path; drag up while holding to lob higher. Short press throws near, hold longer to throw farther', 'ボムボタン長おしでとぶ道すじが出る。おしたまま上にドラッグすると上になげる。短くおすと近く、長くおすほど遠く', '폭탄 버튼을 누르면 날아가는 길이 보여요. 누른 채 위로 끌면 위로 던져요. 짧게 누르면 가까이, 오래 누를수록 멀리'],
     ['射擊；狙擊槍按住蓄力，放開發射', 'Shoot. With the sniper, hold to charge, release to fire', 'うつ。スナイパーは長おしでためて、はなしてうつ', '쏘기. 저격총은 꾹 눌러 모으고 떼면 발사'],
     ['射擊；狙擊槍按住蓄力會放大，放開發射', 'Shoot. With the sniper, hold to charge and zoom, release to fire', 'うつ。スナイパーは長おしでためてズーム、はなすと発射', '쏘기. 저격총은 꾹 누르면 모으며 확대, 떼면 발사'],
     ['Shift（按住）', 'Shift (hold)', 'Shift（長おし）', 'Shift (꾹 누르기)'],
@@ -3868,9 +3872,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       g.userData.muzzle = 1.5;
     } else if (id === 'W02') {
       const pole = mesh(new THREE.CapsuleGeometry(0.13, 2.6, 4, 8), dark, 0, -0.55, 1.1); pole.rotation.x = 1.05; g.add(pole);
-      const roll = mesh(new THREE.CylinderGeometry(0.62, 0.62, 3.4, 20), white, 0, -1.35, 2.35); roll.rotation.z = Math.PI / 2; g.add(roll);
-      const caps = [-1, 1].map((s) => { const cap = mesh(new THREE.CylinderGeometry(0.66, 0.66, 0.3, 20), teamMat, s * 1.75, -1.35, 2.35); cap.rotation.z = Math.PI / 2; g.add(cap); return cap; });
-      g.userData.caps = caps; g.userData.roller = roll; g.userData.muzzle = 2.4;
+      // 第 100 版（Yen）：刷頭放在一個繞著握桿轉的小組裡，跳打時刷頭從「平行地面」轉成「垂直地面」
+      const head = new THREE.Group(); g.add(head);
+      const roll = mesh(new THREE.CylinderGeometry(0.62, 0.62, 3.4, 20), white, 0, -1.35, 2.35); roll.rotation.z = Math.PI / 2; head.add(roll);
+      const caps = [-1, 1].map((s) => { const cap = mesh(new THREE.CylinderGeometry(0.66, 0.66, 0.3, 20), teamMat, s * 1.75, -1.35, 2.35); cap.rotation.z = Math.PI / 2; head.add(cap); return cap; });
+      g.userData.caps = caps; g.userData.roller = roll; g.userData.head = head; g.userData.axis = new THREE.Vector3(0, -1.35, 2.35).normalize(); g.userData.muzzle = 2.4;
     } else if (id === 'W04') { // 散彈槍：胖胖的隊色槍身、兩根並排的短槍管（喇叭口），上面一顆透明墨水罐
       const body = mesh(new THREE.CapsuleGeometry(0.4, 0.7, 6, 12), teamMat, 0, 0, 0.3); body.rotation.x = Math.PI / 2; g.add(body);
       [-0.2, 0.2].forEach((x) => { const b = mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.9, 10), white, x, 0.05, 1.05); b.rotation.x = Math.PI / 2; g.add(b);
@@ -4102,10 +4108,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             const e = (t) => 1 - Math.pow(1 - SC.clamp(t, 0, 1), 3);
             k = u < 0.32 ? -2 * e(u / 0.32) : u < 0.4 ? -2 : u < 0.56 ? SC.lerp(-2, 1.75, Math.pow((u - 0.4) / 0.16, 1.6)) : SC.lerp(1.75, 0, e((u - 0.56) / 0.44) * e((u - 0.56) / 0.44));
             aim = -Math.PI / 2 + k * 0.8; hx = k * 0.75;
+            cat.headTurn = u < 0.2 ? e(u / 0.2) : u < 0.78 ? 1 : 1 - e((u - 0.78) / 0.22); // 第 100 版：刷頭轉成直的，劈完再轉回來
           } else { k = u < 0.3 ? -2.1 * (u / 0.3) : SC.lerp(-2.1, 0.45, 1 - Math.pow(1 - (u - 0.3) / 0.7, 3)); hx += k; aim += k * 0.8; }
         }
       }
       if (cat.bombOn) { aim = -Math.PI / 2 - SC.clamp(s.pitch, -0.8, 0.8) * 0.7 - (cat.bombWind || 0) * 1.5; hx = (cat.bombWind || 0) * 0.6; handBomb.rotation.y += dt * 1.5; } // 拿著墨水彈；按住瞄準時手往後舉、準備丟
+      { const WD = weapons.W02.userData, tn = roller && cat.swing > 0 && cat.swingAir ? cat.headTurn || 0 : 0; if (tn !== (cat.headTurnNow || 0)) { cat.headTurnNow = tn; WD.head.quaternion.setFromAxisAngle(WD.axis, tn * Math.PI / 2); } }
       armR.rotation.x = aim + 0.25; hand.rotation.x = hx;
       hand.position.z = 0.95 - (roller ? 0 : cat.recoil * 0.3);
       if (cat.weaponId === 'W04') { // 散彈槍上膛（第 59 版）：開槍後槍口往上抬、左手扶住護木往後拉「咔」、再推回去「嚓」，共 0.8 秒
@@ -9642,7 +9650,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const w = C.W02, id = ++swingSeq;
     for (let k = -4; k <= 4; k++) {
       const yaw = yaw0 + k * (air ? 0.022 : 0.15) + (rnd() - 0.5) * 0.07, sp = air ? 46 + (k + 4) * 4 + rnd() * 4 : 42 + rnd() * 14, pitch = (air ? 0.27 : 0.32) + pitch0 * 0.6 + rnd() * 0.15;
-      projectiles.push({ x: mx, y: my - 0.6, z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
+      projectiles.push({ x: mx, y: my - 0.6 + (air ? (k + 4) * 0.55 - 1.4 : 0), z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
         dmg: w.swingDamage, r: w.swingRadius * C.PAINT * boost, range: air ? w.airRange : w.swingRange, g: air ? 92 : 105, travel: 0, drip: air ? 0.012 : 0.02, life: 0, vr: 1.05, trail: 0, color: colors[a.team], cause: 'W02', group: id }); // 第 99 版（Yen）：墨點大一點、後面拖一串小水滴，看得出潑了多少墨
     }
   }
@@ -9694,8 +9702,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   G.sniperRay = (m, dir) => sniperRay(player(), m, dir); // 測試用
   G.testShot = (a, x, y, z, vx, vy, vz) => projectiles.push({ x, y, z, vx, vy, vz, team: a.team, owner: a, dmg: C.W01.damage, r: 1, range: 99, g: 0, travel: 0, drip: 0, life: 0, vr: 0.8, color: colors[a.team], cause: 'W01' }); // 測試用：直直飛的一發
+  const fullC = (a) => (a.isPlayer ? C.W03.playerCharge : C.W03.fullCharge); G.sniperFull = fullC;
   function fireSniper(a) {
-    const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1);
+    const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (fullC(a) - w.minCharge), 0, 1);
     if (a.ink < w.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; } // 第 85 版：蓄力中丟了墨水彈，墨水不夠就不發射（不會變負的）
     const m = new V3(), dir = new V3(); sniperRay(a, m, dir); const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
     if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
@@ -9738,7 +9747,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.ink -= b.ink; a.lastShotAt = G.time; a.nextBombAt = G.time + 0.8; a.protectUntil = Math.min(a.protectUntil, G.time + 0.5);
     const m = muzzle(a, t1), tgt = t2.copy(a.aim), pow = a.ctl.bombPow, maxD = pow >= 0 ? b.far : (b.speed * b.speed) / b.gravity * 0.96, d = Math.hypot(tgt.x - m.x, tgt.z - m.z);
     a.ctl.bombPow = -1;
-    if (pow >= 0 && a.isPlayer && !I.isTouch) { const v = lobVel(pow, t3); spawnBomb(a, m.x, m.y, m.z, v.x, v.y, v.z); if (netOn()) nev(a, 'b', m.x, m.y, m.z, v.x, v.y, v.z); return; }
+    if (pow >= 0 && a.isPlayer) { const v = lobVel(pow, t3); spawnBomb(a, m.x, m.y, m.z, v.x, v.y, v.z); if (netOn()) nev(a, 'b', m.x, m.y, m.z, v.x, v.y, v.z); return; }
     if (pow >= 0) bombTarget(a, m, pow, tgt); // 玩家：短按丟近、按越久丟越遠，方向跟著準星
     else if (d > maxD) { tgt.x = m.x + ((tgt.x - m.x) / d) * maxD; tgt.z = m.z + ((tgt.z - m.z) / d) * maxD; tgt.y = Math.min(H(tgt.x, tgt.z), m.y + 10); }
     // 用「拋物線飛多久」來算初速：近的低低拋、遠的高高拋，落點就是準星指的地方（不會因為初速太大而平平地飛過頭）
@@ -9753,6 +9762,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     out.set(m.x + (dx / l) * D, 0, m.z + (dz / l) * D); out.y = H(out.x, out.z); if (out.y > m.y + 10 || out.y < -4) out.y = Math.max(-1, Math.min(out.y, m.y + 10));
     return out;
   }
+  // 第 100 版：平板也一樣照鏡頭方向丟（按住墨水彈鈕往上拖就往上拋）
   // 第 99 版（Yen）：電腦版的墨水彈照鏡頭方向丟：往上看就往上拋、往下看就平平丟（站在城牆上也能朝上丟），按越久丟越用力
   const LOB_LIFT = 0.62, LOB_V0 = 34, LOB_V1 = 88;
   function lobVel(pow, out) { const th = SC.clamp(cam.pitch + LOB_LIFT, -0.6, 1.4), v = SC.lerp(LOB_V0, LOB_V1, SC.clamp(pow, 0, 1)); return out.set(Math.sin(cam.yaw) * Math.cos(th) * v, Math.sin(th) * v, Math.cos(cam.yaw) * Math.cos(th) * v); }
@@ -9765,13 +9775,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   let bombAim = null;
   function bombPreview() {
     const p = player(), hold = I.bombHold ? I.bombHold() : -1, on = hold >= 0 && p && p.alive && G.state === 'play' && !G.demo && p.ink >= C.BOMB.ink && p.spT == null;
-    if (p && p.cat.holdBomb) p.cat.holdBomb(!I.isTouch && I.bombSlot && p.alive && G.state === 'play' && p.form === 'biped' && G.time >= p.nextBombAt - 0.5, Math.max(0, hold)); // 第 99 版：換成墨水彈時手上拿著墨水彈（丟出去後 0.3 秒手上再冒出一顆）
+    if (p && p.cat.holdBomb) p.cat.holdBomb(((!I.isTouch && I.bombSlot) || hold >= 0) && p.alive && G.state === 'play' && p.form === 'biped' && G.time >= p.nextBombAt - 0.5, Math.max(0, hold)); // 第 100 版：平板按住墨水彈鈕時手上也拿著 // 第 99 版：換成墨水彈時手上拿著墨水彈（丟出去後 0.3 秒手上再冒出一顆）
     if (!bombAim) { const R = C.BOMB.radius * C.PAINT, mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.75, depthWrite: false, side: THREE.DoubleSide }), ring = new THREE.Mesh(new THREE.RingGeometry(R - 0.9, R, 48), mat);
       ring.rotation.x = -Math.PI / 2; const fill = new THREE.Mesh(new THREE.CircleGeometry(R - 0.9, 48), mat.clone()); fill.material.opacity = 0.2; ring.add(fill); scene.add(ring);
       const dg = new THREE.SphereGeometry(0.32, 8, 6), dots = []; for (let i = 0; i < 14; i++) { const d = new THREE.Mesh(dg, mat); scene.add(d); dots.push(d); } bombAim = { ring, fill, dots }; }
     const A2 = bombAim; A2.ring.visible = on; A2.dots.forEach((d) => (d.visible = on)); if (!on) return;
     const col = colors[p.team];
-    if (!I.isTouch) { const m = muzzle(p, t1), tgt = lobSim(m, lobVel(hold, t3), t2), n = lobPath.length / 3;
+    { const m = muzzle(p, t1), tgt = lobSim(m, lobVel(hold, t3), t2), n = lobPath.length / 3;
       A2.ring.material.color.copy(col); A2.fill.material.color.copy(col); A2.ring.position.set(tgt.x, tgt.y + 0.25, tgt.z); A2.ring.scale.setScalar(0.92 + Math.sin(G.time * 12) * 0.05);
       A2.dots.forEach((d, i) => { const j = Math.min(n - 1, Math.round(((i + 1) / (A2.dots.length + 1)) * n)); if (j < 0) { d.visible = false; return; } d.position.set(lobPath[j * 3], lobPath[j * 3 + 1], lobPath[j * 3 + 2]); });
       return; }
@@ -9826,10 +9836,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
   }
 
-  const growQ = [], chopQ = [], CHOP_T = 0.2;
+  const growQ = [], chopQ = [], CHOP_T = 0.23;
   function updateProjectiles(dt) {
     for (let i = chopQ.length - 1; i >= 0; i--) { const q = chopQ[i]; if (G.time < q.at && G.time > q.at - 1) continue; chopQ.splice(i, 1); const b = q.a; if (!b.alive) continue;
-      const m = muzzle(b, t1); flecks(b, m.x, m.y + 1.2, m.z, q.args[0], q.args[1], q.args[2], q.args[3], 1, true); }
+      const m = muzzle(b, t1); flecks(b, m.x, m.y + 1.2, m.z, q.args[0], q.args[1], q.args[2], q.args[3], 1, true); SC.fx.burst(m.x, m.y + 1, m.z, colors[b.team], 16, 16, 0.5, 0.3); } // 第 100 版：劈下去的那一下，墨水排成一道直直的牆往前潑，刷頭那裡濺一大片
     for (let i = growQ.length - 1; i >= 0; i--) { const q = growQ[i]; if (G.time >= q.at || G.time < q.at - 1) { INK.by = q.by; INK.splat(...q.a); growQ.splice(i, 1); } } INK.by = null;
     for (let i = projectiles.length - 1; i >= 0; i--) {
       const p = projectiles[i]; let dead = false; p.life += dt; INK.by = p.owner;
@@ -10086,10 +10096,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= C.W02.swingInk || a.wideUntil > now) swing(a); else if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } }
       if (ctl.fire && canAct && now >= a.rollFrom && a.onGround) { a.rolling = true; roll(a); }
     } else {
-      const w = C.W03;
-      if (ctl.fire && canAct && now >= a.nextShotAt) {
+      const w = C.W03, FC = fullC(a);
+      if (a.isPlayer && !I.isTouch) { a.charge = -1; if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= w.ink) { a.charge = FC; fireSniper(a); a.charge = -1; a.nextShotAt = now + w.deskInterval; } else { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } } } // 第 100 版（Yen）：電腦版左鍵一按就射出滿威力的一發，不用集氣
+      else if (ctl.fire && canAct && now >= a.nextShotAt) {
         if (a.charge < 0) { if (a.ink >= w.ink) a.charge = 0; else if (!a.prevFire && a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
-        else { const before = a.charge; a.charge = Math.min(w.fullCharge + 0.01, a.charge + dt); if (a.isPlayer) { if (before < w.fullCharge && a.charge >= w.fullCharge) A.sfx.chargeFull(); else if (Math.floor(before * 12) !== Math.floor(a.charge * 12) && a.charge < w.fullCharge) A.sfx.chargeTick(a.charge / w.fullCharge); } }
+        else { const before = a.charge; a.charge = Math.min(FC + 0.01, a.charge + dt); if (a.isPlayer) { if (before < FC && a.charge >= FC) A.sfx.chargeFull(); else if (Math.floor(before * 12) !== Math.floor(a.charge * 12) && a.charge < FC) A.sfx.chargeTick(a.charge / FC); } }
       } else if (a.charge >= 0) { if (!ctl.fire && a.charge >= w.minCharge && canAct) fireSniper(a); a.charge = -1; }
     }
     if (!a.rolling && a.rollPt) rollEnd(a);
@@ -10334,7 +10345,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function updateSight(a) { // 狙擊蓄力時的瞄準線，對手也看得到，才有機會躲
     if (a.charge < 0 || !a.alive) { if (a.sight) a.sight.visible = false; return; }
     if (!a.sight) { a.sight = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 6, 1, true), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.6, depthWrite: false })); scene.add(a.sight); }
-    const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1), range = sniperRange(a, c);
+    const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (fullC(a) - w.minCharge), 0, 1), range = sniperRange(a, c);
     const m = t1, dir = t2; sniperRay(a, m, dir); const hit = W.raycast(m.x, m.y, m.z, dir.x, dir.y, dir.z, range), len = hit ? hit.t : range;
     a.sight.visible = true; a.sight.material.color.copy(colors[a.team]); a.sight.material.opacity = 0.35 + c * 0.5;
     a.sight.position.copy(m).addScaledVector(dir, len / 2); a.sight.quaternion.setFromUnitVectors(t3.set(0, 1, 0), dir); a.sight.scale.set(0.05 + c * 0.09, len, 0.05 + c * 0.09);
@@ -10635,7 +10646,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 狙擊蓄力時放大：一按就先 1.8 倍，蓄滿到 SCOPE_ZOOM 倍；鏡頭移到貓咪頭部，角色不會擋住準星
     // 第 98 版（Yen）：電腦版改成按右鍵開關狙擊鏡（一開就 4 倍），蓄力不再自動放大；觸控版照舊按住蓄力放大
     const sniping = p && p.isPlayer && !G.demo && p.alive && p.weapon === 'W03' && G.state === 'play', charging = sniping && (I.isTouch ? p.charge >= 0 : I.scope);
-    const ck = charging ? (I.isTouch ? SC.clamp(p.charge / C.W03.fullCharge, 0, 1) : 1) : 0;
+    const ck = charging ? (I.isTouch ? SC.clamp(p.charge / fullC(p), 0, 1) : 1) : 0;
     cam.zoom = SC.damp(cam.zoom, charging ? 1.8 + (SCOPE_ZOOM - 1.8) * ck * (2 - ck) : 1, charging ? 14 : 10, dt);
     const scopeK = SC.clamp((cam.zoom - 1) / 0.8, 0, 1);
     camera.fov = (2 * Math.atan(Math.tan((baseFov * Math.PI) / 360) / cam.zoom) * 180) / Math.PI;
@@ -10904,7 +10915,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         subArrow(a, swim && !still && a.cat.group.visible, now); // 第 71 版（Yen）：潛墨移動時頭上跟著一個立體箭頭
         xrayOf(a, me && foe && me.xrayUntil > G.time && a.alive && !a.predKo);
         a.cat.setInk(a.ink / 100); if (a.cat.lod) a.cat.lod(a.isPlayer ? 0 : camera.position.distanceTo(a.pos));
-        a.cat.animate(hs ? 0 : dt, { speed: a.speed, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged, pitch: a.pitch, rolling: a.rolling && a.alive, charge: a.charge < 0 ? 0 : a.charge / C.W03.fullCharge, t: now });
+        a.cat.animate(hs ? 0 : dt, { speed: a.speed, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged, pitch: a.pitch, rolling: a.rolling && a.alive, charge: a.charge < 0 ? 0 : Math.min(1, a.charge / fullC(a)), t: now });
         updateSight(a);
         if (a.submerged && a.onGround) SC.swimTrail.add(a, a.pos.x, a.pos.y, a.pos.z, colors[a.team]); else SC.swimTrail.cut(a);
       });
@@ -11084,8 +11095,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.trickIcon = (k) => TRICK[k] || '';
 
   const HELP = {
-    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍按住蓄力，放開發射'], ['右鍵', '狙擊槍：打開／關閉狙擊鏡（放大 4 倍）'], ['Shift（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['3＋左鍵（按住）', '換成墨水彈：按住左鍵瞄準（地上畫出落點），放開丟出去，按越久丟越遠（Q 也能直接丟）'], ['1 2／Tab／滾輪', '在帶的兩把武器之間切換（墨刀：按住連砍，跳起來再按一下往前衝刺斬）'], ['Esc／P', '暫停'], ['M', '靜音']],
-    touch: [['左半邊', '按住拖曳出搖桿來移動'], ['墨貓鈕（左下）', '按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動'], ['射擊鈕', '短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準'], ['狙擊槍', '按住射擊鈕蓄力會放大，放開發射，一發擊倒'], ['按著墨貓＋點射擊鈕', '墨貓跳，落地前都維持墨貓'], ['右半邊', '拖曳轉動視角瞄準'], ['墨水彈', '朝準星的方向丟：短按丟近，按越久丟越遠'], ['墨刀', '按住射擊鈕連續砍；跳起來後按住射擊鈕＝往前衝刺斬'], ['切換', '點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍、墨刀']],
+    desk: [['W A S D', '移動'], ['滑鼠', '瞄準（點一下畫面鎖定游標）'], ['左鍵', '射擊；狙擊槍一按就射，不用蓄力'], ['右鍵', '狙擊槍：打開／關閉狙擊鏡（放大 4 倍）'], ['Shift（按住）', '變墨貓，在自己的墨水裡潛行、補墨水'], ['空白鍵', '跳躍，空中可再跳，最多五段'], ['3＋左鍵（按住）', '換成墨水彈：按住左鍵瞄準（畫出飛行路線和落點），往上看就往上拋，放開丟出去，按越久丟越遠（Q 也能直接丟）'], ['1 2／Tab／滾輪', '在帶的兩把武器之間切換（墨刀：按住連砍，跳起來再按一下往前衝刺斬）'], ['Esc／P', '暫停'], ['M', '靜音']],
+    touch: [['左半邊', '按住拖曳出搖桿來移動'], ['墨貓鈕（左下）', '按住變墨貓潛墨、補墨水；按著再拖就能邊潛邊移動'], ['射擊鈕', '短點一下＝跳躍（空中可再點，最多五段）；按住或拖曳＝射擊並瞄準'], ['狙擊槍', '按住射擊鈕放大瞄準，放開就發射，一發擊倒'], ['按著墨貓＋點射擊鈕', '墨貓跳，落地前都維持墨貓'], ['右半邊', '拖曳轉動視角瞄準'], ['墨水彈', '按住墨水彈鈕會畫出飛行路線，按著往上拖就往上拋；短按丟近，按越久丟越遠'], ['墨刀', '按住射擊鈕連續砍；跳起來後按住射擊鈕＝往前衝刺斬'], ['切換', '點武器縮圖換漆彈槍、滾刷、狙擊槍、散彈槍、墨刀']],
   };
 
   ui.build = () => {
@@ -11755,7 +11766,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
     if (!p.alive) set('ko', g.mode === 'boss' && p.deaths >= C.BOSS_LIVES ? -9 : Math.ceil(p.respawnAt - g.time), (v) => { els['ko-n'].textContent = v > 0 ? v + ' 秒後回到出生台' : ''; });
     // 準星：狙擊蓄力環、命中標記
-    const ch = p.charge < 0 ? 0 : Math.min(1, p.charge / C.W03.fullCharge);
+    const ch = p.charge < 0 ? 0 : Math.min(1, p.charge / (g.sniperFull ? g.sniperFull(p) : C.W03.fullCharge));
     set('ch', Math.round(ch * 50), (v) => els.cross.style.setProperty('--charge', v * 2 + '%'));
     const rl = p.weapon === 'W04' && p.nextShotAt > g.time ? 1 - (p.nextShotAt - g.time) / C.W04.interval : 1; // 散彈槍上膛中：準星圈慢慢填滿
     set('rl', Math.round(SC.clamp(rl, 0, 1) * 40), (v) => { els.cross.style.setProperty('--rl', v * 2.5 + '%'); els.cross.classList.toggle('reloading', v < 40); });
