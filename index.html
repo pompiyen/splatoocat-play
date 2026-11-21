@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='bc8b7b0b43fe';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='7d02220abcc7';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1114,6 +1114,28 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 #m-title.net-hubon .frr { display: none; } /* 連線對戰畫面裡已經有好友列，側邊的就收起來 */
 @media (max-width: 700px) { #m-title.net-hubon.frr-on .title-card { padding-right: 0; } }
 #m-title.net-hubon #net-opts > h3 { display: none; }
+
+/* ---- 第 140.2 版（Yen 11-22 04:15「review 一次遊戲介面，讓操作順手直覺」）---- */
+/* 1. 右下角的大開戰鈕不再蓋住最後一排選項：選單底部多留一個按鈕的高度，可以捲上來 */
+#m-title:not(.step-mode) .title-card { padding-bottom: calc(92px + var(--sab, 0px)); }
+/* 2. 直向手機的連線選單：工具列不再黏在底部蓋住房間（開戰鈕已經固定在右下角） */
+@media (max-width: 859px) and (min-height: 521px) { #m-title.net-on .actions { position: static; padding: 0; background: none; } }
+/* 3. 房間內容不再超出螢幕右邊（直向手機「離開房間」被推到畫面外） */
+#net-out, #net-in, .opt.net, .chat { grid-template-columns: minmax(0, 1fr); } #net-in > *, #net-out > *, .chat > * { min-width: 0; }
+.net-list li { min-width: 0; flex-wrap: wrap; }
+/* 4. 還沒有人說話時不顯示空白的聊天框 */
+.chat-log:empty { display: none; }
+/* 5. 直向手機：右上角的帳號按鈕不再壓到 Logo */
+@media (max-width: 520px) and (min-height: 521px) { #m-title .logo { font-size: 32px; white-space: nowrap; } }
+/* 6. 平板、電腦的連線兩欄畫面：右上角帳號按鈕不再蓋住「連線對戰」標題列 */
+@media (min-width: 860px) and (max-width: 1240px) { #m-title.net-on .opts { padding-top: 52px; } }
+/* 7. 橫向手機：左上的副標題不再擠成三行（Logo 已經寫了名字） */
+@media (max-height: 520px) { #m-title .logo-sub { display: none; } }
+/* 8. 暫停選單的開關加上圖示 */
+#btn-mute2::before { content: '🔊'; margin-right: 6px; } #btn-mute2[data-m="1"]::before { content: '🔇'; }
+#btn-cat-mode::before { content: '🐾'; margin-right: 6px; }
+#pick-rule .pick .rule-ic { width: 38px; height: 32px; display: block; margin: 0 auto 2px; }
+@media (max-width: 370px) { #m-title .logo { font-size: 28px; } }
 
 </style>
 <div id="app">
@@ -14416,7 +14438,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       $('pick-map').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === cur); b.disabled = net && !n.isHost; });
     };
     // 連線房間畫面。暱稱是別人打的字，一律用 textContent 放進畫面。
-    let pendNm = null;
+    let pendNm = null, pendNmAt = 0;
     const RK_FMT = { 2: '1 對 1', 3: '三方對戰', 4: '2 對 2', 6: '3 對 3' }; // 積分賽照人數決定（Yen 11-21）
     const netSync = () => {
       const n = SC.net, on = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', start = $('btn-start');
@@ -14434,7 +14456,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       start.disabled = !ready; start.textContent = !inRoom ? (sel.rk ? '先按開始配對' : '先開房間或加入房間') : mixed ? '🔄 有人要重新整理' : n.isHost || !me ? '開始對戰' : '等房主開始';
       if (!inRoom) start.hidden = true; start.classList.toggle('wait', inRoom && !ready); $('net-quick').classList.toggle('nudge', !inRoom && !n.busy && !rkUi); // 第 121.2 版：還沒進房時下一步是「隨機配對」，它在跳；開戰鈕等進了房間才出現
       if (!inRoom) { $('zmap-opt').hidden = true; return; }
-      if (pendNm && n.state === 'lobby' && n.isHost && !n.quick) { const v = pendNm; pendNm = null; setTimeout(() => { const b = v === 'cpu' ? $('pick-vc').querySelector('[data-v="1"]') : $('pick-rule').querySelector(`[data-v="${v}"]`); if (b && SC.net.isHost && SC.net.state === 'lobby') b.click(); }, 0); } else if (pendNm && n.state === 'lobby' && !n.isHost) pendNm = null; /* 按「和好友玩」開的房間：進房後幫房主把玩法設好 */
+      if (pendNm && (n.state === 'idle' && !n.busy || Date.now() - pendNmAt > 10000)) pendNm = null; /* 第 140.2 版：剛進房時還沒確認自己是房主，不要先把要設的玩法丟掉 */
+      if (pendNm && n.state === 'lobby' && n.isHost && !n.quick) { const v = pendNm; pendNm = null; setTimeout(() => { const b = v === 'cpu' ? $('pick-vc').querySelector('[data-v="1"]') : $('pick-rule').querySelector(`[data-v="${v}"]`); if (b && SC.net.isHost && SC.net.state === 'lobby') b.click(); }, 0); } /* 按「和好友玩」開的房間：進房後幫房主把玩法設好 */
       $('net-ready').hidden = true; /* 積分賽的「即刻開戰」改用上面的大按鈕（第 125.1 版：原本這裡用行尾註解，把後面的房號和選項都吃掉了） */ $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
       const tri = n.triOn(), vc = !!n.vc, zb = n.zbOn(), rand = n.mix === 'rand' && !vc, L = n.lineup(false);
@@ -14545,8 +14568,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === 'all') lastRk = rule; SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
     $('pick-nm').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; click(); sel.nm = b.dataset.v; save(); netSync(); });
     on('net-go-pub', () => quick(sel.nm === 'knockout' ? 'knockout' : 'turf'));
-    ui.netCreate = () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); pendNm = sel.nm && sel.nm !== 'turf' ? sel.nm : null; SC.net.create(); };
+    ui.netCreate = () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); pendNm = sel.nm && sel.nm !== 'turf' ? sel.nm : null; pendNmAt = Date.now(); SC.net.create(); };
     on('net-go-fr', () => ui.netCreate());
+    $('pick-rule').querySelectorAll('.pick').forEach((b) => { const ic = $('pick-nm').querySelector(`.pick[data-v="${b.dataset.v}"] svg`); if (ic && !b.querySelector('svg')) { const c = ic.cloneNode(true); c.classList.add('rule-ic'); b.prepend(c); } }); /* 第 140.2 版：房間裡的規則鈕也有跟「選玩法」一樣的圖示，不用看字 */
     on('net-quick', () => quick(sel.rk ? 'all' : 'turf')); on('net-quick2', () => quick(sel.rk ? '2v2' : 'knockout')); // Yen 22:01：外面只留一顆「隨機配對」（塗地戰）；擊倒戰、殭屍保衛戰在房間裡的規則那排選
     on('rk-go-btn', () => { const n = SC.net; if (n.state === 'lobby' && n.ranked) { if (n.rkDone) ui.rankedAgain(); else n.setReady(!n.ready); } else quick('all'); });
     on('net-ready', () => SC.net.setReady(!SC.net.ready)); let lastRk = 'all'; ui.rankedAgain = () => quick(lastRk); // Yen 22:00：1 對 1、2 對 2，要大家按準備 // 積分賽（Yen 21:35）：塗地和擊倒合併成一個配對，每場隨機 // Yen 11-21：一般連線配對也分塗地戰、擊倒戰（這行的註解原本夾在中間，把準備鈕和 rankedAgain 吃掉了）
