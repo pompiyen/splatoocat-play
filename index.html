@@ -12223,7 +12223,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (SC.account && SC.account.onChange) SC.account.onChange(() => modeSync()); // 登入／登出：積分賽按鈕和說明跟著變
     SC.net.onBegin = (m) => { sel.mode = 'net'; sel.rk = !!SC.net.ranked; ui.modeSyncPicks(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; els['m-help'].hidden = true; G().start({ ...sel, mode: 'net', demo: false, net: m }); };
     const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === 'all') lastRk = rule; SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
-    on('net-quick', () => quick(sel.rk ? 'all' : 'turf')); on('net-quick2', () => quick(sel.rk ? '2v2' : 'knockout')); // Yen 11-21：一般連線配對也分塗地戰、擊倒戰 on('net-ready', () => SC.net.setReady(!SC.net.ready)); let lastRk = 'all'; ui.rankedAgain = () => quick(lastRk); // Yen 22:00：1 對 1、2 對 2，要大家按準備 // 積分賽（Yen 21:35）：塗地和擊倒合併成一個配對，每場隨機
+    on('net-quick', () => quick(sel.rk ? 'all' : 'turf')); on('net-quick2', () => quick(sel.rk ? '2v2' : 'knockout'));
+    on('net-ready', () => SC.net.setReady(!SC.net.ready)); let lastRk = 'all'; ui.rankedAgain = () => quick(lastRk); // Yen 22:00：1 對 1、2 對 2，要大家按準備 // 積分賽（Yen 21:35）：塗地和擊倒合併成一個配對，每場隨機 // Yen 11-21：一般連線配對也分塗地戰、擊倒戰（這行的註解原本夾在中間，把準備鈕和 rankedAgain 吃掉了）
     on('net-create', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.create(); });
     on('net-join', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.open($('net-code').value); });
     on('net-leave', () => SC.net.leave());
