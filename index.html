@@ -9291,7 +9291,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
 
   // 出生台（家裡的圈圈）：Yen 2026-11-20 定的規則——塗地戰時站在上面不會被打倒，但也打不到別人；擊倒戰沒有這個保護
-  const onBase = (a) => { if (G.mode === 'boss' || !a || !a.pos) return false; const [u, v] = W.toLocal(a.team, a.pos.x, a.pos.z); return u < -W.baseIn && Math.abs(v) < 17 && a.pos.y > 5; };
+  const onBase = (a) => { if (G.mode === 'boss' || !a || !a.pos) return false; const [u, v] = W.toLocal(a.team, a.pos.x, a.pos.z); return u < -W.baseIn && Math.abs(v) < 17 && a.pos.y > 5 && !W.gated(a.pos.x, a.pos.z); }; // 第 92 版：城牆上不算出生台安全區（打得到、也打得到人）
   // 時鐘廣場中間的鐘塔頂上（Yen 2026-11-20 第 58 版設為無敵，第 75 版改成減傷，見 towerK）
   const onTower = (a) => !!(a && a.pos && /^round/.test(W.key || '') && a.pos.y > 12 && Math.hypot(a.pos.x, a.pos.z) < 5.5);
   const baseSafe = (t, from) => G.mode !== 'boss' && G.rule !== 'knockout' && (onBase(t) || onBase(from));
@@ -9634,10 +9634,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
   }
+  // 第 92 版（Yen 11/21 13:53）：站在城牆上，狙擊射程變兩倍（蓄滿 300），射得到對面城牆和牆上的對手
+  function sniperRange(a, c) { const w = C.W03, r = SC.lerp(w.minRange, w.maxRange, c); return G.mode !== 'boss' && a.pos.y > 30 && W.gated(a.pos.x, a.pos.z) ? r * 2 : r; }
   // 狙擊槍的一槍：沿線塗地、判定命中、畫光束。replay 是連線時別人開的槍（{ len, hit }），照他那邊算好的長度重播，不再判定命中。
   function sniperShot(a, m, dir, c, boost, replay) {
-    const w = C.W03, range = SC.lerp(w.minRange, w.maxRange, c), dmg = SC.lerp(w.minDamage, w.maxDamage, c), rad = SC.lerp(w.minRadius, w.maxRadius, c) * C.PAINT * boost, end = new V3();
-    const maxT = replay ? Math.min(range, replay.len) : range;
+    const w = C.W03, range = sniperRange(a, c), dmg = SC.lerp(w.minDamage, w.maxDamage, c), rad = SC.lerp(w.minRadius, w.maxRadius, c) * C.PAINT * boost, end = new V3();
+    const maxT = replay ? Math.min(320, replay.len) : range;
     let hitActor = null, t = 0, paintT = 0; INK.by = a;
     for (; t <= maxT; t += 1) {
       const x = m.x + dir.x * t, y = m.y + dir.y * t, z = m.z + dir.z * t, h = H(x, z); end.set(x, y, z);
@@ -9647,7 +9649,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }
       if (hitActor) break;
       if (y <= h) { if (G.mode === 'boss') { if (h - y > 1.5) BS.paintWall(a.team, x, y, z, rad * 1.2); BS.onImpact(x, y, z, 'W03'); }
-        const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (h - y > 1.5) wallStripe(a.team, bx, bz, x, z, y, colors[a.team]); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
+        const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (h - y > 1.5) wallPaint(a.team, bx, bz, x, z, y, rad * 0.9, colors[a.team]); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
       if (t >= paintT) { paintT = t + 2.4; if (h > -4 && y - h < 18) INK.stamp(a.team, x, h, z, rad); }
     }
     if (hitActor) { hurt(hitActor, dmg, a, 'W03'); INK.splat(a.team, hitActor.pos.x, H(hitActor.pos.x, hitActor.pos.z), hitActor.pos.z, rad); }
@@ -9778,12 +9780,6 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   // 第 91 版（Yen）：對戰場地的牆壁也塗得上墨水。ox/oz 是牆外、ix/iz 是牆裡的點
-  function wallStripe(team, ox, oz, ix, iz, y, col) { // 第 92 版（Yen）：狙擊槍打到牆，一發塗出一條從地上到牆頂、墨貓可以爬的路
-    if (G.mode === 'boss') return false; const f = SC.wallInk.face(ox, oz, ix, iz, y); if (!f) return false;
-    const base = H(f.x + f.nx * 0.8, f.z + f.nz * 0.8), top = H(f.x - f.nx * 0.8, f.z - f.nz * 0.8); let ok = false;
-    for (let v = base + 1.2; v < top + 1.6; v += 2.2) ok = SC.wallInk.paint(team, f.x, Math.min(v, top - 0.4), f.z, f.nx, f.nz, 1.8, col) || ok;
-    return ok;
-  }
   function wallPaint(team, ox, oz, ix, iz, y, r, col) { if (G.mode === 'boss') return false; const f = SC.wallInk.face(ox, oz, ix, iz, y); return !!(f && SC.wallInk.paint(team, f.x, y, f.z, f.nx, f.nz, r, col)); }
   // ---------- 角色更新 ----------
   function blocked(a, x, z) {
@@ -10226,7 +10222,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function updateSight(a) { // 狙擊蓄力時的瞄準線，對手也看得到，才有機會躲
     if (a.charge < 0 || !a.alive) { if (a.sight) a.sight.visible = false; return; }
     if (!a.sight) { a.sight = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 6, 1, true), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.6, depthWrite: false })); scene.add(a.sight); }
-    const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1), range = SC.lerp(w.minRange, w.maxRange, c);
+    const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1), range = sniperRange(a, c);
     const m = t1, dir = t2; sniperRay(a, m, dir); const hit = W.raycast(m.x, m.y, m.z, dir.x, dir.y, dir.z, range), len = hit ? hit.t : range;
     a.sight.visible = true; a.sight.material.color.copy(colors[a.team]); a.sight.material.opacity = 0.35 + c * 0.5;
     a.sight.position.copy(m).addScaledVector(dir, len / 2); a.sight.quaternion.setFromUnitVectors(t3.set(0, 1, 0), dir); a.sight.scale.set(0.05 + c * 0.09, len, 0.05 + c * 0.09);
