@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='5b3517b6d09b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='49987683a629';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -964,6 +964,12 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 /* 第 122 版：這場強度（🔥×1.3）、最後魔王大地震時全畫面紅色邊框閃 */
 .zb-dyn { display: flex; align-items: center; gap: 1px; font: 400 15px/1 var(--f-display); color: #ffd23f; text-shadow: 0 2px 0 var(--navy), 0 0 4px var(--navy); animation: zbDyn 1.2s ease-in-out infinite; }
 .zb-dyn[hidden] { display: none; }
+.zb-cmb { display: flex; align-items: center; gap: 3px; font: 400 14px/1 var(--f-display); color: #fff; text-shadow: 0 2px 0 var(--navy), 0 0 4px var(--navy); } /* 第 134 版：combo 條 */
+.zb-cmb em { position: relative; width: 54px; height: 10px; border-radius: 6px; background: rgba(27,20,48,.55); border: 2px solid var(--navy); overflow: hidden; }
+.zb-cmb u { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #ffd23f, #ff7a3c); transition: width .15s; }
+.zb-cmb.hot u { background: linear-gradient(90deg, #ff7a3c, #ff3c8a); }
+.zb-cmb.pop i { animation: zbCmb .25s ease-out; display: inline-block; }
+@keyframes zbCmb { 0% { transform: scale(1.5); } 100% { transform: scale(1); } }
 @keyframes zbDyn { 50% { transform: scale(1.15); } }
 .zb-quake { position: fixed; inset: 0; pointer-events: none; z-index: 30; opacity: 0; box-shadow: inset 0 0 0 10px rgba(255, 58, 58, 0.85), inset 0 0 90px 30px rgba(255, 58, 58, 0.55); transition: opacity 0.2s; }
 .zb-quake.on { opacity: 1; animation: zbQuake 0.35s ease-in-out infinite alternate; }
@@ -10664,18 +10670,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     bridgeSim(dt); cpSim(dt); for (let i = 0; i < 4; i++) { if (Z.tur[i] <= 0) continue; Z.tur[i] = Math.max(0, Z.tur[i] - dt); if ((turT[i] -= dt) > 0) continue; turT[i] = TUR.gap; const z = turTarget(i); if (z) damage(z, Math.min(TUR.dmg, TY[z.ty].cap || TUR.dmg), null); }
   }
   function turTarget(i) { const [x, zz] = TUR_P[i]; let best = null, bd = TUR.R; for (const z of Z.list) { if (z.st !== 'walk' && z.st !== 'eat' && z.st !== 'fly' || z.predDead) continue; const d = Math.hypot(z.x - x, z.z - zz); if (d < bd) { bd = d; best = z; } } return best; }
-  function altarSim(dt, now, g) { /* 裁判：祭壇冒出來、集氣、集滿給加成 */
-    const A = Z.alt; if (now > LEN + OVER) return;
-    if (A.life > 0) { A.life -= dt; let n = 0; for (const c of g.actors) if (c.alive && !c.gone && !c.isTarget && c.team === 0 && Math.hypot(c.pos.x - A.x, c.pos.z - A.z) < ALT.R && c.pos.y - H(A.x, A.z) < 4) n++;
-      if (n) A.p = Math.min(1, A.p + (dt / ALT.T) * Math.min(ALT.cap, Math.pow(n, 0.6))); else A.p = Math.max(0, A.p - dt * 0.03);
-      if (A.p >= 1) { Z.altDone = { seq: A.seq, k: A.k }; A.life = 0; A.p = 0; } else if (A.life <= 0) A.p = 0; return; }
-    if ((altT -= dt) > 0) return; altT = ALT.gap;
-    for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = MP.alt[0] + Math.random() * MP.alt[1], x = Math.cos(a) * r, z = Math.sin(a) * r, h = H(x, z); if (h < -0.5 || h > 3) continue; Z.alt = { seq: A.seq + 1, x: Math.round(x), z: Math.round(z), p: 0, k: (Math.random() * 3) | 0, life: ALT.life }; return; }
+  const CMB = { n: 50, idle: 10 }; /* 第 134 版（Yen 02:51「不是佔祭壇可以得到buff 改成combo 50隻全隊可以隨機buff」）：全隊連續打倒 50 隻 → 大家隨機拿一種加成 20 秒；10 秒沒打倒殭屍 combo 歸零。祭壇拿掉了。 */
+  let cmbK = 0, cmbT = 0;
+  function altarSim(dt, now, g) { /* 裁判：算全隊 combo（借 Z.alt.p 傳給別台：0～1） */
+    const A = Z.alt; A.life = 0; if (now > LEN + OVER) return;
+    if (Z.killed < cmbK) cmbK = Z.killed; if (Z.killed > cmbK) { A.p = Math.min(1, A.p + (Z.killed - cmbK) / CMB.n); cmbK = Z.killed; cmbT = now; }
+    if (A.p > 0 && now - cmbT > CMB.idle) A.p = 0;
+    if (A.p >= 1) { A.p = 0; A.seq++; Z.altDone = { seq: A.seq, k: (Math.random() * 3) | 0 }; }
   }
   /* 每台：收到「祭壇集滿了」→ 這台的貓（玩家、電腦隊友）拿到加成 */
   let inkTip = 0; function inkHint() { const g = G(), p = g.player && g.player(); if (g.state !== 'play' || !p) return; if (!(inkTip & 1) && g.time > 20) { inkTip |= 1; SC.ui.tip('殭屍踩到我們的墨水會變慢、更好打！', 4.5); } else if (!(inkTip & 2) && SC.zbHero && SC.zbHero.has(p) && g.time > 24) { inkTip |= 2; SC.ui.tip('神兵快沒電？潛進自己的墨水就會充電！', 4.5); } }
   let gearTip = 0; function gearHint() { if (gearTip || G().state !== 'play' || !Z.pows.some((q) => q.k === GEAR)) return; gearTip = 1; SC.ui.tip('撿齒輪 ⚙️，拿去放在砲台上，砲台就會自動射擊！', 5); }
-  function buffTick() { gearHint(); inkHint(); if (Z.alt.life > 0 && !altTip && G().state === 'play') { altTip = 1; SC.ui.tip('站上祭壇集滿光，大家都會變強！', 5); } const D = Z.altDone, g = G(); if (!D.seq || D.seq === altSeen) return; altSeen = D.seq; for (const a of g.actors) if (!a.remote && !a.gone && !a.isTarget && a.team === 0) { a.buffK = D.k; a.buffUntil = g.time + ALT.buff; if (a.alive) { ctx.burst(a.pos.x, a.pos.y + 3, a.pos.z, new THREE.Color(0xffe14a), 30, 20, 0.7); ctx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, new THREE.Color(0xffe14a), 6, 0.5); } }
+  function buffTick() { gearHint(); inkHint(); if (!altTip && G().state === 'play' && G().time > 8) { altTip = 1; SC.ui.tip('連續打倒 50 隻殭屍，大家都會變強！', 5); } const D = Z.altDone, g = G(); if (!D.seq || D.seq === altSeen) return; altSeen = D.seq; for (const a of g.actors) if (!a.remote && !a.gone && !a.isTarget && a.team === 0) { a.buffK = D.k; a.buffUntil = g.time + ALT.buff; if (a.alive) { ctx.burst(a.pos.x, a.pos.y + 3, a.pos.z, new THREE.Color(0xffe14a), 30, 20, 0.7); ctx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, new THREE.Color(0xffe14a), 6, 0.5); } }
     if (g.state === 'play') { SC.ui.banner(BUFF_NAME[D.k], 2.2, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } }
   Z.buffOf = (a) => a && a.buffUntil > G().time && Z.on ? a.buffK : -1;
   function dropPow(near) { /* 第 124 版（Yen「每過一段時間神兵會散落在四處」）：整張地圖到處都會掉（不只城裡）；也會掉齒輪 */
@@ -11406,11 +11412,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (on && !H_) {
       const top = document.querySelector('#hud .h-top'), hudEl = document.getElementById('hud'); if (!top || !hudEl) return;
       const bar = document.createElement('div'); bar.className = 'h-zb'; bar.id = 'zb-bar';
-      bar.innerHTML = `<div class="zb-row"><i class="zb-duck">${ICON.duck}</i><div class="zb-shield" role="progressbar" aria-label="防護罩"><i class="zb-fill"></i><b class="zb-pct"></b></div><span class="zb-pops"><i>${ICON.mouse()}</i><b>0</b></span><span class="zb-dyn" hidden>🔥<b></b></span><span class="zb-buff" hidden><i></i><b></b></span></div>`
+      bar.innerHTML = `<div class="zb-row"><i class="zb-duck">${ICON.duck}</i><div class="zb-shield" role="progressbar" aria-label="防護罩"><i class="zb-fill"></i><b class="zb-pct"></b></div><span class="zb-pops"><i>${ICON.mouse()}</i><b>0</b></span><span class="zb-dyn" hidden>🔥<b></b></span><span class="zb-cmb" aria-label="combo"><i>🎁</i><em><u></u></em><b>0</b></span><span class="zb-buff" hidden><i></i><b></b></span></div>`
         + `<div class="zb-line" aria-hidden="true"><i class="zb-done"></i>${EVENTS.map((e) => `<span class="zb-ev" data-k="${e.k}" style="left:${((e.t / LEN) * 100).toFixed(1)}%">${EV_ICON[e.k]}</span>`).join('')}<span class="zb-flag">🏁</span><span class="zb-paw">🐾</span></div>`;
       top.appendChild(bar);
       const card = document.createElement('div'); card.className = 'h-zcard'; card.id = 'zb-card'; card.innerHTML = '<div class="zc-ic"></div><div class="zc-t"><b></b><span class="zc-n"></span></div>'; hudEl.appendChild(card);
-      H_ = { bar, card, fill: bar.querySelector('.zb-fill'), pct: bar.querySelector('.zb-pct'), pops: bar.querySelector('.zb-pops b'), done: bar.querySelector('.zb-done'), paw: bar.querySelector('.zb-paw'), evs: [...bar.querySelectorAll('.zb-ev')], duck: bar.querySelector('.zb-duck'), dyn: bar.querySelector('.zb-dyn'), buff: bar.querySelector('.zb-buff'), last: {} };
+      H_ = { bar, card, fill: bar.querySelector('.zb-fill'), pct: bar.querySelector('.zb-pct'), pops: bar.querySelector('.zb-pops b'), done: bar.querySelector('.zb-done'), paw: bar.querySelector('.zb-paw'), evs: [...bar.querySelectorAll('.zb-ev')], duck: bar.querySelector('.zb-duck'), dyn: bar.querySelector('.zb-dyn'), cmb: bar.querySelector('.zb-cmb'), buff: bar.querySelector('.zb-buff'), last: {} };
     }
     const hudEl = document.getElementById('hud'); if (hudEl) hudEl.classList.toggle('zb', !!on);
   }
@@ -11425,6 +11431,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (L.pc !== pc) { L.pc = pc; H_.fill.style.width = pc + '%'; H_.pct.textContent = pc + '%'; H_.bar.classList.toggle('low', pc < 30); }
     const c = chewing > 0; if (L.c !== c) { L.c = c; H_.bar.classList.toggle('chew', c); }
     if (L.pops !== Z.pops) { L.pops = Z.pops; H_.pops.textContent = Z.pops; }
+    { const n = Math.round(SC.clamp(Z.alt.p, 0, 1) * CMB.n); if (L.cmb !== n) { const up = n > (L.cmb || 0); L.cmb = n; H_.cmb.querySelector('u').style.width = (n / CMB.n * 100) + '%'; H_.cmb.querySelector('b').textContent = n; H_.cmb.classList.toggle('hot', n >= CMB.n * 0.8); if (up) { H_.cmb.classList.remove('pop'); void H_.cmb.offsetWidth; H_.cmb.classList.add('pop'); } } } /* 第 134 版：combo 條 */
     const dy = Math.round(zDyn() * 10); if (L.dy !== dy) { if (L.dy != null && dy > L.dy && g.state === 'play') SC.ui.tip('大家好厲害！殭屍鼠變多了！', 2.5); L.dy = dy; H_.dyn.hidden = dy <= 10; H_.dyn.querySelector('b').textContent = '×' + (dy / 10).toFixed(1); }
     { const p = g.player && g.player(), bk = Z.buffOf(p), bs = bk >= 0 ? Math.ceil(p.buffUntil - g.time) : 0, key = bk + ':' + bs; if (L.bf !== key) { L.bf = key; H_.buff.hidden = bk < 0; if (bk >= 0) { H_.buff.querySelector('i').textContent = BUFF_IC[bk]; H_.buff.querySelector('b').textContent = bs; } } } /* 第 124 版：祭壇加成剩幾秒 */
     const tk = Math.round(SC.clamp(g.time / LEN, 0, 1) * 400); if (L.tk !== tk) { L.tk = tk; H_.done.style.width = tk / 4 + '%'; H_.paw.style.left = tk / 4 + '%'; H_.evs.forEach((e, i) => e.classList.toggle('past', g.time >= EVENTS[i].t)); }
@@ -11560,6 +11567,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['最後魔王 肌肉坦克鼠', 'Final Boss: Muscle Tank Mouse', 'さいごのボス マッスルタンクネズミ', '마지막 보스 근육 탱크 쥐'],
     ['登場！', 'is here!', 'とうじょう！', '등장!'],
     ['撿到齒輪 ⚙️ 就能打開城裡的自動機槍！', 'Grab a gear ⚙️ to switch on the fort\'s auto turrets!', 'はぐるま ⚙️ をひろうと、おしろのじどうマシンガンがうごくよ！', '톱니바퀴 ⚙️를 주우면 성의 자동 기관총이 켜져요!'],
+    ['連續打倒 50 隻殭屍，大家都會變強！', 'Pop 50 zombies in a row and everyone gets stronger!', 'ゾンビを 50 ひきつづけてたおすと、みんなパワーアップ！', '좀비를 연속으로 50마리 쓰러뜨리면 모두 강해져요!'],
     ['站上祭壇集滿光，大家都會變強！', 'Stand on the altar until it fills up and everyone gets stronger!', 'さいだんにのってひかりをためると、みんなパワーアップ！', '제단 위에 서서 빛을 채우면 모두 강해져요!'],
     ['自動機槍啟動！', 'Auto turret on!', 'じどうマシンガン、スタート！', '자동 기관총 작동!'],
     ['攻擊變強！', 'Power up!', 'こうげきアップ！', '공격력 업!'],
