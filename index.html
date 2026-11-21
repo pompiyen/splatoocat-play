@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='7470e267b3c5';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='d3a70eb89c93';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -4365,8 +4365,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 第 86 版（手感報告）：越被打身體越往攻擊方的墨水色偏（最多 70%），不用看數字也知道「快倒了」；回血就慢慢淡掉
     const hurtMats = [mFur, mLight, mDark, mEar, mTail], hurtBase = hurtMats.map((m) => m.color.clone()); let hurtK = 0, hurtC = null;
     cat.setHurt = (k, c) => { k = Math.round(SC.clamp(k, 0, 0.7) * 20) / 20; if (k === hurtK && (c === hurtC || !k)) return; hurtK = k; hurtC = c; hurtMats.forEach((m, i) => { m.color.copy(hurtBase[i]); if (k > 0 && c) m.color.lerp(c, k); }); };
+    cat.tagMask = (v) => { tag.visible = !!cat.tagOn && v; }; // 第 115.1 版：積分賽對手名牌，潛墨或隱形時暫時藏起來
     cat.setTag = (text, css, show) => {
-      tag.visible = show; if (!show) return;
+      cat.tagOn = !!show; tag.visible = show; if (!show) return;
       const g = cv.getContext('2d'); g.clearRect(0, 0, 256, 96);
       text = SC.tr(text); SC.i18n.fit(g, text, 236, 44); g.textAlign = 'center'; g.textBaseline = 'middle'; // 名字太長就縮小
       g.lineJoin = 'round'; g.lineWidth = 12; g.strokeStyle = '#1b1430'; g.strokeText(text, 128, 50); g.fillStyle = css; g.fillText(text, 128, 50); tagTex.needsUpdate = true;
@@ -10592,7 +10593,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     G.actors.forEach((a, i) => {
       if (!net) a.slot = i % 2; a.cat.setTeamColor(colors[a.team]); a.weapon = a.isPlayer ? loadout()[0] : 'W01'; a.cat.setWeapon(a.weapon); spawn(a); a.protectUntil = 0;
       const css = '#' + colors[a.team].getHexString();
-      const ally = !a.isPlayer && a.team === 0; a.cat.setTag(ally ? a.name : '', css, ally && !G.demo); // 第 69 版（Yen）：頭上只顯示隊友的名字，敵人不顯示
+      const rkFoe = G.mode === 'net' && !!(SC.net && SC.net.ranked) && !a.isPlayer && a.team !== 0; // Yen 11-21 23:14：積分賽也看得到對手名字
+      const ally = !a.isPlayer && a.team === 0; a.cat.setTag(ally || rkFoe ? a.name : '', css, (ally || rkFoe) && !G.demo); // 第 69 版（Yen）：頭上只顯示隊友的名字，敵人不顯示（積分賽例外）
     });
     if (G.mode === 'sandbox') makeTargets();
     G.hit = G.actors.concat(G.targets, boss ? BS.targets || (BS.target ? [BS.target] : []) : []);
@@ -12223,6 +12225,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const me = viewer(), foe = me && me.team !== a.team, inv = a.invisUntil > G.time; // 滾刷絕招：隱形（對手看不到，自己和隊友看到半透明）
         const swim = a.form === 'cat' && a.submerged && a.onGround, still = swim && a.speed < C.SUB_STILL_V; a.subStill = still ? (a.subStill || 0) + dt : 0; const hide = a.subStill > C.SUB_STILL_T; // 第 71 版（Yen）：潛墨不動時對手完全看不到，自己和隊友看到淡淡的
         a.cat.group.visible = (!(G.time < a.protectUntil && Math.floor(now * 14) % 2 === 0) || G.state !== 'play') && !(a.isPlayer && cam.zoom > 1.4) && !a.predKo && !(hide && foe);
+        if (foe && a.cat.tagOn) a.cat.tagMask(!swim && !inv); // 積分賽對手名牌：潛墨、隱形時不顯示，免得露出位置
         const hs = a.hitStop > 0; if (hs) { a.hitStop -= dt; a.cat.group.position.x += (Math.random() - 0.5) * 0.25; } // 被打頓一下：動畫停 50 毫秒、左右抖
         const hp = a.pred && G.time - a.pred.at < 0.8 ? a.pred.hp : a.hp; if (a.cat.setHurt) a.cat.setHurt(G.state !== 'play' || (G.mode === 'boss' && a.isPlayer) ? 0 : (1 - SC.clamp(hp, 0, 100) / 100) * 0.7, a.hitBy ? colors[a.hitBy.team] : null);
         if (hp < 40 && a.alive && Math.random() < dt * 5 && near(a) > 0.1 && a.cat.group.visible) SC.fx.burst(a.pos.x, a.visY + 2.2, a.pos.z, a.hitBy ? colors[a.hitBy.team] : colors[a.team], 1, 2, 0.32, -0.4); // 快倒了：身上滴墨
