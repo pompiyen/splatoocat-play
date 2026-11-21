@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='d0f1eae1c084';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='1247b47d9a40';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -359,6 +359,8 @@ button { font: inherit; color: inherit; }
 .net-list li.t0 { border-left-color: var(--sun); } .net-list li.t1 { border-left-color: var(--mint); } .net-list li.t2 { border-left-color: var(--pink); } .net-list li.t3 { border-left-color: #4e7bff; } .net-list li.t4 { border-left-color: #ff8a14; } .net-list li.t5 { border-left-color: #7fe01a; } .net-list li.tr { border-left-color: #fff; }
 .net-swap { margin-left: 6px; flex: none; width: 40px; height: 34px; border-radius: 10px; border: 3px solid #fff; background: var(--a); color: #fff; font: 900 20px/1 var(--f-body); cursor: pointer; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); }
 .net-swap:active { transform: translateY(2px); box-shadow: none; }
+.net-addfr { margin-left: 6px; flex: none; width: 40px; height: 34px; border-radius: 10px; border: 3px solid #fff; background: #2fbf71; color: #fff; font: 900 18px/1 var(--f-body); cursor: pointer; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); }
+.net-addfr:disabled { background: #8a80a8; cursor: default; }
 #pick-mix .dice { width: 32px; height: 32px; } #pick-mix .swap-ic { width: 22px; height: 18px; } .net-list li.wait { opacity: .7; }
 .net-list b { font-weight: 900; overflow-wrap: anywhere; } .net-list small { margin-left: auto; color: var(--dim); font-size: 12px; font-weight: 700; white-space: nowrap; }
 .net-face { width: 28px; height: 28px; flex: none; } .net-face svg { width: 100%; height: 100%; display: block; }
@@ -6061,8 +6063,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   N.profile = (p) => {
     const n = N.clean(p.n), k = KINDS.includes(p.k) ? p.k : 'maomao';
-    if (n === prof.n && k === prof.k && p.w === prof.w) return;
-    prof = { n, k, w: p.w }; if (N.state === 'lobby') send({ n: N.quick && !N.ranked ? '' : n, k, w: p.w }); // 配對房不送暱稱（積分賽例外：要登入，送帳號名字，Yen 11-22）
+    const u = typeof p.u === 'string' && /^[A-Za-z0-9]{6,40}$/.test(p.u) ? p.u : ''; // 登入的人帶帳號 id，房裡的人才能送好友邀請（對方要按接受，Yen 11-22）
+    if (n === prof.n && k === prof.k && p.w === prof.w && u === prof.u) return;
+    prof = { n, k, w: p.w, u }; if (N.state === 'lobby') send({ n: N.quick && !N.ranked ? '' : n, k, w: p.w, u }); // 配對房不送暱稱（積分賽例外：要登入，送帳號名字，Yen 11-22）
   };
   // 分隊（Yen 2026-11-19）：mix 'rand'＝開打時隨機分隊，'pick'＝房主指定（點玩家換隊，沒指定的照進房順序輪流）。asg：peer → 隊伍
   const hostPatch = () => ({ vc: N.vc ? 1 : 0, zb: N.zb ? 1 : 0, df: N.dif, r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
@@ -6160,7 +6163,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (clock - joinAt < 1.3) return;
       // 進房時間：一定排在已經在房間裡的人後面，不受各台裝置時鐘誤差影響
       let maxJ = 0; for (const p of peers) { const j = p.presence && p.presence.j; if (typeof j === 'number' && j > maxJ) maxJ = j; }
-      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : prof.n, k: prof.k, w: prof.w, r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build });
+      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : prof.n, k: prof.k, w: prof.w, u: prof.u || '', r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build });
     }
     const list = [];
     for (const p of peers) {
@@ -13100,6 +13103,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'), w = L.find((x) => x.peer === r.peer), t = w ? w.team : -1;
         f.className = 'net-face'; f.innerHTML = ui.face(w && !rand ? n.teamKinds(L, n.nTeams())[t] : r.kind); name.textContent = (r.nick || '玩家' + (i + 1)) + (r.isMe ? '（你）' : '');
         tag.textContent = r.old ? '🔄 舊版，請重新整理' : n.ranked ? (r.q.rd === 1 ? '⚡ 按了即刻開戰' : '還沒按') : (i === 0 ? '房主・' : '') + (!w ? '等下一場' : vc ? '我們這隊' : rand ? '開打時抽籤' : `第 ${t + 1} 隊`); li.className = !w ? 'wait' : rand ? 'tr' : 't' + t; li.append(f, name, tag);
+        { const A = SC.account, u = r.q && r.q.u; if (!r.isMe && u && A && A.user && A.friendReq && u !== A.user.uid && !A.isFriend(u)) { const fb = document.createElement('button'); fb.type = 'button'; fb.className = 'net-addfr'; const done = A.reqSent(u); fb.disabled = done; fb.textContent = done ? '✉️' : '➕'; fb.setAttribute('aria-label', done ? '已送出' : '加好友'); fb.title = fb.getAttribute('aria-label'); fb.onclick = () => { fb.disabled = true; fb.textContent = '✉️'; A.friendReq(u); }; li.append(fb); } } // Yen 11-22：房裡的人可以送好友邀請（對方要按接受）
         if (w && !rand && !vc && n.isHost) { const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'net-swap'; sw.dataset.peer = r.peer; sw.setAttribute('aria-label', '換隊'); sw.textContent = '⇄'; li.append(sw); } // 房主點這顆換隊
         ul.append(li);
       });
@@ -13120,7 +13124,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
       { const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '開始教學' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
-      SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon }); netSync();
+      SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); netSync();
     };
     // 選關：世界列 + 這個世界的五張魔王卡
     const worldOf = (st) => Math.ceil((+st || 1) / 5);
@@ -13197,14 +13201,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (SC.account && SC.account.onChange) SC.account.onChange(() => modeSync()); // 登入／登出：積分賽按鈕和說明跟著變
     SC.net.onBegin = (m) => { sel.mode = 'net'; sel.rk = !!SC.net.ranked; ui.modeSyncPicks(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; els['m-help'].hidden = true; G().start({ ...sel, mode: 'net', demo: false, net: m }); };
     function myNick() { const acc = SC.account && SC.account.user && SC.account.name ? SC.net.clean(SC.account.name()) : ''; return (sel.rk ? acc || nick : nick || acc) || ''; } // Yen 11-22：積分賽用帳號名字（積分賽沒有暱稱欄，以前都變成「玩家N」）
-    const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === 'all') lastRk = rule; SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
+    const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === 'all') lastRk = rule; SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
     on('net-quick', () => quick(sel.rk ? 'all' : 'turf')); on('net-quick2', () => quick(sel.rk ? '2v2' : 'knockout')); // Yen 22:01：外面只留一顆「隨機配對」（塗地戰）；擊倒戰、殭屍保衛戰在房間裡的規則那排選
     on('net-ready', () => SC.net.setReady(!SC.net.ready)); let lastRk = 'all'; ui.rankedAgain = () => quick(lastRk); // Yen 22:00：1 對 1、2 對 2，要大家按準備 // 積分賽（Yen 21:35）：塗地和擊倒合併成一個配對，每場隨機 // Yen 11-21：一般連線配對也分塗地戰、擊倒戰（這行的註解原本夾在中間，把準備鈕和 rankedAgain 吃掉了）
-    on('net-create', () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon }); SC.net.create(); });
-    on('net-join', () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon }); SC.net.open($('net-code').value); });
+    on('net-create', () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.create(); });
+    on('net-join', () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.open($('net-code').value); });
     on('net-leave', () => SC.net.leave());
     // 好友模式（09z_account.js）：一鍵加入朋友所在的房間。Q 開頭是配對房，其他是 4 位數房號
-    SC.net.joinFriend = (code) => { const b = $('pick-mode').querySelector('.pick[data-v="net"]'); if (b && modeKey() !== 'net') b.click(); if (SC.net.code) SC.net.leave(); SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon }); const q = /^Q(\d+)$/.exec(code); if (!code) SC.net.create(); else if (q) SC.net.quickJoin(+q[1]); else SC.net.open(code); }; // 沒房號＝自己開一間，朋友就能點你進來（Yen 11-21 21:34 側邊好友）
+    SC.net.joinFriend = (code) => { const b = $('pick-mode').querySelector('.pick[data-v="net"]'); if (b && modeKey() !== 'net') b.click(); if (SC.net.code) SC.net.leave(); SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); const q = /^Q(\d+)$/.exec(code); if (!code) SC.net.create(); else if (q) SC.net.quickJoin(+q[1]); else SC.net.open(code); }; // 沒房號＝自己開一間，朋友就能點你進來（Yen 11-21 21:34 側邊好友）
     $('net-code').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('net-join').click(); });
     $('net-nick').addEventListener('input', (e) => { nick = SC.net.clean(e.target.value); save(); });
     $('pick-mix').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setMix(b.dataset.v); netSync(); } });
@@ -14175,6 +14179,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const useFb = on && !!CONFIG.firebase;
 
   if (SC.i18n && SC.i18n.add) SC.i18n.add([
+    ['邀請你一起玩', 'invites you to play', 'いっしょにあそぼう', '같이 놀자고 해요'], ['想當你的好友', 'wants to be your friend', 'ともだちになりたい', '친구가 되고 싶어요'], ['接受', 'Accept', 'OK', '수락'], ['不要', 'No thanks', 'やめる', '거절'],
+    ['已邀請！', 'Invited!', 'さそったよ！', '초대했어요!'], ['邀請沒送出去', 'Invite not sent', '送れなかった', '초대를 못 보냈어요'], ['這種房間不能邀請', 'Can’t invite to this room', 'このへやにはさそえない', '이 방에는 초대할 수 없어요'], ['開好房間了，邀請中…', 'Room ready, inviting…', 'へやを作ってさそい中…', '방을 만들고 초대 중…'],
+    ['好友邀請送出了，等對方按接受。', 'Friend request sent. Waiting for them to accept.', 'ともだち申請を送ったよ。OKを待ってね。', '친구 신청을 보냈어요. 수락을 기다려요.'], ['你們已經是好友了', 'You are already friends', 'もうともだちだよ', '이미 친구예요'], ['加好友', 'Add friend', 'ともだち申請', '친구 추가'], ['已送出', 'Sent', '送ったよ', '보냈어요'],
     ['等朋友進來', 'Waiting for your friend', '友だちを待ってるよ', '친구를 기다려요'], ['開好房間了，等朋友進來', 'Room ready! Waiting for your friend', 'へやを作ったよ。友だちを待ってるよ', '방을 만들었어요. 친구를 기다려요'], ['在線的朋友', 'Friends online', 'オンラインの友だち', '온라인 친구'],
     ['💝 愛心贊助', '💝 Support', '💝 支援', '💝 후원'],
     ['📜 我的留言紀錄', '📜 My messages', '📜 わたしのメッセージ', '📜 내 메시지 기록'], ['還沒有送過留言。', 'No messages yet.', 'まだ送っていません。', '아직 보낸 메시지가 없어요.'],
@@ -14289,7 +14296,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     A.onAuthStateChanged(auth, (u) => {
       account.user = u ? { uid: u.uid, name: u.displayName || '', photo: u.photoURL || '', via: (u.providerData[0] || {}).providerId || '', email: (u.emailVerified && u.email) || '' } : null; cheer.inbox = null; cheer.mine = null; if (u) setTimeout(() => cheer.loadMine(), 1500);
       account.ready = true; emit(); paint();
-      if (u) { cloud.start(u.uid); friends.start(u.uid); } else { cloud.stop(); friends.stop(); }
+      if (u) { cloud.start(u.uid); friends.start(u.uid); asks.start(u.uid); } else { cloud.stop(); friends.stop(); asks.stop(); }
       if (frBtn) frBtn.hidden = !u;
       if (u) setTimeout(() => SC.ranked && SC.ranked.paint && SC.ranked.paint(), 1500);
     });
@@ -14423,12 +14430,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       try {
         const { db, F } = await load(); const hit = await F.getDoc(F.doc(db, 'codes', c));
         if (!hit.exists()) { fr.msg = '找不到這個好友碼。'; return; }
-        const fid = hit.data().uid; let n = '';
-        try { const p = await F.getDoc(F.doc(db, 'profiles', fid)); n = (p.exists() && p.data().n) || ''; } catch (e) {}
-        const b = F.writeBatch(db);
-        b.set(F.doc(db, 'friends', uid, 'list', fid), { n: n.slice(0, 16), at: F.serverTimestamp() });
-        b.set(F.doc(db, 'friends', fid, 'list', uid), { n: account.name().slice(0, 16), at: F.serverTimestamp() });
-        await b.commit(); fr.msg = '加好友成功！'; fr.ok = true; await refresh();
+        const fid = hit.data().uid; // Yen 11-22：加好友要對方按接受，這裡只送出邀請
+        if (fr.list.some((f) => f.uid === fid)) { fr.msg = '你們已經是好友了'; fr.ok = true; return; }
+        await asks.req(fid); fr.msg = '好友邀請送出了，等對方按接受。'; fr.ok = true;
       } catch (e) { fr.msg = '連不上，等一下再試一次。'; }
       finally { fr.busy = false; paint(); }
     };
@@ -14462,11 +14466,58 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const f = fr.list.find((x) => x.uid === b.dataset.u); if (!f) return;
       if (SC.audio && SC.audio.sfx && SC.audio.sfx.ui) { try { SC.audio.init(); SC.audio.sfx.ui(); } catch (e2) {} }
       if (f.r) { if (SC.net.code !== f.r) SC.net.joinFriend(f.r); return; }
-      if (SC.net.code) { say(b, '等朋友進來'); return; } // 已經在房間裡了：朋友會看到你在房間，點你就進來
-      SC.net.joinFriend(''); say(b, '開好房間了，等朋友進來'); setTimeout(() => friends.beat(), 1500);
+      // Yen 11-22：直接拉朋友進自己的房間（朋友那邊會跳出接受／拒絕）；還沒開房就先開一間
+      if (asks.roomOf()) { asks.invite(f.uid).then((ok) => say(b, ok ? '已邀請！' : '邀請沒送出去')); return; }
+      if (SC.net.code) { say(b, '這種房間不能邀請'); return; }
+      SC.net.joinFriend(''); say(b, '開好房間了，邀請中…');
+      let n = 0; const w = setInterval(() => { if (asks.roomOf()) { clearInterval(w); friends.beat(); asks.invite(f.uid).then((ok) => say(b, ok ? '已邀請！' : '邀請沒送出去')); } else if (++n > 30) clearInterval(w); }, 300);
     };
     return { paint };
   })();
+  // ---------- 好友邀請、進房邀請（Yen 2026-11-22 00:18）----------
+  // freq/{收}/from/{送}：加好友邀請，對方按 ✔ 才互相加（規則：friends 只能在有邀請時建立）。
+  // invites/{收}/from/{送}：拉朋友進自己的房間（只有好友能送），對方按 ✔ 就進房，✖ 就算了。比賽中不跳，打完才跳。
+  const asks = (() => {
+    let me = null, unsub = [], q = [], card = null, cur = null; const sent = new Set();
+    const roomOf = () => { const n = SC.net; return n && n.code && n.state === 'lobby' && /^(\d{4}|Q\d{1,2})$/.test(n.code) ? n.code : ''; };
+    const busy = () => !!(SC.game && SC.game.running && SC.game.mode !== 'demo' && !SC.game.demo);
+    const tsOf2 = (x) => (x && x.toMillis ? x.toMillis() : Date.now());
+    const set = (kind, docs) => { q = q.filter((x) => x.kind !== kind).concat(docs); if (cur && !q.some((x) => x.kind === cur.kind && x.from === cur.from)) hide(); show(); };
+    const start = async (uid) => {
+      stop(); me = uid;
+      try {
+        const { db, F } = await load(); if (me !== uid || !F.onSnapshot) return;
+        unsub.push(F.onSnapshot(F.collection(db, 'freq', uid, 'from'), (snap) => set('fr', snap.docs.map((d) => ({ kind: 'fr', from: d.id, n: d.data().n || '?', t: tsOf2(d.data().at) }))), () => {}));
+        unsub.push(F.onSnapshot(F.collection(db, 'invites', uid, 'from'), (snap) => set('inv', snap.docs.map((d) => ({ kind: 'inv', from: d.id, n: d.data().n || '?', r: d.data().r || '', t: tsOf2(d.data().at) })).filter((x) => Date.now() - x.t < 180000)), () => {}));
+      } catch (e) { /* 讀不到就算了 */ }
+    };
+    const stop = () => { unsub.forEach((f) => { try { f(); } catch (e) {} }); unsub = []; me = null; q = []; hide(); };
+    const req = async (to) => { if (!me || !to || to === me) return false; const { db, F } = await load(); await F.setDoc(F.doc(db, 'freq', to, 'from', me), { n: account.name().slice(0, 16), at: F.serverTimestamp() }); sent.add(to); return true; };
+    const invite = async (to) => { const r = roomOf(); if (!me || !r) return false; try { const { db, F } = await load(); await F.setDoc(F.doc(db, 'invites', to, 'from', me), { n: account.name().slice(0, 16), r, at: F.serverTimestamp() }); return true; } catch (e) { return false; } };
+    const drop = async (x) => { try { const { db, F } = await load(); await F.deleteDoc(F.doc(db, x.kind === 'fr' ? 'freq' : 'invites', me, 'from', x.from)); } catch (e) {} q = q.filter((y) => y !== x); };
+    const answer = async (yes) => {
+      const x = cur; if (!x) return; hide();
+      if (x.kind === 'fr' && yes) {
+        try { const { db, F } = await load(), b = F.writeBatch(db), at = F.serverTimestamp();
+          b.set(F.doc(db, 'friends', me, 'list', x.from), { n: String(x.n).slice(0, 16), at }); b.set(F.doc(db, 'friends', x.from, 'list', me), { n: account.name().slice(0, 16), at }); b.delete(F.doc(db, 'freq', me, 'from', x.from));
+          await b.commit(); q = q.filter((y) => y !== x); friends.refresh(); } catch (e) { await drop(x); }
+      } else { await drop(x); if (x.kind === 'inv' && yes && x.r && SC.net && SC.net.joinFriend) { if (SC.net.code !== x.r) SC.net.joinFriend(x.r); } }
+      setTimeout(show, 400);
+    };
+    const hide = () => { if (card) card.hidden = true; cur = null; };
+    const show = () => {
+      if (cur || !q.length || busy()) return; cur = q[0];
+      if (!card) { card = document.createElement('div'); card.className = 'frq'; card.setAttribute('role', 'dialog'); card.addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) answer(b.dataset.q === 'y'); }); (document.getElementById('app') || document.body).appendChild(card); }
+      const ini = Array.from(String(cur.n).trim())[0] || '?', inv = cur.kind === 'inv';
+      card.innerHTML = `<span class="frq-a" translate="no">${esc(ini)}</span><div class="frq-t"><b translate="no">${esc(cur.n)}</b><span>${inv ? '🎮 ' + esc(SC.tr ? SC.tr('邀請你一起玩') : '邀請你一起玩') : '🤝 ' + esc(SC.tr ? SC.tr('想當你的好友') : '想當你的好友')}</span></div><button type="button" class="frq-y" data-q="y" aria-label="${esc(SC.tr ? SC.tr('接受') : '接受')}">✔</button><button type="button" class="frq-n" data-q="n" aria-label="${esc(SC.tr ? SC.tr('不要') : '不要')}">✖</button>`;
+      card.hidden = false; if (SC.audio && SC.audio.sfx && SC.audio.sfx.ding) { try { SC.audio.sfx.ding(); } catch (e) {} }
+    };
+    setInterval(() => { if (!cur) show(); else if (busy()) { hide(); } }, 1000); // 比賽中先收起來，打完再跳
+    return { start, stop, req, invite, roomOf, sent };
+  })();
+  account.isFriend = (uid) => fr.list.some((f) => f.uid === uid);
+  account.friendReq = (uid) => (account.user ? asks.req(uid).catch(() => false) : (open('acc'), Promise.resolve(false)));
+  account.reqSent = (uid) => asks.sent.has(uid);
   account.friends = fr;
 
   // ---------- Xsolla（備用，CONFIG.xsolla 有填才出現）----------
@@ -14535,7 +14586,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .ac-me{display:flex;align-items:center;gap:12px;margin:10px 0}.ac-me img{width:52px;height:52px;border-radius:50%}
 .ac-err{color:#c2185b}
 .ac-row .tier{justify-content:space-between;padding:0 16px}.ac-row .tier b{color:#e5306b;font-size:19px}.ac-row .tier small{font-size:12px;color:#7a6f96;font-weight:700}.ac-row .tier:disabled{cursor:default;opacity:1;background:#fff8d6}
-.ac-row .pp{background:#ffc439}.ac-two{grid-template-columns:1fr 1fr}.ac-three{grid-template-columns:1fr 1fr 1fr}.ac-row .ap{background:#000;color:#fff;border-color:#000}.apw{display:inline-flex;align-items:center;gap:1px;font:600 20px/1 -apple-system,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.3px}.apw svg{width:19px;height:19px;margin-top:-4px}.ch-rep{background:#fff4d6;border-radius:10px;padding:6px 8px;margin-top:6px!important}.ch-rep b{display:block;font-size:12px;color:#b5651d}.ch-rep.new{outline:3px solid #ff4f7b}.ch-list li.paid{border-color:#ffc439}.ch-rb{margin-top:6px;font-size:13px;padding:4px 10px;border-radius:10px;border:2px solid #ddd;background:#fff;cursor:pointer}.ch-rf{display:grid;gap:6px;margin-top:6px}.ch-rf textarea{min-height:60px;border:2px solid #ddd;border-radius:10px;padding:6px;font:inherit;background:#fff;color:#1b1430}.ch-rf button{justify-self:end;padding:6px 14px;border-radius:10px;border:0;background:#ff4f7b;color:#fff;font-weight:700;cursor:pointer}.ch-mine{position:relative}.frr{position:absolute;right:max(6px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 5px;border-radius:22px;background:rgba(20,12,40,.55);border:2px solid rgba(255,255,255,.35)}.frr[hidden]{display:none}.frr-h{width:26px;height:26px;color:#fff;display:block}.frr-h svg{width:100%;height:100%}.frr-c{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:0;cursor:pointer;position:relative;color:#fff;width:58px}.frr-a{position:relative;width:46px;height:46px;border-radius:50%;background:hsl(var(--h),70%,58%);border:3px solid #fff;box-shadow:0 3px 0 #000;display:grid;place-items:center;font:700 20px/1 var(--f-display,sans-serif);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.35)}.frr-d{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#3ddc84;border:2px solid #fff}.frr-go{position:absolute;left:-8px;top:-8px;width:22px;height:22px;border-radius:50%;background:#3ddc84;color:#fff;font-size:11px;line-height:18px;border:2px solid #fff;animation:frrp 1s ease-in-out infinite}@keyframes frrp{50%{transform:scale(1.2)}}.frr-c.in .frr-a{border-color:#3ddc84}.frr-c small{font-size:11px;max-width:58px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.frr-tip{position:absolute;right:62px;top:8px;white-space:nowrap;background:#fff;color:#1b1430;font-style:normal;font-size:13px;font-weight:700;padding:5px 9px;border-radius:10px;box-shadow:0 3px 0 #000}@media (max-width:700px){#m-title.frr-on .title-card{padding-right:66px}}.ch-new{margin-left:6px;background:#ff4f7b;color:#fff;font-style:normal;font-size:11px;padding:2px 6px;border-radius:8px}.ac-row .give{background:#ff4f7b;color:#fff}.ppw{font-style:italic;font-weight:900;color:#003087;font-size:19px}.ppw i{color:#009cde}
+.ac-row .pp{background:#ffc439}.ac-two{grid-template-columns:1fr 1fr}.ac-three{grid-template-columns:1fr 1fr 1fr}.ac-row .ap{background:#000;color:#fff;border-color:#000}.apw{display:inline-flex;align-items:center;gap:1px;font:600 20px/1 -apple-system,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.3px}.apw svg{width:19px;height:19px;margin-top:-4px}.ch-rep{background:#fff4d6;border-radius:10px;padding:6px 8px;margin-top:6px!important}.ch-rep b{display:block;font-size:12px;color:#b5651d}.ch-rep.new{outline:3px solid #ff4f7b}.ch-list li.paid{border-color:#ffc439}.ch-rb{margin-top:6px;font-size:13px;padding:4px 10px;border-radius:10px;border:2px solid #ddd;background:#fff;cursor:pointer}.ch-rf{display:grid;gap:6px;margin-top:6px}.ch-rf textarea{min-height:60px;border:2px solid #ddd;border-radius:10px;padding:6px;font:inherit;background:#fff;color:#1b1430}.ch-rf button{justify-self:end;padding:6px 14px;border-radius:10px;border:0;background:#ff4f7b;color:#fff;font-weight:700;cursor:pointer}.ch-mine{position:relative}.frq{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top));transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#fff;color:#1b1430;border:4px solid #1b1430;border-radius:22px;box-shadow:0 5px 0 #000;padding:10px 12px;width:min(440px,calc(100vw - 24px));animation:frqIn .3s ease-out}.frq[hidden]{display:none}@keyframes frqIn{from{transform:translate(-50%,-30px);opacity:0}}.frq-a{flex:none;width:52px;height:52px;border-radius:50%;background:#ff9f1c;color:#fff;display:grid;place-items:center;font:700 24px/1 var(--f-display,sans-serif);border:3px solid #1b1430}.frq-t{flex:1;min-width:0;display:grid}.frq-t b{font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.frq-t span{font-size:14px}.frq-y,.frq-n{flex:none;width:56px;height:56px;border-radius:50%;border:3px solid #1b1430;color:#fff;font:700 26px/1 sans-serif;cursor:pointer;box-shadow:0 3px 0 #000}.frq-y{background:#2fbf71}.frq-n{background:#ff4f5e}.frr{position:absolute;right:max(6px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 5px;border-radius:22px;background:rgba(20,12,40,.55);border:2px solid rgba(255,255,255,.35)}.frr[hidden]{display:none}.frr-h{width:26px;height:26px;color:#fff;display:block}.frr-h svg{width:100%;height:100%}.frr-c{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:0;cursor:pointer;position:relative;color:#fff;width:58px}.frr-a{position:relative;width:46px;height:46px;border-radius:50%;background:hsl(var(--h),70%,58%);border:3px solid #fff;box-shadow:0 3px 0 #000;display:grid;place-items:center;font:700 20px/1 var(--f-display,sans-serif);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.35)}.frr-d{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#3ddc84;border:2px solid #fff}.frr-go{position:absolute;left:-8px;top:-8px;width:22px;height:22px;border-radius:50%;background:#3ddc84;color:#fff;font-size:11px;line-height:18px;border:2px solid #fff;animation:frrp 1s ease-in-out infinite}@keyframes frrp{50%{transform:scale(1.2)}}.frr-c.in .frr-a{border-color:#3ddc84}.frr-c small{font-size:11px;max-width:58px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.frr-tip{position:absolute;right:62px;top:8px;white-space:nowrap;background:#fff;color:#1b1430;font-style:normal;font-size:13px;font-weight:700;padding:5px 9px;border-radius:10px;box-shadow:0 3px 0 #000}@media (max-width:700px){#m-title.frr-on .title-card{padding-right:66px}}.ch-new{margin-left:6px;background:#ff4f7b;color:#fff;font-style:normal;font-size:11px;padding:2px 6px;border-radius:8px}.ac-row .give{background:#ff4f7b;color:#fff}.ppw{font-style:italic;font-weight:900;color:#003087;font-size:19px}.ppw i{color:#009cde}
 .ch-in{width:100%;min-height:76px;background:#fff;color:#1b1430;margin-top:10px;border:2px solid #1b1430;border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical;box-sizing:border-box}
 .ac-more{width:100%;margin-top:12px;min-height:44px;border-radius:12px;border:2px dashed #7a6f96;background:#faf8ff;font:inherit;font-size:14px;font-weight:800;color:#1b1430;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:0 12px;gap:8px;text-align:left}
 .ch-list{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}.ch-list li{border:2px solid #eee;border-radius:12px;padding:8px 10px}.ch-list li div{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.ch-list small{color:#7a6f96;font-size:11.5px;text-align:right}.ch-list p{margin:4px 0 0!important;white-space:pre-wrap;word-break:break-word}
