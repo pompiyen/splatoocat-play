@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='a8a58593273f';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='972ff7a5047a';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -9597,18 +9597,22 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 第 112 版（Yen 21:55：特殊殭屍再進化）：鍋蓋鼠（正面舉鍋蓋擋子彈，繞到旁邊打或丟墨水彈；血剩一半鍋蓋掉下來）、果凍鼠（打爆分成三隻小果凍）
     { k: 'lid', hp: 130, sp: 6.5, chew: 6, bite: 16, s: 1.1, body: 0xffc58a, belly: 0xfff0dc, lid: 1, spk: 1 },
     { k: 'jelly', hp: 160, sp: 6.5, chew: 6, bite: 14, s: 1.15, body: 0x6fe0d6, belly: 0xd8fffa, jelly: 1, spk: 1 },
+    // 第 113 版（Yen 22:36「結束前出一隻大 boss，要好笑」）：起司寶寶大王——穿尿布、咬奶嘴、頭戴起司王冠的超大殭屍鼠寶寶
+    { k: 'king', hp: 3600, sp: 3.4, chew: 18, bite: 25, s: 4.2, body: 0xb7e3a0, belly: 0xf2fbe6, cap: 260, wide: 1.2, sp2: 1, boss: 1 },
     { k: 'mini', hp: 22, sp: 11, chew: 2, bite: 8, s: 0.6, body: 0x6fe0d6, belly: 0xd8fffa, jelly: 1 },
   ];
   TY.forEach((t) => { if (t.sp2) t.spk = 1; }); // spk：特殊殭屍（有出場事件、打爆時有專屬演出）
   const SPKS = ['boom', 'jelly', 'tongue', 'charge', 'lid', 'spit'];
   // 第 112 版：頭暈（dz 秒）——舌頭鼠準備吐舌頭時被打到會咬到自己舌頭、衝撞鼠撞牆角卡住；頭暈不動、頭上轉星星、受到的傷害 ×1.5
+  const KING = { R: 34, wind: 1.6, burpW: 1.3, cd: 2.2, v: 20, len: 38, burpR: 20, tired: 3.4, tiredB: 2.2, weakK: 2.5, domeHit: 90 }; // 翻滾（紅箭頭）／打嗝（綠圈）之後會累得坐下來喘氣：這時肚臍亮靶，打它 ×2.5
   const DIZZY = { tongue: 2.2, wall: 3.2, bowl: 1.0, dmgK: 1.5, letGo: 40 };
   // 特別殭屍的數字：R 多近才出手、預告秒數、冷卻；HOLD 被抓住每秒扣血、最久幾秒、救人要站多近、站多久
-  const SPX = { tongue: { R: 16, wind: 0.9, cd: 4 }, charge: { R: 26, wind: 1.1, cd: 4, v: 26, len: 30 }, spit: { R: 24, wind: 0.8, cd: 5, fly: 0.9 }, boom: { R: 6, wind: 1.3, blast: 8 } };
+  const SPX = { tongue: { R: 22, wind: 0.75, cd: 2.5, twind: 0.45, tcd: 1.3, tlen: 11 }, charge: { R: 26, wind: 0.9, cd: 2.5, v: 26, len: 30, twind: 0.55, tcd: 0.8 }, spit: { R: 30, wind: 0.7, cd: 3.5, fly: 0.9, twind: 0.5, tcd: 4.5, tlen: 13 }, // 第 113 版（Yen 22:34「招式不夠明確，衝撞鼠一出來就要衝」）：附近沒有貓也一直出招（t 開頭＝走路時的招）
+  boom: { R: 6, wind: 1.3, blast: 8 } };
   const HOLD = { dps: 8, max: 7, mash: 0.4, R: 4.5, res: 0.5 }, PUD = { r: 4.2, life: 7, dps: 8 }, TONGUE = { out: 0.25, stay: 0.45, back: 0.75 };
   const TI = {}; TY.forEach((t, i) => { t.i = i; TI[t.k] = i; });
   // 強度（房主選的）：血量、數量、咬防護罩的速度
-  const DIF = { easy: { hp: 0.7, n: 0.7, chew: 0.55 }, normal: { hp: 1, n: 1, chew: 1 }, hard: { hp: 1.3, n: 1.15, chew: 1.2 }, crazy: { hp: 1.6, n: 1.3, chew: 1.4 }, hell: { hp: 2, n: 1.5, chew: 1.6 } };
+  const DIF = { easy: { hp: 0.7, n: 0.7, chew: 0.45 }, normal: { hp: 1, n: 1, chew: 1 }, hard: { hp: 1.3, n: 1.15, chew: 1.2 }, crazy: { hp: 1.6, n: 1.3, chew: 1.4 }, hell: { hp: 2, n: 1.5, chew: 1.6 } };
   // 固定時間的事件（秒）。圖示：horde 殭屍潮、balloon 氣球突襲、big 大胃王、dig 地底突襲、final 最後大潮
   const EVENTS = [ // 第 108 版：四種特別殭屍一次介紹一種（炸彈 → 舌頭 → 衝撞 → 吐毒）
     { t: 45, k: 'horde', n: 12, holes: 2 },
@@ -9622,11 +9626,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     { t: 175, k: 'horde', n: 15, holes: 4, run: 0.35 },
     { t: 195, k: 'spit', n: 3, holes: 2 },
     { t: 215, k: 'dig', n: 7 },
-    { t: 245, k: 'big', n: 2 },
+    { t: 240, k: 'big', n: 1 },
+    { t: 252, k: 'king', n: 1, holes: 1 },
     { t: 270, k: 'final', n: 22, holes: 8, run: 0.3, fat: 0.15, balloon: 6, sp: 1 },
   ];
   const WARN = 5;
-  const EV_NAME = { horde: '殭屍潮來了！', balloon: '氣球殭屍從天上來！', big: '大胃王來了！', dig: '殭屍從地底下鑽出來！', final: '最後大潮！撐住！', boom: '炸彈鼠來了！', tongue: '舌頭鼠來了！', charge: '衝撞鼠來了！', spit: '吐毒鼠來了！', lid: '鍋蓋鼠來了！', jelly: '果凍鼠來了！' };
+  const EV_NAME = { horde: '殭屍潮來了！', balloon: '氣球殭屍從天上來！', big: '大胃王來了！', dig: '殭屍從地底下鑽出來！', final: '最後大潮！撐住！', boom: '炸彈鼠來了！', tongue: '舌頭鼠來了！', charge: '衝撞鼠來了！', spit: '吐毒鼠來了！', lid: '鍋蓋鼠來了！', jelly: '果凍鼠來了！', king: '起司寶寶大王來了！' };
   Z.EVENTS = EVENTS; Z.duckD = 22 * S;
 
   let pudId = 1; Z.puds = []; const PUDP = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -9675,6 +9680,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       add(SPH(1.32, 16, 10, 0, TAU, 0, Math.PI / 2), 0xcfd8e3, [0, 3.65, 0.05], [1, 0.75, 1]); [[0.5, 4.4, 0.7], [-0.5, 4.4, 0.7], [0, 4.6, 0.2], [0.8, 4.1, -0.4], [-0.8, 4.1, -0.4]].forEach((q) => add(SPH(0.12, 6, 4), 0x7a8494, q)); add(BOX(1.6, 0.14, 0.3), 0xcfd8e3, [1.5, 3.85, 0.05]);
     }
     if (t.k === 'jelly' || t.k === 'mini') { add(SPH(0.42, 10, 8), 0xff4a6a, [0, 4.75, 0.1]); add(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 4), 0x4a8a3a, [0.12, 5.25, 0.1], null, [0, 0, -0.4]); add(SPH(0.14, 6, 4), WHITE, [0.15, 4.92, 0.4]); } // 果凍鼠：透明果凍身體、頭上一顆櫻桃
+    if (t.k === 'king') { // 起司寶寶大王：尿布、安全別針、奶嘴、三角起司王冠（有洞洞）
+      add(SPH(1.32, 18, 12, 0, TAU, Math.PI / 2, Math.PI / 2), WHITE, [0, 1.4, 0], [w * 1.0, 0.85, 0.98]); add(new THREE.TorusGeometry(1.3, 0.12, 6, 24), 0xf2f2f2, [0, 1.4, 0], [w, 0.98, 1], [Math.PI / 2, 0, 0]); add(BOX(0.5, 0.12, 0.06), 0xffd23f, [0.62, 1.15, 1.2], null, [0, 0, 0.2]); add(SPH(0.1, 6, 4), 0xff7a9a, [0.87, 1.2, 1.22]);
+      add(new THREE.TorusGeometry(0.42, 0.13, 8, 18), 0xff7ab8, [0, 2.75, 1.5]); add(new THREE.CylinderGeometry(0.62, 0.62, 0.14, 18), 0x9be7ff, [0, 2.75, 1.38], null, [Math.PI / 2, 0, 0]); add(SPH(0.24, 8, 6), 0x9be7ff, [0, 2.75, 1.25]);
+      add(new THREE.ConeGeometry(1.15, 1.7, 3), 0xffd23f, [0, 5.05, 0.05], null, [0, Math.PI / 6, 0]); [[0.3, 4.8, 0.55], [-0.35, 5.2, 0.4], [0.05, 5.55, 0.3]].forEach((q) => add(SPH(0.16, 6, 4), 0xe0a800, q, [1, 1, 0.4]));
+      add(SPH(0.2, 8, 6), 0xff9fb4, [0, 1.75, 1.22], [1, 1, 0.5]); // 肚臍
+    }
     if (t.k === 'big') { // 大胃王：圍兜、王冠、大叉子
       add(new THREE.ConeGeometry(1.1, 1.6, 3), WHITE, [0, 2.2, 1.05], [w, 1, 0.3], [Math.PI, 0, 0]); add(SPH(0.16, 8, 6), 0xff6b8b, [0, 2.75, 1.25]);
       add(new THREE.CylinderGeometry(0.75, 0.9, 0.55, 5, 1, true), 0xffd23f, [0, 4.55, 0.1]); [0, 1, 2, 3, 4].forEach((i) => { const a = (i / 5) * TAU; add(new THREE.ConeGeometry(0.2, 0.5, 4), 0xffd23f, [Math.cos(a) * 0.8, 5.0, 0.1 + Math.sin(a) * 0.8]); });
@@ -9692,7 +9703,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const t = TY[z.ty], mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55, emissive: 0xffffff, emissiveIntensity: 0 });
     const g = new THREE.Group(), body = new THREE.Mesh(GEO[z.ty], mat); body.castShadow = t.s > 1.2; body.scale.setScalar(t.s); g.add(body);
     let bal = null; if (t.fly) { bal = new THREE.Mesh(balloonGeo, new THREE.MeshStandardMaterial({ color: BCOL[z.id % BCOL.length], roughness: 0.25 })); bal.scale.setScalar(t.s); g.add(bal); }
-    const bar = new THREE.Group(), bg = new THREE.Mesh(barGeo, barBg), fg = new THREE.Mesh(barGeo, barFg); bg.scale.set(2.6, 0.45, 1); fg.scale.set(2.4, 0.3, 1); fg.position.z = 0.01; bg.renderOrder = 8; fg.renderOrder = 9; bar.add(bg, fg); bar.visible = false; bar.position.y = 5.4 * t.s + (t.fly ? 6 : 0.4); if (t.k === 'big') bar.scale.setScalar(2); g.add(bar);
+    const bar = new THREE.Group(), bg = new THREE.Mesh(barGeo, barBg), fg = new THREE.Mesh(barGeo, barFg); bg.scale.set(2.6, 0.45, 1); fg.scale.set(2.4, 0.3, 1); fg.position.z = 0.01; bg.renderOrder = 8; fg.renderOrder = 9; bar.add(bg, fg); bar.visible = false; bar.position.y = 5.4 * t.s + (t.fly ? 6 : 0.4); if (t.k === 'big') bar.scale.setScalar(2); if (t.k === 'king') bar.scale.setScalar(2.4); g.add(bar);
     let lid = null; if (t.lid) { lid = new THREE.Group(); const d = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.55, 0.2, 24), new THREE.MeshStandardMaterial({ color: 0xdfe6ee, metalness: 0.6, roughness: 0.25 })), k = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 8), new THREE.MeshStandardMaterial({ color: 0xff7a4a, roughness: 0.4 })), rim = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.09, 6, 28), new THREE.MeshStandardMaterial({ color: 0x9aa6b6, metalness: 0.5, roughness: 0.3 })); d.rotation.x = Math.PI / 2; rim.position.z = 0; k.position.z = 0.22; lid.add(d, k, rim); lid.position.set(0, 2.5 * t.s, 1.75 * t.s); lid.scale.setScalar(t.s); g.add(lid); } // 鍋蓋：擋在正前方
     if (t.jelly) { mat.transparent = true; mat.opacity = 0.8; mat.roughness = 0.12; }
     const mound = t.k === 'dig' ? new THREE.Mesh(moundGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 })) : null; if (mound) { mound.visible = false; scene.add(mound); }
@@ -9704,7 +9715,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   for (let k = 0; k < POOL; k++) { const tg = { isTarget: true, id: 'zz' + k, name: '殭屍鼠', team: 1, alive: false, pos: new V3(0, -99, 0), vel: new V3(), hy0: 0, hy1: 4.6, hr: 1.6, cy: 2.4, z: null, zb: true }; tg.zHurt = (amt, from, cause) => (tg.z ? hurt(tg.z, amt, from, cause) : false); Z.targets.push(tg); }
   const bindTarget = (z) => { const tg = Z.targets.find((q) => !q.z); if (!tg) return; tg.z = z; z.tg = tg; const t = TY[z.ty]; tg.hy0 = t.fly ? 0 : 0; tg.hy1 = 4.6 * t.s + (t.fly ? 1 : 0); tg.hr = 1.35 * t.s * (t.wide || 1); tg.cy = 2.3 * t.s; syncTarget(z); };
   const freeTarget = (z) => { if (!z.tg) return; z.tg.z = null; z.tg.alive = false; z.tg.pos.set(0, -99, 0); z.tg = null; };
-  const syncTarget = (z) => { const tg = z.tg; if (!tg) return; tg.alive = z.st === 'walk' || z.st === 'eat' || z.st === 'fly'; tg.prio = (z.st === 'eat' ? 16 : 0) + (z.act === 3 ? 34 : TY[z.ty].k === 'boom' && z.act === 1 ? 14 : 0) + (TY[z.ty].k === 'big' ? 22 : TY[z.ty].k === 'fat' ? 6 : 0) + (Math.hypot(z.x, z.z) < Z.duckD ? 10 : 0); tg.pos.set(z.x, z.y, z.z); tg.vel.set(z.vx || 0, 0, z.vz || 0); if (TY[z.ty].fly && z.st === 'fly') { tg.hy0 = 0; tg.hy1 = 10 * TY[z.ty].s; tg.hr = 2.2; tg.cy = 6; } }; // prio：電腦隊友先打在咬的、大胃王、靠近小鴨的
+  const syncTarget = (z) => { const tg = z.tg; if (!tg) return; tg.alive = z.st === 'walk' || z.st === 'eat' || z.st === 'fly'; tg.prio = (z.st === 'eat' ? 16 : 0) + (z.act === 3 ? 34 : TY[z.ty].k === 'boom' && z.act === 1 ? 14 : 0) + (TY[z.ty].k === 'king' ? 30 : TY[z.ty].k === 'big' ? 22 : TY[z.ty].k === 'fat' ? 6 : 0) + (Math.hypot(z.x, z.z) < Z.duckD ? 10 : 0); tg.pos.set(z.x, z.y, z.z); tg.vel.set(z.vx || 0, 0, z.vz || 0); if (TY[z.ty].fly && z.st === 'fly') { tg.hy0 = 0; tg.hy1 = 10 * TY[z.ty].s; tg.hr = 2.2; tg.cy = 6; } }; // prio：電腦隊友先打在咬的、大胃王、靠近小鴨的
 
   // ---------- 生殭屍 ----------
   function make(ty, x, z, o = {}) {
@@ -9764,7 +9775,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     damage(z, amt, from); return true;
   }
   function damage(z, amt, from) {
-    if (z.st === 'dead' || z.st === 'under') return; const t = TY[z.ty]; if (z.dz > 0) amt *= DIZZY.dmgK; z.hp -= amt; z.flash = 1;
+    if (z.st === 'dead' || z.st === 'under') return; const t = TY[z.ty]; if (z.dz > 0) amt *= DIZZY.dmgK; if (t.k === 'king' && z.act === 3) amt *= KING.weakK; z.hp -= amt; z.flash = 1;
     if (z.hp <= 0) { if (!z.predDead) pop(z, from, false); kill(z); if (t.k === 'boom' && !z.boomed) blastZombies(z, 120); if (t.k === 'jelly') splitJelly(z); return; }
     if (t.k === 'tongue' && z.act === 1 && from) { z.act = 0; z.cd = SPX.tongue.cd; z.dz = DIZZY.tongue; } // 第 112 版：準備吐舌頭時被打到——咬到自己的舌頭，頭暈
     if (t.k === 'tongue' && z.act === 3 && from && (z.holdDmg = (z.holdDmg || 0) + amt) >= DIZZY.letGo) { z.act = 0; z.cd = SPX.tongue.cd + 1; z.hc = null; z.dz = DIZZY.tongue; z.holdDmg = 0; } // 抓著貓時被打夠痛：鬆開舌頭、頭暈
@@ -9780,6 +9791,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ctx.burst(z.x, y, z.z, col, 18 + t.s * 8, 22, 0.6); ctx.burst(z.x, y, z.z, new THREE.Color(0xffffff), 12, 16, 0.5); ctx.ring(z.x, H(z.x, z.z) + 0.3, z.z, col, 3 + t.s * 2, 0.35);
     if (H(z.x, z.z) > -4) SC.ink.splat(0, z.x, H(z.x, z.z), z.z, 3 + t.s * 1.5);
     if (t.k === 'boom' && !z.boomed) { ctx.ring(z.x, H(z.x, z.z) + 0.4, z.z, col, SPX.boom.blast, 0.45); ctx.burst(z.x, y, z.z, new THREE.Color(0xffe14a), 26, 26, 0.6); SC.audio.sfx.bomb(); if (H(z.x, z.z) > -4) SC.ink.splat(0, z.x, H(z.x, z.z), z.z, SPX.boom.blast * 0.75); BCOL.forEach((c) => ctx.burst(z.x, y + 1, z.z, new THREE.Color(c), 8, 24, 0.7)); } // 先打爆炸彈鼠：在殭屍堆裡爆開，變成一大片我們的墨水和彩色紙花
+    if (t.k === 'king' && G().state === 'play') { SC.ui.banner('打倒起司寶寶大王了！', 2.4); SC.audio.sfx.koGot(); } // 每台都看得到
     if (t.spk || t.k === 'mini') { ghost(z, t); const c2 = { tongue: 0xff5f9e, charge: 0xffd23f, spit: 0xd9b8ff, lid: 0xdfe6ee, jelly: 0x6fe0d6, mini: 0x6fe0d6 }[t.k]; if (c2) ctx.burst(z.x, y + 1.5, z.z, new THREE.Color(c2), 16, 18, 0.7); if (near > 0.05 && SC.audio.sfx.squeak) SC.audio.sfx.squeak(); } // 第 112 版：特殊殭屍打爆時轉著圈圈飛起來、變小不見（好笑一點）
     if (z.m) z.m.g.visible = false; if (z.m && z.m.mound) z.m.mound.visible = false;
     if (near > 0.05) { SC.audio.sfx.zpop && SC.audio.sfx.zpop(near, t.s); }
@@ -9812,29 +9824,31 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const segD = (px, pz, ax, az, bx, bz) => { const dx = bx - ax, dz = bz - az, L = dx * dx + dz * dz || 1, k = SC.clamp(((px - ax) * dx + (pz - az) * dz) / L, 0, 1); return Math.hypot(px - (ax + dx * k), pz - (az + dz * k)); };
   function special(z, t, dt, g, cats) {
     const X = SPX[t.k]; z.cd -= dt;
+    if (t.k === 'king') return kingAct(z, t, dt, g, cats);
     if (z.act === 0) {
       if (z.cd > 0 && t.k !== 'boom') return false;
       const domeD = Math.hypot(z.x, z.z) - DOME_R, c = nearCat(z, X.R, cats);
+      if (!c && t.k !== 'boom' && Math.hypot(z.x, z.z) > DOME_R + 12) return travel(z, t, X); // 沒有貓：衝撞鼠一路衝刺、舌頭鼠往前甩舌頭、吐毒鼠邊走邊吐
       if (t.k === 'boom' ? !c && domeD > 3 : !c) return false;
-      z.act = 1; z.actT = 0; z.vx = z.vz = 0;
+      z.act = 1; z.actT = 0; z.vx = z.vz = 0; z.trav = 0;
       if (t.k === 'charge') { const dx = c.pos.x - z.x, dz = c.pos.z - z.z, d = Math.hypot(dx, dz) || 1; z.ax = z.x + (dx / d) * X.len; z.az = z.z + (dz / d) * X.len; }
       else if (c) { z.ax = c.pos.x + c.vel.x * 0.25; z.az = c.pos.z + c.vel.z * 0.25; } else { z.ax = z.x; z.az = z.z; }
       return true;
     }
     z.actT += dt; if (z.act < 3) z.yaw = Math.atan2(z.ax - z.x, z.az - z.z) || z.yaw;
-    if (z.act === 1) { if (z.actT >= X.wind) { z.act = 2; z.actT = 0; if (t.k === 'boom') boomGo(z); if (t.k === 'charge') z.n++; } return true; }
+    if (z.act === 1) { if (z.actT >= (z.trav ? X.twind : X.wind)) { z.act = 2; z.actT = 0; if (t.k === 'boom') boomGo(z); if (t.k === 'charge') z.n++; } return true; }
     if (t.k === 'tongue' && z.act === 2) { // 伸舌頭：捲到誰就抓住誰（各台自己判斷自己的貓，裁判這邊先照位置猜）
       tongueTip(z, _v); mouth(z, _mo);
-      if (z.actT < TONGUE.stay) for (const c of cats) { if (c.submerged || c.zbHold || g.time < c.protectUntil) continue; if (Math.abs(c.pos.y - z.y) < 6 && segD(c.pos.x, c.pos.z, _mo.x, _mo.z, _v.x, _v.z) < 1.7) { z.act = 3; z.actT = 0; z.hc = c; z.heldAt = g.time; if (!c.remote) grab(c, z, 1); break; } } // 這台自己的貓（電腦隊友、裁判自己）直接抓；別台的貓等那台說
-      if (z.act === 2 && z.actT >= TONGUE.back + 0.5) { z.act = 0; z.cd = X.cd; } return true;
+      if (z.actT < TONGUE.stay) for (const c of cats) { if (c.submerged || c.zbHold || g.time < c.protectUntil) continue; if (Math.abs(c.pos.y - z.y) < 6 && segD(c.pos.x, c.pos.z, _mo.x, _mo.z, _v.x, _v.z) < 1.7) { z.act = 3; z.actT = 0; z.hc = c; z.trav = 0; z.heldAt = g.time; if (!c.remote) grab(c, z, 1); break; } } // 這台自己的貓（電腦隊友、裁判自己）直接抓；別台的貓等那台說
+      if (z.act === 2 && z.actT >= TONGUE.back + 0.5) { z.act = 0; z.cd = z.trav ? X.tcd : X.cd; } return true;
     }
     if (t.k === 'charge' && z.act === 2) { // 直直衝過去；撞到貓就抱住
       const dx = z.ax - z.x, dz = z.az - z.z, d = Math.hypot(dx, dz), step = X.v * dt, nx = z.x + (dx / (d || 1)) * Math.min(step, d), nz = z.z + (dz / (d || 1)) * Math.min(step, d), hn = H(nx, nz);
-      if (hn - H(z.x, z.z) > 1.7) { z.act = 0; z.cd = X.cd; z.dz = DIZZY.wall; z.vx = z.vz = 0; return true; } // 第 112 版：衝去撞到牆——犀牛角插進牆裡拔不出來，頭暈 3 秒（這時候打它傷害 ×1.5）
-      if (d < 0.5 || hn < -3 || z.actT > 1.5) { z.act = 0; z.cd = X.cd; z.hop = 0.5; return true; }
+      if (hn - H(z.x, z.z) > 1.7) { z.act = 0; z.cd = X.cd; z.dz = DIZZY.wall; z.vx = z.vz = 0; phUp(z); return true; } // 第 112 版：衝去撞到牆——犀牛角插進牆裡拔不出來，頭暈 3 秒（這時候打它傷害 ×1.5）
+      if (d < 0.5 || hn < -3 || z.actT > 1.5) { z.act = 0; z.cd = z.trav ? X.tcd : X.cd; z.hop = 0.5; phUp(z); return true; }
       z.vx = (dx / d) * X.v; z.vz = (dz / d) * X.v; z.x = nx; z.z = nz; z.y = hn;
       for (const q of Z.list) { if (q === z || q.st !== 'walk' && q.st !== 'eat' || q.bowled === z.id * 100 + z.n) continue; if (Math.hypot(q.x - z.x, q.z - z.z) > 1.4 * (t.s + TY[q.ty].s) + 0.6) continue; // 衝過去會把擋路的殭屍撞飛（保齡球）
-        q.bowled = z.id * 100 + z.n; const sx = (q.x - z.x) * (dz / d) - (q.z - z.z) * (dx / d) > 0 ? 1 : -1; q.x += (dz / d) * sx * 3.5 + (dx / d) * 1.5; q.z += (-dx / d) * sx * 3.5 + (dz / d) * 1.5; q.hop = 0.6; if (q.st === 'eat' && !q.onTop) q.st = 'walk'; if (!TY[q.ty].cap) { damage(q, 30, null); if (q.st !== 'dead') q.dz = Math.max(q.dz || 0, DIZZY.bowl); } }
+        q.bowled = z.id * 100 + z.n; const sx = (q.x - z.x) * (dz / d) - (q.z - z.z) * (dx / d) > 0 ? 1 : -1; q.x += (dz / d) * sx * 3.5 + (dx / d) * 1.5; q.z += (-dx / d) * sx * 3.5 + (dz / d) * 1.5; q.hop = 0.6; if (q.st === 'eat' && !q.onTop) q.st = 'walk'; if (!TY[q.ty].cap && !z.trav) { damage(q, 30, null); if (q.st !== 'dead') q.dz = Math.max(q.dz || 0, DIZZY.bowl); } }
       return true; // 撞到貓：每台自己算（catFx），把貓撞飛，衝撞鼠繼續往前衝
     }
     if (z.act === 3) { // 抓著貓：那隻貓說「被抓住了」就一直抓著；沒人說就放開
@@ -9843,9 +9857,41 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (t.k === 'charge') { const dx = z.x - c.pos.x, dz = z.z - c.pos.z, d = Math.hypot(dx, dz) || 1, want = 1.2 * t.s + 0.9; z.x = c.pos.x + (dx / d) * want; z.z = c.pos.z + (dz / d) * want; z.y = H(z.x, z.z); }
       z.yaw = Math.atan2(c.pos.x - z.x, c.pos.z - z.z); z.vx = z.vz = 0; return true;
     }
-    if (t.k === 'spit' && z.act === 2) { if (z.actT >= X.fly) { z.act = 0; z.cd = X.cd; const h = H(z.ax, z.az); if (h > -3 && Z.puds.length < 8) Z.puds.push({ id: pudId++, x: z.ax, z: z.az, life: PUD.life }); } return true; }
+    if (t.k === 'spit' && z.act === 2) { if (z.actT >= X.fly) { z.act = 0; z.cd = z.trav ? X.tcd : X.cd; const h = H(z.ax, z.az); if (h > -3 && Z.puds.length < 8) Z.puds.push({ id: pudId++, x: z.ax, z: z.az, life: PUD.life }); } return true; }
     if (t.k === 'boom' && z.act === 2) return true;
     z.act = 0; return false;
+  }
+  const isBurp = (z) => Math.hypot(z.ax - z.x, z.az - z.z) < 3;
+  function kingAct(z, t, dt, g, cats) { // 起司寶寶大王：翻滾衝撞 → 坐下喘氣；打嗝震波 → 坐下喘氣
+    const X = KING; z.cd -= dt;
+    if (z.act === 0) {
+      if (z.cd > 0) return false; const r = Math.hypot(z.x, z.z), near = nearCat(z, X.burpR + 4, cats), far = nearCat(z, X.R, cats);
+      if (z.st === 'eat') { if (!near) return false; z.act = 1; z.actT = 0; z.ax = Math.round(z.x); z.az = Math.round(z.z); return true; } // 在咬防護罩：有貓靠近就打嗝把貓推開（之後坐下喘氣、停止咬）
+      z.kk = (z.kk || 0) + 1; z.act = 1; z.actT = 0; z.vx = z.vz = 0;
+      if (near && z.kk % 2 === 0) { z.ax = Math.round(z.x); z.az = Math.round(z.z); return true; } // 打嗝
+      let tx, tz; if (far) { tx = far.pos.x; tz = far.pos.z; } else { const [wx, wz] = wpOf(z); tx = wx; tz = wz; } const dx = tx - z.x, dz = tz - z.z, d = Math.hypot(dx, dz) || 1, L = Math.min(X.len, Math.max(12, (far ? d + 8 : d + 4)), r - DOME_R - 2 * t.s + 4);
+      z.ax = z.x + (dx / d) * Math.max(10, L); z.az = z.z + (dz / d) * Math.max(10, L); return true;
+    }
+    z.actT += dt; if (z.act < 3) z.yaw = Math.atan2(z.ax - z.x, z.az - z.z) || z.yaw;
+    if (z.act === 1) { const burp = isBurp(z); if (z.actT >= (burp ? X.burpW : X.wind)) { z.actT = 0; if (burp) { z.n++; z.act = 3; } else { z.act = 2; z.n++; } } return true; }
+    if (z.act === 2) { // 縮成一顆球滾過去
+      const dx = z.ax - z.x, dz = z.az - z.z, d = Math.hypot(dx, dz), step = X.v * dt, nx = z.x + (dx / (d || 1)) * Math.min(step, d), nz = z.z + (dz / (d || 1)) * Math.min(step, d), hn = H(nx, nz);
+      const domeHit = Math.hypot(nx, nz) < DOME_R + 1.2 * t.s;
+      if (d < 0.5 || hn < -3 || hn - H(z.x, z.z) > 2.5 || domeHit || z.actT > 2.6) { if (domeHit) { Z.shield -= X.domeHit * dif.chew; z.bonk = (z.bonk || 0) + 1; } z.ax = Math.round(z.x + Math.sin(z.yaw) * 10); z.az = Math.round(z.z + Math.cos(z.yaw) * 10); z.act = 3; z.actT = 0; z.vx = z.vz = 0; phUp(z); return true; }
+      z.vx = (dx / d) * X.v; z.vz = (dz / d) * X.v; z.x = nx; z.z = nz; z.y = hn; return true;
+    }
+    if (z.act === 3) { z.vx = z.vz = 0; if (z.actT >= (isBurp(z) ? X.tiredB : X.tired)) { z.act = 0; z.cd = X.cd; } return true; } // 坐下喘氣（弱點）
+    z.act = 0; return false;
+  }
+  const wpOf = (z) => { const ga = gateAng(z.br), r = z.ph === 0 ? 42 * S : z.ph === 1 ? 17 * S : 0; return [Math.cos(ga) * r, Math.sin(ga) * r]; };
+  function phUp(z) { const r = Math.hypot(z.x, z.z); if (z.ph === 0 && r < 44 * S) z.ph = 1; if (z.ph === 1 && r < 19 * S) z.ph = 2; }
+  function travel(z, t, X) { // 第 113 版：走在路上也一直出招，一眼就看得出是哪一種
+    const [wx, wz] = wpOf(z), dx = wx - z.x, dz = wz - z.z, d = Math.hypot(dx, dz) || 1, fx = dx / d, fz = dz / d;
+    if (t.k === 'charge') { let L = 0; const h0 = H(z.x, z.z), Lmax = Math.min(X.len, d + 6); for (let k = 2; k <= Lmax; k += 2) { const h = H(z.x + fx * k, z.z + fz * k); if (h < -3 || h - h0 > 1.5) break; L = k; } if (L < 8) { z.cd = 0.6; return false; } z.ax = z.x + fx * L; z.az = z.z + fz * L; } // 路上的衝刺先看前面有沒有牆、水，只衝到前面（不會一直撞牆）
+    else if (t.k === 'tongue') { const a = Math.atan2(fx, fz) + (Math.random() - 0.5) * 1.2; z.ax = z.x + Math.sin(a) * X.tlen; z.az = z.z + Math.cos(a) * X.tlen; }
+    else if (t.k === 'spit') { if (Z.puds.length >= 4) { z.cd = 1; return false; } z.ax = z.x + fx * X.tlen; z.az = z.z + fz * X.tlen; }
+    else return false;
+    z.act = 1; z.actT = 0; z.vx = z.vz = 0; z.trav = 1; return true;
   }
   function boomGo(z) { // 炸彈鼠自己爆炸：裁判扣防護罩、炸旁邊的殭屍；每台在畫面那邊各自算自己的貓
     z.n++; z.boomed = 1; const domeD = Math.hypot(z.x, z.z) - DOME_R; if (domeD < SPX.boom.blast * 0.6) Z.shield -= 60 * dif.chew;
@@ -9877,13 +9923,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         continue;
       }
       if (z.dz > 0) { z.dz -= dt; z.vx = z.vz = 0; if (z.st === 'eat') z.st = 'walk'; continue; } // 頭暈：原地轉圈圈，不走、不咬、不出招
-      if (t.sp2 && z.st === 'walk' && special(z, t, dt, g, cats)) continue;
+      if (t.sp2 && z.st === 'walk' && special(z, t, dt, g, cats) && !(z.trav && t.k !== 'charge' && z.act < 3)) continue; // 舌頭鼠、吐毒鼠路上出招時腳不停
+      if (t.k === 'king' && z.st === 'eat' && !(z.dz > 0) && kingAct(z, t, dt, g, cats)) continue;
       if (z.st === 'eat') { if (!z.onTop) { const d = Math.hypot(z.x, z.z), want = DOME_R + 1.0 * t.s * (t.wide || 1); if (d > want + 0.6) { z.st = 'walk'; z.ph = 2; } } Z.shield -= t.chew * dif.chew * dt; z.chewT += dt; continue; }
       // 走路：橋外面 → 城門裡 → 小鴨
-      const ga = gateAng(z.br), wp = z.ph === 0 ? [Math.cos(ga) * 42 * S, Math.sin(ga) * 42 * S] : z.ph === 1 ? [Math.cos(ga) * 17 * S, Math.sin(ga) * 17 * S] : [0, 0];
-      const own = SC.ink.ownerAt(z.x, z.z), sp = t.sp * WALK_K * (own === 1 ? 0.55 : 1) * (z.hop > 0 ? 0.4 : 1);
+      let wp = wpOf(z), chase = null; if (t.k === 'boom') { chase = nearCat(z, 36, cats); if (chase) wp = [chase.pos.x, chase.pos.z]; } // 第 113 版：炸彈鼠看到貓就點著引信衝過去追
+      const own = SC.ink.ownerAt(z.x, z.z), sp = t.sp * WALK_K * (own === 1 ? 0.55 : 1) * (z.hop > 0 ? 0.4 : 1) * (chase ? 1.35 : 1); z.chase = chase ? 1 : 0;
       const d = steer(z, wp[0], wp[1], sp, dt); z.y = H(z.x, z.z);
-      if (z.ph === 0 && (d < 5 || Math.hypot(z.x, z.z) < 40 * S)) z.ph = 1; else if (z.ph === 1 && (d < 4 || Math.hypot(z.x, z.z) < 17 * S)) z.ph = 2;
+      if (z.ph === 0 && (!chase && d < 5 || Math.hypot(z.x, z.z) < 40 * S)) z.ph = 1; else if (z.ph === 1 && (!chase && d < 4 || Math.hypot(z.x, z.z) < 17 * S)) z.ph = 2;
       if (z.ph === 2 && Math.hypot(z.x, z.z) <= DOME_R + 1.0 * t.s * (t.wide || 1)) { z.st = 'eat'; z.vx = z.vz = 0; }
       // 大胃王：附近有貓就跺腳（先亮紅圈 0.9 秒）
       if (t.k === 'big') { z.stompT -= dt; if (z.warn > 0) { z.warn -= dt; if (z.warn <= 0) { z.warn = 0; z.stompN++; } } else if (z.stompT <= 0) { z.stompT = 5.5; if (g.actors.some((a) => a.alive && Math.hypot(a.pos.x - z.x, a.pos.z - z.z) < 20)) z.warn = 0.9; } }
@@ -9896,9 +9943,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 結束
     if (!Z.end) { if (Z.shield <= 0) { Z.shield = 0; Z.end = 2; } else if (now >= LEN) Z.end = 1; }
   }
-  function pickHoles(E) { const n = E.holes || 0, s = (Math.random() * 8) | 0; if (n >= 8) return [0, 1, 2, 3, 4, 5, 6, 7]; if (n === 4) return [0, 2, 4, 6].map((h) => (h + (s % 2)) % 8); if (n === 2) return [s, (s + 4) % 8]; if (E.k === 'big') return E.n === 2 ? [s, (s + 4) % 8] : [s]; return []; }
+  function pickHoles(E) { const n = E.holes || 0, s = (Math.random() * 8) | 0; if (n >= 8) return [0, 1, 2, 3, 4, 5, 6, 7]; if (n === 4) return [0, 2, 4, 6].map((h) => (h + (s % 2)) % 8); if (n === 2) return [s, (s + 4) % 8]; if (E.k === 'big' || E.k === 'king') return E.n === 2 ? [s, (s + 4) % 8] : [s]; return []; }
   function fire(E) {
-    const holes = Z.evHoles || [], n = Math.round(E.n * (E.k === 'big' ? 1 : dif.n)); Z.burstQ = Z.burstQ || []; Z.burstT = 0;
+    const holes = Z.evHoles || [], n = Math.round(E.n * (E.k === 'big' || E.k === 'king' ? 1 : dif.n)); Z.burstQ = Z.burstQ || []; Z.burstT = 0;
     if (E.k === 'horde' || E.k === 'final') { for (let i = 0; i < n; i++) { const r = Math.random(), ty = E.fat && r < E.fat ? TI.fat : E.run && r < (E.fat || 0) + E.run ? TI.run : TI.walk; Z.burstQ.push([ty, holes[i % holes.length]]); } }
     if (E.k === 'big') holes.forEach((h) => spawnAt(TI.big, h));
     const nb = E.k === 'balloon' ? n : E.balloon || 0; for (let i = 0; i < nb; i++) spawnFly(Math.random() * TAU);
@@ -9929,6 +9976,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (z.st !== 'walk' || z.predDead) continue; const k = TY[z.ty].k;
         if (k === 'tongue' && z.act === 3 && z.actT < 0.8 && !heldBy(z)) { mouth(z, _mo); if (Math.abs(a.pos.y - z.y) < 6 && segD(a.pos.x, a.pos.z, _mo.x, _mo.z, z.ax, z.az) < 1.8) { grab(a, z, 1); break; } } // 裁判那邊已經伸完舌頭、先猜捲到了：這台的貓在舌頭上就算被捲到
         if (k === 'tongue' && z.act === 2 && z.actT < TONGUE.stay) { const p = tongueTip(z, _v); mouth(z, _mo); if (p > 0.2 && Math.abs(a.pos.y - z.y) < 6 && segD(a.pos.x, a.pos.z, _mo.x, _mo.z, _v.x, _v.z) < 1.6) { grab(a, z, 1); break; } }
+        if (k === 'king' && z.act === 2 && (a.zbRam || 0) !== z.id * 100 + z.n && Math.abs(a.pos.y - z.y) < 8 && Math.hypot(a.pos.x - z.x, a.pos.z - z.z) < 1.3 * TY[z.ty].s + 1.5) { ram(a, z); break; } // 大王滾過來：撞飛
         if (k === 'charge' && z.act === 2 && (a.zbRam || 0) !== z.id * 100 + z.n && Math.abs(a.pos.y - z.y) < 5 && Math.hypot(a.pos.x - z.x, a.pos.z - z.z) < 1.4 * TY[z.ty].s + 1.3) { ram(a, z); break; } // Yen 21:53：衝撞鼠改成把貓撞飛（不抱住）
       }
       const h = a.zbHold;
@@ -9976,6 +10024,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (z.m) z.m.g.visible = false; if (z.fx) Object.values(z.fx).forEach((o) => (o.visible = false));
     g.actors.forEach((a) => { if (!a.alive || a.remote || a.gone || a.isTarget || a.submerged) return; const dx = a.pos.x - z.x, dz = a.pos.z - z.z, d = Math.hypot(dx, dz); if (d > R || Math.abs(a.pos.y - y) > 7) return; ctx.bite(a, 40 * dK(), z, true); if (a.alive && !a.zbHold) { a.vel.set((dx / (d || 1)) * 18, 16, (dz / (d || 1)) * 18); a.onGround = false; a.launchT = 0.35; } });
   }
+  function burpFx(z) { // 起司寶寶大王打嗝：一大圈黃綠色臭臭震波，把附近的貓推開
+    const g = G(), y = H(z.x, z.z), R = KING.burpR; ctx.ring(z.x, y + 0.4, z.z, new THREE.Color(0xc8f06a), R, 0.6); ctx.burst(z.x, y + 3 * TY[z.ty].s, z.z, new THREE.Color(0xd8f59a), 50, 34, 0.9); ctx.burst(z.x, y + 3 * TY[z.ty].s, z.z, new THREE.Color(0xffd23f), 20, 26, 0.7);
+    const nr = ctx.near(z.x, y, z.z); if (nr > 0.05) { (SC.audio.sfx.zburp || SC.audio.sfx.boing)(); ctx.shake(nr * 0.7); }
+    g.actors.forEach((a) => { if (!a.alive || a.remote || a.gone || a.isTarget) return; const dx = a.pos.x - z.x, dz = a.pos.z - z.z, d = Math.hypot(dx, dz); if (d > R || a.pos.y > y + 12) return; ctx.bite(a, 12 * dK(), z, true); if (!a.alive) return; a.zbHold = null; a.vel.set((dx / (d || 1)) * 30, 24, (dz / (d || 1)) * 30); a.onGround = false; a.launchT = 0.45; a.climb = null; });
+  }
   function stomp(z) {
     const g = G(), y = H(z.x, z.z), R = 17; ctx.ring(z.x, y + 0.3, z.z, new THREE.Color(0xffd23f), R, 0.5); ctx.burst(z.x, y + 1, z.z, new THREE.Color(0xb07a4a), 40, 30, 0.8); const nr = ctx.near(z.x, y, z.z); if (nr > 0.05) { SC.audio.sfx.bomb(); ctx.shake(nr * 0.7); }
     g.actors.forEach((a) => { if (!a.alive || a.remote || a.gone) return; const dx = a.pos.x - z.x, dz = a.pos.z - z.z, d = Math.hypot(dx, dz); if (d > R || a.pos.y > y + 8) return; ctx.bite(a, 40, z, true); a.vel.set((dx / (d || 1)) * 24, 24, (dz / (d || 1)) * 24); a.onGround = false; a.launchT = 0.4; });
@@ -9983,18 +10036,26 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // ---------- 畫面 ----------
   const RED = new THREE.Color(0xff5a7a);
-  const ghosts = [];
+  const ghosts = []; let lidDingAt2 = 0;
   function ghost(z, t) { // 打爆的特殊殭屍：一個分身轉圈飛起來再縮小不見
-    if (!scene || G().state === 'ended') return; const o = new THREE.Mesh(GEO[z.ty], new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.5, transparent: true, depthWrite: false })); o.position.set(z.x, z.y, z.z); o.rotation.y = z.yaw; o.scale.setScalar(t.s); scene.add(o); ghosts.push({ g: o, t: 0, vy: 15, s: t.s, spin: (Math.random() < 0.5 ? -1 : 1) * 13 });
+    if (!scene || G().state === 'ended') return; const o = new THREE.Mesh(GEO[z.ty], new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.5, transparent: true, depthWrite: false })); o.position.set(z.x, z.y, z.z); o.rotation.y = z.yaw; o.scale.setScalar(t.s); scene.add(o); ghosts.push({ g: o, t: 0, vy: 15, s: t.s, spin: (Math.random() < 0.5 ? -1 : 1) * 13, king: t.k === 'king' ? 1 : 0, vx: 0, vz: 0, sq: 0 });
   }
-  function ghostTick(dt) { for (let i = ghosts.length - 1; i >= 0; i--) { const q = ghosts[i]; q.t += dt; q.vy -= 36 * dt; q.g.position.y += q.vy * dt; q.g.rotation.y += q.spin * dt; q.g.rotation.z = Math.sin(q.t * 22) * 0.45; const k = Math.max(0, 1 - q.t / 0.85); q.g.scale.setScalar(q.s * (0.35 + 0.65 * k)); q.g.material.opacity = Math.min(1, k * 1.6); if (q.t > 0.85) { scene.remove(q.g); q.g.material.dispose(); ghosts.splice(i, 1); } } }
+  function ghostTick(dt) { for (let i = ghosts.length - 1; i >= 0; i--) { const q = ghosts[i]; if (q.king) { kingGhost(q, dt, i); continue; } q.t += dt; q.vy -= 36 * dt; q.g.position.y += q.vy * dt; q.g.rotation.y += q.spin * dt; q.g.rotation.z = Math.sin(q.t * 22) * 0.45; const k = Math.max(0, 1 - q.t / 0.85); q.g.scale.setScalar(q.s * (0.35 + 0.65 * k)); q.g.material.opacity = Math.min(1, k * 1.6); if (q.t > 0.85) { scene.remove(q.g); q.g.material.dispose(); ghosts.splice(i, 1); } } }
+  function kingGhost(q, dt, i) { // 大王被打倒：像洩氣的氣球一樣「噗嚕嚕」到處亂飛、越來越小，最後「啵」變成彩色紙花和起司塊
+    q.t += dt; const T = 3.0, k = Math.min(1, q.t / T); if ((q.turnT = (q.turnT || 0) - dt) <= 0) { q.turnT = 0.25; const a = Math.random() * TAU; q.vx = Math.cos(a) * 26; q.vz = Math.sin(a) * 26; q.vy = 6 + Math.random() * 10; }
+    const p = q.g.position; p.x += q.vx * dt; p.z += q.vz * dt; p.y = Math.max(p.y + q.vy * dt, H(p.x, p.z) + 2); q.g.rotation.y += 9 * dt; q.g.rotation.x = Math.sin(q.t * 13) * 0.6; q.g.scale.setScalar(q.s * (1 - k * 0.8));
+    if ((q.sq -= dt) <= 0) { q.sq = 0.16; const n = ctx.near(p.x, p.y, p.z); if (n > 0.03 && SC.audio.sfx.squeak) SC.audio.sfx.squeak(); ctx.burst(p.x, p.y, p.z, new THREE.Color(0xd8f59a), 4, 8, 0.4); }
+    if (q.t >= T) { BCOL.concat([0xffd23f, 0xffd23f]).forEach((c) => ctx.burst(p.x, p.y, p.z, new THREE.Color(c), 14, 30, 0.9)); SC.audio.sfx.firework && SC.audio.sfx.firework(); SC.audio.sfx.pop && SC.audio.sfx.pop(); scene.remove(q.g); q.g.material.dispose(); ghosts.splice(i, 1); }
+  }
   const STAR = new THREE.OctahedronGeometry(0.42, 0), starMat = new THREE.MeshBasicMaterial({ color: 0xffe14a }), sparkMat = new THREE.MeshBasicMaterial({ color: 0xfff3a0 });
   function extraFx(z, t, m, now, dt) { // 第 112 版：頭暈星星、鍋蓋、果凍抖抖、炸彈引信火花
     const st = fxOf(z, 'dz', () => { const q = new THREE.Group(); for (let i = 0; i < 3; i++) { const s = new THREE.Mesh(STAR, starMat); s.userData.i = i; q.add(s); } return q; });
     st.visible = z.dz > 0; if (st.visible) { st.position.set(z.x, m.g.position.y + 5.3 * t.s + 0.6, z.z); st.children.forEach((s) => { const a = now * 6 + (s.userData.i / 3) * TAU; s.position.set(Math.cos(a) * 1.3 * t.s, Math.sin(now * 9 + s.userData.i) * 0.2, Math.sin(a) * 1.3 * t.s); s.rotation.y = now * 8; }); m.body.rotation.z = Math.sin(now * 9) * 0.3; m.body.rotation.x = -0.1; if (t.k === 'charge') m.body.rotation.x = 0.6; }
     if (m.lid) { const on = lidOn(z); if (z.lidWas && !on) { const q = { g: m.lid.clone(), t: 0, vy: 18, s: t.s, spin: 16 }; q.g.position.set(z.x, z.y + 2.5 * t.s, z.z); q.g.material = new THREE.MeshStandardMaterial({ color: 0xdfe6ee, metalness: 0.6, roughness: 0.25, transparent: true }); q.g.children.forEach((c) => (c.material = q.g.material)); scene.add(q.g); ghosts.push(q); const n = ctx.near(z.x, z.y, z.z); if (n > 0.08) SC.audio.sfx.metal && SC.audio.sfx.metal(); } z.lidWas = on; m.lid.visible = on; if (on) { z.lidHitT = Math.max(0, (z.lidHitT || 0) - dt); m.lid.rotation.z = Math.sin(now * 60) * 0.25 * (z.lidHitT / 0.25); m.lid.position.y = 2.5 * t.s + Math.sin(now * 5 + z.id) * 0.15; } } // 鍋蓋掉下來：轉著飛走
-    if (t.jelly) { const k = Math.sin(now * 7 + z.id) * 0.08; m.body.scale.x *= 1 + k; m.body.scale.z *= 1 + k; m.body.scale.y *= 1 - k; }
-    if (t.k === 'boom') { const f = fxOf(z, 'fs', () => new THREE.Mesh(BALL, sparkMat)); f.visible = z.act < 2; f.position.set(z.x, m.g.position.y + 6.3 * t.s * (m.body.scale.y / t.s), z.z); f.scale.setScalar(0.22 + Math.random() * 0.22); if (Math.random() < dt * 10) ctx.burst(f.position.x, f.position.y, f.position.z, new THREE.Color(0xffd23f), 2, 6, 0.25); }
+    if (t.jelly) { const ph = now * 5.5 + z.id, k = Math.sin(ph * 2) * 0.14; m.body.scale.x *= 1 + k; m.body.scale.z *= 1 + k; m.body.scale.y *= 1 - k; if (z.st === 'walk' && !(z.dz > 0)) m.g.position.y += Math.abs(Math.sin(ph)) * 1.7 * t.s; } // 第 113 版：果凍鼠一路彈跳、抖得更大
+    if (m.lid && lidOn(z) && z.st === 'walk' && !(z.dz > 0)) { const ph = (now * 0.8 + z.id * 0.37) % 1; if (ph < 0.12) { const k = Math.sin((ph / 0.12) * Math.PI); m.lid.position.z = 1.75 * t.s + k * 0.8; m.lid.rotation.x = -k * 0.3; if (!z.clang) { z.clang = 1; const fx = Math.sin(z.yaw), fz = Math.cos(z.yaw); ctx.burst(z.x + fx * 2.2 * t.s, z.y + 2.6 * t.s, z.z + fz * 2.2 * t.s, new THREE.Color(0xfff2a8), 8, 14, 0.35); const n = ctx.near(z.x, z.y, z.z); if (n > 0.3 && now - (lidDingAt2 || 0) > 0.5) { lidDingAt2 = now; SC.audio.sfx.metal && SC.audio.sfx.metal(); } } } else { z.clang = 0; m.lid.position.z = 1.75 * t.s; m.lid.rotation.x = 0; } } // 鍋蓋鼠一邊走一邊「噹」敲鍋蓋
+    if (t.k === 'boom' && z.st === 'walk' && z.act === 0 && Math.hypot(z.vx, z.vz) > 11) { m.body.rotation.x = 0.45; if (Math.random() < dt * 14) ctx.burst(z.x, z.y + 0.4, z.z, new THREE.Color(0xd9c7a0), 2, 8, 0.3); } // 炸彈鼠追貓時往前衝、腳下冒煙
+    if (t.k === 'boom') { const f = fxOf(z, 'fs', () => new THREE.Mesh(BALL, sparkMat)); f.visible = z.act < 2; f.position.set(z.x, m.g.position.y + 6.3 * t.s * (m.body.scale.y / t.s), z.z); f.scale.setScalar(0.32 + Math.random() * 0.3); if (Math.random() < dt * 18) ctx.burst(f.position.x, f.position.y, f.position.z, new THREE.Color(0xffd23f), 2, 6, 0.25); }
   }
   let chewX = 0, chewZ = 0;
   function render(dt, cam) {
@@ -10002,6 +10063,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     let chewing = 0; chewX = chewZ = 0;
     for (const z of Z.list) {
       const m = z.m; if (!m) continue; const t = TY[z.ty];
+      if (t.k === 'king' && z.n !== z.nSeen) { z.nSeen = z.n; if (isBurp(z)) burpFx(z); else { const n = ctx.near(z.x, z.y, z.z); if (n > 0.05) SC.audio.sfx.boing(); } }
       if (t.k === 'boom' && z.n !== z.nSeen) { z.nSeen = z.n; z.boomed = 1; boomFx(z); } // 炸彈鼠爆炸（每台各自演、各自算自己的貓）
       if (!auth() && z.act > 0) z.actT += dt;
       if ((t.sp2 || z.fx) && (z.st !== 'walk' || z.predDead)) fxOff(z);
@@ -10044,7 +10106,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function specialFx(z, t, m, now, w) {
     const pulse = Math.max(0, Math.sin(now * 18)), wind = z.act === 1;
     fxOff(z); if (G().state === 'ended') return;
-    if (wind || (t.k === 'boom' && z.act > 0)) { m.mat.emissive.setHex(t.k === 'tongue' ? 0xff5f9e : t.k === 'spit' ? 0x9be86a : 0xff4a5a); m.mat.emissiveIntensity = 0.25 + pulse * 0.5; m.body.rotation.x = -0.12; }
+    if (wind || (t.k === 'boom' && z.act > 0)) { m.mat.emissive.setHex(t.k === 'tongue' ? 0xff5f9e : t.k === 'spit' || t.k === 'king' && isBurp(z) ? 0x9be86a : 0xff4a5a); m.mat.emissiveIntensity = 0.25 + pulse * 0.5; m.body.rotation.x = -0.12; }
     if (t.k === 'tongue') {
       if (wind) { groundRing(z, 'r', z.ax, z.az, 2.2 + pulse * 0.4, 0xff5f9e, 0.75); const k = 1 + Math.min(1, z.actT / 0.6) * 0.18; m.body.scale.set(t.s * k, t.s, t.s * k); } // 鼓起臉頰、落點亮粉紅圈
       let tip = null; mouth(z, _mo);
@@ -10057,6 +10119,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (z.act === 1 || z.act === 2) groundRing(z, 'r', z.ax, z.az, PUD.r + pulse * 0.4, 0xb27cff, 0.7);
       if (wind) { const k = 1 + Math.min(1, z.actT / 0.5) * 0.2; m.body.scale.set(t.s * k, t.s, t.s * k); }
       if (z.act === 2) { const p = SC.clamp(z.actT / SPX.spit.fly, 0, 1); mouth(z, _mo); const gy = H(z.ax, z.az) + 0.6, B = fxOf(z, 'g', () => new THREE.Mesh(BALL, new THREE.MeshStandardMaterial({ color: 0xb27cff, roughness: 0.3, emissive: 0x6a2fd0, emissiveIntensity: 0.3 }))); B.visible = true; B.scale.setScalar(0.8); B.position.set(SC.lerp(_mo.x, z.ax, p), SC.lerp(_mo.y, gy, p) + Math.sin(p * Math.PI) * 8, SC.lerp(_mo.z, z.az, p)); }
+    } else if (t.k === 'king') { // 起司寶寶大王：紅箭頭＝要滾過來、綠圈＝要打嗝、坐下喘氣時肚臍出現靶子
+      const burp = isBurp(z);
+      if (z.act === 1 && !burp) { const A = fxOf(z, 'a', () => new THREE.Mesh(ARROW, flat(0xff4a5a))); A.visible = true; const dx = z.ax - z.x, dz = z.az - z.z, L = Math.hypot(dx, dz) || 1; A.position.set(z.x, H(z.x, z.z) + 0.4, z.z); A.rotation.y = Math.atan2(dx, dz); A.scale.set(2.6 * t.s, 1, L); A.material.opacity = 0.35 + pulse * 0.45; m.body.rotation.x = 0.5; if (Math.random() < 0.4) ctx.burst(z.x - Math.sin(z.yaw) * 4, z.y + 0.5, z.z - Math.cos(z.yaw) * 4, new THREE.Color(0xb07a4a), 3, 10, 0.4); }
+      if (z.act === 1 && burp) { groundRing(z, 'r', z.x, z.z, KING.burpR + pulse * 0.8, 0xc8f06a, 0.4 + pulse * 0.4); const k = 1 + Math.min(1, z.actT / KING.burpW) * 0.3; m.body.scale.set(t.s * k, t.s * (1 + (k - 1) * 0.6), t.s * k); m.body.rotation.x = -0.2; m.mat.emissive.setHex(0xc8f06a); }
+      if (z.act === 2) { m.body.rotation.x = now * 16; m.g.position.y += 1.2 * t.s; if (Math.random() < 0.6) ctx.burst(z.x, z.y + 0.5, z.z, new THREE.Color(0xb07a4a), 3, 10, 0.35); }
+      if (z.act === 3) { m.body.rotation.x = -0.4; const k = Math.sin(now * 9) * 0.05; m.body.scale.set(t.s * (1 + k), t.s * (1 - k), t.s * (1 + k)); const T = fxOf(z, 't', () => { if (!eyeTex) eyeTex = bullTex(); const q = new THREE.Sprite(new THREE.SpriteMaterial({ map: eyeTex, depthTest: false, transparent: true })); q.renderOrder = 9; return q; }); T.visible = true; const fx = Math.sin(z.yaw), fz = Math.cos(z.yaw); T.position.set(z.x + fx * 1.6 * t.s, z.y + 2.2 * t.s, z.z + fz * 1.6 * t.s); T.scale.setScalar(3.6 + pulse * 0.8); if (Math.random() < 0.06) ctx.burst(z.x, z.y + 5.6 * t.s, z.z, new THREE.Color(0x9be7ff), 3, 10, 0.5); }
     } else if (t.k === 'boom' && z.act === 1) { // 變紅、一直變大、地上紅圈；嗶嗶嗶越來越快
       groundRing(z, 'r', z.x, z.z, SPX.boom.blast, 0xff4a5a, 0.35 + pulse * 0.45); const k = 1 + Math.min(1, z.actT / SPX.boom.wind) * 0.35 + pulse * 0.06; m.body.scale.set(t.s * k, t.s * k, t.s * k);
       m.mat.emissiveIntensity = 0.3 + Math.max(0, Math.sin(now * (14 + z.actT * 30))) * 0.6;
@@ -10065,7 +10133,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (z.act !== z.actSeen) { const was = z.actSeen; z.actSeen = z.act; const n = ctx.near(z.x, z.y, z.z); if (n > 0.08) { if (z.act === 2 && t.k === 'tongue') SC.audio.sfx.zlick(n); if (z.act === 2 && t.k === 'spit') SC.audio.sfx.zspit(n); if (z.act === 2 && t.k === 'charge') SC.audio.sfx.boing(); if (z.act === 1 && was === 0 && t.k !== 'boom') SC.audio.sfx.warn && SC.audio.sfx.warn(); } }
   }
   // 被抓住的貓：粉紅舌頭圈圈、頭上「！」求救泡泡、地上一圈救人範圍（站進來就能救）
-  let bangPink = null;
+  let bangPink = null, eyeTex = null;
+  function bullTex() { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const g = cv.getContext('2d'); [[58, '#ffffff'], [50, '#ff4a6a'], [38, '#ffffff'], [26, '#ff4a6a'], [14, '#ffd23f']].forEach(([r, c]) => { g.fillStyle = c; g.beginPath(); g.arc(64, 64, r, 0, TAU); g.fill(); }); g.strokeStyle = '#1b1430'; g.lineWidth = 5; g.beginPath(); g.arc(64, 64, 58, 0, TAU); g.stroke(); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; } // 弱點靶子
   function holdFx(now) {
     const g = G();
     for (const a of g.actors) {
@@ -10214,6 +10283,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     spit: ICON.mouse('#c9a6ff', '<circle cx="11" cy="27" r="4" fill="#9be86a" stroke="#1b1430" stroke-width="1.2"/><circle cx="29" cy="27" r="4" fill="#9be86a" stroke="#1b1430" stroke-width="1.2"/><ellipse cx="20" cy="38" rx="9" ry="2.6" fill="#a66bff"/>'),
     lid: ICON.mouse('#ffc58a', '<path d="M7 15a13 9 0 0 1 26 0z" fill="#cfd8e3" stroke="#1b1430" stroke-width="1.8"/><ellipse cx="20" cy="30" rx="12" ry="9" fill="#dfe6ee" stroke="#1b1430" stroke-width="2"/><circle cx="20" cy="30" r="2.6" fill="#ff7a4a" stroke="#1b1430" stroke-width="1.2"/>'),
     jelly: `<span class="zi-stack">${ICON.mouse('#6fe0d6', '<circle cx="20" cy="6" r="4" fill="#ff4a6a" stroke="#1b1430" stroke-width="1.4"/>')}${ICON.mouse('#6fe0d6')}</span>`,
+    king: ICON.mouse('#b7e3a0', '<path d="M12 9l8-12 8 12z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.8" stroke-linejoin="round"/><circle cx="18" cy="3" r="1.6" fill="#e0a800"/><circle cx="20" cy="31" r="4.2" fill="#9be7ff" stroke="#1b1430" stroke-width="1.4"/><circle cx="20" cy="31" r="1.8" fill="#ff7ab8"/>').replace('viewBox="0 0 40 40"', 'viewBox="0 -6 40 46"'),
     final: `<span class="zi-stack">${ICON.mouse('#bfaeea')}${ICON.mouse('#97d889', '<path d="M12 7l3 4 5-5 5 5 3-4v6H12z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6"/>')}${ICON.mouse('#d7ef7e')}</span>`,
   };
   Z.icon = (k) => EV_ICON[k] || ICON.mouse();
@@ -10295,6 +10365,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['吐毒鼠來了！', 'Goo-spitting mice incoming!', 'ドクドクネズミが来た！', '독침 쥐가 온다!'],
     ['鍋蓋鼠來了！', 'Pot-lid mice incoming!', 'なべぶたネズミが来た！', '냄비뚜껑 쥐가 온다!'],
     ['果凍鼠來了！', 'Jelly mice incoming!', 'ゼリーネズミが来た！', '젤리 쥐가 온다!'],
+    ['起司寶寶大王來了！', 'The Cheese Baby King is here!', 'チーズベビーキングが来た！', '치즈 아기 왕이 왔다!'],
+    ['打倒起司寶寶大王了！', 'You beat the Cheese Baby King!', 'チーズベビーキングをたおした！', '치즈 아기 왕을 쓰러뜨렸다!'],
     ['救到了！', 'Rescued!', 'たすけた！', '구했다!'],
     ['打倒大胃王了！', 'You beat the Big Eater!', '大食いキングをたおした！', '대식가 왕을 쓰러뜨렸다!'],
     ['防護罩', 'Shield', 'バリア', '보호막'],
