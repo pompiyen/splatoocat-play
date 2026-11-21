@@ -12190,7 +12190,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ],
     ecpayOpen: false, // 綠界收款服務審核通過後改成 true（審核中時贊助頁會顯示 10300023）
     donateUrl: 'https://p.ecpay.com.tw/FDC2624', // 綠界實況主收款的贊助網址（一個網址、贊助者自己輸入金額）：各方案沒有自己的 url 時都連到這裡
-    paypal: 'https://paypal.me/pompiyen', // 國外贊助用的 PayPal.Me 連結（例：'https://paypal.me/xxx'），填了才出現
+    paypal: 'https://www.paypal.com/ncp/payment/KLQB22CD7ZXL4', // 國外贊助：PayPal 付款連結（商業帳號，客戶自填金額，不用 PayPal 帳號也能刷卡）；填了才出現
     donateNote: '遊戲免費遊玩，贊助用於支持開發與營運。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。',
     // Xsolla（Yen 2026-11-20：先備用串接，以後可能開付費選項）。不用自己的伺服器：
     //   Firebase 用 Google/Facebook 登入時拿到的存取權杖 → Xsolla Login「用社群權杖登入」換成 Xsolla 使用者 JWT
@@ -12238,7 +12238,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['台灣贊助（綠界）：', 'From Taiwan (ECPay):', '台湾から（ECPay）：', '대만에서 (ECPay):'],
     ['幣別新台幣，可用信用卡、ATM 轉帳、超商代碼付款。', 'Currency TWD. Card, ATM transfer or convenience store code.', '通貨は台湾ドル。カード・ATM振込・コンビニ払い。', '통화는 대만 달러. 카드, ATM 이체, 편의점 결제.'],
     ['綠界付款頁只有中文，海外的朋友建議用 PayPal。', 'The ECPay page is in Chinese only and made for Taiwan. From abroad, PayPal is easier.', 'ECPay の支払いページは中国語のみで台湾向けです。海外からは PayPal が便利です。', 'ECPay 결제 페이지는 중국어만 지원하는 대만용이에요. 해외에서는 PayPal이 편해요.'],
-    ['可用你自己的貨幣，以信用卡或 PayPal 帳戶付款。', 'Pay in your own currency by card or PayPal account.', 'お使いの通貨で、カードか PayPal アカウントで支払えます。', '본인 통화로 카드 또는 PayPal 계정으로 결제할 수 있어요.'],
+    ['金額自己填，不用 PayPal 帳號也能直接刷卡（以台幣計價，會自動換算）。', 'Enter any amount. No PayPal account needed: pay by card directly (priced in TWD, converted automatically).', '金額は自由。PayPal アカウントなしでもカードで払えます（台湾ドル建て、自動換算）。', '금액은 자유. PayPal 계정 없이도 카드로 바로 결제할 수 있어요 (대만 달러 기준, 자동 환산).'],
     ['請先登入。', 'Please sign in first.', '先にログインしてください。', '먼저 로그인하세요.'],
     ['付款頁面打不開，等一下再試一次。', 'Could not open the payment page. Try again later.', '支払いページを開けません。しばらくしてからもう一度。', '결제 페이지를 열 수 없어요. 잠시 후 다시 시도하세요.'],
     ['好友', 'Friends', 'フレンド', '친구'],
@@ -12568,7 +12568,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     } else {
       const tiers = `<div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: CONFIG.ecpayOpen ? d.url || CONFIG.donateUrl : '' }) && d.url ? `<a class="d tier" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>`;
       const tw = `<p class="ac-sub">台灣贊助（綠界）：</p>${tiers}<p class="ac-note">幣別新台幣，可用信用卡、ATM 轉帳、超商代碼付款。</p>`;
-      const pp = CONFIG.paypal ? `<p class="ac-sub">國外贊助（信用卡或 PayPal）：</p><div class="ac-row"><a class="d pp" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}PayPal</a></div><p class="ac-note">可用你自己的貨幣，以信用卡或 PayPal 帳戶付款。</p>` : '';
+      const pp = CONFIG.paypal ? `<p class="ac-sub">國外贊助（信用卡或 PayPal）：</p><div class="ac-row"><a class="d pp" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}PayPal</a></div><p class="ac-note">金額自己填，不用 PayPal 帳號也能直接刷卡（以台幣計價，會自動換算）。</p>` : '';
       // 綠界頁只有中文、以台灣付款方式為主：非中文介面時把 PayPal 放最前面，並提醒綠界頁是中文
       const intl = SC.i18n && SC.i18n.lang && SC.i18n.lang !== 'zh' && pp;
       h += `<h2>${I_HEART}贊助方案</h2><p>喜歡這個遊戲的話，可以贊助作者：</p>${intl ? pp + tw + '<p class="ac-note">綠界付款頁只有中文，海外的朋友建議用 PayPal。</p>' : tw + pp}${CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : ''}`;
