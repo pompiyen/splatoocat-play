@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='5cc5cc2ed2d8';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='90ff1f6f2a19';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1121,7 +1121,7 @@ SC.CFG = {
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
   // 散彈槍（Yen 2026-11-19）：一次噴出一把小墨彈成扇形；貼近全中一發擊倒，遠一點只中幾顆
-  W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 28, hitPad: 1.8, ink: 16, range: 22.46, spRange: 24.96, interval: 0.6, radius: 3.6, speed: 165, gravity: 40 }, /* 第 136.2 版（Yen 11-22 03:25「散彈槍現在的手感好差」）：上膛 0.8→0.6 秒、每發耗墨 20→16、子彈更快更平（125→165、重力 100→40），散開的形狀固定（中間一顆＋內圈 5＋外圈 6），每次都打在準星圈裡 */ // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水；第 58 版每顆威力再 2 倍（16→32）；第 59 版一發耗墨 1/3（50→16.7）、射程 3/4（52→39）、每發之後 0.8 秒自動上膛（拉護木的動作和咔嚓聲）；第 65 版威力七成（32→22.4）、射程八成（39→31.2） 第 74 版（Yen）：每顆 22.4→28、子彈碰到人的範圍加大（hitPad 0.55→1.8），準星圈圈也放大；第 91 版（Yen 11/21）：射程八成（31.2→25）、每發耗墨多 20%（16.7→20）
+  W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 28, hitPad: 1.8, ink: 16, range: 24.96, zRange: 22.46, spRange: 24.96, interval: 0.6, radius: 3.6, speed: 165, gravity: 40 }, /* 第 136.2 版（Yen 11-22 03:25「散彈槍現在的手感好差」）：上膛 0.8→0.6 秒、每發耗墨 20→16、子彈更快更平（125→165、重力 100→40），散開的形狀固定（中間一顆＋內圈 5＋外圈 6），每次都打在準星圈裡 */ // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水；第 58 版每顆威力再 2 倍（16→32）；第 59 版一發耗墨 1/3（50→16.7）、射程 3/4（52→39）、每發之後 0.8 秒自動上膛（拉護木的動作和咔嚓聲）；第 65 版威力七成（32→22.4）、射程八成（39→31.2） 第 74 版（Yen）：每顆 22.4→28、子彈碰到人的範圍加大（hitPad 0.55→1.8），準星圈圈也放大；第 91 版（Yen 11/21）：射程八成（31.2→25）、每發耗墨多 20%（16.7→20）
   // 墨刀（Yen 2026-11-20，第 56 版）：近身武器，不會射出東西。按住連續砍（右橫砍→左橫砍→往下直劈），每一刀把前面一片扇形塗成自己的顏色、砍到人；
   // 跳起來後再按一下：往前衝刺斬一段（約 16），一路塗地，碰到的對手直接擊倒，每次跳起來只能衝一次
   // 第 58 版（Yen）：範圍和威力都 1.2 倍
@@ -1147,7 +1147,7 @@ SC.CFG = {
   // 第 82 版（Yen）：滾刷絕招改成刷頭寬度 2.2 倍、5 秒（原本是隱形）
   BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
   SPRAY_DMG: 31.2, SPRAY_SLOW: 0.6, // 舊的轉圈亂射（只剩舊版連線事件 q 用）；連射時移動速度 0.6 倍
-  SPRAY_SHOTS: 10, SPRAY_GAP: 0.1, SPRAY_K: 1.04, SPRAY_BIG: 2.6, SPRAY_KICK: 4, /* 第 137.2 版（Yen 11-22 03:37）：大絕傷害調低 20%（1.3→1.04 倍）、一般射程近 10%（24.96→22.46，大絕射程不變 spRange）。 */ /* 第 136.2 版（Yen「大絕改成射10發」）：10 發、間隔 0.1 秒；每發後座力 9→4，退太遠後面幾發會打不到 */ /* 第 127.1 版（Yen 11-22 02:00）：六發超大散彈（看起來 2.6 倍大，塗地、打中範圍 1.5 倍），每發往後推 */ // 第 121.1 版（Yen 11-22 00:30 威力 1.3 倍、00:35 改成快速連射六發散彈）：六發一般散彈，每顆 28×1.3＝36.4，不耗墨，約 0.8 秒打完
+  SPRAY_SHOTS: 10, SPRAY_GAP: 0.1, SPRAY_K: 1.3, SPRAY_K_Z: 1.04, SPRAY_BIG: 2.6, SPRAY_KICK: 4, /* 第 137.2 版（Yen 11-22 03:37）：大絕傷害調低 20%、一般射程近 10%。第 140.1 版（Yen 03:55「先都只改在殭屍模式」）：只有殭屍模式用 SPRAY_K_Z 1.04 和 zRange 22.46，其他模式維持 1.3 和 24.96 */ /* 第 136.2 版（Yen「大絕改成射10發」）：10 發、間隔 0.1 秒；每發後座力 9→4，退太遠後面幾發會打不到 */ /* 第 127.1 版（Yen 11-22 02:00）：六發超大散彈（看起來 2.6 倍大，塗地、打中範圍 1.5 倍），每發往後推 */ // 第 121.1 版（Yen 11-22 00:30 威力 1.3 倍、00:35 改成快速連射六發散彈）：六發一般散彈，每顆 28×1.3＝36.4，不耗墨，約 0.8 秒打完
   SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 24, /* 第 83 版（Yen）：每秒扣血 16→24，所有場地的河和海都一樣 */ POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
   SP_R: 18, SP_HEIGHT: 22, SP_KILL_H: 50, // SP_KILL_H：往上多高都會被打到（五段跳最高約 48）
   BOSS_LIVES: 3, // Yen 2026-11-17：魔王關只有三條命，三次都被擊倒就挑戰失敗
@@ -12409,9 +12409,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 散彈槍：用種子決定每顆的偏移，連線時每台噴出來的形狀一樣
   function fireW04(a, sp) { // sp：絕招的六連發（不耗墨，每顆威力 C.SPRAY_K 倍）
     const w = C.W04, m = muzzle(a, t1), dir = t2.copy(aimPt(a)).sub(m).normalize(), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a);
-    pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, (a.ai ? aiD().dmg : 1) * (sp ? C.SPRAY_K : 1), sp);
+    pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, (a.ai ? aiD().dmg : 1) * (sp ? (zMode() ? C.SPRAY_K_Z : C.SPRAY_K) : 1), sp);
     if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, sp ? 1 : 0);
-    if (zBuff(a) === 2) { pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7, (a.ai ? aiD().dmg : 1) * (sp ? C.SPRAY_K : 1), sp); if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7, sp ? 1 : 0); }
+    if (zBuff(a) === 2) { pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7, (a.ai ? aiD().dmg : 1) * (sp ? (zMode() ? C.SPRAY_K_Z : C.SPRAY_K) : 1), sp); if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed + 7, sp ? 1 : 0); }
     if (sp) { a.lastShotAt = G.time; a.cat.recoil = 3; a.cat.reload = 1; A.sfx.shotgun(Math.min(1, near(a) * 1.3)); cam.shake = a.isPlayer && !G.demo ? Math.min(1, cam.shake + 0.38) : cam.shake; if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 5.5, 0.1);
       { const hl = Math.hypot(dir.x, dir.z) || 1; a.kx = (a.kx || 0) - (dir.x / hl) * C.SPRAY_KICK; a.kz = (a.kz || 0) - (dir.z / hl) * C.SPRAY_KICK; } /* 第 127.1 版（Yen）：每發都有後座力，人往後退 */
       if (a.isPlayer && !G.demo) cam.kickAt = G.time; return; } /* 鏡頭往上跳一下（跟狙擊一樣，只動畫面不動準星） */
@@ -12425,7 +12425,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     for (let k = 0; k < w.pellets; k++) {
       const ring = k === 0 ? 0 : k <= 5 ? 1 : 2, idx = ring === 1 ? k - 1 : k - 6, cnt = ring === 1 ? 5 : 6, ang = (idx / cnt) * Math.PI * 2 + (ring === 2 ? Math.PI / 6 : 0) + rot + (rnd() - 0.5) * 0.35, rr = ring === 0 ? 0 : (ring === 1 ? 0.45 : 0.9) * (0.92 + rnd() * 0.16) * w.spread * (big ? 1.15 : 1), /* 第 136.2 版：固定的散開形狀（中間＋內圈＋外圈），只有一點點亂 */ yaw = yaw0 + Math.cos(ang) * rr, pitch = pitch0 + Math.sin(ang) * rr * 0.6 + 0.03, sp = w.speed * (0.9 + rnd() * 0.2);
       projectiles.push({ x: mx, y: my, z: mz, vx: Math.sin(yaw) * Math.cos(pitch) * sp, vy: Math.sin(pitch) * sp, vz: Math.cos(yaw) * Math.cos(pitch) * sp, team: a.team, owner: a,
-        dmg: w.damage * dmgK, r: w.radius * C.PAINT * boost * (big ? 1.5 : 1), range: (big ? w.spRange : w.range) * (0.95 + rnd() * 0.1) * (big ? 1.1 : 1), g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.8 * bv, flash: k === 0, color: colors[a.team], cause: 'W04', pad: w.hitPad * (big ? 1.5 : 1) });
+        dmg: w.damage * dmgK, r: w.radius * C.PAINT * boost * (big ? 1.5 : 1), range: (big ? w.spRange : zMode() ? w.zRange : w.range) * (0.95 + rnd() * 0.1) * (big ? 1.1 : 1), g: w.gravity, travel: 0, drip: 0.03, life: 0, vr: 0.8 * bv, flash: k === 0, color: colors[a.team], cause: 'W04', pad: w.hitPad * (big ? 1.5 : 1) });
     }
   }
 
@@ -12907,7 +12907,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const own = G.mode === 'boss' && a.pos.y > 3 ? 0 : INK.ownerAt(a.pos.x, a.pos.z); // 罐頭頂、機頂不算地面墨水
     a.ground = !a.onGround ? 'air' : a.inWater ? 'water' : own === a.team + 1 ? 'own' : own > 0 ? 'enemy' : 'neutral';
     if (a.onGround && W.gates.length && W.gated(a.pos.x, a.pos.z)) a.gateT = G.time;
-    const wantCat = ctl.cat && !ctl.fire && a.charge < 0 && !a.inWater && !(a.sprayN > 0), /* 第 139.1 版（Yen 11-22 03:48）：散彈大絕還沒打完不能潛進墨水 */ wasSub = a.submerged; // 海裡不能變墨貓
+    const wantCat = ctl.cat && !ctl.fire && a.charge < 0 && !a.inWater && !(a.sprayN > 0 && zMode()), /* 第 139.1 版（Yen 11-22 03:48）：散彈大絕還沒打完不能潛進墨水（第 140.1 版：只有殭屍模式） */ wasSub = a.submerged; // 海裡不能變墨貓
     a.form = wantCat ? 'cat' : 'biped'; a.submerged = wantCat && (a.ground === 'own' || !!a.climb);
     if (a.isPlayer && wasSub !== a.submerged) (a.submerged ? A.sfx.dive : A.sfx.surface)();
     if (a.submerged !== wasSub && a.onGround) SC.fx.burst(a.pos.x, a.pos.y + 0.3, a.pos.z, colors[a.team], 7, 11, 0.4);
@@ -12976,8 +12976,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 武器
     const canAct = active && a.form === 'biped' && now >= a.switchUntil;
     if (a.heroK != null && G.rule === 'zombie' && SC.zbHero && !a.remote) { SC.zbHero.fire(a, !!ctl.fire && canAct, dt, muzzle(a, t1), aimPt(a)); ctl.fire = false; } /* 第 116 版：殭屍保衛戰的神兵拿在手上時，按射擊是用神兵 */
-    if (a.sprayN > 0 && a.sprayUntil < now + 0.12) a.sprayUntil = now + 0.12; /* 第 139.1 版（Yen「散彈大絕10發不會中斷」）：10 發打完才結束 */
-    if (a.sprayUntil > now) { ctl.fire = false; if (a.sprayN > 0 && now >= a.sprayNext) { a.form = 'biped'; a.submerged = false; fireW04(a, true); a.sprayN--; a.sprayNext = Math.max(a.sprayNext + C.SPRAY_GAP, now + C.SPRAY_GAP * 0.5); } } /* 第 136.2 版：照節奏補發，手機每秒 30 格也打得滿 10 發 */ // 散彈槍絕招（第 121.1 版，Yen 11-22 00:35）：朝準星快速連射六發散彈
+    const zSpray = zMode(); if (zSpray && a.sprayN > 0 && a.sprayUntil < now + 0.12) a.sprayUntil = now + 0.12; /* 第 139.1 版（Yen「散彈大絕10發不會中斷」）：10 發打完才結束 */
+    if (a.sprayUntil > now) { ctl.fire = false; if (a.sprayN > 0 && now >= a.sprayNext && (zSpray || a.form === 'biped')) { a.form = 'biped'; a.submerged = false; fireW04(a, true); a.sprayN--; a.sprayNext = Math.max(a.sprayNext + C.SPRAY_GAP, now + C.SPRAY_GAP * 0.5); } } /* 第 136.2 版：照節奏補發，手機每秒 30 格也打得滿 10 發 */ // 散彈槍絕招（第 121.1 版，Yen 11-22 00:35）：朝準星快速連射六發散彈
     if ((ctl.fire || ctl.bomb) && a.protectUntil > now + 0.5) a.protectUntil = now + 0.5; // 重生無敵：開槍或丟彈後只剩 0.5 秒（第 60 版：不再一開槍就沒了，擊倒戰也有短暫無傷）
     a.rolling = false;
     if (a.weapon === 'W01') {
