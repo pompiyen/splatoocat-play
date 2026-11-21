@@ -828,6 +828,32 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 @media (max-width: 560px) { .stk-how-row small { font-size: 11px; } .stk-how-ic { width: 44px; height: 38px; } }
 .tut-skip { position: relative; } .tut-skip kbd { position: absolute; left: 50%; bottom: -20px; transform: translateX(-50%); font: 900 11px/1 var(--f-body); color: #fff; background: var(--navy); border: 2px solid #fff; border-radius: 6px; padding: 2px 5px; }
 .is-touch .tut-skip kbd { display: none; }
+/* 第 107 版：主選單兩步。第一步（step-mode）只有模式大圖示；第二步（step-setup）只留選到的模式＋「◀」回去鈕，下面是那個模式的選項 */
+.mode-back { display: none; }
+#m-title.step-mode .opts > :not(.mode-opt), #m-title.step-mode #btn-start, #m-title.step-mode .sens-opt, #m-title.step-mode .lede { display: none !important; }
+#m-title.step-mode .mode-opt h3 { display: none; }
+#m-title.step-mode #pick-mode { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+#m-title.step-mode #pick-mode .pick { padding: 14px 8px 12px; min-height: 108px; }
+#m-title.step-mode #pick-mode .pick:first-child { grid-column: 1 / -1; }
+#m-title.step-mode #pick-mode .mico { width: 84px; height: 58px; }
+#m-title.step-mode #pick-mode .pick b { font-size: 19px; }
+#m-title.step-mode #pick-mode .pick small { font-size: 12px; }
+#m-title.step-mode #pick-mode .pick.on .mico { animation: none; }
+#m-title.step-mode #pick-mode .pick:hover .mico, #m-title.step-mode #pick-mode .pick:focus-visible .mico { animation: pick-bob .9s ease-in-out infinite alternate; }
+#m-title.step-mode.net-on .title-card { width: min(470px, 100%); grid-template-columns: minmax(0, 1fr); grid-template-areas: none; }
+#m-title.step-mode.net-on .logo-wrap, #m-title.step-mode.net-on .opts, #m-title.step-mode.net-on .actions { grid-area: auto; }
+#m-title.step-setup .mode-opt { display: flex; align-items: center; gap: 10px; }
+#m-title.step-setup .mode-opt h3 { display: none; }
+#m-title.step-setup .mode-back { display: inline-flex; align-items: center; gap: 4px; flex: none; height: 58px; padding: 0 12px 0 8px; border-radius: 18px; border: 3px solid #fff; background: #ff4fa3; box-shadow: 0 4px 0 rgba(27, 20, 48, .6); cursor: pointer; }
+#m-title.step-setup .mode-back:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(27, 20, 48, .6); }
+.mode-back svg { width: 40px; height: 34px; }
+.mb-grid { display: grid; grid-template-columns: 10px 10px; gap: 3px; } .mb-grid i { width: 10px; height: 10px; border-radius: 3px; background: #fff; }
+#m-title.step-setup #pick-mode { flex: 1; min-width: 0; }
+#m-title.step-setup #pick-mode .pick:not(.on) { display: none; }
+#m-title.step-setup #pick-mode .pick.on { flex: 1; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; justify-items: start; text-align: left; padding: 6px 12px; }
+#m-title.step-setup #pick-mode .pick.on .mico { grid-row: 1 / 3; }
+#m-title.step-setup #pick-mode .pick.on b { align-self: end; } #m-title.step-setup #pick-mode .pick.on small { align-self: start; }
+@media (max-height: 520px) { #m-title.step-mode #pick-mode .pick { min-height: 0; padding: 8px 6px; } #m-title.step-mode #pick-mode .mico { width: 60px; height: 41px; } #m-title.step-mode #pick-mode .pick b { font-size: 16px; } #m-title.step-setup .mode-back { height: 46px; } }
 
 </style>
 <div id="app">
@@ -11938,7 +11964,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           <p class="lede" id="lede"></p>
         </div>
         <div class="opts">
-          <div class="opt"><h3>模式</h3><div class="row" id="pick-mode">
+          <div class="opt mode-opt" id="mode-opt"><h3>模式</h3><button type="button" class="mode-back" id="btn-mode-back" aria-label="換模式"><svg viewBox="0 0 48 40" aria-hidden="true"><path d="M22 6L6 20l16 14v-8h18V14H22z" fill="#fff" stroke="#1b1430" stroke-width="3" stroke-linejoin="round"/></svg><span class="mb-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><div class="row" id="pick-mode">
             <button type="button" class="pick ico-pick" data-v="versus">${ICON.versus}<b>電腦對戰</b><small>三分鐘塗地</small></button>
             <button type="button" class="pick ico-pick" data-v="sandbox">${ICON.sandbox}<b>教學試玩</b><small>跟著圖示學玩法</small></button>
             <button type="button" class="pick ico-pick" data-v="boss">${ICON.boss}<b>魔王關卡</b><small>十五隻大魔王</small></button>
@@ -12141,9 +12167,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       g.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return;
         if (key === 'mode') { const rk = b.dataset.v === 'ranked'; // 積分賽的牌位改放在版面裡（rk-opt），不再跳視窗（Yen 2026-11-21）
           if (sel.mode === 'net' && !!sel.rk !== rk && SC.net.code) SC.net.leave(); sel.rk = rk; sel[key] = rk ? 'net' : b.dataset.v; } // 積分賽＝連線對戰＋積分房（換模式就離開原本的房間）
-        else sel[key] = b.dataset.v; sync(); modeSync(); click(); if (key === 'kind') { SC.audio.sfx.meow(b.dataset.v); b.classList.remove('meow'); void b.offsetWidth; b.classList.add('meow'); } }); sync(); // 第 89 版：點貓咪，貓咪歪頭喊一聲喵
+        else sel[key] = b.dataset.v; sync(); modeSync(); click(); if (key === 'mode') ui.menuStep('setup'); if (key === 'kind') { SC.audio.sfx.meow(b.dataset.v); b.classList.remove('meow'); void b.offsetWidth; b.classList.add('meow'); } }); sync(); // 第 89 版：點貓咪，貓咪歪頭喊一聲喵
     };
     const click = () => { SC.audio.init(); SC.audio.sfx.ui(); };
+    // 第 107 版（Yen：一開始選項太多很亂）：主選單分兩步。第一步只有五個模式大圖示；點了模式才進第二步，出現那個模式要選的東西（貓咪、武器、顏色、場地…）和開始鈕。
+    // 第二步左上角的「◀」回到選模式（在連線房間裡就先離開房間）。打完一場回主選單時停在第二步，方便再玩一次。
+    ui.menuStep = (s) => { const t = els['m-title'] || $('m-title'); t.classList.toggle('step-mode', s === 'mode'); t.classList.toggle('step-setup', s !== 'mode'); if (s !== 'mode') { const c = t.querySelector('.title-card'); if (c) c.scrollTop = 0; t.scrollTop = 0; } };
+    $('btn-mode-back').addEventListener('click', () => { click(); if (SC.net.code) SC.net.leave(); ui.menuStep('mode'); });
+    ui.menuStep('mode');
     ui.pickRanked = () => { const t = $('m-title'), b = $('pick-mode').querySelector('[data-v="ranked"]'); if (!t || t.hidden || !b) return false; if (modeKey() !== 'ranked') b.click(); else SC.ranked.open('rank'); t.querySelector('#rk-opt').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return true; };
     ui.modeSyncPicks = () => $('pick-mode').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === modeKey()));
     ['kind', 'difficulty', 'mode', 'roster', 'vrule', 'ink', 'stage'].forEach((k) => pick('pick-' + k, k)); // 武器不在選單選，進場後再換
