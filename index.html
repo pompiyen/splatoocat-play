@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='d3a70eb89c93';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='fcb3377776fc';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -2439,7 +2439,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     roll() { noise(0.1, 0.1, 380, 300, 1.6); },
     chargeTick(c) { tone('sine', 400 + c * 900, 430 + c * 950, 0.05, 0.07); },
     chargeFull() { tone('triangle', 1500, 2000, 0.09, 0.2); },
-    sniper(c = 1) { noise(0.24, 0.5, 5200, 300, 0.7, 'lowpass'); tone('sawtooth', 1500, 110, 0.2, 0.26 + c * 0.14); tone('sine', 90, 40, 0.22, 0.4); },
+    // 第 115.1 版（Yen 11-21 23:17「厚實狙擊音效」）：尖的破空聲＋中段槍身＋很低的轟一聲＋拖長的回音，自己開的槍最大聲、音樂讓一下
+    sniper(c = 1, me = false) { const v = me ? 1 : 0.6;
+      noise(0.07, 0.55 * v, 6000, 1800, 0.8, 'highpass'); tone('sawtooth', 1100, 120, 0.16, (0.2 + c * 0.1) * v); tone('square', 260, 70, 0.12, 0.12 * v);
+      tone('sine', 130, 36, 0.6, 0.55 * v); tone('triangle', 210, 55, 0.38, 0.3 * v); noise(0.9, 0.24 * v, 1500, 110, 0.7, 'lowpass', 0.02);
+      noise(0.14, 0.1 * v, 1900, 700, 1.2, 'bandpass', 0.2); noise(0.18, 0.06 * v, 1500, 500, 1.2, 'bandpass', 0.38);
+      if (me) A.duck(0.45, 0.2, 0.7); },
     bombThrow() { tone('square', 900, 700, 0.03, 0.1); noise(0.24, 0.4, 600, 3200, 1.1); tone('triangle', 380, 920, 0.15, 0.28, 0.02); }, // 第 110.2 版：丟出去「咻——」＋出手的「喀」
     bombBeep() { tone('square', 1500, 1500, 0.045, 0.1); },
     bomb() { A.duck(0.65, 0.15, 0.5); noise(0.55, 0.8, 1300, 50, 0.5, 'lowpass'); tone('sine', 150, 34, 0.5, 0.6); },
@@ -10994,7 +10999,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (fullC(a) - w.minCharge), 0, 1);
     if (a.ink < w.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; } // 第 85 版：蓄力中丟了墨水彈，墨水不夠就不發射（不會變負的）
     const m = new V3(), dir = new V3(); sniperRay(a, m, dir); scatter(dir, sniperSpread(a)); if (a.isPlayer) G.lastSniperDir = dir; /* 測試用 */ const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
-    if (a.isPlayer && !I.isTouch && I.scope) G.scopeOut = G.time + 0.42; // 第 108 版（Yen）：開鏡射出後，畫面先退回沒開鏡，再自動拉回遠鏡
+    if (a.isPlayer && !I.isTouch && I.scope) I.scope = false; // 第 115.1 版（Yen 11-21 23:17）：開鏡射一發就退回沒開鏡，要再按右鍵才開鏡（取代第 108 版的自動拉回）
+    if (a.isPlayer && !G.demo) { cam.kickAt = G.time; cam.pitch = SC.clamp(cam.pitch + 0.025, -PMAX, PMAX); cam.shake = Math.min(1, cam.shake + 0.3); } // 狙擊後座力：鏡頭往上跳一下再落回，只留一點點上揚（第 40 版拿掉一般槍的後座力，這只給狙擊）
     if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
   }
@@ -11024,7 +11030,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (hitActor) { hurt(hitActor, dmg, a, 'W03'); INK.splat(a.team, hitActor.pos.x, H(hitActor.pos.x, hitActor.pos.z), hitActor.pos.z, rad); }
     else if (replay && replay.hit) { const gh = H(end.x, end.z); if (gh > -4) INK.splat(a.team, end.x, gh, end.z, rad); }
     INK.by = null; SC.fx.beam(m, end, colors[a.team], 0.3 + c * 0.45); SC.fx.burst(end.x, end.y + 0.3, end.z, colors[a.team], 10, 16, 0.5); SC.fx.pop(m.x, m.y, m.z, WHITE, 2.6 + c * 1.6, 0.09); SC.fx.pop(end.x, end.y + 0.3, end.z, colors[a.team], 3 + c * 2, 0.14);
-    a.cat.recoil = 2; if (near(a) > 0.05) A.sfx.sniper(c);
+    a.cat.recoil = 2; if (near(a) > 0.05) A.sfx.sniper(c, a.isPlayer && !replay);
     return { len: t, hit: hitActor };
   }
 
@@ -11993,7 +11999,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     cam.kOn = !!kb; G.watching = kb;
     const F = kb || p, yaw = kb ? cam.kyaw : cam.yaw;
     const cdK = G.state === 'countdown' ? SC.clamp((countdownT - 0.6) / C.COUNTDOWN_SECONDS, 0, 1) : 0;
-    const pitch = (kb ? cam.kpitch : cam.pitch) - cdK * 0.5, s = Math.sin(yaw), c = Math.cos(yaw);
+    const kt = G.time - (cam.kickAt ?? -9), kick = kb || kt < 0 || kt > 0.8 ? 0 : kt < 0.05 ? 0.075 * kt / 0.05 : 0.075 * Math.exp(-(kt - 0.05) / 0.11); // 狙擊後座力的畫面上揚（只影響鏡頭，不影響瞄準）
+    const pitch = (kb ? cam.kpitch : cam.pitch) - cdK * 0.5 + kick, s = Math.sin(yaw), c = Math.cos(yaw);
     viewDir.set(s * Math.cos(pitch), Math.sin(pitch), c * Math.cos(pitch));
     const py = (F.alive ? F.visY : F.pos.y) + (F.form === 'cat' ? 5.2 : 6.7);
     let want = SC.lerp((F.form === 'cat' ? 13.5 : 15.5) + (kb ? 3 : 0) + cdK * cdK * 26 + (aspect < 1 ? 3 : 0), 0.6, scopeK);
