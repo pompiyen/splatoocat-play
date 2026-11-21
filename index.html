@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='999d6216529b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='46d31978505d';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -10102,7 +10102,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ];
   TY.forEach((t) => { if (t.sp2) t.spk = 1; }); // spk：特殊殭屍（有出場事件、打爆時有專屬演出）
   const SPKS = ['boom', 'jelly', 'tongue', 'charge', 'lid', 'spit', 'inky', 'heal', 'pogo'];
-  const NEWX = { inky: { R: 30, wind: 0.7, dur: 0.7, cd: 2.8, r: 4, end: 8, trail: 2.6 }, heal: { R: 18, wind: 0.8, dur: 0.6, cd: 4, k: 0.45, bossK: 0.03 }, pogo: { h: 7.5, f: 2.4 } }; /* 第 122 版 */
+  const NEWX = { inky: { R: 34, wind: 0.7, dur: 0.7, cd: 2.8, r: 5.6, end: 11.5, trail: 3.6 }, heal: { R: 25, wind: 0.8, dur: 0.6, cd: 4, k: 0.5, bossK: 0.03 }, pogo: { h: 10.5, f: 2.4 } }; /* 第 122 版；第 129 版（Yen「特殊殭屍的效果能再大」）：噴墨更粗更大灘、補血範圍更大、彈簧跳更高 */
   // 第 112 版：頭暈（dz 秒）——舌頭鼠準備吐舌頭時被打到會咬到自己舌頭、衝撞鼠撞牆角卡住；頭暈不動、頭上轉星星、受到的傷害 ×1.5
   const KING = { R: 34, wind: 1.6, burpW: 1.3, cd: 2.2, v: 20, len: 38, burpR: 20, tired: 3.4, tiredB: 2.2, weakK: 2.5, domeHit: 90 }; // 翻滾（紅箭頭）／打嗝（綠圈）之後會累得坐下來喘氣：這時肚臍亮靶，打它 ×2.5
   const TANK = { slamR: 44, slamW: 1.5, tossR: 16, tossW: 1.0, fly: 1.1, R: 80, cd: 1.6, tired: 3.6, dmg: 30, rage: 1.3 }; // 肌肉坦克鼠：舉手秀肌肉（紅圈）→ 重重搥地震波；丟啞鈴（紅色靶）；搥地之後擺姿勢喝牛奶休息（肚子亮靶 ×2.5）；血剩一半氣到變紅、變快
@@ -10118,9 +10118,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const TANK_SEQ = ['leap', 'toss', 'wave', 'leap', 'charge', 'rain', 'leap', 'call', 'slam', 'leap', 'quake', 'leap', 'wave', 'toss', 'leap', 'charge', 'rain', 'leap'], LP = { wind: 0.9, air: 1.3, h: 30, R: 22, dmg: 26, tired: 1.1, dome: 30 }, WV = { wind: 1.0, gap: 1.3, n: 3, v: 34, max: 200, w: 2.4, jump: 1.4, dmg: 16, dur: 4.4 }, CL = { dur: 1.8, n: 8 }, CH = { wind: 1.3, v: 40, len: 120, maxR: 170, max: 4, tired: 2.4, dome: 120, R: 1.25 }, QK = { wind: 1.8, air: 1.25, h: 34, tired: 3.0, dome: 40, dmg: 24, jump: 1.2 }, RN = { dur: 3.4, per: 4, warn: 1.2, r: 6.5, k: 0.8 }; /* 第 122 版：最後魔王的新招 */
   const DIZZY = { tongue: 2.2, wall: 3.2, bowl: 1.0, dmgK: 1.5, letGo: 40 };
   // 特別殭屍的數字：R 多近才出手、預告秒數、冷卻；HOLD 被抓住每秒扣血、最久幾秒、救人要站多近、站多久
-  const SPX = { tongue: { R: 22, wind: 0.75, cd: 2.5, twind: 0.45, tcd: 1.3, tlen: 11 }, charge: { R: 30, wind: 0.9, cd: 2.2, v: 33, len: 36, twind: 0.55, tcd: 0.8 }, spit: { R: 30, wind: 0.7, cd: 3.5, fly: 0.9, twind: 0.5, tcd: 4.5, tlen: 13 }, // 第 113 版（Yen 22:34「招式不夠明確，衝撞鼠一出來就要衝」）：附近沒有貓也一直出招（t 開頭＝走路時的招）
-  boom: { R: 6, wind: 1.3, blast: 10 } };
-  const HOLD = { dps: 12, max: 7, mash: 0.4, R: 4.5, res: 0.5 }, PUD = { r: 5, life: 8, dps: 12 } /* 第 123 版：特殊招式更有威脅（抓住、毒水、衝撞、爆炸、噴墨都加強） */, TONGUE = { out: 0.25, stay: 0.45, back: 0.75 };
+  const SPX = { tongue: { R: 26, wind: 0.75, cd: 2.5, twind: 0.45, tcd: 1.3, tlen: 15 }, charge: { R: 34, wind: 0.9, cd: 2.2, v: 38, len: 48, twind: 0.55, tcd: 0.8 }, spit: { R: 34, wind: 0.7, cd: 3.5, fly: 0.9, twind: 0.5, tcd: 4.5, tlen: 17 }, /* 第 129 版：舌頭更長、衝更遠、吐更遠 */ // 第 113 版（Yen 22:34「招式不夠明確，衝撞鼠一出來就要衝」）：附近沒有貓也一直出招（t 開頭＝走路時的招）
+  boom: { R: 7, wind: 1.3, blast: 15 } }; /* 第 129 版：炸彈鼠爆炸範圍 1.5 倍 */
+  const HOLD = { dps: 12, max: 7, mash: 0.4, R: 4.5, res: 0.5 }, PUD = { r: 7, life: 9, dps: 12 } /* 第 123 版：特殊招式更有威脅（抓住、毒水、衝撞、爆炸、噴墨都加強） */, TONGUE = { out: 0.25, stay: 0.45, back: 0.75 };
   const TI = {}; TY.forEach((t, i) => { t.i = i; TI[t.k] = i; });
   // 強度（房主選的）：血量、數量、咬防護罩的速度
   const DIF = { easy: { hp: 0.7, n: 0.7, chew: 0.45 }, normal: { hp: 1, n: 1, chew: 1 }, hard: { hp: 1.3, n: 1.15, chew: 1.2 }, crazy: { hp: 1.6, n: 1.3, chew: 1.4 }, hell: { hp: 2, n: 1.8, chew: 1.6, max: 46 } /* 第 115 版（Yen）：地獄怪物量 ×1.2 */ };
@@ -10370,7 +10370,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   const lidOn = (z) => z.hp / z.max > 0.5; let lidDingAt = 0; // 鍋蓋鼠血剩一半，鍋蓋就掉了
   function splitJelly(z) { // 果凍鼠打爆：分成三隻小果凍，往外彈開
-    const live = Z.list.filter((q) => q.st !== 'dead').length; for (let i = 0; i < 3 && live + i < POOL - 2; i++) { const a = z.yaw + Math.PI + (i - 1) * 1.1, q = make(TI.mini, z.x + Math.sin(a) * 2.2, z.z + Math.cos(a) * 2.2, { ph: z.ph, br: z.br }); q.hop = 0.6; q.vx = Math.sin(a) * 6; q.vz = Math.cos(a) * 6; }
+    const live = Z.list.filter((q) => q.st !== 'dead').length; for (let i = 0; i < 4 && live + i < POOL - 2; i++) { const a = z.yaw + Math.PI + (i - 1.5) * 0.85, /* 第 129 版：分成四隻 */ q = make(TI.mini, z.x + Math.sin(a) * 2.2, z.z + Math.cos(a) * 2.2, { ph: z.ph, br: z.br }); q.hop = 0.6; q.vx = Math.sin(a) * 6; q.vz = Math.cos(a) * 6; }
   }
   function blastZombies(z, amt) { for (const q of Z.list) if (q !== z && q.st !== 'dead' && q.st !== 'under' && Math.hypot(q.x - z.x, q.z - z.z) < SPX.boom.blast) damage(q, Math.min(amt, TY[q.ty].cap || amt), null); } // 炸彈鼠的爆炸也會炸到旁邊的殭屍
   function kill(z) { if (auth() && G().state === 'play' && !TY[z.ty].boss) { if (z.gold) dropAt(z.x, z.z, (Math.random() * (POW_COL.length - 1)) | 0); else if (Math.random() < POW.gearP) dropAt(z.x, z.z, GEAR); } sawDead(z); Z.killed++; if (Z.gone) Z.gone.set(z.id, G().time); z.st = 'dead'; z.dieT = 0; z.hp = 0; if (z.tg) z.tg.alive = false; }
@@ -12643,10 +12643,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     // 墨水與體力（規則同 Roblox 版）
     const since = now - a.lastShotAt;
+    const zInk = G.rule === 'zombie'; if (zInk && a.zInkL != null && a.ink < a.zInkL) a.ink = a.zInkL - (a.zInkL - a.ink) / 1.5; const zInk0 = a.ink; /* 第 129 版（Yen）：殭屍模式墨水量 1.5 倍（花掉的墨水 ÷1.5）、補墨水快 1.5 倍 */
     if (a.inWater) { a.submerged = false; if (now >= a.protectUntil && G.state === 'play') { a.hp -= C.SEA_HURT * dt; a.lastHitAt = now; if (a.isPlayer) SC.ui.hurt(); if (a.hp <= 0) { SC.fx.burst(a.pos.x, C.SEA_Y + 2, a.pos.z, WHITE, 26, 26, 0.7); ko(a, null, 'fall'); return; } } }
     else if (a.submerged) { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.REFILL_RATE * dt); }
     else if (a.form === 'cat' && a.ground === 'neutral') { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.NEUTRAL_CAT_REFILL * dt); }
     else if (a.form === 'biped' && (a.ground === 'own' || a.ground === 'neutral') && a.ink < C.EMERGENCY_CAP && since > C.EMERGENCY_DELAY) a.ink = Math.min(C.EMERGENCY_CAP, a.ink + C.EMERGENCY_RATE * dt);
+    if (zInk) { if (a.ink > zInk0) a.ink = Math.min(100, zInk0 + (a.ink - zInk0) * 1.5); a.zInkL = a.ink; }
     if (a.inWater) { /* 海裡不回血 */ }
     else if (a.ground === 'enemy' && !baseSafe(a, null) && !(G.rule === 'turf' && onTower(a)) && now >= a.protectUntil) { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
     else if (a.hp < 100 && now - a.lastHitAt > C.HEAL_DELAY) a.hp = Math.min(100, a.hp + (a.submerged ? C.HEAL_OWN_INK : a.form === 'cat' && a.ground === 'neutral' ? C.HEAL_NEUTRAL : C.HEAL_RATE) * dt);
