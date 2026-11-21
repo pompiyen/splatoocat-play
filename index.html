@@ -10695,7 +10695,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function fireSniper(a) {
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (fullC(a) - w.minCharge), 0, 1);
     if (a.ink < w.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; } // 第 85 版：蓄力中丟了墨水彈，墨水不夠就不發射（不會變負的）
-    const m = new V3(), dir = new V3(); sniperRay(a, m, dir); scatter(dir, sniperSpread(a)); if (a.isPlayer) G.lastSniperDir = dir; // 測試用 const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
+    const m = new V3(), dir = new V3(); sniperRay(a, m, dir); scatter(dir, sniperSpread(a)); if (a.isPlayer) G.lastSniperDir = dir; /* 測試用 */ const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
     if (a.isPlayer && !I.isTouch && I.scope) G.scopeOut = G.time + 0.42; // 第 108 版（Yen）：開鏡射出後，畫面先退回沒開鏡，再自動拉回遠鏡
     if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
