@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><script>window.SC_PUBLIC = true;</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -785,6 +785,13 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .zb-res > div { background: var(--navy); border: 3px solid #fff; border-radius: 14px; padding: 6px 14px; display: grid; justify-items: center; gap: 2px; }
 .zb-pick .zb-mice .head { width: 30px; height: 30px; } .zb-pick .zb-shield-ic { font-style: normal; font-size: 16px; }
 @media (max-width: 560px) { .h-zb { width: min(260px, 58vw); } .zb-duck svg { width: 26px; height: 26px; } .h-zcard { top: calc(124px + var(--sat)); } .h-zcard b { font-size: 15px; } .h-zcard .zc-ic svg { width: 38px; height: 38px; } .zb-pick .zb-mice .head { width: 22px; height: 22px; } }
+
+/* 第 105 版：iPhone「加入主畫面」全螢幕圖解 */
+.fsg-steps { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 10px; counter-reset: fsg; }
+.fsg-steps li { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, .1); border-radius: 16px; padding: 8px 12px; font-weight: 800; counter-increment: fsg; }
+.fsg-steps li::before { content: counter(fsg); width: 26px; height: 26px; border-radius: 50%; background: var(--sun); color: var(--navy); display: grid; place-items: center; font-weight: 900; flex: none; }
+.fsg-ic { width: 48px; height: 48px; flex: none; background: #fff; border-radius: 12px; display: grid; place-items: center; }
+.fsg-ic svg { width: 40px; height: 40px; }
 
 </style>
 <div id="app">
@@ -2872,6 +2879,27 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
 
   // ---------- 共用的畫圖小工具 ----------
+  // 第 105 版（Yen「城牆顏色變棕紅磚造」）：棕紅色磚牆貼圖（一張 = 兩塊磚寬、四排高，一塊磚 3.2×1.6），白灰色磚縫
+  let brickT = null;
+  function brickTex() {
+    if (brickT) return brickT;
+    const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), R = seeded(31);
+    g.fillStyle = '#d9c6a8'; g.fillRect(0, 0, 256, 256);
+    const cols = ['#a3452c', '#b0513a', '#963d27', '#b85d3e', '#9e4a33', '#ab4f30'];
+    for (let row = 0; row < 4; row++) for (let i = -1; i < 3; i++) {
+      const x = i * 128 + (row % 2 ? 64 : 0) + 3, y = row * 64 + 3; g.fillStyle = cols[Math.floor(R() * cols.length)]; g.fillRect(x, y, 122, 58);
+      g.fillStyle = 'rgba(255,255,255,.10)'; g.fillRect(x, y, 122, 7); g.fillStyle = 'rgba(0,0,0,.10)'; g.fillRect(x, y + 50, 122, 8);
+      for (let s = 0; s < 14; s++) { g.fillStyle = R() < 0.5 ? 'rgba(0,0,0,.07)' : 'rgba(255,220,190,.08)'; g.fillRect(x + R() * 112, y + R() * 50, 4 + R() * 8, 3 + R() * 5); }
+    }
+    brickT = new THREE.CanvasTexture(c); brickT.wrapS = brickT.wrapT = THREE.RepeatWrapping; brickT.colorSpace = THREE.SRGBColorSpace; brickT.anisotropy = 4; return brickT;
+  }
+  // 依世界大小重算 UV，磚塊在每一面都一樣大（6.4 一張貼圖）
+  function brickUV(mesh) {
+    const g = mesh.geometry, pos = g.attributes.position; if (!g.attributes.normal) g.computeVertexNormals(); const nr = g.attributes.normal, uv = new Float32Array(pos.count * 2), T = 6.4;
+    for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i), ax = Math.abs(nr.getX(i)), ay = Math.abs(nr.getY(i)), az = Math.abs(nr.getZ(i));
+      const u = ay > 0.7 ? x : ax > az ? z : x, v = ay > 0.7 ? z : y; uv[i * 2] = u / T; uv[i * 2 + 1] = v / T; }
+    g.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); return mesh;
+  }
   function roundedBox(w, d, top, bottom, r, bevel = 0.45) {
     const s = new THREE.Shape(), hw = w / 2, hd = d / 2; r = Math.min(r, hw - 0.01, hd - 0.01);
     s.moveTo(-hw + r, -hd); s.lineTo(hw - r, -hd); s.quadraticCurveTo(hw, -hd, hw, -hd + r);
@@ -2978,7 +3006,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ],
     sky: [0x3aa0ff, 0xa8e4ff, 0xfff3d6], fog: 0xcdeeff, hemi: [0xeaf6ff, 0xffe9c9],
     river: { color: 0xeaf7ff, rough: 0.06 },
-    look: { castle: 0xc9c3dd, merlon: 0xbdb5d6, base: 0xffffff, tier1: 0x8fe3c0, tier2: 0xb9a5ff, tier3: 0xffb3c7, bed: 0xffb3c7, wall: 0xffd97a, cushion: 0x9be7ff, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, island2: 0xffd0e8, post: 0xe9cfa3, tower: 0xb9a5ff, pad: 0xffe08a },
+    look: { castle: 0xa64b32, merlon: 0x9c4530, base: 0xffffff, tier1: 0x8fe3c0, tier2: 0xb9a5ff, tier3: 0xffb3c7, bed: 0xffb3c7, wall: 0xffd97a, cushion: 0x9be7ff, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, island2: 0xffd0e8, post: 0xe9cfa3, tower: 0xb9a5ff, pad: 0xffe08a },
     rough: { carton: 0.85, ground: 0.75 },
     ground: (g) => {
       tiles(g, '#f3d9a8', ['#ffefcf', '#ffe4b3']);
@@ -3009,13 +3037,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       },
       bridge: (p, k) => k.rails(k.box(p, { bottom: -1.6 }), p, 0xff8fab),
       castle: (p, k) => { // 高城牆：石磚紋，頂上一圈深色邊
-        const m = k.box(p, { r: 0.5 }), w = p.x1 - p.x0, d = p.z1 - p.z0, lm = k.plain(0xa79fc2, 0.9);
-        for (let y = 3; y < p.h - 1; y += 3.2) { const ln = new THREE.Mesh(new THREE.BoxGeometry(w + 0.08, 0.28, d + 0.08), lm); ln.position.y = y; m.add(ln); }
-        const cap = new THREE.Mesh(new THREE.BoxGeometry(w + 0.6, 0.7, d + 0.6), SC.ink.patch(new THREE.MeshStandardMaterial({ color: 0x8d84ad, roughness: 0.8 }))); // 第 95 版：牆頂蓋子也會顯示墨水（原本蓋住了城牆頂的墨） cap.position.y = p.h - 0.3; m.add(cap);
+        const m = k.brick(k.box(p, { r: 0.5 }), 'castle'), w = p.x1 - p.x0, d = p.z1 - p.z0; // 第 105 版（Yen）：棕紅色磚牆（原本是灰紫色石牆＋橫線）
+        // 第 95 版：牆頂蓋子也會顯示墨水（原本蓋住了城牆頂的墨）
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(w + 0.6, 0.7, d + 0.6), SC.ink.patch(new THREE.MeshStandardMaterial({ color: 0x7a3828, roughness: 0.85 })));
+        cap.position.y = p.h - 0.3; m.add(cap); // 第 105 版：這兩句原本被上一行的註解吃掉了，牆頂深色邊一直沒顯示
         const flag = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 3), k.plain(p.team ? 0x7fd8ff : 0xff8fc8, 0.5)); flag.rotation.z = -Math.PI / 2; flag.position.set(0, p.h + 9, 0); if (p.flag) m.add(flag);
         const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 10, 8), k.plain(0xe9cfa3, 0.6)); const bx = (p.team ? 1 : -1) * (w / 2 - 1.2); pole.position.set(bx, p.h + 5, d / 2 - 1.2); if (p.flag) m.add(pole); flag.position.set(bx + 1.6, p.h + 9, d / 2 - 1.2); // 第 92 版：旗子移到角落，不擋站在牆上狙擊的視線
       },
-      merlon: (p, k) => k.box(p, { r: 0.35 }),
+      merlon: (p, k) => k.brick(k.box(p, { r: 0.35 }), 'merlon'),
       yarn: (p, k) => { // 毛線球
         const cols = [0xff7aa8, 0x6fd3ff, 0xffc94a];
         const ym = SC.ink.patch(new THREE.MeshStandardMaterial({ color: cols[Math.abs(Math.round(p.x + p.z)) % 3], roughness: 0.75 }));
@@ -3765,14 +3794,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       return lane < 4.5 && r > ZF.moat1 ? 0xe8c99a : (Math.floor(x / 9) + Math.floor(z / 9)) % 2 ? 0xa9e38f : 0x9cdb84; },
     sky: [0x6b5fe0, 0xff9fc0, 0xffd9a8], fog: 0xf7cfd6, hemi: [0xfff0f6, 0xffd9b0],
     river: { color: 0x7fd3ff, rough: 0.08 },
-    look: { court: 0xf3e7d2, pedestal: 0xfff1a8, stone: 0xe2d4ff, wall: 0xc6b2ff, tower: 0xff9ebb, bridge: 0xd9a86c, cheese: 0xffd23f, hay: 0xf2c46b, pumpkin: 0xff9a3c },
+    look: { court: 0xf3e7d2, pedestal: 0xfff1a8, stone: 0xe2d4ff, wall: 0xa64b32, tower: 0xff9ebb, bridge: 0xd9a86c, cheese: 0xffd23f, hay: 0xf2c46b, pumpkin: 0xff9a3c },
     rough: { hay: 0.95, ground: 0.85 },
     ground: (g) => { tiles(g, '#efe3cc', ['#fbf3e4', '#f4e8d2'], 26); },
     fence: [0xc6b2ff, 0xffd23f, 0xff9ebb, 0x9be7d0],
     make: {
       court: (p, k) => { k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r - 0.2, 0.55, 10, 72), k.plain(0xffffff, 0.4), p.x, p.h - 0.05, p.z); t.rotation.x = Math.PI / 2; },
       pedestal: (p, k) => { k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r, 0.4, 8, 48), k.plain(0xffc93c, 0.3, { metalness: 0.4 }), p.x, p.h, p.z); t.rotation.x = Math.PI / 2; },
-      wall: (p, k) => { const m = k.obox(p, { r: 0.5 }); const c = new THREE.Mesh(new THREE.BoxGeometry(p.hu * 1.1, 1.1, p.hv * 2.3), k.mat('wall')); c.position.y = p.h + 0.3; m.add(c); },
+      wall: (p, k) => { const m = k.brick(k.obox(p, { r: 0.5 }), 'wall'); const c = new THREE.Mesh(new THREE.BoxGeometry(p.hu * 1.1, 1.1, p.hv * 2.3), k.plain(0x7a3828, 0.85)); c.position.y = p.h + 0.3; m.add(c); }, // 第 105 版：小鴨堡壘的城垛也改成棕紅磚
       bridge: (p, k) => k.rails(k.obox(p, { bottom: -1.6 }), k.local(p), 0xff8fab),
       tower: (p, k) => { k.cyl(p); const pole = k.add(new THREE.CylinderGeometry(0.2, 0.2, 7, 8), k.plain(0xffffff, 0.4), p.x, p.h + 3.5, p.z); const fl = new THREE.Mesh(new THREE.ConeGeometry(1.3, 3.6, 3), k.plain(0xffd23f, 0.6)); fl.rotation.z = -Math.PI / 2; fl.position.set(1.8, 2.4, 0); pole.add(fl); k.tick((t) => { pole.rotation.y = Math.sin(t * 0.9 + p.x) * 0.7; }); const t = k.add(new THREE.TorusGeometry(p.r, 0.35, 8, 32), k.plain(0xffffff, 0.4), p.x, p.h, p.z); t.rotation.x = Math.PI / 2; },
       cheese: (p, k) => { const m = k.obox(p, { r: 0.6 }), dark = k.plain(0xe0a800, 0.7); [[-2, 2.6, 3.05], [1.8, 1.4, 3.05], [0.2, 3.3, -3.05], [-2.6, 1.2, -3.05], [3.2, 3, 0.4]].forEach(([u, y, v], i) => { const h = new THREE.Mesh(new THREE.SphereGeometry(0.7 + (i % 2) * 0.35, 12, 8), dark); h.position.set(u, y, v); h.scale.z = 0.35; m.add(h); }); },
@@ -3820,6 +3849,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const k = {
       root, add, mat, plain, rnd, low: low0, lim,
       tick: (f) => ticks.push(f),
+      brick: (m, look) => { const mm = mat(look); if (!mm.map) { mm.map = brickTex(); mm.color.set(0xffffff); mm.needsUpdate = true; } return brickUV(m); }, // 第 105 版：磚牆
       bob: (m, amp, sp) => { const y0 = m.position.y, ph = rnd() * 6; root.add(m); ticks.push((t) => { m.position.y = y0 + Math.sin(t * sp + ph) * amp; }); },
       box: (p, o = {}) => { const w = p.x1 - p.x0, d = p.z1 - p.z0; return add(roundedBox(w, d, p.h, o.bottom != null ? o.bottom : -1, o.r != null ? o.r : 1.1, o.bevel), mat(p.look), (p.x0 + p.x1) / 2, 0, (p.z0 + p.z1) / 2); },
       cyl: (p) => add(new THREE.CylinderGeometry(p.r, p.r * 1.02, p.h + 2, 40), mat(p.look), p.x, (p.h - 2) / 2, p.z),
@@ -11827,7 +11857,6 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             <button type="button" class="pick ico-pick" data-v="boss">${ICON.boss}<b>魔王關卡</b><small>十五隻大魔王</small></button>
             <button type="button" class="pick ico-pick" data-v="net">${ICON.net}<b>連線對戰</b><small>和朋友開房間</small></button>
             <button type="button" class="pick ico-pick" data-v="ranked">${ICON.ranked}<b>積分賽</b><small>配對拿積分升牌位</small></button></div></div>
-          <div class="opt" id="rk-opt" hidden></div>
           <div class="opt" id="stage-opt" hidden><h3>選魔王</h3><div class="row" id="pick-world">${WORLDS.map((w, i) => `<button type="button" class="pick ico-pick world-pick w${i + 1}" data-v="${i + 1}" aria-label="世界 ${i + 1} ${w.name}">${w.icon}<b>世界 ${i + 1}</b><small>${w.name}</small></button>`).join('')}</div><div class="row" id="pick-stage"></div></div>
           <div class="opt" id="kind-opt"><h3>選貓咪</h3><div class="row" id="pick-kind">
             <button type="button" class="pick cat-pick" data-v="maomao">${ui.face('maomao')}<b>毛毛</b><small>金吉拉・臭臉擔當</small></button>
@@ -11895,6 +11924,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       </div>
     </div>
 
+    <div class="menu dim" id="m-fsguide" hidden>
+      <div class="card fsg">
+        <h2>全螢幕玩</h2>
+        <ol class="fsg-steps">
+          <li><i class="fsg-ic"><svg viewBox="0 0 48 48"><rect x="10" y="18" width="28" height="24" rx="5" fill="none" stroke="#2f7bff" stroke-width="3.4"/><path d="M24 6v24M16 13l8-8 8 8" fill="none" stroke="#2f7bff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>點 Safari 的「分享」</span></li>
+          <li><i class="fsg-ic"><svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="8" fill="none" stroke="#1b1430" stroke-width="3.4"/><path d="M24 16v16M16 24h16" stroke="#1b1430" stroke-width="3.6" stroke-linecap="round"/></svg></i><span>選「加入主畫面」</span></li>
+          <li><i class="fsg-ic"><svg viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="11" fill="#ff5fa2"/><path d="M13 22l2-11 7 6M35 22l-2-11-7 6" fill="#ffb347"/><circle cx="24" cy="27" r="11" fill="#ffb347"/><circle cx="20" cy="26" r="2" fill="#1b1430"/><circle cx="28" cy="26" r="2" fill="#1b1430"/></svg></i><span>從主畫面的「漆貓」打開，整個螢幕都是遊戲</span></li>
+        </ol>
+        <p class="note" id="fsg-note">iPhone 的 Safari 不讓網頁直接全螢幕，加到主畫面後打開就沒有網址列。</p>
+        <button type="button" class="btn primary" id="btn-fsguide-close">知道了</button>
+      </div>
+    </div>
     <div class="menu dim" id="m-help" hidden>
       <div class="card wide">
         <h2>操作說明</h2>
@@ -11990,7 +12031,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
-      { const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
+      $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
       SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); netSync();
     };
     // 選關：世界列 + 這個世界的五張魔王卡
@@ -12010,12 +12051,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const pick = (groupId, key) => {
       const g = $(groupId), sync = () => g.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === (key === 'mode' ? modeKey() : sel[key])));
       g.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return;
-        if (key === 'mode') { const rk = b.dataset.v === 'ranked'; // 積分賽的牌位改放在版面裡（rk-opt），不再跳視窗（Yen 2026-11-21）
+        if (key === 'mode') { const rk = b.dataset.v === 'ranked'; if (rk && !sel.rk && SC.ranked) setTimeout(() => SC.ranked.open(), 0); // 點積分賽自動跳出牌位視窗（Yen 21:35）
           if (sel.mode === 'net' && !!sel.rk !== rk && SC.net.code) SC.net.leave(); sel.rk = rk; sel[key] = rk ? 'net' : b.dataset.v; } // 積分賽＝連線對戰＋積分房（換模式就離開原本的房間）
         else sel[key] = b.dataset.v; sync(); modeSync(); click(); if (key === 'kind') { SC.audio.sfx.meow(b.dataset.v); b.classList.remove('meow'); void b.offsetWidth; b.classList.add('meow'); } }); sync(); // 第 89 版：點貓咪，貓咪歪頭喊一聲喵
     };
     const click = () => { SC.audio.init(); SC.audio.sfx.ui(); };
-    ui.pickRanked = () => { const t = $('m-title'), b = $('pick-mode').querySelector('[data-v="ranked"]'); if (!t || t.hidden || !b) return false; if (modeKey() !== 'ranked') b.click(); else SC.ranked.open('rank'); t.querySelector('#rk-opt').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return true; };
     ui.modeSyncPicks = () => $('pick-mode').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === modeKey()));
     ['kind', 'difficulty', 'mode', 'roster', 'vrule', 'ink', 'stage'].forEach((k) => pick('pick-' + k, k)); // 武器不在選單選，進場後再換
     $('pick-world').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; const w = +b.dataset.v; if (worldOf(sel.stage) !== w) { const all = SC.bossList(); let i = (w - 1) * 5; while (i < w * 5 - 1 && !all[i]) i++; sel.stage = String(i + 1); } renderStages(); modeSync(); click(); });
@@ -12091,21 +12131,39 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     on('btn-help', openHelp); on('btn-help2', openHelp); on('btn-help-close', () => (els['m-help'].hidden = true));
     on('tab-desk', () => help('desk')); on('tab-touch', () => help('touch'));
     // 全螢幕：瀏覽器支援才顯示（iPhone 的 Safari 不開放網頁全螢幕）
-    const doc = document, app = $('app');
+    // 第 105 版（Yen「iPad 全螢幕不穩定、手機無法全螢幕」）：
+    // ・改成讓整頁（html）全螢幕，iPad Safari 比較穩。
+    // ・按過全螢幕後如果被系統退出（iPad 從上緣往下滑、轉方向、跳出鍵盤…），下一次點畫面就自動再進全螢幕；用全螢幕鈕離開才算真的不要。
+    // ・iPhone 沒有網頁全螢幕：按鈕改成打開「加入主畫面」圖解，從主畫面打開就沒有網址列、整個螢幕都是遊戲。
+    const doc = document, app = $('app'), fsEl = doc.documentElement;
     const fsOn = () => !!(doc.fullscreenElement || doc.webkitFullscreenElement);
-    const fsOk = !!(doc.fullscreenEnabled || doc.webkitFullscreenEnabled) && !!(app.requestFullscreen || app.webkitRequestFullscreen);
+    const fsOk = !!(doc.fullscreenEnabled || doc.webkitFullscreenEnabled) && !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
+    const standalone = navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches);
+    const coarse = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches) || 'ontouchstart' in window;
+    const guideOk = !fsOk && !standalone && coarse; // 手機（iPhone）：顯示加入主畫面圖解
+    let fsWant = false, fsTry = 0;
     const fsSync = () => { $('btn-full2').textContent = fsOn() ? '離開全螢幕' : '全螢幕'; $('btn-full').classList.toggle('on', fsOn()); };
-    const fsToggle = () => {
+    const fsEnter = (loud) => {
+      if (fsOn() || Date.now() - fsTry < 900) return; fsTry = Date.now();
       try {
-        if (fsOn()) { (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc); return; }
-        const r = (app.requestFullscreen || app.webkitRequestFullscreen).call(app, { navigationUI: 'hide' });
-        if (r && r.then) r.then(() => { try { const o = screen.orientation; if (o && o.lock && SC.input.isTouch) o.lock('landscape').catch(() => {}); } catch (e) {} }).catch(() => ui.tip('這個瀏覽器不允許全螢幕', 2.5));
-      } catch (e) { ui.tip('這個瀏覽器不允許全螢幕', 2.5); }
+        const r = (fsEl.requestFullscreen || fsEl.webkitRequestFullscreen).call(fsEl, { navigationUI: 'hide' });
+        if (r && r.then) r.then(() => { try { const o = screen.orientation; if (o && o.lock && SC.input.isTouch) o.lock('landscape').catch(() => {}); } catch (e) {} }).catch(() => { if (loud) ui.tip('這個瀏覽器不允許全螢幕', 2.5); });
+      } catch (e) { if (loud) ui.tip('這個瀏覽器不允許全螢幕', 2.5); }
     };
-    if (fsOk) { $('btn-full').hidden = false; $('btn-full2').hidden = false; }
+    const fsToggle = () => {
+      if (guideOk) { $('m-fsguide').hidden = false; return; }
+      if (fsOn()) { fsWant = false; (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc); return; }
+      fsWant = true; fsTry = 0; fsEnter(true);
+    };
+    if (fsOk || guideOk) { $('btn-full').hidden = false; $('btn-full2').hidden = false; }
     doc.addEventListener('fullscreenchange', fsSync); doc.addEventListener('webkitfullscreenchange', fsSync);
+    // 被系統退出全螢幕：下一次手指離開畫面（touchend／pointerup 才算使用者操作）就再進去
+    const fsBack = () => { if (fsWant && fsOk && !fsOn()) fsEnter(false); };
+    doc.addEventListener('touchend', fsBack, true); doc.addEventListener('pointerup', fsBack, true); doc.addEventListener('keydown', fsBack, true);
     $('btn-full').addEventListener('pointerdown', (e) => e.stopPropagation());
     on('btn-full', fsToggle); on('btn-full2', fsToggle);
+    on('btn-fsguide-close', () => ($('m-fsguide').hidden = true));
+    if (!window.SC_PUBLIC) $('fsg-note').innerHTML = '要先用 <b>spalacat.com</b> 打開遊戲，再照上面三步做（Claude 裡面的版本不能加到主畫面）。';
     on('btn-mute', ui.toggleMute); on('btn-mute2', ui.toggleMute);
     on('btn-cat-mode', () => { SC.input.catToggle = !SC.input.catToggle; SC.input.clearLatch(); $('btn-cat-mode').textContent = '墨貓鈕：' + (SC.input.catToggle ? '點一下切換' : '按住'); save(); });
     // 視角靈敏度：主選單和暫停選單各一條，兩條同步（Yen 2026-11-20 要可調靈敏度；範圍 0.4～2.2 放寬成 0.2～3）
@@ -12706,7 +12764,6 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .rkd-up{animation:none}
 .rkd-ov{position:fixed;inset:0;z-index:60;background:rgba(10,6,24,.72);display:flex;align-items:center;justify-content:center;padding:12px}
 .rkd-ov[hidden]{display:none}
-.rkd-pn.rkd-inl{width:100%;max-height:none;overflow:visible;border-width:3px;box-shadow:0 4px 0 #000}.rkd-inl .rkd-head{margin-right:0}
 .rkd-pn{background:var(--navy-2);border:4px solid #fff;border-radius:22px;box-shadow:0 6px 0 #000;width:min(560px,100%);max-height:100%;overflow:auto;padding:14px;position:relative;color:var(--cream)}
 .rkd-x{position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:50%;border:3px solid #fff;background:var(--navy);color:#fff;font:400 22px/1 var(--f-display);cursor:pointer}
 .rkd-head{display:flex;align-items:center;gap:12px;margin:0 44px 10px 0}.rkd-head .rkd-i{width:76px;height:76px;flex:none}
@@ -12811,7 +12868,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const i = weekly.last.findIndex((r) => r.uid === uid); weekly.status = i < 0 ? '' : i < 3 ? 'top3' : 'top10'; weekly.loaded = weekId(n);
         try { localStorage.setItem(ST_KEY, JSON.stringify({ wk: weekId(n), s: weekly.status })); } catch (e) {}
       } catch (e) { /* 讀不到就先不顯示 */ }
-      weekly.busy = false; paintBadge(); if (((ov && !ov.hidden) || host()) && tab === 'week') openPanel(tab);
+      weekly.busy = false; paintBadge(); if (ov && !ov.hidden && tab === 'week') openPanel(tab);
     },
     mine: () => { if (weekly.status && weekly.loaded === weekId()) return weekly.status; try { const o = JSON.parse(localStorage.getItem(ST_KEY) || 'null'); return o && o.wk === weekId() ? o.s || '' : ''; } catch (e) { return ''; } },
   };
@@ -12838,15 +12895,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     badge.setAttribute('aria-label', tr('牌位') + ' ' + tr(TIERS[t].n));
   };
   const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-  // 積分賽的牌位／排行／徽章直接放在選單版面裡（Yen 2026-11-21 19:43：不要彈出視窗）
-  const host = () => { const h = document.getElementById('rk-opt'); return h && !h.hidden ? h : null; };
-  const onTab = (e) => { const tb = e.target.closest('[data-tab]'); if (!tb) return false; openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return true; };
   const openPanel = (want) => {
     style(); const s = load(), t = tierOf(s.p); if (typeof want === 'string') tab = want;
-    const inl = host();
-    if (!inl && typeof want !== 'string' && SC.ui && SC.ui.pickRanked && SC.ui.pickRanked()) return; // 標題上的牌位按鈕：切到積分賽，積分就在版面裡
-    if (inl && !inl.dataset.rk) { inl.dataset.rk = '1'; inl.addEventListener('click', onTab); }
-    if (!inl && !ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
+    if (!ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
     const nxt = t >= TOP ? '' : ` / ${(t + 1) * PER}`, wkp = s.wk && s.wk.id === weekId() ? s.wk.p : 0, f = FRAME[weekly.mine()];
     const tabs = `<div class="rkd-tabs">${[['rank', '🏅', '牌位'], ['week', '📅', '本週排行'], ['ach', '🎖️', '徽章']].map(([k, i, n]) => `<button type="button" data-tab="${k}" class="${tab === k ? 'on' : ''}"><em>${i}</em>${tr(n)}</button>`).join('')}</div>`;
     const head = `<div class="rkd-head"><span class="rkd-i">${icon(t)}${f ? `<i class="rkd-fr">${f.i}</i>` : ''}</span><div><b>${tr(TIERS[t].n)}</b>${stars(s.p)}<small>${tr('積分')} ${s.p}${nxt}　·　${s.m} ${tr('場')}${f ? '　·　' + f.i + ' ' + tr(f.n) : ''}</small></div></div>`;
@@ -12869,10 +12920,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       </div>
       <p class="rkd-foot"><span>🏅 ${tr('只有積分賽算分')}</span><span>📈 ${tr('牌位越高，加分越少、輸了扣越多')}</span><span>🛡️ ${tr('鈴鐺以下不會掉牌位')}</span><span>🛡️ ${tr('升上肉球以上有 3 場保護')}</span>${s.pr > 0 ? `<span>🛡️×${s.pr}</span>` : ''}</p>`;
     }
-    if (inl) { inl.innerHTML = `<div class="rkd-pn rkd-inl" aria-label="${tr('牌位')}">${head}${tabs}${body}</div>`; if (ov) ov.hidden = true; }
-    else { ov.innerHTML = `<div class="rkd-pn" role="dialog" aria-label="${tr('牌位')}"><button type="button" class="rkd-x" aria-label="${tr('關閉')}">×</button>
+    ov.innerHTML = `<div class="rkd-pn" role="dialog" aria-label="${tr('牌位')}"><button type="button" class="rkd-x" aria-label="${tr('關閉')}">×</button>
       ${head}${tabs}${body}</div>`;
-    ov.hidden = false; }
+    ov.hidden = false;
     if (tab === 'week' && weekly.can() && weekly.loaded !== weekId()) weekly.load();
   };
   const close = () => { if (ov) ov.hidden = true; };
