@@ -684,6 +684,26 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .tut-btn { font-size: 22px; padding: 6px 12px; }
 .is-touch .tut { top: calc(130px + var(--sat, 0px)); } .is-touch .tut-ic { width: 80px; height: 80px; border-radius: 22px; } .is-touch .tut-ic > svg:first-child { width: 60px; height: 60px; }
 @media (max-height: 520px) { .is-touch .tut { top: calc(122px + var(--sat, 0px)); } .tut-ic { width: 72px; height: 72px; border-radius: 22px; } .tut-ic > svg:first-child { width: 54px; height: 54px; } .tut-dots i { width: 11px; height: 11px; } }
+/* 第 91 版：貼紙（結算得到的那張、貼紙本） */
+.stk-svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 0 rgba(27, 20, 48, .45)); }
+.stk-new { display: flex; align-items: center; gap: 8px; }
+.stk-new[hidden] { display: none; }
+.stk-new .stk-pop, .stk-toast .stk-pop { width: 72px; height: 72px; transform: scale(0) rotate(-30deg); animation: stkPop .55s cubic-bezier(.2, 1.8, .4, 1) .8s forwards; }
+.stk-new b, .stk-toast b { font: 900 22px/1 var(--f-body); color: var(--sun); -webkit-text-stroke: 5px var(--navy); paint-order: stroke fill; opacity: 0; animation: stkTxt .4s ease-out 1.2s forwards; transform: scale(0); }
+@keyframes stkTxt { to { opacity: 1; transform: scale(1) rotate(-6deg); } }
+.stk-new small { font-weight: 900; color: #fff; opacity: .85; text-shadow: 0 2px 0 var(--navy); }
+@keyframes stkPop { 70% { transform: scale(1.18) rotate(8deg); } to { transform: scale(1) rotate(-6deg); } }
+.stk-toast { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; z-index: 9; pointer-events: none; animation: stkFade 3.2s ease-in forwards; }
+.stk-toast .stk-pop { width: 120px; height: 120px; animation-delay: 0s; } .stk-toast b { animation-delay: .3s; font-size: 30px; }
+@keyframes stkFade { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }
+#m-stk { z-index: 8; }
+.stk-card { width: min(720px, 100%); max-height: 100%; overflow-y: auto; }
+.stk-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; } .stk-head .stk-book { font-size: 34px; } .stk-head b { font: 900 24px/1 var(--f-body); flex: 1; } 
+.stk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+.stk { position: relative; aspect-ratio: 1; padding: 4px; border: 0; background: transparent; cursor: pointer; border-radius: 16px; }
+.stk.ghost { opacity: .45; cursor: default; } .stk.wig { animation: meowTilt .5s ease-in-out; }
+.stk i { position: absolute; right: 0; bottom: 0; font: 900 13px/1 var(--f-body); font-style: normal; background: var(--navy); color: #fff; border-radius: 8px; padding: 2px 5px; }
+@media (max-height: 520px) { .stk-new .stk-pop { width: 54px; height: 54px; } }
 
 </style>
 <div id="app">
@@ -753,7 +773,7 @@ SC.CFG = {
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
   // 散彈槍（Yen 2026-11-19）：一次噴出一把小墨彈成扇形；貼近全中一發擊倒，遠一點只中幾顆
-  W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 28, hitPad: 1.8, ink: 50 / 3, range: 31.2, interval: 0.8, radius: 3.6, speed: 125, gravity: 100 }, // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水；第 58 版每顆威力再 2 倍（16→32）；第 59 版一發耗墨 1/3（50→16.7）、射程 3/4（52→39）、每發之後 0.8 秒自動上膛（拉護木的動作和咔嚓聲）；第 65 版威力七成（32→22.4）、射程八成（39→31.2） 第 74 版（Yen）：每顆 22.4→28、子彈碰到人的範圍加大（hitPad 0.55→1.8），準星圈圈也放大
+  W04: { id: 'W04', name: '散彈槍', pellets: 12, spread: 0.27, damage: 28, hitPad: 1.8, ink: 20, range: 24.96, interval: 0.8, radius: 3.6, speed: 125, gravity: 100 }, // Yen 2026-11-20：威力超強、範圍超大，一發耗一半墨水；第 58 版每顆威力再 2 倍（16→32）；第 59 版一發耗墨 1/3（50→16.7）、射程 3/4（52→39）、每發之後 0.8 秒自動上膛（拉護木的動作和咔嚓聲）；第 65 版威力七成（32→22.4）、射程八成（39→31.2） 第 74 版（Yen）：每顆 22.4→28、子彈碰到人的範圍加大（hitPad 0.55→1.8），準星圈圈也放大；第 91 版（Yen 11/21）：射程八成（31.2→25）、每發耗墨多 20%（16.7→20）
   // 墨刀（Yen 2026-11-20，第 56 版）：近身武器，不會射出東西。按住連續砍（右橫砍→左橫砍→往下直劈），每一刀把前面一片扇形塗成自己的顏色、砍到人；
   // 跳起來後再按一下：往前衝刺斬一段（約 16），一路塗地，碰到的對手直接擊倒，每次跳起來只能衝一次
   // 第 58 版（Yen）：範圍和威力都 1.2 倍
@@ -2617,6 +2637,62 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
 })();
 
+// 第 91 版（Yen 2026-11-21「牆壁要能塗」）：對戰場地的牆面墨水。
+// 地上的墨水是從上往下看的一張圖，畫不到直立的牆，所以牆上另外貼墨水貼片（一個 InstancedMesh、一次繪製），
+// 再用一張「牆面格子 → 哪一隊」的表記下顏色，給墨貓爬牆用（在自己顏色的牆上可以往上爬）。
+(() => {
+  const WI = (SC.wallInk = {});
+  const CAP = 2400, Q = 1.2; // 最多 2400 片，舊的會被新的蓋掉；格子 1.2 單位
+  let mesh = null, next = 0, used = 0, own = new Map(), noInk = () => false;
+  const H = (x, z) => SC.world.height(x, z);
+  const key = (x, y, z) => Math.round(x / Q) + ',' + Math.round(z / Q) + ',' + Math.floor(y / Q);
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), qs = new THREE.Quaternion(), s3 = new THREE.Vector3(), p3 = new THREE.Vector3(), Z = new THREE.Vector3(0, 0, 1), n3 = new THREE.Vector3(), col = new THREE.Color();
+
+  function splatTex() { // 一團墨水加周圍小墨點，再往下流一條（白色，顏色由每片自己給）
+    const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); g.fillStyle = '#fff';
+    g.beginPath(); for (let i = 0; i <= 24; i++) { const a = (i / 24) * Math.PI * 2, r = 36 + Math.sin(i * 2.7) * 6 + Math.cos(i * 5.1) * 4; g.lineTo(64 + Math.cos(a) * r, 60 + Math.sin(a) * r); } g.fill();
+    [[18, 26, 7], [108, 34, 6], [100, 98, 8], [22, 92, 6], [64, 12, 5], [116, 66, 4], [10, 60, 4]].forEach(([x, y, r]) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); });
+    g.beginPath(); g.roundRect(56, 80, 14, 40, 7); g.fill(); g.beginPath(); g.arc(63, 120, 8, 0, 7); g.fill(); // 往下流的墨
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  WI.init = (scene) => {
+    const mat = new THREE.MeshStandardMaterial({ map: splatTex(), alphaTest: 0.5, roughness: 0.25, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+    mesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), mat, CAP); mesh.count = 0; mesh.frustumCulled = false; mesh.renderOrder = 1;
+    mesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(CAP * 3), 3); scene.add(mesh);
+  };
+  WI.reset = (noInkFn) => { own.clear(); next = 0; used = 0; if (mesh) { mesh.count = 0; mesh.instanceMatrix.needsUpdate = true; } noInk = noInkFn || (() => false); };
+
+  // 從牆外的點 (ox,oz) 往牆裡的點 (ix,iz) 找牆面的位置（二分法）和往外的法線
+  WI.face = (ox, oz, ix, iz, y) => {
+    let ax = ox, az = oz, bx = ix, bz = iz; if (H(ax, az) > y) return null;
+    for (let k = 0; k < 7; k++) { const mx = (ax + bx) / 2, mz = (az + bz) / 2; if (H(mx, mz) > y) { bx = mx; bz = mz; } else { ax = mx; az = mz; } }
+    const e = 0.7, gx = (H(ax + e, az) > y ? 1 : 0) - (H(ax - e, az) > y ? 1 : 0), gz = (H(ax, az + e) > y ? 1 : 0) - (H(ax, az - e) > y ? 1 : 0); // 牆在哪一邊
+    let nx = -gx, nz = -gz, l = Math.hypot(nx, nz); if (l < 0.1) { nx = ox - ix; nz = oz - iz; l = Math.hypot(nx, nz) || 1; }
+    return { x: ax, z: az, nx: nx / l, nz: nz / l, top: H(bx, bz) };
+  };
+  // 在牆面 (x,y,z)（往外法線 nx,nz）塗一片半徑 r 的墨水
+  WI.paint = (team, x, y, z, nx, nz, r, color) => {
+    if (!mesh || noInk(x - nx, z - nz)) return false;
+    const top = H(x - nx * 0.8, z - nz * 0.8), base = H(x + nx * 0.8, z + nz * 0.8); if (top - base < 1.2) return false;
+    y = SC.clamp(y, base + 0.2, top - 0.2);
+    const ux = -nz, uz = nx; // 沿著牆面的橫向
+    for (let u = -r; u <= r; u += Q * 0.5) for (let v = -r; v <= r; v += Q * 0.5) if (u * u + v * v <= r * r && y + v > base - 0.5 && y + v < top + 0.5) own.set(key(x + ux * u, y + v, z + uz * u), team + 1);
+    for (let v = 0.3; v < 3; v += Q * 0.5) own.set(key(x, y - r - v, z), team + 1); // 往下流的那一條也算
+    const i = next; next = (next + 1) % CAP; used = Math.min(CAP, used + 1);
+    n3.set(nx, 0, nz); q.setFromUnitVectors(Z, n3); qs.setFromAxisAngle(Z, Math.random() * 0.6 - 0.3); q.multiply(qs);
+    const sz = r * 2.3 * (0.9 + Math.random() * 0.25); s3.set(sz, sz * 1.1, 1); p3.set(x + nx * 0.05, y, z + nz * 0.05);
+    m4.compose(p3, q, s3); mesh.setMatrixAt(i, m4); mesh.setColorAt(i, col.copy(color)); mesh.count = used;
+    mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true; return true;
+  };
+  // 牆面上這一點是哪一隊的顏色（0＝沒塗）
+  WI.owner = (x, y, z) => {
+    let v = own.get(key(x, y, z)); if (v) return v;
+    for (const [dx, dz] of [[Q, 0], [-Q, 0], [0, Q], [0, -Q]]) { v = own.get(key(x + dx, y, z + dz)); if (v) return v; }
+    return 0;
+  };
+  WI.count = () => used;
+})();
+
 // 對戰場地：五張原創場地（Yen 2026-11-17 要求加到五種；2026-11-19 後三張換成結構完全不同的海盜船、遊樂場、滑板場）。
 // 每張兩側點對稱，出生台位置一樣；地形、高低和水的位置各張不同。
 // 碰撞用高度函式（沒有懸空結構），所以走位、子彈、塗地都查同一份資料。
@@ -2648,6 +2724,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 場地外面：圓形（r）、橢圓（e，半軸就是 x、z）或長方形
   const outOf = (L, x, z, pad = 0) => (L.r ? x * x + z * z > (L.r + pad) * (L.r + pad) : L.e ? (x / (L.x + pad)) ** 2 + (z / (L.z + pad)) ** 2 > 1 : x < -L.x - pad || x > L.x + pad || z < -L.z - pad || z > L.z + pad);
   world.outOf = outOf;
+  // 第 91 版：高城牆和高跳台（gate）只能爬上去，不能直接跳上去；城牆（noInk）是石頭，墨水塗不上
+  const inBox = (p, x, z, e = 0) => x >= p.x0 - e && x <= p.x1 + e && z >= p.z0 - e && z <= p.z1 + e;
+  world.gates = []; world.noInks = [];
+  world.gated = (x, z) => { const g = world.gates; for (let i = 0; i < g.length; i++) if (inBox(g[i], x, z)) return g[i]; return null; };
+  world.noInk = (x, z) => { const g = world.noInks; for (let i = 0; i < g.length; i++) if (inBox(g[i], x, z, 0.3)) return true; return false; };
   world.height = (x, z) => {
     if (world.alt) return world.alt(x, z); // 魔王關卡用自己的高度函式
     if (outOf(world.lim, x, z)) return 60;
@@ -2721,7 +2802,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 北邊三層貓爬架（5 → 10 → 15）接一條 10 高的城牆步道，跨過牛奶河變成高橋，直接衝到對面；
   // 南邊紙箱階梯（3 → 6）爬上 9 高的貓窩平台，再從長斜坡滑下來；中間有凹下去的球池、坐墊台和兩層中央島。
   MAPS.park = {
-    name: '貓咪遊樂園', water: '牛奶河', vic: { x: -38, z: 18 }, lim: { x: 124, z: 70 }, bx: 122,
+    name: '貓咪遊樂園', water: '牛奶河', vic: { x: -38, z: 18 }, lim: { x: 142, z: 70 }, bx: 122, // 第 91 版：場地往兩端各加長 18，放高城牆
     tgt: { high: { x: -86, z: 42 } }, // 自由試玩的靶子位置（沒寫的用預設）
     base: sym((x, z) => {
       if (x > -12) return -12; // 牛奶河
@@ -2759,6 +2840,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       { t: 'cyl', x: -50, z: 66, r: 3, h: 5, look: 'yarn' },
       // 河上的低橋
       { t: 'box', x0: -12, x1: 12, z0: 34, z1: 44, h: 0.6, look: 'bridge' },
+      // 第 91 版（Yen 11/21）：出生台後面的高城牆（22 高、朝場地那一邊有牆垛可以躲），適合狙擊。
+      // 城牆是石頭、墨水塗不上去，也跳不上去：要先把旁邊高跳台（14 高）的牆塗成自己的顏色、用墨貓爬上去，再從高跳台跳上城牆。
+      { t: 'box', x0: -142, x1: -131, z0: -46, z1: 46, h: 22, look: 'castle', gate: 1, noInk: 1 },
+      ...[-21.6, -16.8, -12, -7.2, -2.4, 2.4, 7.2, 12, 16.8, 21.6].map((z) => ({ t: 'box', x0: -132.6, x1: -131, z0: z - 1.3, z1: z + 1.3, h: 26, look: 'merlon', gate: 1, noInk: 1 })),
+      ...[-34, -29, 29, 34].map((z) => ({ t: 'box', x0: -142, x1: -140.4, z0: z - 1.3, z1: z + 1.3, h: 26, look: 'merlon', gate: 1, noInk: 1 })),
+      { t: 'box', x0: -130, x1: -121, z0: 28, z1: 40, h: 14, look: 'climbT', gate: 1 },
+      { t: 'box', x0: -130, x1: -121, z0: -40, z1: -28, h: 14, look: 'climbT', gate: 1 },
     ],
     center: [
       { t: 'cyl', x: 0, z: 0, r: 11, h: 2, look: 'island' },
@@ -2774,7 +2862,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ],
     sky: [0x3aa0ff, 0xa8e4ff, 0xfff3d6], fog: 0xcdeeff, hemi: [0xeaf6ff, 0xffe9c9],
     river: { color: 0xeaf7ff, rough: 0.06 },
-    look: { base: 0xffffff, tier1: 0x8fe3c0, tier2: 0xb9a5ff, tier3: 0xffb3c7, bed: 0xffb3c7, wall: 0xffd97a, cushion: 0x9be7ff, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, island2: 0xffd0e8, post: 0xe9cfa3, tower: 0xb9a5ff, pad: 0xffe08a },
+    look: { castle: 0xc9c3dd, merlon: 0xbdb5d6, climbT: 0xffb86b, base: 0xffffff, tier1: 0x8fe3c0, tier2: 0xb9a5ff, tier3: 0xffb3c7, bed: 0xffb3c7, wall: 0xffd97a, cushion: 0x9be7ff, carton: 0xd9a86c, bolster: 0xffb3c7, bridge: 0xf7c59f, island: 0xfff1b8, island2: 0xffd0e8, post: 0xe9cfa3, tower: 0xb9a5ff, pad: 0xffe08a },
     rough: { carton: 0.85, ground: 0.75 },
     ground: (g) => {
       tiles(g, '#f3d9a8', ['#ffefcf', '#ffe4b3']);
@@ -2804,6 +2892,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         k.add(new THREE.SphereGeometry(1, 12, 8), k.plain(0xffd23f, 0.4), p.x + 1.5, p.h + 0.6, p.z - 1);
       },
       bridge: (p, k) => k.rails(k.box(p, { bottom: -1.6 }), p, 0xff8fab),
+      castle: (p, k) => { // 高城牆：石磚紋，頂上一圈深色邊
+        const m = k.box(p, { r: 0.5 }), w = p.x1 - p.x0, d = p.z1 - p.z0, lm = k.plain(0xa79fc2, 0.9);
+        for (let y = 3; y < p.h - 1; y += 3.2) { const ln = new THREE.Mesh(new THREE.BoxGeometry(w + 0.08, 0.28, d + 0.08), lm); ln.position.y = y; m.add(ln); }
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(w + 0.6, 0.7, d + 0.6), k.plain(0x8d84ad, 0.8)); cap.position.y = p.h - 0.3; m.add(cap);
+        const flag = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 3), k.plain(p.team ? 0x7fd8ff : 0xff8fc8, 0.5)); flag.rotation.z = -Math.PI / 2; flag.position.set(0, p.h + 9, 0); m.add(flag);
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 10, 8), k.plain(0xe9cfa3, 0.6)); const bx = (p.team ? 1 : -1) * (w / 2 - 1.2); pole.position.set(bx, p.h + 5, 0); m.add(pole); flag.position.set(bx + 1.6, p.h + 9, 0);
+      },
+      merlon: (p, k) => k.box(p, { r: 0.35 }),
+      climbT: (p, k) => { // 高跳台：塗墨爬上去的練習台，側面有貓爪向上的提示
+        const m = k.box(p, { r: 0.8 }), pm = k.plain(0xffffff, 0.6), w = p.x1 - p.x0, d = p.z1 - p.z0;
+        for (let y = 2.5; y < p.h - 1; y += 3.2) [-1, 1].forEach((s) => { const a = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.4, 3), pm); a.position.set(0, y, s * (d / 2 + 0.05)); a.scale.z = 0.15; m.add(a); const b = a.clone(); b.position.set(s * (w / 2 + 0.05), y, 0); b.scale.set(0.15, 1, 1); m.add(b); });
+      },
       yarn: (p, k) => { // 毛線球
         const cols = [0xff7aa8, 0x6fd3ff, 0xffc94a];
         const ym = SC.ink.patch(new THREE.MeshStandardMaterial({ color: cols[Math.abs(Math.round(p.x + p.z)) % 3], roughness: 0.75 }));
@@ -3662,7 +3762,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const m = built[key] || build(key);
     Object.keys(built).forEach((k2) => { built[k2].root.visible = k2 === key; });
     // 名字放在 water（river 是水面的材質設定；之前兩個同名，掉水訊息會變成 [object Object]）
-    world.key = key; world.riverName = MAPS[key].water; world.swim = MAPS[key].swim !== false; /* 第 83 版（Yen）：每張場地的河（牛奶河、巧克力河、噴泉水池…）都跟海盜船的海一樣浮得起來 */ world.pools = MAPS[key].pools || null; world.isles = MAPS[key].isles || null; world.root = m.root; world.prims = m.prims; world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
+    world.key = key; world.riverName = MAPS[key].water; world.swim = MAPS[key].swim !== false; /* 第 83 版（Yen）：每張場地的河（牛奶河、巧克力河、噴泉水池…）都跟海盜船的海一樣浮得起來 */ world.pools = MAPS[key].pools || null; world.isles = MAPS[key].isles || null; world.root = m.root; world.prims = m.prims; world.gates = m.prims.filter((p) => p.gate && p.t === 'box'); world.noInks = m.prims.filter((p) => p.noInk && p.t === 'box'); world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
     world.lim = m.lim; world.ang = m.ang; world.spawns = m.spawns; world.baseIn = m.baseIn; world.teams = m.ang.length; world.cur = m;
     scene0.environment = m.env; scene0.fog = m.fog;
     return true;
@@ -4276,7 +4376,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 (() => {
   const fx = (SC.fx = {});
   const NP = 900, NB = 200;
-  let parts, blobs, pList = [], pNext = 0, beams = [], ghosts = [], rings = [], pops = [], popNext = 0, arcs = [], scene;
+  let parts, blobs, pList = [], pNext = 0, beams = [], ghosts = [], rings = [], pops = [], popNext = 0, arcs = [], crowns = [], crownNext = 0, scene;
   const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), QA = new THREE.Quaternion(), QB = new THREE.Quaternion();
   const dummy = new THREE.Object3D(), col = new THREE.Color(), up = new THREE.Vector3(0, 0, 1), dir = new THREE.Vector3();
 
@@ -4302,6 +4402,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 墨刀揮過去的一道彎月形刀光（第 56 版）
     const ag = new THREE.RingGeometry(0.42, 1, 40, 1, -1.2, 2.4); ag.rotateZ(Math.PI / 2); // 弧的中間朝 +y，等一下轉成朝前
     for (let i = 0; i < 6; i++) { const m = new THREE.Mesh(ag, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.visible = false; m.renderOrder = 5; scene.add(m); arcs.push({ m, life: 0 }); }
+    // 第 91 版（Yen：墨水飛濺畫面加強）：墨彈落地時冒出一圈 0.16 秒、頂端鋸齒狀的「水花皇冠」
+    const cc = document.createElement('canvas'); cc.width = 256; cc.height = 64; const cg = cc.getContext('2d'); cg.fillStyle = '#fff'; cg.beginPath(); cg.moveTo(0, 64);
+    for (let i = 0; i <= 16; i++) { const x = (i / 16) * 256; cg.lineTo(x - 8, 30 + (i % 2) * 8); cg.quadraticCurveTo(x, -4 + (i % 3) * 6, x + 8, 30 + ((i + 1) % 2) * 8); } cg.lineTo(256, 64); cg.fill();
+    for (let i = 0; i < 16; i++) { cg.beginPath(); cg.arc((i / 16) * 256 + 8, 6 + (i % 3) * 3, 3 + (i % 2) * 2, 0, 7); cg.fill(); }
+    const crownTex = new THREE.CanvasTexture(cc); crownTex.wrapS = THREE.RepeatWrapping;
+    const crownGeo = new THREE.CylinderGeometry(1, 0.7, 1, 20, 1, true); crownGeo.translate(0, 0.5, 0);
+    for (let i = 0; i < 20; i++) { const m = new THREE.Mesh(crownGeo, new THREE.MeshStandardMaterial({ map: crownTex, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.15 })); m.visible = false; m.renderOrder = 3; scene.add(m); crowns.push({ m, life: 0 }); }
     for (let i = 0; i < 8; i++) {
       const m = new THREE.Mesh(new THREE.RingGeometry(0.72, 1, 48), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
       m.rotation.x = -Math.PI / 2; m.visible = false; m.renderOrder = 4; scene.add(m); rings.push({ m, life: 0 });
@@ -4335,6 +4442,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     parts.instanceColor.needsUpdate = true;
   };
 
+  fx.crown = (x, y, z, color, r) => { const s = crowns[crownNext]; crownNext = (crownNext + 1) % crowns.length; s.m.position.set(x, y + 0.05, z); s.m.rotation.y = Math.random() * 6.28; s.m.material.color.copy(color); s.m.visible = true; s.life = s.max = 0.17; s.r = r; s.m.scale.set(r * 0.4, 0.01, r * 0.4); };
   fx.beam = (a, b, color, width) => {
     const s = beams.find((q) => q.life <= 0) || beams[0];
     dir.subVectors(b, a); const len = dir.length();
@@ -4364,12 +4472,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const p = pList[i]; if (p.life <= 0) continue;
       p.life -= dt; p.vy -= 70 * p.g * dt; if (p.g < 1) { p.vx *= 1 - dt * 1.5; p.vz *= 1 - dt * 1.5; } p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
       const s = p.life <= 0 ? 0 : p.size * Math.min(1, (p.life / p.max) * 1.6);
-      dummy.position.set(p.x, p.y, p.z); dummy.scale.setScalar(s); dummy.updateMatrix(); parts.setMatrixAt(p.i, dummy.matrix);
+      const sp = Math.hypot(p.vx, p.vy, p.vz), st = 1 + Math.min(1.6, sp * 0.03); // 第 91 版：墨滴依速度拉長成水滴形，不再是彈珠
+      if (sp > 1) dummy.quaternion.setFromUnitVectors(up, dir.set(p.vx / sp, p.vy / sp, p.vz / sp)); else dummy.quaternion.identity();
+      dummy.position.set(p.x, p.y, p.z); dummy.scale.set(s / Math.sqrt(st), s / Math.sqrt(st), s * st); dummy.updateMatrix(); parts.setMatrixAt(p.i, dummy.matrix);
     }
     parts.instanceMatrix.needsUpdate = true;
     beams.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = Math.max(0, s.life / s.max); s.m.material.opacity = k; s.m.scale.x = s.m.scale.z = s.w * (0.3 + k); if (s.life <= 0) s.m.visible = false; });
     pops.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = Math.max(0, s.life / s.max); s.sp.scale.setScalar(s.size * (0.6 + 0.6 * (1 - k))); s.sp.material.opacity = k; if (s.life <= 0) s.sp.visible = false; });
     arcs.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = 1 - Math.max(0, s.life / s.max); s.m.material.opacity = 0.9 * (1 - k * k); const g = s.r * (0.85 + 0.25 * k); s.m.scale.set(g * (s.k === 3 ? 0.35 : 1), g * (s.k === 3 ? 1.3 : 1), g); if (s.life <= 0) s.m.visible = false; });
+    crowns.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = 1 - Math.max(0, s.life / s.max), w = s.r * (0.4 + 0.6 * Math.sqrt(k)), h = s.r * 0.55 * Math.sin(Math.min(1, k * 1.15) * Math.PI); s.m.scale.set(w, Math.max(0.01, h), w); if (s.life <= 0) s.m.visible = false; });
     rings.forEach((s) => { if (s.life <= 0) return; s.life -= dt; const k = 1 - Math.max(0, s.life / s.max), e = 1 - (1 - k) * (1 - k); s.m.scale.setScalar(s.r * (0.15 + 0.85 * e)); s.m.material.opacity = 0.85 * (1 - k); if (s.life <= 0) s.m.visible = false; });
     ghosts.forEach((s) => {
       if (s.life <= 0) return; s.life -= dt; s.g.position.y += dt * 5.5; s.g.position.x += Math.sin(s.life * 5) * dt * 1.5;
@@ -9109,7 +9220,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   G.init = (sc, cm, rn) => {
-    scene = sc; camera = cm; renderer = rn; I = SC.input; A = SC.audio; SC.swimTrail.init(scene);
+    scene = sc; camera = cm; renderer = rn; I = SC.input; A = SC.audio; SC.swimTrail.init(scene); SC.wallInk.init(scene);
     for (let i = 0; i < 6; i++) {
       // 墨水彈：四面體（像粽子）身體是自己的墨水色，四個尖端各掛一顆別的顏色的圓球（Yen 2026-11-19）
       const g = new THREE.Group(), tet = new THREE.TetrahedronGeometry(1.3, 0);
@@ -9141,9 +9252,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const inks = mine ? SC.teamInks(mine, 6) : G.palette.list || SC.teamInks(G.palette, 6);
     colors.forEach((c, i) => c.setHex(inks[i % inks.length].hex));
     INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
-    W.setTeamColors(...colors.slice(0, G.teams)); INK.reset();
+    W.setTeamColors(...colors.slice(0, G.teams)); INK.reset(); SC.wallInk.reset(W.noInk);
     G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); if (a.subArr) scene.remove(a.subArr); if (a.bladeAim) scene.remove(a.bladeAim, a.bladeAim.userData.tip); if (a.spRing) scene.remove(a.spRing); if (a.xray) scene.remove(a.xray); }); SC.swimTrail.clear(); document.body.classList.remove('wlock'); // 第 85 版：上一場絕招的圈、透視剪影、灰武器鈕都清掉
-    projectiles.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false)); RP.buf.length = 0; RP.burst = -1; G.replaying = null; rpBombs(null);
+    projectiles.length = 0; growQ.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false)); RP.buf.length = 0; RP.burst = -1; G.replaying = null; rpBombs(null);
     const others = Object.keys(SC.CAT_KINDS).filter((k) => k !== G.opts.kind), other = G.demo ? (G.opts.kind === 'maomao' ? 'shuang' : 'maomao') : others[(Math.random() * others.length) | 0]; // 對手隊隨機挑另一種貓（同一種貓固定同一隊）
     G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.targets = []; G.popped = 0;
     if (net && net.cpus.length) G.opts.difficulty = net.df; // 一起打電腦：電腦強度照房主選的
@@ -9541,7 +9652,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }
       if (hitActor) break;
       if (y <= h) { if (G.mode === 'boss') { if (h - y > 1.5) BS.paintWall(a.team, x, y, z, rad * 1.2); BS.onImpact(x, y, z, 'W03'); }
-        const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
+        const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (h - y > 1.5) wallPaint(a.team, bx, bz, x, z, y, rad * 0.9, colors[a.team]); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
       if (t >= paintT) { paintT = t + 2.4; if (h > -4 && y - h < 18) INK.stamp(a.team, x, h, z, rad); }
     }
     if (hitActor) { hurt(hitActor, dmg, a, 'W03'); INK.splat(a.team, hitActor.pos.x, H(hitActor.pos.x, hitActor.pos.z), hitActor.pos.z, rad); }
@@ -9601,6 +9712,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     INK.by = b.owner; if (gy > -4) { INK.splat(b.team, b.x, gy, b.z, R * 1.15); INK.stamp(b.team, b.x, gy, b.z, R); SC.fx.ring(b.x, gy, b.z, colors[b.team], R * 1.25, 0.42); }
     SC.fx.burst(b.x, b.y + 0.5, b.z, colors[b.team], 60, 42, 1); SC.fx.burst(b.x, b.y + 0.5, b.z, WHITE, 14, 26, 0.55);
     INK.by = null; if (G.mode === 'boss') { BS.onBomb(b.x, b.y, b.z); BS.paintWall(b.team, b.x, b.y, b.z, R * 0.7, 6); }
+    else for (let k = 0; k < 8; k++) { const ang = (k / 8) * 6.283, cx = Math.cos(ang), cz = Math.sin(ang); for (let d = 1; d <= R; d += 1) { const x = b.x + cx * d, z = b.z + cz * d; if (H(x, z) > b.y + 1.2) { wallPaint(b.team, b.x + cx * (d - 1), b.z + cz * (d - 1), x, z, Math.max(b.y, gy) + 1.5, 2.6, colors[b.team]); break; } } } // 第 91 版：墨水彈在牆邊爆炸，牆也會塗到
     G.hit.forEach((e) => { // 中心直接擊倒，外圈扣 60
       if (e.team === b.team || !e.alive) return; const d = Math.hypot(e.pos.x - b.x, e.pos.y + bodyMid(e, 2) - b.y, e.pos.z - b.z);
       if (d < B.damageRadius) hurt(e, (d < B.nearRadius ? B.nearDamage : B.damage) * weak, b.owner, 'bomb');
@@ -9630,7 +9742,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
   }
 
+  const growQ = [];
   function updateProjectiles(dt) {
+    for (let i = growQ.length - 1; i >= 0; i--) { const q = growQ[i]; if (G.time >= q.at || G.time < q.at - 1) { INK.by = q.by; INK.splat(...q.a); growQ.splice(i, 1); } } INK.by = null;
     for (let i = projectiles.length - 1; i >= 0; i--) {
       const p = projectiles[i]; let dead = false; p.life += dt; INK.by = p.owner;
       const sp = Math.hypot(p.vx, p.vy, p.vz), steps = Math.max(1, Math.ceil((sp * dt) / 1.3)), sdt = dt / steps;
@@ -9653,8 +9767,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (p.y <= h) {
           const hp = H(px, pz), wall = h - hp > 1.2 && h - p.y > 0.9;
           if (G.mode === 'boss' && !(wall && BS.paintWall(p.team, p.x, py, p.z, p.r * 0.8))) BS.onImpact(p.x, p.y, p.z, p.cause);
-          if (wall) { if (hp > -4 && py - hp < 6) INK.splat(p.team, px, hp, pz, p.r * 0.6); SC.fx.burst(px, py, pz, p.color, 5, 12, 0.4); }
-          else if (h > -4) { const was = p.owner && p.owner.isPlayer ? INK.ownerAt(p.x, p.z) : 0; INK.splat(p.team, p.x, h, p.z, p.r, p.vx, p.vz); SC.fx.burst(p.x, h + 0.3, p.z, p.color, 5, 13, 0.42); if (was > 0 && was !== p.team + 1 && G.time - coverSfxAt > 0.12) { coverSfxAt = G.time; A.sfx.cover(); } } // 第 89 版：自己蓋掉對手的墨水時多一聲亮亮的「啾」
+          if (wall) { const wp = wallPaint(p.team, px, pz, p.x, p.z, py, Math.max(1.6, p.r * 0.7), p.color); if (hp > -4 && py - hp < 6) INK.splat(p.team, px, hp, pz, p.r * (wp ? 0.35 : 0.6)); SC.fx.burst(px, py, pz, p.color, 5, 12, 0.4); if (!wp && W.noInk(p.x, p.z) && near(t1.set(px, py, pz)) > 0.2) SC.fx.pop(px, py, pz, WHITE, 1.4, 0.06); }
+          else if (h > -4) { const was = p.owner && p.owner.isPlayer ? INK.ownerAt(p.x, p.z) : 0; INK.splat(p.team, p.x, h, p.z, p.r * 0.6, p.vx, p.vz); growQ.push({ at: G.time + 0.05, a: [p.team, p.x, h, p.z, p.r, p.vx, p.vz], by: p.owner }); SC.fx.burst(p.x, h + 0.3, p.z, p.color, 5, 13, 0.42); if (near(t2.set(p.x, h, p.z)) > 0.08) SC.fx.crown(p.x, h, p.z, p.color, Math.min(2.6, p.r * 0.55)); if (was > 0 && was !== p.team + 1 && G.time - coverSfxAt > 0.12) { coverSfxAt = G.time; A.sfx.cover(); } } // 第 89 版：自己蓋掉對手的墨水時多一聲亮亮的「啾」 // 第 91 版：墨跡先蓋 0.6 倍、0.05 秒後「長」到完整大小，冒一圈水花皇冠
           else SC.fx.burst(p.x, -5.2, p.z, WHITE, 4, 10, 0.4);
           if (G.time - splatSfxAt > 0.09) { const n = near(t1.set(p.x, p.y, p.z)); if (n > 0.12 && !G.demo) { A.sfx.splat(n * 0.6); splatSfxAt = G.time; } }
           dead = true; break;
@@ -9668,9 +9782,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     INK.by = null;
   }
 
+  // 第 91 版（Yen）：對戰場地的牆壁也塗得上墨水。ox/oz 是牆外、ix/iz 是牆裡的點
+  function wallPaint(team, ox, oz, ix, iz, y, r, col) { if (G.mode === 'boss') return false; const f = SC.wallInk.face(ox, oz, ix, iz, y); return !!(f && SC.wallInk.paint(team, f.x, y, f.z, f.nx, f.nz, r, col)); }
   // ---------- 角色更新 ----------
   function blocked(a, x, z) {
     const lim = a.pos.y + (a.onGround ? C.STEP : 0.3), r = C.ACTOR_RADIUS;
+    if (W.gates.length && G.mode !== 'boss' && !(G.time - (a.gateT ?? -9) < 2.5)) { for (const [gx, gz] of [[x, z], [x + r, z], [x - r, z], [x, z + r], [x, z - r]]) if (W.gated(gx, gz) && !W.gated(a.pos.x, a.pos.z)) return true; } // 第 91 版：高城牆、高跳台只能用墨貓爬上去（剛從上面下來 2.5 秒內可以跳回去）
     const hits = (px, pz) => (H(px + r, pz) > lim) + (H(px - r, pz) > lim) + (H(px, pz + r) > lim) + (H(px, pz - r) > lim);
     if (H(x, z) > lim) return true;
     const n = hits(x, z); if (!n) return false;
@@ -9678,6 +9795,42 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     return n > hits(a.pos.x, a.pos.z) || hits(a.pos.x, a.pos.z) === 0;
   }
 
+  // 第 91 版（Yen）：對戰場地的牆塗成自己的顏色後，墨貓可以往上爬（往牆推＝往上，往後拉＝往下，按跳＝往後跳開）
+  function wallClimb(a, ctl, wantCat, dt) {
+    const R = C.ACTOR_RADIUS, own = a.team + 1;
+    if (a.crest) { // 翻上牆頂
+      const c = a.crest; c.t += dt / 0.36; const k = Math.min(1, c.t), kx = SC.clamp((k - 0.3) / 0.7, 0, 1);
+      a.pos.set(SC.lerp(c.x0, c.x1, kx), SC.lerp(c.y0, c.y1, Math.min(1, k / 0.5)) + Math.sin(k * Math.PI) * 0.9, SC.lerp(c.z0, c.z1, kx));
+      a.vel.set(0, 0, 0); a.onGround = false; a.ground = 'own'; a.speed = 9; if (W.gated(c.x1, c.z1)) a.gateT = G.time;
+      if (k >= 1) { a.crest = a.climb = null; a.onGround = true; a.jumps = 0; a.pos.y = H(a.pos.x, a.pos.z); a.cat.squash = 0.4; if (a.isPlayer) A.sfx.land(); }
+      return true;
+    }
+    if (!wantCat || !a.alive || a.spT != null) { a.climb = null; return false; }
+    let w = a.climb;
+    if (!w) { // 往牆推的時候找前面的牆
+      const ml = Math.hypot(ctl.mx, ctl.mz); if (ml < 0.3) return false;
+      const dx = ctl.mx / ml, dz = ctl.mz / ml, y = a.pos.y + 1.2, ox = a.pos.x, oz = a.pos.z, ix = ox + dx * (R + 1.4), iz = oz + dz * (R + 1.4);
+      if (H(ix, iz) < a.pos.y + C.STEP + 0.6) return false;
+      const f = SC.wallInk.face(ox, oz, ix, iz, y); if (!f || -(dx * f.nx + dz * f.nz) < 0.5) return false;
+      if (SC.wallInk.owner(f.x, y, f.z) !== own) return false;
+      w = { x: f.x, z: f.z, nx: f.nx, nz: f.nz }; if (a.isPlayer) A.sfx.dive();
+    }
+    const inward = -(ctl.mx * w.nx + ctl.mz * w.nz);
+    if (ctl.jump) { a.climb = null; a.vel.set(w.nx * 24, V0 * 0.85, w.nz * 24); a.onGround = false; a.jumps = 1; a.launchT = 0.22; a.lastJumpAt = G.time; ctl.jump = false; if (a.isPlayer) A.sfx.jump(1); return false; }
+    const top = H(w.x - w.nx * 1.2, w.z - w.nz * 1.2);
+    a.climb = w; a.onGround = false; a.jumps = 0; a.vel.set(0, 0, 0); a.ground = 'own'; a.submerged = true;
+    a.pos.x = w.x + w.nx * (R + 0.15); a.pos.z = w.z + w.nz * (R + 0.15);
+    if (inward > 0.25 && a.pos.y >= top - 2.2) { a.crest = { t: 0, x0: a.pos.x, y0: a.pos.y, z0: a.pos.z, x1: w.x - w.nx * (R + 1.6), y1: top, z1: w.z - w.nz * (R + 1.6) }; return true; }
+    let vy = inward > 0.25 ? 13 : inward < -0.25 ? -8 : 0;
+    if (vy > 0 && SC.wallInk.owner(w.x, a.pos.y + 2 + vy * dt, w.z) !== own && a.pos.y < top - 2.2) { vy = 0; a.climbStuck = (a.climbStuck || 0) + dt;
+      if (a.isPlayer && a.climbStuck > 0.8 && G.time - (a.stuckFxAt || -9) > 0.45) { a.stuckFxAt = G.time; SC.fx.burst(w.x, a.pos.y + 3.2, w.z, WHITE, 10, 7, 0.45, 0.2, 0.6, 0); SC.fx.pop(w.x, a.pos.y + 3.2, w.z, WHITE, 3, 0.12);
+        if (G.time - (a.stuckTipAt || -9) > 4) { a.stuckTipAt = G.time; SC.ui.tip('上面還沒塗到！先射墨水把上面塗成你的顏色', 2.4); } } }
+    else a.climbStuck = 0;
+    a.pos.y += vy * dt; a.speed = Math.abs(vy);
+    const g = H(a.pos.x, a.pos.z); if (a.pos.y <= g) { a.pos.y = g; if (vy < 0 || inward < -0.25) { a.climb = null; a.onGround = true; return false; } }
+    if (vy && (a.swimT -= dt) <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x - w.nx * R, a.pos.y + 1, a.pos.z - w.nz * R, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); }
+    return true;
+  }
   // 魔王關卡：墨貓沿著罐頭側面自己顏色的墨水往上爬（速度同 Roblox 的爬牆馬達：上 13、下 8、橫移 13）
   function bossClimb(a, ctl, wantCat, dt) {
     const B = BS, own = a.team + 1, R = C.ACTOR_RADIUS;
@@ -9735,12 +9888,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 腳下墨水
     const own = G.mode === 'boss' && a.pos.y > 3 ? 0 : INK.ownerAt(a.pos.x, a.pos.z); // 罐頭頂、機頂不算地面墨水
     a.ground = !a.onGround ? 'air' : a.inWater ? 'water' : own === a.team + 1 ? 'own' : own > 0 ? 'enemy' : 'neutral';
+    if (a.onGround && W.gates.length && W.gated(a.pos.x, a.pos.z)) a.gateT = G.time;
     const wantCat = ctl.cat && !ctl.fire && a.charge < 0 && !a.inWater, wasSub = a.submerged; // 海裡不能變墨貓
     a.form = wantCat ? 'cat' : 'biped'; a.submerged = wantCat && (a.ground === 'own' || !!a.climb);
     if (a.isPlayer && wasSub !== a.submerged) (a.submerged ? A.sfx.dive : A.sfx.surface)();
     if (a.submerged !== wasSub && a.onGround) SC.fx.burst(a.pos.x, a.pos.y + 0.3, a.pos.z, colors[a.team], 7, 11, 0.4);
 
-    const climbing = G.mode === 'boss' && a.isPlayer && bossClimb(a, ctl, wantCat, dt);
+    const climbing = a.isPlayer && (G.mode === 'boss' ? bossClimb(a, ctl, wantCat, dt) : wallClimb(a, ctl, wantCat, dt));
     if (climbing) a.dash = null;
     if (!climbing) {
     // 速度
@@ -10092,7 +10246,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function pickTarget(a) {
     let best = null, bs = -9; const L = W.lim;
     for (let i = 0; i < 16; i++) {
-      const x = SC.rand(-L.x + 6, L.x - 6), z = SC.rand(-L.z + 6, L.z - 6), h = H(x, z); if (h < -3 || h > 17) continue; // 多層場地：高台上也會去塗
+      const x = SC.rand(-L.x + 6, L.x - 6), z = SC.rand(-L.z + 6, L.z - 6), h = H(x, z); if (h < -3 || h > 17 || W.gated(x, z) || W.gated(x + 3, z) || W.gated(x - 3, z)) continue; // 多層場地：高台上也會去塗（第 91 版：城牆、高跳台電腦上不去，不去那邊）
       const [u, v] = W.toLocal(a.team, x, z); // u：往對手那邊推進的距離
       if (u > W.baseIn - 16 && Math.abs(v) < 24) continue; // 不去堵對手的出生台
       const o = INK.ownerAt(x, z), s = (o === a.team + 1 ? 0.1 : o > 0 ? 1.5 : 1.0) - Math.hypot(x - a.pos.x, z - a.pos.z) * 0.007 + u * 0.0016 + Math.random() * 0.3;
@@ -10925,7 +11079,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             </div>
           </div>
         </div>
-        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn icon tut-btn" id="btn-tut" aria-label="氣球派對（教學）">🎈</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button><label class="btn lang-btn"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3.5 16h25M16 3.5c-4.6 4-4.6 21 0 25M16 3.5c4.6 4 4.6 21 0 25" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span id="lang-cur">${SC.i18n.LABEL[SC.i18n.lang]}</span><select id="pick-lang" aria-label="語言">${SC.i18n.LANGS.map((l) => `<option value="${l}"${l === SC.i18n.lang ? ' selected' : ''}>${SC.i18n.LABEL[l]}</option>`).join('')}</select></label><div class="sens-opt"><span class="sens-l">視角靈敏度</span><span class="sens-ic" aria-hidden="true">🐢</span><input type="range" id="set-sens0" min="0.2" max="3" step="0.1" value="1" aria-label="視角靈敏度"><span class="sens-ic" aria-hidden="true">🐇</span><output class="sens-v" id="sens-v0">1.0</output></div></div>
+        <div class="actions"><button type="button" class="btn primary" id="btn-start">開戰！</button><button type="button" class="btn icon tut-btn" id="btn-tut" aria-label="氣球派對（教學）">🎈</button><button type="button" class="btn icon tut-btn" id="btn-stk" aria-label="貼紙本">📒</button><button type="button" class="btn" id="btn-help">操作說明</button><button type="button" class="btn icon" id="btn-mute" aria-label="音效開關">音效：開</button><button type="button" class="btn fs-btn" id="btn-full2" hidden>全螢幕</button><label class="btn lang-btn"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3.5 16h25M16 3.5c-4.6 4-4.6 21 0 25M16 3.5c4.6 4 4.6 21 0 25" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span id="lang-cur">${SC.i18n.LABEL[SC.i18n.lang]}</span><select id="pick-lang" aria-label="語言">${SC.i18n.LANGS.map((l) => `<option value="${l}"${l === SC.i18n.lang ? ' selected' : ''}>${SC.i18n.LABEL[l]}</option>`).join('')}</select></label><div class="sens-opt"><span class="sens-l">視角靈敏度</span><span class="sens-ic" aria-hidden="true">🐢</span><input type="range" id="set-sens0" min="0.2" max="3" step="0.1" value="1" aria-label="視角靈敏度"><span class="sens-ic" aria-hidden="true">🐇</span><output class="sens-v" id="sens-v0">1.0</output></div></div>
       </div>
     </div>
 
@@ -10959,6 +11113,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     <div class="menu" id="m-results" hidden>
       <div class="res-top">
         <div class="praise" id="praise" hidden></div>
+        <div class="stk-new" id="stk-new" hidden></div>
         <div class="verdict" id="verdict">勝利！</div>
         <div class="res-bar"><b id="res-a">0.0%</b><div class="h-bar big"><i id="res-bar-a"></i><i id="res-bar-c" class="mid"></i><i id="res-bar-b"></i></div><b id="res-b">0.0%</b><b id="res-c">0.0%</b></div>
       </div>
@@ -11090,8 +11245,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       G().start({ ...sel, demo: false });
     };
     const tutGo = (then) => { SC.net.leave(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; G().start({ ...sel, mode: 'sandbox', map: 'park', demo: false, tut: true }); SC.tut.begin(then); };
-    ui.tutDone = (then) => { if (then) G().start({ ...then, demo: false }); else toMenu(); };
-    on('btn-tut', () => tutGo(null));
+    ui.tutDone = (then) => { if (SC.stk) ui.stkToast(SC.stk.award()); if (then) G().start({ ...then, demo: false }); else toMenu(); };
+    ui.stkToast = (got) => { const t = document.createElement('div'); t.className = 'stk-toast'; t.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}`; $('ui').appendChild(t); SC.audio.sfx.squeak && SC.audio.sfx.squeak(); setTimeout(() => t.remove(), 3200); };
+    on('btn-tut', () => tutGo(null)); on('btn-stk', () => SC.stk && SC.stk.open());
     on('btn-start', begin); on('btn-again', begin); on('btn-restart', begin);
     // 聊天（Yen 2026-11-20）：貼圖大家都能按；打字只在好友房（SC.net.canType）。別人打的字一律用 textContent 放進畫面
     const STK = [['👋', '嗨！'], ['👍', '加油！'], ['🎉', '好球！'], ['😄', '好好玩！'], ['😮', '哇！'], ['😭', '哭哭'], ['🔁', '再來一場！'], ['❤️', '謝謝！']];
@@ -11341,7 +11497,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   let loseRun = 0;
   ui.onResults = () => {
-    const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true; els['res-stats'].classList.remove('has-board'); rank.hide();
+    const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true;
+    { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } // 第 91 版：每打完一場得到一張貼紙 els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
       if (r.fail) { // 三條命用完
@@ -11476,6 +11633,61 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     set('vig', Math.round(vig * 40), (v) => (els.vig.style.opacity = v / 40));
     for (let i = feedItems.length - 1; i >= 0; i--) { const f = feedItems[i]; f.t -= dt; if (f.t <= 0) { f.el.remove(); feedItems.splice(i, 1); } }
     mapT -= dt; if (mapT <= 0) { mapT = 0.33; drawMap(g); }
+  };
+})();
+
+// 第 91 版（Yen 11/21，手感報告「收集和選擇」）：貼紙本。每打完一場（電腦對戰、連線、魔王關）或玩完氣球派對就得到一張貼紙，
+// 優先給還沒有的。只是收集，不影響強弱；沒有抽獎、沒有付費。存在 localStorage sc-stickers（登入時跟著雲端存檔）。
+(() => {
+  const S = (SC.stk = {});
+  const KEY = 'sc-stickers';
+  const BG = {
+    circle: '<circle cx="32" cy="32" r="27"/>',
+    heart: '<path d="M32 56C14 44 5 34 5 22a13 13 0 0 1 27-6 13 13 0 0 1 27 6c0 12-9 22-27 34z"/>',
+    star: '<path d="M32 4l7.6 16.4 17.9 2.2-13.2 12.3 3.4 17.7L32 43.8 16.3 52.6l3.4-17.7L6.5 22.6l17.9-2.2z"/>',
+    cloud: '<path d="M16 50a11 11 0 0 1-1-22 14 14 0 0 1 26-7 11 11 0 0 1 16 10 10 10 0 0 1-2 19z"/>',
+  };
+  const COL = ['#ff8fc8', '#ffd23f', '#7fd8ff', '#9dff8a', '#c9a7ff', '#ffb86b'];
+  const LIST = [];
+  ['maomao', 'shuang', 'banban', 'taro'].forEach((k, i) => ['circle', 'heart', 'star', 'cloud'].forEach((b, j) => LIST.push({ id: k + '-' + b, bg: b, col: COL[(i + j) % COL.length], face: k })));
+  ['W01', 'W02', 'W03', 'W04', 'W05', 'BOMB'].forEach((w, i) => LIST.push({ id: 'w-' + w, bg: i % 2 ? 'circle' : 'star', col: COL[(i + 2) % COL.length], icon: w }));
+  ['🐟', '🧶', '🎈', '👑', '🍰', '🌈', '⭐', '🎉', '🍬', '🦆'].forEach((e, i) => LIST.push({ id: 'e' + i, bg: ['cloud', 'heart', 'circle', 'star'][i % 4], col: COL[(i + 4) % COL.length], emoji: e }));
+  S.LIST = LIST;
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } };
+  const save = (o) => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* 私密模式：這一次記不住也沒關係 */ } if (SC.account && SC.account.cloud) try { SC.account.cloud(); } catch (e) { /* 沒登入 */ } };
+  S.owned = load;
+
+  // 一張貼紙的 SVG：白邊（貼紙感）＋底色形狀＋中間的圖
+  S.svg = (st, ghost) => {
+    const inner = ghost ? '<text x="32" y="41" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" opacity=".7">?</text>'
+      : st.face ? `<g transform="translate(14 13) scale(.56)">${(SC.ui.face(st.face) || '').replace(/^<svg[^>]*>|<\/svg>$/g, '')}</g>`
+      : st.icon ? `<g transform="translate(13 12) scale(.6)">${(SC.ui.icon(st.icon) || '').replace(/^<svg[^>]*>|<\/svg>$/g, '')}</g>`
+      : `<text x="32" y="43" text-anchor="middle" font-size="28">${st.emoji}</text>`;
+    const shape = BG[st.bg];
+    return `<svg class="stk-svg" viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff" stroke="#fff" stroke-width="7" stroke-linejoin="round">${shape}</g><g fill="${ghost ? '#4a4366' : st.col}" stroke="#1b1430" stroke-width="2.2" stroke-linejoin="round">${shape}</g>${inner}</svg>`;
+  };
+  // 給一張：九成機會給還沒有的，全部都有了就隨便給一張（會多一張）
+  S.award = () => {
+    const o = load(), miss = LIST.filter((s) => !o[s.id]), pool = miss.length && Math.random() < 0.9 ? miss : LIST, st = pool[(Math.random() * pool.length) | 0];
+    const isNew = !o[st.id]; o[st.id] = (o[st.id] || 0) + 1; save(o); return { st, isNew, have: Object.keys(o).length, total: LIST.length };
+  };
+
+  // 貼紙本
+  let box = null;
+  function book() {
+    if (box) return box;
+    box = document.createElement('div'); box.className = 'menu dim'; box.id = 'm-stk'; box.hidden = true;
+    box.innerHTML = '<div class="card stk-card"><div class="stk-head"><span class="stk-book" aria-hidden="true">📒</span><b id="stk-n"></b><button type="button" class="btn icon" id="stk-x" aria-label="關閉">✕</button></div><div class="stk-grid" id="stk-grid"></div></div>';
+    document.getElementById('ui').appendChild(box);
+    box.querySelector('#stk-x').addEventListener('click', () => { box.hidden = true; SC.audio.sfx.ui(); });
+    box.addEventListener('click', (e) => { if (e.target === box) box.hidden = true; });
+    box.querySelector('#stk-grid').addEventListener('click', (e) => { const b = e.target.closest('.stk'); if (!b || b.classList.contains('ghost')) return; b.classList.remove('wig'); void b.offsetWidth; b.classList.add('wig'); const st = LIST.find((s) => s.id === b.dataset.id); if (st && st.face) SC.audio.sfx.meow(st.face); else SC.audio.sfx.pop(); });
+    return box;
+  }
+  S.open = () => {
+    const b = book(), o = load(); b.querySelector('#stk-n').textContent = Object.keys(o).filter((k) => LIST.some((s) => s.id === k)).length + ' / ' + LIST.length;
+    b.querySelector('#stk-grid').innerHTML = LIST.map((s) => `<button type="button" class="stk${o[s.id] ? '' : ' ghost'}" data-id="${s.id}" aria-label="${o[s.id] ? '貼紙' : '還沒有'}">${S.svg(s, !o[s.id])}${o[s.id] > 1 ? `<i>×${o[s.id]}</i>` : ''}</button>`).join('');
+    b.hidden = false; SC.audio.sfx.ui();
   };
 })();
 
@@ -11890,7 +12102,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     xsolla: null, // 例：{ projectId: 123456, loginId: 'xxxxxxxx-xxxx-…', sandbox: true, items: [{ sku: 'donate_100', name: '贊助 NT$100' }] }
   };
   const FB_VER = '10.12.2', STAGES = 15, TOP = 5;
-  const SAVE_KEYS = ['splatoocat-web', 'sc-lang', 'sc-boss-rank', 'sc-rank-name', 'sc-ranked', 'sc-acc-name']; // sc-acc-name：自取名稱 {uid: 名字}（Yen 21:37） // sc-ranked：積分賽牌位（09y_ranked.js）
+  const SAVE_KEYS = ['splatoocat-web', 'sc-lang', 'sc-boss-rank', 'sc-rank-name', 'sc-ranked', 'sc-acc-name', 'sc-stickers', 'sc-tut']; // sc-acc-name：自取名稱 {uid: 名字}（Yen 21:37） // sc-ranked：積分賽牌位（09y_ranked.js）
   const demo = /[?&]sc-account-demo\b/.test(location.search); // 本機預覽：沒有設定也顯示按鈕（贊助用假連結）
   if (demo && window.SC_TEST_FIREBASE !== undefined) CONFIG.firebase = window.SC_TEST_FIREBASE, CONFIG.providers = ['google', 'facebook']; // 自動測試用
   if (demo && window.SC_TEST_XSOLLA) CONFIG.xsolla = window.SC_TEST_XSOLLA; // 自動測試用
@@ -11983,6 +12195,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // ---------- 雲端存檔 ----------
   const readLocal = () => { const o = {}; SAVE_KEYS.forEach((k) => { try { const v = localStorage.getItem(k); if (v != null) o[k] = v; } catch (e) {} }); return o; };
   const writeLocal = (o) => SAVE_KEYS.forEach((k) => { try { if (o[k] != null) localStorage.setItem(k, o[k]); } catch (e) {} });
+  const mergeStk = (a, b) => { const pa = (s) => { try { return JSON.parse(s || '{}') || {}; } catch (e) { return {}; } }, x = pa(a), y = pa(b); Object.keys(y).forEach((k) => { x[k] = Math.max(x[k] || 0, y[k] || 0); }); return JSON.stringify(x); }; // 第 91 版：貼紙兩邊合併，每張取比較多的張數
   const mergeRank = (a, b) => { // 兩份 sc-boss-rank 合併，每關取最快的 TOP 筆
     let x = {}, y = {}; try { x = JSON.parse(a || '{}') || {}; } catch (e) {} try { y = JSON.parse(b || '{}') || {}; } catch (e) {}
     const out = {};
@@ -12005,7 +12218,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       try {
         const { db, F } = await load(); const snap = await F.getDoc(F.doc(db, 'saves', id));
         const here = readLocal(), there = (snap.exists() && snap.data().data) || {}, merged = { ...here };
-        SAVE_KEYS.forEach((k) => { if (k === 'sc-ranked') { if (here[k] != null || there[k] != null) merged[k] = moreGames(here[k], there[k]); } else if (k === 'sc-boss-rank') { if (here[k] != null || there[k] != null) merged[k] = mergeRank(here[k], there[k]); } else if (typeof there[k] === 'string') merged[k] = there[k]; });
+        SAVE_KEYS.forEach((k) => { if (k === 'sc-ranked') { if (here[k] != null || there[k] != null) merged[k] = moreGames(here[k], there[k]); } else if (k === 'sc-stickers') { if (here[k] != null || there[k] != null) merged[k] = mergeStk(here[k], there[k]); } else if (k === 'sc-boss-rank') { if (here[k] != null || there[k] != null) merged[k] = mergeRank(here[k], there[k]); } else if (typeof there[k] === 'string') merged[k] = there[k]; });
         const changed = SAVE_KEYS.some((k) => merged[k] !== here[k]);
         writeLocal(merged); await push();
         let again = false; try { again = sessionStorage.getItem('sc-cloud-reload') === id; sessionStorage.setItem('sc-cloud-reload', id); } catch (e) {}
