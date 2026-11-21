@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='2427a2eb85bc';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -944,7 +944,7 @@ SC.CFG = {
   W02: { id: 'W02', name: '滾刷', swingInk: 8 / INK_LAST, rollInk: 0.42 / INK_LAST, swingInterval: 0.5, rollDelay: 0.2, swingRange: 19, airRange: 40, // 跳起來甩：直的一道、噴得遠（Yen 11/14，像漆彈大作戰的跳甩）
     
     swingRadius: 3.4, rollerHalf: 5.8, /* 第 103 版（Yen）：刷頭看起來是實際塗墨寬度的 9 成（塗出的帶子半寬約 1.12×rollRadius×PAINT≈6.5） */ rollRadius: 3.85, rollSpeedMin: 1.08, rollSpeedMax: 1.38, rollRamp: 0.7, swingDamage: 48, rollDamage: 100, rollHitInterval: 0.4 },
-  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, playerCharge: 0.35, deskInterval: 1, spread: 0.07, /* 第 108 版（Yen）：沒開鏡最多偏 4 度 */ /* 第 100 版（Yen）：玩家不用集氣（電腦版左鍵一按就射、平板按住 0.35 秒就滿）；電腦按了就射的版本每發間隔 1 秒 */ minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
+  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, playerCharge: 0.35, deskInterval: 1, spread: 0.15, /* 第 110.1 版（Yen：還是太準）：沒開鏡偏 3.4～8.6 度（第 108 版是 0～4 度） */ /* 第 100 版（Yen）：玩家不用集氣（電腦版左鍵一按就射、平板按住 0.35 秒就滿）；電腦按了就射的版本每發間隔 1 秒 */ minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
    
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
@@ -10730,7 +10730,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   G.sniperSpread = () => { const p = player(); return p ? sniperSpread(p) : 0; };
   function scatter(dir, ang) {
     if (ang <= 0) return; const u = new V3(), v = new V3(); u.set(-dir.z, 0, dir.x); if (u.lengthSq() < 1e-6) u.set(1, 0, 0); u.normalize(); v.crossVectors(dir, u).normalize();
-    const t = Math.tan(ang * Math.sqrt(Math.random())), ph = Math.random() * Math.PI * 2; dir.addScaledVector(u, t * Math.cos(ph)).addScaledVector(v, t * Math.sin(ph)).normalize();
+    const t = Math.tan(ang * (0.4 + 0.6 * Math.sqrt(Math.random()))), ph = Math.random() * Math.PI * 2; dir.addScaledVector(u, t * Math.cos(ph)).addScaledVector(v, t * Math.sin(ph)).normalize();
   }
   function fireSniper(a) {
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (fullC(a) - w.minCharge), 0, 1);
