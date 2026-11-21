@@ -651,6 +651,18 @@ body.lowhp .hud-weapons .w-chip.bomb:last-child, body.lowhp .w-chip.bomb:last-of
 #btn-help2::before { content: '?'; display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; margin-right: 8px; border-radius: 50%; background: #fff; color: var(--navy); font-size: .9em; }
 #btn-quit::before { content: '🏠'; margin-right: 8px; }
 #m-pause .col .btn { min-height: 56px; font-size: 20px; }
+/* 第 89 版：結算先稱讚（塗了幾平方公尺、打倒幾隻），一張一張跳出來 */
+.praise { display: flex; gap: 12px; justify-content: center; margin-bottom: 6px; }
+.praise[hidden] { display: none; }
+.pr-chip { display: flex; align-items: center; gap: 6px; background: #fff; color: var(--navy); border: 4px solid var(--navy); border-radius: 18px 22px 16px 24px; padding: 4px 14px 4px 8px; box-shadow: 0 5px 0 var(--navy), 0 0 0 4px var(--tc, #fff); transform: scale(0) rotate(-6deg); animation: prPop .45s cubic-bezier(.2, 1.7, .4, 1) forwards; }
+.pr-chip:nth-child(2) { animation-delay: .25s; } .pr-chip:nth-child(3) { animation-delay: .5s; }
+.pr-chip svg { width: 40px; height: 40px; flex: none; } .pr-chip .pr-face { width: 40px; height: 40px; display: grid; place-items: center; } .pr-chip .pr-face svg { width: 40px; height: 40px; }
+.pr-chip b { font: 900 34px/1 var(--f-body); min-width: 1.2em; text-align: right; } .pr-chip small { font-weight: 900; font-size: 16px; opacity: .7; }
+.pr-chip.mvp { background: var(--sun); } .pr-chip.mvp .crown { width: 36px; height: 27px; }
+@keyframes prPop { to { transform: scale(1) rotate(-2deg); } }
+@media (max-height: 520px) { .pr-chip b { font-size: 26px; } .pr-chip svg, .pr-chip .pr-face, .pr-chip .pr-face svg { width: 30px; height: 30px; } }
+.cat-pick.meow > svg:first-child, .cat-pick.meow > .face { animation: meowTilt .5s ease-in-out; transform-origin: 50% 80%; }
+@keyframes meowTilt { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg) scale(1.1); } 60% { transform: rotate(9deg) scale(1.05); } }
 
 </style>
 <div id="app">
@@ -2072,6 +2084,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05); voices++; s.onended = () => voices--;
   }
 
+  // 第 89 版：合成的「喵」——鋸齒波經過兩個母音共振峰（「ㄧ」→「ㄠ」），音高先升後降。p 是音高倍率，每隻貓不一樣
+  function meowV(p = 1, vol = 0.22, when = 0) {
+    if (!A.ready || busy(vol)) return; const c = A.ctx, t = c.currentTime + when, d = 0.42, o = c.createOscillator(), g = c.createGain(), f1 = c.createBiquadFilter(), f2 = c.createBiquadFilter(), m = c.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(520 * p, t); o.frequency.linearRampToValueAtTime(820 * p, t + 0.12); o.frequency.exponentialRampToValueAtTime(430 * p, t + d);
+    [f1, f2].forEach((f) => { f.type = 'bandpass'; f.Q.value = 6; }); f1.frequency.setValueAtTime(700, t); f1.frequency.linearRampToValueAtTime(1100, t + 0.15); f1.frequency.linearRampToValueAtTime(650, t + d);
+    f2.frequency.setValueAtTime(2600, t); f2.frequency.linearRampToValueAtTime(1500, t + d); m.gain.value = 0.6;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.05); g.gain.setValueAtTime(vol, t + d * 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(f1); o.connect(f2); f1.connect(g); f2.connect(m); m.connect(g); g.connect(sfxBus); o.start(t); o.stop(t + d + 0.05); voices++; o.onended = () => voices--;
+  }
   let lastShot = 0, lastMetal = 0, burst = 0, lastEmpty = 0, combo = 0, comboT = 0;
   A.sfx = {
     shot(vol = 1) { // 噴塗彈（Yen 2026-11-17：要更有力道）：低頻「咚」的後座力＋高頻「嗤」的噴出聲＋濕濕的「啪」＋小小的啵
@@ -2162,6 +2183,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     pat() { tone('sine', 420, 300, 0.09, 0.22); noise(0.06, 0.06, 900, 500, 2); }, // 摸摸頭
     aww() { [784, 988, 1175].forEach((f, i) => tone('triangle', f, f, 0.22, 0.14, i * 0.09)); }, // 抱抱
     squeak() { tone('sine', 1700, 2500, 0.07, 0.16); tone('sine', 2100, 2900, 0.06, 0.12, 0.09); },
+    meow(kind) { const P = { maomao: 1, shuang: 1.18, banban: 0.9, taro: 0.84 }; meowV((P[kind] || 1.06) * (0.96 + Math.random() * 0.08)); }, // 第 89 版：每隻貓的喵聲高低不同
+    cover() { const f = 1100 + Math.random() * 260; tone('sine', f, f * 1.5, 0.07, 0.09); noise(0.06, 0.07, 3600, 5200, 2.5); }, // 第 89 版：蓋掉對手的墨水
     heart() { tone('sine', 78, 52, 0.11, 0.3); tone('sine', 70, 46, 0.1, 0.22, 0.2); }, // 第 88 版：血量低的「撲通、撲通」
     warn() { [0, 0.22].forEach((d) => { tone('square', 880, 660, 0.14, 0.09, d); tone('triangle', 1320, 990, 0.14, 0.12, d); }); }, // 第 88 版：對手的絕招要砸下來了「嗚咿、嗚咿」
     respawn() { tone('sine', 300, 900, 0.25, 0.26); noise(0.25, 0.14, 400, 3000, 1.2); },
@@ -9600,7 +9623,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           const hp = H(px, pz), wall = h - hp > 1.2 && h - p.y > 0.9;
           if (G.mode === 'boss' && !(wall && BS.paintWall(p.team, p.x, py, p.z, p.r * 0.8))) BS.onImpact(p.x, p.y, p.z, p.cause);
           if (wall) { if (hp > -4 && py - hp < 6) INK.splat(p.team, px, hp, pz, p.r * 0.6); SC.fx.burst(px, py, pz, p.color, 5, 12, 0.4); }
-          else if (h > -4) { INK.splat(p.team, p.x, h, p.z, p.r, p.vx, p.vz); SC.fx.burst(p.x, h + 0.3, p.z, p.color, 5, 13, 0.42); }
+          else if (h > -4) { const was = p.owner && p.owner.isPlayer ? INK.ownerAt(p.x, p.z) : 0; INK.splat(p.team, p.x, h, p.z, p.r, p.vx, p.vz); SC.fx.burst(p.x, h + 0.3, p.z, p.color, 5, 13, 0.42); if (was > 0 && was !== p.team + 1 && G.time - coverSfxAt > 0.12) { coverSfxAt = G.time; A.sfx.cover(); } } // 第 89 版：自己蓋掉對手的墨水時多一聲亮亮的「啾」
           else SC.fx.burst(p.x, -5.2, p.z, WHITE, 4, 10, 0.4);
           if (G.time - splatSfxAt > 0.09) { const n = near(t1.set(p.x, p.y, p.z)); if (n > 0.12 && !G.demo) { A.sfx.splat(n * 0.6); splatSfxAt = G.time; } }
           dead = true; break;
@@ -10517,6 +10540,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
   }
 
+  // 第 89 版（手感報告：主選單本身就是玩具）：在主選單背後的場地點一下，那裡就「啪」地噴一團墨水
+  let menuTeam = 0, coverSfxAt = -9;
+  G.menuSplat = (cx, cy) => {
+    if (!G.demo || !camera) return false; const r = renderer.domElement.getBoundingClientRect(); camera.updateMatrixWorld();
+    t1.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1, 0.5).unproject(camera).sub(camera.position).normalize();
+    const o = camera.position, hit = W.raycast(o.x, o.y, o.z, t1.x, t1.y, t1.z, 400, true); if (!hit || hit.wall) return false; // 鏡頭在場地外面，要開 openBounds
+    const x = hit.x, z = hit.z, y = H(x, z); if (y < -4 || y > 30) return false;
+    menuTeam = (menuTeam + 1) % Math.max(2, G.teams || 2); const col = colors[menuTeam];
+    INK.splat(menuTeam, x, y, z, SC.rand(5, 7), t1.x, t1.z); SC.fx.burst(x, y + 0.6, z, col, 16, 16, 0.5); SC.fx.ring(x, y + 0.25, z, col, 4, 0.3); A.sfx.splat(1); A.sfx.pop();
+    return true;
+  };
   G.frame = (dt) => {
     if (G.state === 'boot') return;
     SC.net.tick(dt);
@@ -10596,7 +10630,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const LIVES_HTML = ('<i>' + HEART_SVG + '</i>').repeat(3);
   const C = SC.CFG, ui = (SC.ui = {}), $ = (id) => document.getElementById(id);
   const G = () => SC.game;
-  let beatT = 0, lastPh = 1; let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'easy', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
+  let beatT = 0, lastPh = 1, praiseV = null; let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'easy', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
 
   // 貓臉小圖示（SVG，自家角色）
 
@@ -10820,6 +10854,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     <div class="menu" id="m-results" hidden>
       <div class="res-top">
+        <div class="praise" id="praise" hidden></div>
         <div class="verdict" id="verdict">勝利！</div>
         <div class="res-bar"><b id="res-a">0.0%</b><div class="h-bar big"><i id="res-bar-a"></i><i id="res-bar-c" class="mid"></i><i id="res-bar-b"></i></div><b id="res-b">0.0%</b><b id="res-c">0.0%</b></div>
       </div>
@@ -10835,7 +10870,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     <div class="flash" id="flash"></div>`);
 
     ['hud', 'scope', 'vig', 'hdir', 'timer', 'pct-a', 'pct-b', 'pct-c', 'bar-a', 'bar-b', 'bar-c', 'hp-fill', 'ink-fill', 'ink-meter', 'minimap', 'feed', 'cross', 'weapons', 'tip', 'banner', 'ko', 'ko-t', 'ko-n', 'ko-w', 'ko-got', 'hs-pop', 'roster-a', 'roster-b', 'my-face',
-      'boss-phase', 'boss-fill', 'boss-pips', 'm-title', 'm-pause', 'm-help', 'm-results', 'verdict', 'res-a', 'res-b', 'res-c', 'res-bar-a', 'res-bar-b', 'res-bar-c', 'res-stats', 'help-list', 'say', 'say-t', 'flash', 'dim', 'inkcover', 'lives', 'ko-lives', 'sp-btn', 'trick-badge', 'trick-card'].forEach((id) => (els[id] = $(id)));
+      'boss-phase', 'boss-fill', 'boss-pips', 'm-title', 'm-pause', 'm-help', 'm-results', 'verdict', 'res-a', 'res-b', 'res-c', 'res-bar-a', 'res-bar-b', 'res-bar-c', 'res-stats', 'help-list', 'say', 'say-t', 'flash', 'dim', 'inkcover', 'lives', 'ko-lives', 'sp-btn', 'trick-badge', 'trick-card', 'praise'].forEach((id) => (els[id] = $(id)));
     mapCtx = els.minimap.getContext('2d'); mapImg = null;
     // 第 62 版：卡片上的名字（換語言後可能變長）放不下時自動縮小字，不拆成一個字一個字
     const fitNames = () => document.querySelectorAll('#m-title .pick b').forEach((b) => {
@@ -10921,7 +10956,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       g.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return;
         if (key === 'mode') { const rk = b.dataset.v === 'ranked'; if (rk && !sel.rk && SC.ranked) setTimeout(() => SC.ranked.open(), 0); // 點積分賽自動跳出牌位視窗（Yen 21:35）
           if (sel.mode === 'net' && !!sel.rk !== rk && SC.net.code) SC.net.leave(); sel.rk = rk; sel[key] = rk ? 'net' : b.dataset.v; } // 積分賽＝連線對戰＋積分房（換模式就離開原本的房間）
-        else sel[key] = b.dataset.v; sync(); modeSync(); click(); }); sync();
+        else sel[key] = b.dataset.v; sync(); modeSync(); click(); if (key === 'kind') { SC.audio.sfx.meow(b.dataset.v); b.classList.remove('meow'); void b.offsetWidth; b.classList.add('meow'); } }); sync(); // 第 89 版：點貓咪，貓咪歪頭喊一聲喵
     };
     const click = () => { SC.audio.init(); SC.audio.sfx.ui(); };
     ui.modeSyncPicks = () => $('pick-mode').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === modeKey()));
@@ -10978,6 +11013,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     $('pick-vc').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setVc(b.dataset.v === '1'); SC.net.setDif(sel.difficulty); netSync(); } });
     $('pick-vdif').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); sel.difficulty = b.dataset.v; SC.net.setDif(b.dataset.v); save(); netSync(); } });
     $('pick-rule').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setRule(b.dataset.v); netSync(); } });
+    $('m-title').addEventListener('pointerdown', (e) => { if (e.target === $('m-title') && SC.game.menuSplat) { SC.audio.init(); SC.game.menuSplat(e.clientX, e.clientY); } }); // 第 89 版：點主選單旁邊的空地噴墨水
     on('btn-resume', () => G().setPaused(false));
     on('btn-pause', () => G().setPaused(true));
     $('spec-next').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); click(); G().specNext(1); });
@@ -11195,7 +11231,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   let loseRun = 0;
   ui.onResults = () => {
-    const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['res-stats'].classList.remove('has-board'); rank.hide();
+    const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true; els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
       if (r.fail) { // 三條命用完
@@ -11216,6 +11252,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 結算表（Yen 2026-11-19）：每個人一行，擊倒／被擊倒／助攻／塗地，分數最高的戴皇冠當 MVP
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';'), rows = g.board();
     const CROWN = '<svg class="crown" viewBox="0 0 24 18" aria-hidden="true"><path d="M2 16 1 4l6 5 5-8 5 8 6-5-1 12z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+    // 第 89 版（手感報告：輸了也有收穫）：結算先跳出「你塗了多少、打倒幾隻」的大貼紙，1.9 秒後才蓋上輸贏
+    const mine = rows.find((r) => r.me); praiseV = mine && !g.spec ? { area: mine.area, k: mine.k, mvp: !!mine.mvp } : null; els.praise.hidden = !praiseV;
+    if (praiseV) { const tc = '#' + g.colors[mine.team].getHexString();
+      els.praise.innerHTML = `<div class="pr-chip" style="--tc:${tc}"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 50q8-14 22-12t22-14" fill="none" stroke="${tc}" stroke-width="11" stroke-linecap="round"/><circle cx="14" cy="22" r="5" fill="${tc}"/><circle cx="50" cy="52" r="4" fill="${tc}"/></svg><b id="pr-area">0</b><small>㎡</small></div>`
+        + `<div class="pr-chip" style="--tc:${tc}"><span class="pr-face">${ui.face((p || g.opts).kind)}</span><b id="pr-k">0</b><small>KO</small></div>` + (praiseV.mvp ? `<div class="pr-chip mvp">${CROWN}<b>MVP</b></div>` : '');
+      SC.audio.sfx.aww && setTimeout(() => SC.audio.sfx.aww(), 250); }
     els['res-stats'].classList.add('has-board');
     els['res-stats'].innerHTML = `<table class="board"><thead><tr><th></th><th>擊倒</th><th>被擊倒</th><th>助攻</th><th>塗地</th></tr></thead><tbody>`
       + rows.map((r) => `<tr class="${r.me ? 'me' : ''}${r.gone ? ' gone' : ''}${r.mvp ? ' mvp' : ''}"><td class="nm"><div><i class="dot" style="background:#${g.colors[r.team].getHexString()}"></i>${r.mvp ? CROWN : ''}<span>${esc(r.name)}${r.me ? '（你）' : ''}</span>${r.mvp ? '<em>MVP</em>' : ''}</div></td><td>${r.k}</td><td>${r.d}</td><td>${r.as}</td><td>${r.area}</td></tr>`).join('')
@@ -11271,6 +11313,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const ko = g.koFinal, sum = ko.reduce((x, y) => x + y, 0) || 1;
         bars('res', ko.map((v) => (v / sum) * e), ko.map((v) => Math.round(v * e) + ' 擊倒'));
       } else { const sv = s.v || [s.a, s.b, s.c || 0]; bars('res', sv.map((v) => v * e), sv.map((v) => (v * 100 * e).toFixed(1) + '%')); }
+      if (praiseV) { const q = SC.clamp(resultsT / 1.1, 0, 1), eq = 1 - Math.pow(1 - q, 3), a = $('pr-area'), kk = $('pr-k'); if (a) a.textContent = Math.round(praiseV.area * eq); if (kk) kk.textContent = Math.round(praiseV.k * eq); }
       if (k >= 1 && !els['m-results'].classList.contains('done')) els['m-results'].classList.add('done');
       if (k < 1) els['m-results'].classList.remove('done');
     }
@@ -12168,7 +12211,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches, low = coarse && Math.min(screen.width, screen.height) < 700;
     let ratio = Math.min(window.devicePixelRatio || 1, coarse ? 1.6 : 2);
     renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.NoToneMapping; // 不做色調壓縮，墨水顏色才夠飽和
-    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = coarse ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap; // 第 89 版（手感報告）：手機和平板改用一般陰影，省下的時間給打擊特效
     const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(60, 1, 0.5, 1600);
     const resize = () => { const w = app.clientWidth, h = app.clientHeight; renderer.setPixelRatio(ratio); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); app.classList.toggle('portrait', h > w); };
     window.addEventListener('resize', resize); window.addEventListener('orientationchange', () => setTimeout(resize, 200));
