@@ -257,10 +257,25 @@ button { font: inherit; color: inherit; }
 .h-bar.big { width: clamp(160px, 44vw, 520px); height: 26px; border-radius: 14px; } .h-bar.big i { transition: none; }
 .res-bottom { display: grid; gap: 12px; justify-items: center; }
 .res-row { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; max-width: calc(100vw - 32px); }
-.res-map { width: clamp(150px, 40vmin, 340px); height: auto; border: 3px solid #fff; border-radius: 14px; background: var(--navy); box-shadow: 0 4px 0 var(--navy); }
-.res-map.round { border-radius: 50%; } .res-map[hidden] { display: none; }
-.res-map.pop { animation: resMapIn .5s cubic-bezier(.2, 1.5, .4, 1) .3s backwards; }
-@keyframes resMapIn { from { transform: scale(.4) rotate(-8deg); opacity: 0; } }
+.res-pod { display: flex; align-items: flex-end; gap: 10px; padding: 0 6px; --cw: 40px; --bh: 84px; }
+.res-pod[hidden] { display: none; } .res-pod.many { --cw: 30px; }
+.pod-col { display: flex; flex-direction: column; align-items: center; min-width: 54px; }
+.pod-cats { display: flex; justify-content: center; margin-bottom: -5px; position: relative; z-index: 1; }
+.pod-cat { width: var(--cw); position: relative; transform-origin: 50% 100%; animation: podIn .45s cubic-bezier(.2, 1.6, .4, 1) calc(1.1s + var(--d, 0s)) backwards; }
+.pod-cat svg { display: block; width: 100%; height: auto; }
+.pod-cat i { position: absolute; left: 50%; top: -12px; transform: translateX(-50%); font: 900 11px/1 var(--f-body); font-style: normal; color: var(--navy); background: #fff; border-radius: 6px; padding: 2px 4px; white-space: nowrap; }
+.pod-col.win .pod-cat svg { animation: podJump .5s cubic-bezier(.3, 0, .5, 1) calc(1.5s + var(--d, 0s)) infinite alternate; }
+.pod-col.lose .pod-cat svg { filter: saturate(.55) brightness(.92); transform-origin: 50% 100%; animation: podSad 2.4s ease-in-out calc(1.5s + var(--d, 0s)) infinite; }
+.pod-col.tie .pod-cat svg { transform-origin: 50% 100%; animation: podSway 1.6s ease-in-out infinite alternate; }
+.pod-bar { width: 100%; height: calc(var(--bh) * var(--h)); min-height: 22px; background: var(--tc); border: 3px solid #fff; border-bottom: 0; border-radius: 10px 10px 0 0; box-shadow: inset 0 -10px 0 rgba(27, 20, 48, .18); display: flex; justify-content: center; align-items: flex-start; padding-top: 4px; transform-origin: 50% 100%; animation: podGrow .9s cubic-bezier(.2, 1.2, .4, 1) .3s backwards; }
+.pod-bar b { font: 400 16px/1 var(--f-display); color: #fff; text-shadow: 0 2px 0 var(--navy), 0 0 4px var(--navy); white-space: nowrap; }
+.pod-col.win .pod-bar { border-color: var(--sun); }
+@keyframes podGrow { from { height: 0; min-height: 0; } }
+@keyframes podIn { from { transform: scale(0) translateY(20px); opacity: 0; } }
+@keyframes podJump { from { transform: translateY(0) scale(1.06, .94); } 30% { transform: translateY(0) scale(1); } to { transform: translateY(-14px) rotate(-4deg); } }
+@keyframes podSad { 0%, 100% { transform: scale(1.04, .9) rotate(0); } 50% { transform: scale(1.04, .88) rotate(-5deg); } }
+@keyframes podSway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+@media (max-height: 520px) { .res-pod { --cw: 30px; --bh: 50px; gap: 6px; } .res-pod.many { --cw: 24px; } .pod-bar b { font-size: 13px; } .pod-col { min-width: 44px; } }
 .res-stats { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .res-stats > div { background: var(--navy); border: 3px solid #fff; border-radius: 14px; padding: 6px 14px; display: grid; justify-items: center; gap: 2px; }
 .res-stats span { font-size: 12px; color: var(--dim); } .res-stats b { font: 400 22px/1 var(--f-display); }
@@ -709,7 +724,6 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .stk.ghost { opacity: .45; cursor: default; } .stk.wig { animation: meowTilt .5s ease-in-out; }
 .stk i { position: absolute; right: 0; bottom: 0; font: 900 13px/1 var(--f-body); font-style: normal; background: var(--navy); color: #fff; border-radius: 8px; padding: 2px 5px; }
 @media (max-height: 520px) { .stk-new .stk-pop { width: 54px; height: 54px; } }
-@media (max-height: 520px) { .res-map { width: clamp(110px, 34vh, 180px); } }
 @media (max-width: 480px) { .praise { gap: 6px; transform: scale(.78); margin: -6px 0 0; } }
 
 </style>
@@ -2552,7 +2566,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     let total = 0;
     for (let cz = 0; cz < H; cz++) for (let cx = 0; cx < W; cx++) {
       const x = -IX + (cx + 0.5) * C.CELL, z = -IZ + (cz + 0.5) * C.CELL, h = heightAt(x, z), i = cz * W + cx;
-      cellH[i] = h; paintable[i] = h > -4 && h < 30 ? 1 : 0; total += paintable[i];
+      cellH[i] = h; paintable[i] = h > -4 && (h < 30 || (SC.world.gated && SC.world.gated(x, z))) ? 1 : 0; total += paintable[i]; // 第 94 版（Yen）：城牆頂（62 高）也能塗
     }
     ink.total = total; ink.reset();
   };
@@ -10776,7 +10790,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             SC.ui.banner((G.teams >= 4 ? (G.winner === 'tie' ? '' : '第 ' + (f.v.filter((x, i) => (mx ? mx[i] > mx[0] : byKo ? ko[i] > ko[0] : x > f.v[0])).length + 1) + ' 名') : (mx ? '總分 ' : byKo ? '擊倒 ' : '塗地 ') + nums.join(' 比 ')) + (camera.aspect < 1 ? '\n' : '　') + (G.winner === 'tie' ? '平手！' : G.winner === 0 ? (tri ? '你獲勝！' : '我方獲勝！') : '對手獲勝…'), 1.9);
             if (G.winner !== 'tie') (G.winner === 0 ? A.sfx.win : A.sfx.lose)();
           }
-          if (!vic && endT > VIC_AT && !resultsShown) victoryStart();
+          // 第 94 版（Yen 11/21 14:18）：結束後鏡頭停在整張場地的俯視圖，不再演勝負小劇場；勝負改在結算的成績圖上，貓咪站在柱子上歡呼／垂頭喪氣
           if (vic) victory(dt);
         }
         if (endT > (G.mode === 'boss' ? (G.bossResult && !G.bossResult.fail ? (hug ? 0.7 + HUG.LEN : 3.6) : 1.9) : vic ? VIC_AT + VIC_LEN : VIC_AT + 0.4) && !resultsShown) { resultsShown = true; SC.ui.onResults(); } }
@@ -11128,7 +11142,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         <div class="res-bar"><b id="res-a">0.0%</b><div class="h-bar big"><i id="res-bar-a"></i><i id="res-bar-c" class="mid"></i><i id="res-bar-b"></i></div><b id="res-b">0.0%</b><b id="res-c">0.0%</b></div>
       </div>
       <div class="res-bottom">
-        <div class="res-row"><canvas class="res-map" id="res-map" width="300" height="150" aria-label="塗地結果地圖" hidden></canvas><div class="res-stats" id="res-stats"></div></div>
+        <div class="res-row"><div class="res-pod" id="res-pod" aria-hidden="true" hidden></div><div class="res-stats" id="res-stats"></div></div>
         <div class="res-rank" id="res-rank" hidden></div>
         <div class="actions"><button type="button" class="btn primary" id="btn-again">再來一場</button><button type="button" class="btn" id="btn-menu">回主選單</button></div>
       </div>
@@ -11506,24 +11520,35 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.rank = rank;
 
   let loseRun = 0;
-  // 第 93 版（Yen 11/21 14:06）：結算畫面除了數據，也顯示整張場地從上往下看的塗地結果（地形用明暗分出高低）
-  function resMap(g) {
-    const cv = $('res-map'); if (g.mode === 'boss' || !SC.ink.owner) { cv.hidden = true; return; }
-    const L = SC.world.lim, Hh = SC.world.height, mw = 300, mh = Math.max(60, Math.round((mw * L.z) / L.x)); cv.width = mw; cv.height = mh; cv.classList.toggle('round', !!(L.r || L.e));
-    const cx = cv.getContext('2d'), img = cx.createImageData(mw, mh), d = img.data, own = SC.ink.owner, pt = SC.ink.paintable, sx = (L.x * 2) / mw, sz = (L.z * 2) / mh;
-    const hex = (c) => [c.getHex() >> 16, (c.getHex() >> 8) & 255, c.getHex() & 255], rgb = [[250, 240, 222], ...g.colors.map(hex)];
-    let prev = new Float32Array(mw), row = new Float32Array(mw);
-    for (let y = 0; y < mh; y++) { const wz = -L.z + (y + 0.5) * sz;
-      for (let x = 0; x < mw; x++) { const wx = -L.x + (x + 0.5) * sx, p = (y * mw + x) * 4, h = (row[x] = Hh(wx, wz));
-        if ((L.r || L.e) && SC.world.outOf(L, wx, wz)) { d[p + 3] = 0; continue; }
-        const i = SC.ink.cellIndex(wx, wz), c = i >= 0 && pt[i] ? rgb[own[i]] || rgb[0] : h < -1 ? [150, 210, 245] : [200, 195, 222];
-        const up = y ? prev[x] : h, lf = x ? row[x - 1] : h, k = 1 + SC.clamp((up - h) * 0.05 + (lf - h) * 0.03, -0.28, 0.2) + SC.clamp(h, -4, 40) * 0.004; // 往左上打光：牆的邊比較暗，高的地方稍亮
-        d[p] = Math.min(255, c[0] * k); d[p + 1] = Math.min(255, c[1] * k); d[p + 2] = Math.min(255, c[2] * k); d[p + 3] = 255; }
-      const t = prev; prev = row; row = t; }
-    cx.putImageData(img, 0, 0); cv.hidden = false; cv.classList.remove('pop'); void cv.offsetWidth; cv.classList.add('pop');
+  // 第 94 版（Yen 11/21 14:18）：結算的成績圖：每隊一根柱子（塗地％、擊倒數或總分），隊上的貓站在柱子上，贏的跳起來歡呼、輸的垂頭喪氣
+  function podCat(kind, tc, mood, me) {
+    let face = (ui.face(kind) || '').replace(/^<svg[^>]*>|<\/svg>$/g, ''), S = 'stroke="#1b1430" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
+    if (mood !== 'tie') { // 換表情：拿掉原本的眼睛、眉毛、嘴巴，畫上開心（瞇眼大笑、臉紅）或難過（八字眉、扁嘴、眼淚）
+      face = face.replace(/<(ellipse|circle)[^>]*cx="(21|43)"[^>]*\/>/g, '').replace(/<path d="M(14 27|15 34|15 33|27 49|27 50|28 50)[^"]*"[^>]*\/>/g, '');
+      face += mood === 'win' ? '<path d="M15 38q6-8 12 0M37 38q6-8 12 0" fill="none" stroke="#1b1430" stroke-width="3.2" stroke-linecap="round"/><path d="M25 47q7 11 14 0z" fill="#ff6b8b" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><ellipse cx="13" cy="44" rx="4.5" ry="2.6" fill="#ff8fa3" opacity=".8"/><ellipse cx="51" cy="44" rx="4.5" ry="2.6" fill="#ff8fa3" opacity=".8"/>'
+        : '<path d="M14 31l11-4M50 31l-11-4" stroke="#1b1430" stroke-width="3" stroke-linecap="round"/><circle cx="21" cy="37" r="3" fill="#1b1430"/><circle cx="43" cy="37" r="3" fill="#1b1430"/><path d="M26 52q6-6 12 0" fill="none" stroke="#1b1430" stroke-width="2.8" stroke-linecap="round"/><path d="M19 42q-3 6 0 8 3-2 0-8z" fill="#7fd8ff" stroke="#1b1430" stroke-width="1.6"/>';
+    }
+    const arms = mood === 'win' ? `<path d="M15 41 7 28M33 41l8-13" fill="none" ${S} stroke-width="5.4"/><path d="M15 41 7 28M33 41l8-13" fill="none" stroke="${tc}" stroke-width="3" stroke-linecap="round"/><circle cx="7" cy="27" r="3" fill="#fff" ${S}/><circle cx="41" cy="27" r="3" fill="#fff" ${S}/>`
+      : `<path d="M15 44l-3 10M33 44l3 10" fill="none" ${S} stroke-width="5.4"/><path d="M15 44l-3 10M33 44l3 10" fill="none" stroke="${tc}" stroke-width="3" stroke-linecap="round"/>`;
+    const head = mood === 'lose' ? `<g transform="translate(3 8) rotate(14 21 21) scale(.656)">${face}</g><path d="M14 13v6M19 11v7M24 11v7" stroke="#6a5fd0" stroke-width="2" stroke-linecap="round" opacity=".8"/><path d="M41 14q3 4 0 6-3-2 0-6z" fill="#7fd8ff" ${S} stroke-width="1.4"/>`
+      : `<g transform="translate(3 1) scale(.656)">${face}</g>` + (mood === 'win' ? '<path d="M3 8l1.5 3 3 1.5-3 1.5L3 17l-1.5-3-3-1.5 3-1.5zM45 4l1.2 2.4 2.4 1.2-2.4 1.2L45 11l-1.2-2.4-2.4-1.2 2.4-1.2z" fill="#ffd23f"/>' : '');
+    return `<div class="pod-cat${me ? ' me' : ''}"><svg viewBox="-2 0 52 64"><ellipse cx="24" cy="60" rx="12" ry="3" fill="rgba(27,20,48,.35)"/><path d="M34 52q10-2 8-12" fill="none" ${S} stroke-width="5"/><path d="M34 52q10-2 8-12" fill="none" stroke="${tc}" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="24" cy="49" rx="11" ry="10" fill="${tc}" ${S}/><ellipse cx="18" cy="58" rx="4.5" ry="3" fill="#fff" ${S}/><ellipse cx="30" cy="58" rx="4.5" ry="3" fill="#fff" ${S}/>${arms}${head}</svg>${me ? '<i>你</i>' : ''}</div>`;
+  }
+  function resPodium(g) {
+    const box = $('res-pod'); if (g.mode === 'boss' || !g.final) { box.hidden = true; return; }
+    const n = g.teams || 2, f = g.final, ko = g.koFinal, mx = g.rule === 'mix' && g.mixFinal, byKo = g.rule === 'knockout' && ko, v = f.v || [f.a, f.b, f.c || 0];
+    const val = (t) => (mx ? mx[t] : byKo ? ko[t] : v[t]) || 0, lab = (t) => (mx ? (mx[t] || 0).toFixed(1) : byKo ? String(ko[t] || 0) : ((v[t] || 0) * 100).toFixed(1) + '%');
+    let top = 0; for (let t = 0; t < n; t++) top = Math.max(top, val(t));
+    const rows = g.board(), many = rows.length > 6, w = g.winner;
+    box.classList.toggle('many', many); box.innerHTML = Array.from({ length: n }, (_, t) => {
+      const tc = '#' + g.colors[t].getHexString(), mood = w === 'tie' ? 'tie' : w === t ? 'win' : 'lose', hgt = top > 0 ? 0.16 + 0.84 * (val(t) / top) : 0.16;
+      const cats = rows.filter((r) => r.team === t && !r.gone).map((r, k) => podCat(r.a.kind || 'maomao', tc, mood, r.me).replace('class="pod-cat', `style="--d:${(k * 0.13).toFixed(2)}s" class="pod-cat`)).join('');
+      return `<div class="pod-col ${mood}" style="--tc:${tc}"><div class="pod-cats">${cats}</div><div class="pod-bar" style="--h:${hgt.toFixed(3)}"><b>${lab(t)}</b></div></div>`;
+    }).join('');
+    box.hidden = false;
   }
   ui.onResults = () => {
-    const g = G(), w = g.winner, p = g.player(); resMap(g); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true;
+    const g = G(), w = g.winner, p = g.player(); resPodium(g); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true;
     { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } // 第 91 版：每打完一場得到一張貼紙 els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
