@@ -627,6 +627,16 @@ body.wlock .w-chip[data-w], body.wlock .t-btn.t-w { opacity: .35; filter: graysc
   #m-title .title-card { padding-bottom: 92px; }
 }
 
+/* 第 87 版（試玩報告）：沒墨水時「墨貓」鈕本身跳動、發光，旁邊一隻手指點著它；電腦版是 Shift 墨貓那格 */
+body.noink #t-cat { animation: inkNudge .55s ease-in-out infinite; box-shadow: 0 0 0 4px #fff, 0 0 22px 8px rgba(255, 255, 255, .75); }
+body.noink #t-cat::after { content: '☝'; position: absolute; right: -18px; top: -30px; font-size: 34px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .5)); animation: inkPoint .55s ease-in-out infinite; transform: rotate(-35deg); }
+body.noink .hud-weapons .w-chip.bomb:last-child, body.noink .w-chip.bomb:last-of-type { animation: inkNudge .55s ease-in-out infinite; border-color: #fff; }
+@keyframes inkNudge { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-6px) scale(1.12); } }
+@keyframes inkPoint { 0%, 100% { translate: 0 0; } 50% { translate: -6px 6px; } }
+/* 第 87 版（試玩報告）：結算時贏、輸、平手各有一個大圖示，不識字也看得出結果 */
+.verdict::before { display: block; font-size: .85em; line-height: 1.1; -webkit-text-stroke: 0; text-shadow: none; margin-bottom: .08em; }
+.verdict[data-r="win"]::before { content: '🏆'; } .verdict[data-r="lose"]::before { content: '🌧️'; } .verdict[data-r="tie"]::before { content: '🤝'; }
+
 </style>
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
@@ -822,6 +832,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['選貓咪', 'Pick a Cat', 'ネコをえらぶ', '고양이 고르기'],
     ['帶兩把武器', 'Bring 2 Weapons', 'ぶきを2つ持っていく', '무기 2개 챙기기'],
     ['滾刷變超寬 5 秒！', 'Super-wide roller for 5 s!', '5秒間ローラーが超ワイド！', '5초 동안 롤러가 엄청 넓어져요!'],
+    ['上面還沒塗到！先射墨水把上面塗成你的顏色', 'The part above isn\'t painted yet! Shoot ink up there first', '上がまだぬれてないよ！先にインクでぬろう', '위쪽이 아직 안 칠해졌어요! 먼저 잉크로 칠해요'],
+    ['下一場電腦會弱一點喔！', 'The CPU will be a little easier next match!', '次の試合はCPUが少し弱くなるよ！', '다음 판은 컴퓨터가 조금 약해져요!'],
     ['絕招用完才能換武器', 'Finish your special before switching weapons', 'ひっさつわざ中は武器を変えられないよ', '필살기가 끝나야 무기를 바꿀 수 있어요'],
     ['隱形 6 秒！對手看不到你', 'Invisible for 6 s! Rivals can\'t see you', '6秒間とうめい！相手から見えない', '6초 동안 투명! 상대가 못 봐요'],
     ['透視 8 秒！牆後面的對手會變成紅色', 'X-ray for 8 s! Rivals behind walls turn red', '8秒間すけて見える！カベの向こうの相手が赤くなる', '8초 동안 투시! 벽 뒤 상대가 빨갛게 보여요'],
@@ -2117,7 +2129,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     tick() { tone('square', 1000, 1000, 0.035, 0.1); },
     whistle() { tone('sine', 1900, 2100, 0.5, 0.26); tone('sine', 2500, 2350, 0.5, 0.14); },
     win() { [523, 659, 784, 1047, 1319].forEach((f, i) => tone('triangle', f, f, 0.24, 0.3, i * 0.11)); },
-    lose() { [440, 392, 330, 262].forEach((f, i) => tone('triangle', f, f * 0.97, 0.3, 0.26, i * 0.16)); },
+    lose() { [523, 392, 440, 587].forEach((f, i) => tone('triangle', f, f, 0.2, 0.24, i * 0.14)); tone('sine', 220, 520, 0.16, 0.14, 0.62); }, // 第 87 版：輸了放「下次加油」的可愛短句，不放哀傷的下降音階
     charge(dur = 3) { tone('sawtooth', 70, 520, dur, 0.16); tone('sine', 140, 1900, dur, 0.22); tone('triangle', 55, 55, dur, 0.3); noise(dur, 0.22, 300, 5200, 0.9, 'bandpass'); },
     boom() { noise(1.6, 1, 1500, 30, 0.45, 'lowpass'); tone('sine', 120, 22, 1.3, 0.75); tone('sawtooth', 70, 30, 0.9, 0.25, 0.05); noise(0.9, 0.45, 4000, 600, 0.8, 'bandpass', 0.15); },
     firework() { tone('sine', 500, 1500, 0.32, 0.1); noise(0.5, 0.42, 2600, 200, 0.6, 'lowpass', 0.34); tone('triangle', 1800, 900, 0.3, 0.12, 0.36); },
@@ -5116,7 +5128,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ctx = c; stop(); now = 0; B.phase = 1; B.health = PHASE_HP; B.phaseName = PHASE_NAMES[0]; B.state = 'intro'; B.time = 0; B.clearSeconds = 0;
     car.pos.set(0, 0, 30); car.target.copy(car.pos);
     banner('喵抓抓大王出現了！', 2.6); say('喵哈哈！這台機器裡的獎品，全部都是本大王的！', 3.4);
-    after(2.2, () => { ctx.tip('把罐頭側面塗成自己的顏色，變墨貓爬上去，再連跳到機頂射紅色按鈕！', 8); B.state = 'fight'; token++; loop = attackLoop(); });
+    after(2.2, () => { if (ctx.trick) ctx.trick('climb'); after(1.6, () => { ctx.tip('把罐頭側面塗成自己的顏色，變墨貓爬上去，再連跳到機頂射紅色按鈕！', 8); B.state = 'fight'; token++; loop = attackLoop(); }); }); // 第 87 版：第 1 關也有破解圖示卡，魔王等卡片秀完才出招
   };
 
   B.update = (dt) => {
@@ -5852,7 +5864,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       return 1;
     };
     K.unshot = (s) => { catchEnd(s); const i = shots.indexOf(s); if (i >= 0) shots.splice(i, 1); if (s.mesh.parent) s.mesh.parent.remove(s.mesh); if (s.t) { s.t.alive = false; s.t.s = null; s.t = null; } if (s.arrowH) { K.unarrow(s.arrowH); s.arrowH = null; } if (s.base && s.tint) s.tint.forEach((m, i) => m.color.copy(s.base[i])); };
-    K.wave = (x, z, o = {}) => { const w = { x, z, r: o.r0 || BODY_R + 1, sp: o.sp || 19, h: o.h || 2.4, max: o.max || R + 4, paint: 0, mesh: K.ring(x, z, 0.92, 1.0, o.color || 0xff3c6e) }; waves.push(w); return w; };
+    K.wave = (x, z, o = {}) => { const w = { x, z, r: o.r0 || BODY_R + 1, sp: o.sp || 19, h: o.h || 1.8, max: o.max || R + 4, paint: 0, mesh: K.ring(x, z, 0.92, 1.0, o.color || 0xff3c6e) }; waves.push(w); return w; };
     K.push = (dx, dz) => { const p = ctx.player(); if (p.alive) { p.pos.x += dx; p.pos.z += dz; } };
     const clearMoving = () => { while (shots.length) K.unshot(shots[0]); waves.forEach((w) => K.untele(w.mesh)); waves.length = 0; };
     function updateMoving(dt) {
@@ -6024,7 +6036,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (D.onPhase) D.onPhase(K, B.phase);
         if (B.phase === 3 && model.brows) model.brows.forEach((b) => (b.visible = true));
         ctx.banner(NAMES[B.phase - 1], 2.4); say(B.phase === 2 ? L.next2 : L.next3, 2.6);
-        after(2.2, () => { B.state = 'fight'; token++; loop = D.attacks(K); K.hint(); K.trick(); });
+        after(2.2, () => { K.trick(); after(1.6, () => { B.state = 'fight'; token++; loop = D.attacks(K); K.hint(); }); }); // 第 87 版（試玩報告）：先秀破解圖示卡，魔王等 1.6 秒才出招，卡片不會擋住第一招的預告
       });
     }
 
@@ -6118,7 +6130,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       ctx = c; stop(); now = 0; downT = -9; B.phase = 1; B.health = PHASE_HP; B.phaseName = NAMES[0]; B.state = 'intro'; B.time = 0; B.clearSeconds = 0;
       inkMat.color.copy(ctx.colors[0]); B.target.alive = true; if (D.begin) D.begin(K);
       ctx.banner(L.intro, 2.6); say(L.hello, 3.2);
-      after(2.4, () => { if (D.hints) K.hint(); else ctx.tip(L.tip, 7); B.state = 'fight'; token++; loop = D.attacks(K); K.trick(); });
+      after(2.4, () => { K.trick(); after(1.6, () => { if (D.hints) K.hint(); else ctx.tip(L.tip, 7); B.state = 'fight'; token++; loop = D.attacks(K); }); });
     };
 
     B.update = (dt) => {
@@ -6571,7 +6583,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     yield* K.wait(0.4); K.warn(false);
     const p = K.ctx.player().pos, spots = [[p.x, p.z]];
     for (let i = 1; i < n; i++) { const a = Math.random() * 6.283, d = 8 + Math.random() * 10; const v = K.clampIn(new THREE.Vector3(p.x + Math.cos(a) * d, 0, p.z + Math.sin(a) * d), 6); spots.push([v.x, v.z]); }
-    yield* drop(K, spots, 5, 1.3);
+    yield* drop(K, spots, 4.2, 1.6); // 第 87 版（試玩報告）：西瓜炸彈範圍小一點、紅圈早一點出現
     if (!busy(K)) mob.pose = 'idle'; yield* K.wait(0.5);
   }
   function* cannon(K, n) { // 墨水大砲：瞄準玩家連發，落點有紅圈
@@ -8047,10 +8059,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     for (let d = 4; d < len; d += 4) { const x = sx + Math.sin(yaw) * d, z = sz + Math.cos(yaw) * d; if (Math.hypot(x, z) < R) { c.splat(x, z, 3.4); if (d % 8 === 0) c.burst(x, 1, z, c.colors[1], 6, 14, 0.4); } }
     yield* K.wait(0.15); S.hit = false;
     let hit = false; const tip = new THREE.Vector3(sx + Math.sin(yaw) * (len - 3), 1.6, sz + Math.cos(yaw) * (len - 3));
-    const w = K.weak({ at: [tip.x, tip.y, tip.z], r: 2, hp: 56, onBreak: () => { hit = true; } }); K.say(arm ? '又、又卡住了咚！' : '咦？鼓棒卡住了！', 1.2);
-    let tw = 2.8, wv = 0.5; // 卡住的時候另一隻手繼續敲鼓：震波
+    const w = K.weak({ at: [tip.x, tip.y, tip.z], r: 2, hp: 28, onBreak: () => { hit = true; } }); K.say(arm ? '又、又卡住了咚！' : '咦？鼓棒卡住了！', 1.2);
+    let tw = 3.2, wv = 0.5; // 卡住的時候另一隻手繼續敲鼓：震波（第 87 版，試玩報告：只放一次、鼓棒前端血量減半、卡久一點，五歲小孩也過得了）
     while (tw > 0 && !hit) { const dt = yield; tw -= dt; wv -= dt;
-      if (wv <= 0) { wv = 1.15; mob.beat = 1; mob.beatArm = 1 - arm; mob.squash = 0.8; c.sfx.bomb(); c.shake(0.25); K.wave(mob.pos.x, mob.pos.z, { sp: 16, color: 0xffc93c }); } }
+      if (wv <= 0) { wv = 99; mob.beat = 1; mob.beatArm = 1 - arm; mob.squash = 0.8; c.sfx.bomb(); c.shake(0.25); K.wave(mob.pos.x, mob.pos.z, { sp: 16, color: 0xffc93c }); } }
     K.unweak(w);
     if (hit) { c.burst(tip.x, 2, tip.z, new THREE.Color(0xe8b46a), 24, 20, 0.5); c.sfx.koGot(); }
     t = 0; while (t < 0.35) { const dt = yield; t += dt; S.lift = SC.lerp(1.93, 0, t / 0.35); S.long = SC.lerp(3.2, 1, t / 0.35); }
@@ -8215,9 +8227,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function* spikeRing(K, n) { // 刺刺環：身體一縮，一圈刺往外飛（留幾個缺口），貼著地面飛，跳過去就好
     const mob = K.mob, c = K.ctx;
     for (let k = 0; k < n; k++) {
-      mob.pose = 'crouch'; K.warn(true); if (!k) K.say(K.pick(['刺刺環——！', '刺刺刺刺！', '跳起來呀！']), 1.2); yield* K.wait(K.phase >= 3 ? 0.5 : 0.65); K.warn(false); mob.pose = 'idle'; mob.squash = 1;
-      const N = 20, gap = Math.floor(Math.random() * N), a0 = Math.random() * 6.283, sp = K.phase >= 3 ? 17 : 14; c.sfx.swing();
-      for (let i = 0; i < N; i++) { if (Math.abs(i - gap) <= 1 || Math.abs(i - gap) >= N - 1) continue; const a = a0 + (i / N) * 6.283, mesh = new THREE.Mesh(spikeG, spikeMat); mesh.scale.setScalar(1.1);
+      mob.pose = 'crouch'; K.warn(true); if (!k) K.say(K.pick(['刺刺環——！', '刺刺刺刺！', '跳起來呀！']), 1.2); yield* K.wait(K.phase >= 3 ? 0.6 : 0.9); K.warn(false); mob.pose = 'idle'; mob.squash = 1; // 第 87 版（試玩報告）：預告久一點、缺口大一點、飛慢一點
+      const N = 20, gap = Math.floor(Math.random() * N), a0 = Math.random() * 6.283, sp = K.phase >= 3 ? 15 : 12; c.sfx.swing();
+      for (let i = 0; i < N; i++) { if (Math.abs(i - gap) <= 2 || Math.abs(i - gap) >= N - 2) continue; const a = a0 + (i / N) * 6.283, mesh = new THREE.Mesh(spikeG, spikeMat); mesh.scale.setScalar(1.1);
         K.shot({ mesh, x: mob.pos.x + Math.sin(a) * (BODY_R + 1), y: 1.3, z: mob.pos.z + Math.cos(a) * (BODY_R + 1), vx: Math.sin(a) * sp, vy: 0, vz: Math.cos(a) * sp, r: 0.8, floor: -9, splat: 0, life: 4, face: true }); }
       yield* K.wait(0.9);
     }
@@ -8851,7 +8863,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     *attacks(K) {
       const { B } = K;
       if (B.phase === 1) { yield* hover(K, 1.4); yield* feathers(K, 2); yield* hover(K, 1); yield* dive(K); }
-      else if (B.phase === 2) { yield* hover(K, 1.2); yield* twisters(K, 2); yield* feathers(K, 2); yield* dive(K); }
+      else if (B.phase === 2) { yield* hover(K, 1.6); yield* twisters(K, 2); yield* hover(K, 0.8); yield* feathers(K, 1); yield* dive(K); } // 第 87 版（試玩報告）：第 2 回合投射物少一點、中間多喘口氣
       else { yield* hover(K, 1); yield* trick(K); yield* starRain(K, 6); yield* feathers(K, 2); yield* trick(K); yield* twisters(K, 2); }
     },
 
@@ -8886,7 +8898,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const mob = K.mob, c = K.ctx;
     for (let k = 0; k < n; k++) {
       yield* K.face(0.3); mob.pose = 'throw'; K.warn(true); if (!k) K.say(K.pick(['羽毛飛鏢——！', '咕咕咕——！', '跳起來呀！']), 1.2); yield* K.wait(K.phase >= 3 ? 0.45 : 0.6); K.warn(false); mob.pose = 'idle'; c.sfx.swing();
-      const N = K.phase >= 3 ? 9 : 7, spread = 1.1, a0 = K.toPlayer(), sp = K.phase >= 3 ? 19 : 16;
+      const N = K.phase >= 3 ? 9 : 6, spread = 1.1, a0 = K.toPlayer(), sp = K.phase >= 3 ? 19 : 14;
       for (let i = 0; i < N; i++) { const a = a0 + (i / (N - 1) - 0.5) * spread, mesh = new THREE.Mesh(featherG, featherMat);
         K.shot({ mesh, x: mob.pos.x + Math.sin(a) * 4, y: 1.3, z: mob.pos.z + Math.cos(a) * 4, vx: Math.sin(a) * sp, vy: 0, vz: Math.cos(a) * sp, r: 0.8, floor: -9, splat: 0, life: 4.5, face: true,
           tick: (s, dt) => { if ((s.pt = (s.pt || 0) - dt) <= 0) { s.pt = 0.12; c.splat(s.x, s.z, 1.4); } } }); }
@@ -8914,7 +8926,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     yield* K.face(0.3); mob.pose = 'throw'; K.warn(true); K.say(K.pick(['小旋風——！', '呼呼呼——！', '轉暈你！']), 1.2); yield* K.wait(0.6); K.warn(false); mob.pose = 'idle'; c.sfx.swing();
     for (let i = 0; i < n; i++) { const a = mob.yaw + (i - (n - 1) / 2) * 0.9, mesh = new THREE.Mesh(twisterG, twisterMat);
       K.shot({ mesh, x: mob.pos.x + Math.sin(a) * 8, y: 0, z: mob.pos.z + Math.cos(a) * 8, vx: Math.sin(a) * 8, vy: 0, vz: Math.cos(a) * 8, r: 2.6, floor: -9, splat: 0, life: K.phase >= 3 ? 5.5 : 4.5,
-        tick: (s, dt) => { const p = c.player().pos, want = Math.atan2(p.x - s.x, p.z - s.z), cur = Math.atan2(s.vx, s.vz), na = cur + SC.clamp(SC.angDiff(cur, want), -dt * 1.2, dt * 1.2), sp = K.phase >= 3 ? 10 : 8.5;
+        tick: (s, dt) => { const p = c.player().pos, want = Math.atan2(p.x - s.x, p.z - s.z), cur = Math.atan2(s.vx, s.vz), na = cur + SC.clamp(SC.angDiff(cur, want), -dt * (K.phase >= 3 ? 1.2 : 0.85), dt * (K.phase >= 3 ? 1.2 : 0.85)), sp = K.phase >= 3 ? 10 : 7.5;
           s.vx = Math.sin(na) * sp; s.vz = Math.cos(na) * sp; s.y = 0; s.mesh.rotation.y += dt * 14; s.mesh.scale.set(1 + Math.sin(K.now * 9) * 0.1, 1, 1 + Math.cos(K.now * 9) * 0.1); if ((s.pt = (s.pt || 0) - dt) <= 0) { s.pt = 0.15; c.splat(s.x, s.z, 2); } },
         onEnd: (s) => c.burst(s.x, 3, s.z, new THREE.Color(0xdcd8ff), 12, 16, 0.4) }); }
     yield* K.wait(K.phase >= 3 ? 3 : 2.6);
@@ -9196,6 +9208,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   // 打到角色：白色小閃光＋身體閃白（Yen 2026-11-19 打擊感）
+  function emptyFx(a) { // 第 87 版：沒墨時槍口噴出幾顆空泡泡（不用讀字也知道沒墨了）
+    if (G.time - (a.emptyFxAt || -9) < 0.3) return; a.emptyFxAt = G.time; const m = muzzle(a, t1); SC.fx.burst(m.x, m.y, m.z, WHITE, 4, 5, 0.22, 0.9, 0.6, 0.15); a.cat.recoil = Math.max(a.cat.recoil, 0.5);
+  }
   function shakeOff(amp) { // 第 86 版（手感報告）：震動用「創傷值」模型：震幅＝創傷值²，用平滑的波而不是每格亂數，小事幾乎不震、大事才震
     const k = cam.shake * cam.shake * amp, t = performance.now() / 1000 * 20;
     camera.position.x += (Math.sin(t * 1.1 + 1.3) * 0.6 + Math.sin(t * 2.7 + 0.4) * 0.4) * k * 0.7; camera.position.y += (Math.sin(t * 1.3 + 2.1) * 0.6 + Math.sin(t * 2.3 + 5.2) * 0.4) * k * 0.7;
@@ -9297,7 +9312,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 地上按住：右橫砍 → 左橫砍 → 往下直劈，一直循環；停太久（comboGap）就從第一刀重來。
   function slash(a) {
     const w = C.W05, now = G.time;
-    if (a.ink < w.slashInk) { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } return; }
+    if (a.ink < w.slashInk) { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; }
     a.combo = now - (a.lastSlashAt ?? -9) > w.comboGap + w.slashInterval ? 0 : ((a.combo ?? -1) + 1) % 3; a.lastSlashAt = now;
     const yaw = a.isPlayer ? cam.yaw : a.yaw, boost = paintBoost(a);
     a.ink -= w.slashInk; a.lastShotAt = now; a.nextShotAt = now + w.slashInterval * (a.combo === 2 ? 1.25 : 1);
@@ -9336,7 +9351,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 空中按一下：往準星方向衝刺斬（每次跳起來一次）
   function bladeDash(a) {
     const w = C.W05;
-    if (a.ink < w.dashInk) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } return; }
+    if (a.ink < w.dashInk) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; }
     const yaw = a.isPlayer ? cam.yaw : a.yaw;
     a.ink -= w.dashInk; a.lastShotAt = G.time; a.dashUsed = true; a.nextShotAt = G.time + w.dashTime + 0.12;
     const ax = a.aim.x - a.pos.x, az = a.aim.z - a.pos.z, pitch = SC.clamp(Math.atan2(a.aim.y - (a.pos.y + 2.5), Math.hypot(ax, az)), -0.75, 0.15); // 往準星的方向衝，可以斜斜往下砍到地上的人
@@ -9436,7 +9451,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   G.testShot = (a, x, y, z, vx, vy, vz) => projectiles.push({ x, y, z, vx, vy, vz, team: a.team, owner: a, dmg: C.W01.damage, r: 1, range: 99, g: 0, travel: 0, drip: 0, life: 0, vr: 0.8, color: colors[a.team], cause: 'W01' }); // 測試用：直直飛的一發
   function fireSniper(a) {
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (w.fullCharge - w.minCharge), 0, 1);
-    if (a.ink < w.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } return; } // 第 85 版：蓄力中丟了墨水彈，墨水不夠就不發射（不會變負的）
+    if (a.ink < w.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; } // 第 85 版：蓄力中丟了墨水彈，墨水不夠就不發射（不會變負的）
     const m = new V3(), dir = new V3(); sniperRay(a, m, dir); const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
     if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
@@ -9467,7 +9482,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function throwBomb(a) {
     const b = C.BOMB;
     if (G.time < a.nextBombAt) return;
-    if (a.ink < b.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } return; }
+    if (a.ink < b.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; }
     a.ink -= b.ink; a.lastShotAt = G.time; a.nextBombAt = G.time + 0.8; a.protectUntil = Math.min(a.protectUntil, G.time + 0.5);
     const m = muzzle(a, t1), tgt = t2.copy(a.aim), pow = a.ctl.bombPow, maxD = pow >= 0 ? b.far : (b.speed * b.speed) / b.gravity * 0.96, d = Math.hypot(tgt.x - m.x, tgt.z - m.z);
     a.ctl.bombPow = -1;
@@ -9612,7 +9627,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       a.crest = { t: 0, x0: a.pos.x, y0: a.pos.y, z0: a.pos.z, x1: a.pos.x - w.nx * (R + 2.4), y1: w.top, z1: a.pos.z - w.nz * (R + 2.4) }; return true;
     }
     let vy = inward > 0.25 ? 13 : inward < -0.25 ? -8 : 0;
-    if (vy > 0 && B.wallOwner(w, w.u, a.pos.y + 1 + vy * dt + 0.5) !== own && a.pos.y + 1.5 < w.top - 3.4) vy = 0; // 爬不過還沒塗到的地方
+    if (vy > 0 && B.wallOwner(w, w.u, a.pos.y + 1 + vy * dt + 0.5) !== own && a.pos.y + 1.5 < w.top - 3.4) { vy = 0; a.climbStuck = (a.climbStuck || 0) + dt; // 爬不過還沒塗到的地方
+      if (a.isPlayer && a.climbStuck > 0.8 && G.time - (a.stuckFxAt || -9) > 0.45) { a.stuckFxAt = G.time; const fx = a.pos.x - w.nx * (R + 0.2), fz = a.pos.z - w.nz * (R + 0.2); SC.fx.burst(fx, a.pos.y + 3.2, fz, WHITE, 10, 7, 0.45, 0.2, 0.6, 0); SC.fx.pop(fx, a.pos.y + 3.2, fz, WHITE, 3, 0.12); // 第 87 版（試玩報告）：卡住時，上面沒塗到的那一段閃白光
+        if (G.time - (a.stuckTipAt || -9) > 4) { a.stuckTipAt = G.time; SC.ui.tip('上面還沒塗到！先射墨水把上面塗成你的顏色', 2.4); } } }
+    else a.climbStuck = 0;
     const side = w.onX ? ctl.mz : ctl.mx, su = Math.abs(side) > 0.3 ? Math.sign(side) * 13 : 0;
     let u = SC.clamp(w.u + su * dt, -4.6, 4.6); if (B.wallOwner(w, u, a.pos.y + 1) !== own) u = w.u;
     const off = CAN_REACH + R;
@@ -9713,12 +9731,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       let n = 0;
       while (ctl.fire && canAct && now >= a.nextShotAt && n++ < 3) {
         if (a.ink >= C.W01.ink) { fireW01(a); a.nextShotAt = Math.max(a.nextShotAt, now - dt) + C.W01.interval; }
-        else { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
+        else { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } }
       }
     } else if (a.weapon === 'W04') {
       if (ctl.fire && canAct && now >= a.nextShotAt) {
         if (a.ink >= C.W04.ink) { fireW04(a); a.nextShotAt = now + C.W04.interval; }
-        else { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
+        else { a.nextShotAt = now + 0.28; if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } }
       }
     } else if (a.weapon === 'W05') {
       if (a.onGround) a.dashUsed = false;
@@ -9727,7 +9745,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         else if (ctl.fire && now >= a.nextShotAt) slash(a);
       }
     } else if (a.weapon === 'W02') {
-      if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= C.W02.swingInk) swing(a); else if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); } }
+      if (ctl.fire && !a.prevFire && canAct && now >= a.nextShotAt) { if (a.ink >= C.W02.swingInk) swing(a); else if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } }
       if (ctl.fire && canAct && now >= a.rollFrom && a.onGround) { a.rolling = true; roll(a); }
     } else {
       const w = C.W03;
@@ -10534,7 +10552,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const LIVES_HTML = ('<i>' + HEART_SVG + '</i>').repeat(3);
   const C = SC.CFG, ui = (SC.ui = {}), $ = (id) => document.getElementById(id);
   const G = () => SC.game;
-  let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'normal', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
+  let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'easy', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
 
   // 貓臉小圖示（SVG，自家角色）
 
@@ -10613,6 +10631,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     weak: `<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="34" r="22" fill="#fff" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="34" r="15" fill="#ff4a6a"/><circle cx="32" cy="34" r="8" fill="#fff"/><circle cx="32" cy="34" r="3.5" fill="#ffe14a" stroke="#1b1430" stroke-width="1.5"/><path d="M32 4v10M32 54v8M2 34h10M52 34h10" stroke="#1b1430" stroke-width="3.4" stroke-linecap="round"/></svg>`,
     paint: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 50c0-7 9-9 14-8s8-5 14-4 12 3 16 2 6 6 2 9-10 4-16 4-6 4-14 3-16 0-16-6z" fill="var(--a)" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><g transform="translate(32 30) scale(1.0)"><path d="M-12 8q-2-20 12-20t12 20q0 6-12 6t-12-6z" fill="#9b7bff" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><path d="M-6-3l4 2M6-3l-4 2" stroke="#1b1430" stroke-width="2"/><path d="M-4 6q4-3 8 0" fill="none" stroke="#1b1430" stroke-width="2"/><path d="M11-8q3 4 0 6q-3-2 0-6z" fill="#7fd3ff" stroke="#1b1430" stroke-width="1.4"/></g><path d="M14 26q-3 6 0 8q3-2 0-8z" fill="var(--a)" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.8"/></svg>`,
     jump: `<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="54" rx="22" ry="7" fill="#ffe14a" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="32" cy="54" rx="13" ry="3.6" fill="#fff8b0"/><path d="M20 30q0-12 12-12t12 12q0 6-12 6t-12-6z" fill="var(--a)" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><path d="M22 20l2-8 6 5M42 20l-2-8-6 5" fill="var(--a)" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" stroke-width="2"/><circle cx="27" cy="27" r="2" fill="#1b1430"/><circle cx="37" cy="27" r="2" fill="#1b1430"/><path d="M32 50V40M27 44l5-5 5 5" fill="none" stroke="#1b1430" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    climb: `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="16" y="18" width="30" height="40" rx="5" fill="#9be7ff" stroke="#1b1430" stroke-width="3"/><path d="M16 58V36q8-4 15 0v22z" fill="#ff2f86"/><path d="M8 52V22M8 22l-5 7M8 22l5 7" fill="none" stroke="#1b1430" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="24" y="12" width="14" height="6" rx="2" fill="#1b1430"/><circle cx="31" cy="9" r="6" fill="#ff3b3b" stroke="#1b1430" stroke-width="3"/><path d="M50 14l8-6M52 20h9" stroke="#ffc93c" stroke-width="3.5" stroke-linecap="round"/></svg>`, // 第 87 版：第 1 關的破解卡（塗罐頭側面、爬上去、射紅鈕）
     find: `<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="translate(12 38) scale(0.8)"><path d="M-12 8q-2-20 12-20t12 20q0 6-12 6t-12-6z" fill="#9b7bff" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="-4" cy="-2" r="2.4" fill="#1b1430"/><circle cx="5" cy="-2" r="2.4" fill="#1b1430"/></g><g transform="translate(32 38) scale(0.8)"><path d="M-12 8q-2-20 12-20t12 20q0 6-12 6t-12-6z" fill="#9b7bff" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><path transform="translate(-4 -2) scale(.7)" d="M0-6l1.8 3.8 4.2.6-3 2.9.7 4.2L0 3.5l-3.7 2 .7-4.2-3-2.9 4.2-.6z" fill="#ffe14a" stroke="#1b1430" stroke-width="1.4"/><path transform="translate(5 -2) scale(.7)" d="M0-6l1.8 3.8 4.2.6-3 2.9.7 4.2L0 3.5l-3.7 2 .7-4.2-3-2.9 4.2-.6z" fill="#ffe14a" stroke="#1b1430" stroke-width="1.4"/></g><g transform="translate(52 38) scale(0.8)"><path d="M-12 8q-2-20 12-20t12 20q0 6-12 6t-12-6z" fill="#9b7bff" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="-4" cy="-2" r="2.4" fill="#1b1430"/><circle cx="5" cy="-2" r="2.4" fill="#1b1430"/></g><circle cx="32" cy="34" r="13" fill="none" stroke="#1b1430" stroke-width="6"/><circle cx="32" cy="34" r="13" fill="none" stroke="#fff" stroke-width="3"/><path d="M41 44l9 10" stroke="#1b1430" stroke-width="7" stroke-linecap="round"/><path d="M41 44l9 10" stroke="#c98a3a" stroke-width="3.5" stroke-linecap="round"/></svg>`,
   };
   ui.trickIcon = (k) => TRICK[k] || '';
@@ -10948,7 +10967,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 視角靈敏度：主選單和暫停選單各一條，兩條同步（Yen 2026-11-20 要可調靈敏度；範圍 0.4～2.2 放寬成 0.2～3）
     const sensSet = (v) => { v = Math.max(0.2, Math.min(3, +v || 1)); SC.input.sens = v; ['set-sens', 'set-sens0'].forEach((id) => ($(id).value = v)); ['sens-v0', 'sens-v2'].forEach((id) => ($(id).textContent = v.toFixed(1))); };
     ['set-sens', 'set-sens0'].forEach((id) => $(id).addEventListener('input', (e) => { sensSet(e.target.value); save(); }));
-    try { const s = JSON.parse(localStorage.getItem('splatoocat-web') || '{}'); if (s.sens) sensSet(s.sens); if (s.catToggle) { SC.input.catToggle = true; $('btn-cat-mode').textContent = '墨貓鈕：點一下切換'; } if (s.nick) { nick = SC.net.clean(s.nick); $('net-nick').value = nick; } if (s.kind) Object.assign(sel, { kind: s.kind, difficulty: s.difficulty || 'normal', mode: ['sandbox', 'boss'].includes(s.mode) ? s.mode : 'versus', roster: s.roster === '1v1' ? '1v1' : '2v2', vrule: s.vrule === 'knockout' ? 'knockout' : 'turf', ink: SC.inkPair(s.ink) ? s.ink : 'random', stage: SC.bossList()[(+s.stage || 0) - 1] ? String(+s.stage) : '2', map: s.map === 'random' || (SC.world.MAPS && SC.world.MAPS[s.map]) ? s.map : 'random' }); if (Array.isArray(s.loadout)) { const l = s.loadout.filter((w, i, a) => /^W0[1-5]$/.test(w) && a.indexOf(w) === i).slice(0, 2); if (l.length === 2) sel.loadout = l; } } catch (e) {}
+    try { const s = JSON.parse(localStorage.getItem('splatoocat-web') || '{}'); if (s.sens) sensSet(s.sens); if (s.catToggle) { SC.input.catToggle = true; $('btn-cat-mode').textContent = '墨貓鈕：點一下切換'; } if (s.nick) { nick = SC.net.clean(s.nick); $('net-nick').value = nick; } if (s.kind) Object.assign(sel, { kind: s.kind, difficulty: s.difficulty || 'easy', mode: ['sandbox', 'boss'].includes(s.mode) ? s.mode : 'versus', roster: s.roster === '1v1' ? '1v1' : '2v2', vrule: s.vrule === 'knockout' ? 'knockout' : 'turf', ink: SC.inkPair(s.ink) ? s.ink : 'random', stage: SC.bossList()[(+s.stage || 0) - 1] ? String(+s.stage) : '2', map: s.map === 'random' || (SC.world.MAPS && SC.world.MAPS[s.map]) ? s.map : 'random' }); if (Array.isArray(s.loadout)) { const l = s.loadout.filter((w, i, a) => /^W0[1-5]$/.test(w) && a.indexOf(w) === i).slice(0, 2); if (l.length === 2) sel.loadout = l; } } catch (e) {}
     wpnSync();
     ['pick-kind', 'pick-difficulty', 'pick-mode', 'pick-roster', 'pick-ink', 'pick-stage'].forEach((id) => { const key = id.slice(5); $(id).querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === sel[key])); }); renderStages();
     modeSync(); $('btn-start').addEventListener('click', save);
@@ -10979,7 +10998,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (g.mode === 'net' || g.rule === 'knockout') ui.tip(g.rule === 'mix' ? '複合賽：塗地 1% 算 1 分，擊倒一次算 3 分，總分高的隊伍獲勝' : tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
     if (g.mode === 'net' || g.rule === 'knockout') return;
     if (g.mode === 'sandbox') { els.timer.textContent = '不限時'; els.timer.classList.remove('final'); ui.banner('自由試玩', 1.4); ui.tip('打破氣球靶、擊毀灑水器，想練什麼就練什麼。按暫停可以回主選單', 7); return; }
-    ui.tip(SC.input.isTouch ? '把地面塗成你們隊的顏色！按住左下的「墨貓」可以在自己的墨水裡快速移動、補墨水；射擊鈕短點是跳' : '把地面塗成你們隊的顏色！按住 Shift 可以在自己的墨水裡快速移動、補墨水', 7);
+    const tipGame = G().opts; setTimeout(() => { if (G().opts !== tipGame || G().demo) return; ui.tip(SC.input.isTouch ? '把地面塗成你們隊的顏色！按住左下的「墨貓」可以在自己的墨水裡快速移動、補墨水；射擊鈕短點是跳' : '把地面塗成你們隊的顏色！按住 Shift 可以在自己的墨水裡快速移動、補墨水', 7); }, 3300); // 第 87 版（試玩報告）：倒數完才出提示，不跟 3、2、1 疊在一起
   };
   ui.onPause = (p) => {
     const net = G().mode === 'net'; $('pause-title').textContent = net ? '對戰還在進行中' : '暫停中'; $('btn-restart').hidden = net; $('btn-quit').textContent = net ? '離開這場，回房間' : '回主選單';
@@ -10999,7 +11018,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.dim = (k) => { const v = Math.round(k * 40) / 40; if (last.dim !== v) { last.dim = v; els.dim.style.opacity = v; } };
   ui.inkCover = () => { const e = els.inkcover; e.classList.remove('on'); void e.offsetWidth; e.classList.add('on'); };
   ui.tip = (text, dur) => { els.tip.textContent = text; els.tip.classList.add('on'); tipT = dur; };
-  ui.lowInk = () => { const t = performance.now() / 1000; if (t - lowInkAt < 4) return; lowInkAt = t; ui.tip(SC.input.isTouch ? '墨水不夠了！按住「墨貓」潛進自己的墨水補充' : '墨水不夠了！按住 Shift 潛進自己的墨水補充', 3); };
+  let noInkTimer = 0; ui.lowInk = () => { document.body.classList.add('noink'); clearTimeout(noInkTimer); noInkTimer = setTimeout(() => document.body.classList.remove('noink'), 2200); const t = performance.now() / 1000; if (t - lowInkAt < 4) return; lowInkAt = t; ui.tip(SC.input.isTouch ? '墨水不夠了！按住「墨貓」潛進自己的墨水補充' : '墨水不夠了！按住 Shift 潛進自己的墨水補充', 3); }; // 第 87 版：沒墨時「墨貓」鈕跳動、旁邊出現手指（不用讀字）
   const fallTxt = () => (G().mode === 'boss' ? '掉下去了' : '掉進' + (SC.world.riverName || '河')); // 每張場地的河不一樣（牛奶河、巧克力河、大海…）
   const CAUSE = { W01: '漆彈槍', W02: '滾刷', W03: '狙擊槍', W04: '散彈槍', W05: '墨刀', bomb: '墨水彈', fall: '掉進河裡', boss: '被喵抓抓大王擊倒', special: '絕招' };
   ui.feed = (from, t, cause) => {
@@ -11129,6 +11148,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   })();
   ui.rank = rank;
 
+  let loseRun = 0;
   ui.onResults = () => {
     const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
@@ -11145,6 +11165,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
     const net = g.mode === 'net'; $('btn-again').textContent = net ? '回房間' : '再來一場'; $('btn-menu').textContent = net ? '離開房間' : '回主選單';
     els.verdict.textContent = g.spec ? '比賽結束！' : w === 'tie' ? '平手！' : w === 0 ? '勝利！' : '惜敗…'; els.verdict.dataset.r = g.spec || w === 'tie' ? 'tie' : w === 0 ? 'win' : 'lose';
+    if (!net && g.mode === 'versus' && !g.spec) { loseRun = w !== 0 && w !== 'tie' ? loseRun + 1 : 0; // 第 87 版（手感報告）：電腦對戰連輸兩場，下一場電腦自動弱一級（選單上看得到）
+      const order = ['easy', 'normal', 'hard', 'crazy', 'hell'], i = order.indexOf(sel.difficulty); if (loseRun >= 2 && i > 0) { loseRun = 0; sel.difficulty = order[i - 1]; $('pick-difficulty').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === sel.difficulty)); save(); setTimeout(() => ui.tip('下一場電腦會弱一點喔！', 3), 900); } }
     const mates = g.actors.filter((a) => a.team === 0), foes = g.actors.filter((a) => a.team !== 0), sum = (l, k) => l.reduce((n, a) => n + a[k], 0), kf = g.koFinal;
     // 結算表（Yen 2026-11-19）：每個人一行，擊倒／被擊倒／助攻／塗地，分數最高的戴皇冠當 MVP
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';'), rows = g.board();
