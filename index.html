@@ -747,6 +747,45 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 @media (max-width: 520px) { .ko-pick { gap: 6px; } .ko-pick .kp { width: 52px; height: 52px; border-radius: 14px; } }
 #app.replaying .ko-pick { bottom: calc(150px + var(--sab, 0px)); }
 
+/* 殭屍保衛戰（Yen 2026-11-21）：上方小鴨＋防護罩血條、五分鐘時間軸、事件預告卡 */
+.hud.zb .h-score, .hud.zb #roster-b { display: none; }
+.h-zb { display: none; grid-area: score; width: min(340px, 64vw); gap: 4px; }
+.hud.zb .h-zb { display: grid; }
+.zb-row { display: flex; align-items: center; gap: 6px; }
+.zb-duck svg { width: 34px; height: 34px; display: block; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .35)); }
+.zb-shield { position: relative; flex: 1; height: 18px; border-radius: 10px; background: var(--navy); border: 3px solid #fff; overflow: hidden; box-shadow: 0 2px 0 rgba(0, 0, 0, .3); }
+.zb-fill { position: absolute; inset: 0 auto 0 0; width: 100%; background: linear-gradient(180deg, #bff4ff, #5fd2ff); transition: width .25s; }
+.zb-pct { position: absolute; inset: 0; display: grid; place-items: center; font: 400 12px/1 var(--f-display); color: var(--navy); text-shadow: 0 0 3px #fff; }
+.h-zb.low .zb-fill { background: linear-gradient(180deg, #ffc2cf, #ff5a7a); }
+.h-zb.chew .zb-duck { animation: zb-shake .18s infinite alternate; }
+.h-zb.low .zb-shield { animation: zb-pulse .5s infinite alternate; }
+@keyframes zb-shake { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@keyframes zb-pulse { to { border-color: #ff5a7a; } }
+.zb-pops { display: flex; align-items: center; gap: 2px; font: 400 16px/1 var(--f-display); text-shadow: 0 2px 0 var(--navy), 0 0 4px var(--navy); }
+.zb-pops i svg { width: 26px; height: 26px; display: block; }
+.zb-line { position: relative; height: 22px; margin: 0 14px 0 6px; }
+.zb-line::before { content: ''; position: absolute; left: 0; right: 0; top: 9px; height: 5px; border-radius: 3px; background: rgba(27, 20, 48, .7); }
+.zb-done { position: absolute; left: 0; top: 9px; height: 5px; border-radius: 3px; background: var(--a); width: 0; }
+.zb-ev { position: absolute; top: 0; transform: translateX(-50%); width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 2px solid var(--navy); display: grid; place-items: center; overflow: hidden; }
+.zb-ev svg { width: 18px; height: 18px; } .zb-ev .zi-stack svg + svg { display: none; }
+.zb-ev[data-k="big"], .zb-ev[data-k="final"] { width: 26px; height: 26px; top: -2px; background: #ffe680; }
+.zb-ev.past { opacity: .35; filter: grayscale(1); }
+.zb-flag { position: absolute; right: -14px; top: 0; font-size: 18px; line-height: 1; }
+.zb-paw { position: absolute; top: 1px; transform: translateX(-50%); font-size: 16px; line-height: 1; transition: left .25s linear; filter: drop-shadow(0 1px 0 #fff); }
+.h-zcard { position: absolute; left: 50%; top: calc(108px + var(--sat)); transform: translateX(-50%) scale(.4); opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 10px; padding: 8px 18px 8px 10px; border-radius: 20px; background: #fff; border: 4px solid var(--navy); box-shadow: 0 5px 0 rgba(0, 0, 0, .3); transition: transform .2s cubic-bezier(.3, 1.6, .5, 1), opacity .15s; z-index: 6; }
+.h-zcard.on { transform: translateX(-50%) scale(1); opacity: 1; animation: zb-card .6s .2s infinite alternate; }
+@keyframes zb-card { to { transform: translateX(-50%) scale(1.06) rotate(-1.5deg); } }
+.h-zcard .zc-ic { display: flex; } .h-zcard .zc-ic svg { width: 48px; height: 48px; display: block; } .h-zcard .zi-stack { display: flex; } .h-zcard .zi-stack svg + svg { margin-left: -22px; }
+.h-zcard[data-k="big"] .zc-ic svg, .h-zcard[data-k="final"] .zc-ic svg { width: 58px; height: 58px; }
+.h-zcard .zc-t { display: grid; justify-items: start; gap: 2px; } .h-zcard b { font: 400 18px/1.1 var(--f-display); color: var(--navy); }
+.h-zcard .zc-n { font: 400 28px/1 var(--f-display); color: #ff4a5a; }
+.h-zcard[data-k="final"], .h-zcard[data-k="big"] { background: #fff3b0; }
+.menu.zb .res-bar { display: none; }
+.zb-res { display: flex !important; gap: 8px; flex-wrap: wrap; justify-content: center; background: none !important; border: 0 !important; padding: 0 !important; }
+.zb-res > div { background: var(--navy); border: 3px solid #fff; border-radius: 14px; padding: 6px 14px; display: grid; justify-items: center; gap: 2px; }
+.zb-pick .zb-mice .head { width: 30px; height: 30px; } .zb-pick .zb-shield-ic { font-style: normal; font-size: 16px; }
+@media (max-width: 560px) { .h-zb { width: min(260px, 58vw); } .zb-duck svg { width: 26px; height: 26px; } .h-zcard { top: calc(124px + var(--sat)); } .h-zcard b { font-size: 15px; } .h-zcard .zc-ic svg { width: 38px; height: 38px; } .zb-pick .zb-mice .head { width: 22px; height: 22px; } }
+
 </style>
 <div id="app">
   <canvas id="view" tabindex="0"></canvas>
@@ -2280,6 +2319,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     aww() { [784, 988, 1175].forEach((f, i) => tone('triangle', f, f, 0.22, 0.14, i * 0.09)); }, // 抱抱
     squeak() { tone('sine', 1700, 2500, 0.07, 0.16); tone('sine', 2100, 2900, 0.06, 0.12, 0.09); },
     meow(kind) { const P = { maomao: 1, shuang: 1.18, banban: 0.9, taro: 0.84 }; meowV((P[kind] || 1.06) * (0.96 + Math.random() * 0.08)); }, // 第 89 版：每隻貓的喵聲高低不同
+    zpop(vol = 1, s = 1) { const k = 1 / Math.sqrt(s); tone('sine', 520 * k, 1900 * k, 0.1, 0.3 * vol); noise(0.16, 0.3 * vol, 3000 * k, 6000, 1.2); tone('triangle', 1320 * k, 1760 * k, 0.08, 0.1 * vol, 0.06); }, // 殭屍鼠被打爆：「啵」
+    chomp(vol = 1) { noise(0.06, 0.22 * vol, 900, 500, 2.2, 'bandpass'); tone('square', 210, 150, 0.05, 0.07 * vol); }, // 殭屍鼠咬防護罩：喀滋
+    zhorn() { [392, 392, 523].forEach((f, i) => tone('triangle', f, f * 1.01, 0.2, 0.22, i * 0.24)); tone('sine', 196, 196, 0.7, 0.14); }, // 事件預告：嘟嘟嘟——
+    zgroan() { tone('sawtooth', 180, 120, 0.5, 0.12); tone('sine', 240, 160, 0.55, 0.16, 0.05); noise(0.4, 0.1, 600, 300, 1.2, 'bandpass'); }, // 殭屍鼠「嗚～」（傻傻的，不可怕）
+    zburp() { tone('sawtooth', 140, 90, 0.35, 0.2); tone('sine', 110, 70, 0.4, 0.2); }, // 吃飽了打嗝
     cover() { const f = 1100 + Math.random() * 260; tone('sine', f, f * 1.5, 0.07, 0.09); noise(0.06, 0.07, 3600, 5200, 2.5); }, // 第 89 版：蓋掉對手的墨水
     heart() { tone('sine', 78, 52, 0.11, 0.3); tone('sine', 70, 46, 0.1, 0.22, 0.2); }, // 第 88 版：血量低的「撲通、撲通」
     warn() { [0, 0.22].forEach((d) => { tone('square', 880, 660, 0.14, 0.09, d); tone('triangle', 1320, 990, 0.14, 0.12, d); }); }, // 第 88 版：對手的絕招要砸下來了「嗚咿、嗚咿」
@@ -3615,6 +3659,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 中間是鐘塔舞台，外面一圈噴泉水池（六座橋＋踏腳石），中圈六座有斜坡的高台、毛線球和矮牆，外圈是出生台、瞭望台、樹籬和木箱。
   const RR = 106, TAU = Math.PI * 2, SIX = Math.PI / 3;
   const pol = (r, a) => [Math.cos(a) * r, Math.sin(a) * r];
+  const xz = (r, a) => ({ x: Math.cos(a) * r, z: Math.sin(a) * r });
   // 各隊出生台在哪一根輻條（每 60 度一根）：第 0 隊永遠在左邊（角度 π）。2、3、6 隊平均分開；4 隊時每隊左右鄰居一個近一個遠；5 隊空一根
   const SPOKES = { 2: [3, 0], 3: [3, 5, 1], 4: [3, 4, 0, 1], 5: [3, 4, 5, 0, 1], 6: [3, 4, 5, 0, 1, 2] };
   const teamAng = (n) => (SPOKES[n] || SPOKES[2]).map((k) => k * SIX);
@@ -3691,6 +3736,69 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   MAPS.round3 = { ...MAPS.round, teams: 3 }; // 三方對戰用：三個出生台每隔 120 度
   [4, 5, 6].forEach((n) => { MAPS['round' + n] = { ...MAPS.round, teams: n }; }); // 四方以上大亂鬥
+  // 7. 小鴨堡壘（Yen 2026-11-21：殭屍保衛戰專用）。圓形，半徑 100，四個方向長得一樣。
+  // 中央是 5 高的圓形城堡廣場，邊上有矮城垛，東南西北四個城門各有斜坡、接一座小橋跨過護城河（只有橋能過河，殭屍鼠只能從四座橋進來）。
+  // 博士小鴨站在廣場正中央的台子上，外面罩著大防護罩（07z_zombie.js 畫）。廣場裡四座瞭望塔可以跳上去往外打。
+  // 外圈是草地：起司塊、乾草捆可以躲；場地邊上八個老鼠洞，殭屍鼠從這裡出來。地上有通往四座橋的土路，看得出殭屍會從哪裡來。
+  const ZF = { court: 20, moat0: 26, moat1: 32, hole: 97 }; world.ZF = ZF;
+  MAPS.zfort = {
+    name: '小鴨堡壘', water: '護城河', teams: 2, holeW: 0, lim: { x: 100, z: 100, r: 100 }, baseIn: 999, zombie: true,
+    spawns: [0, 1].map(() => [0, 0.5, 1, 1.5].map((k) => ({ x: Math.cos(k * Math.PI) * 15, z: Math.sin(k * Math.PI) * 15 }))),
+    vic: { x: 0, z: 40 },
+    gen: () => {
+      const out = [], Q = Math.PI / 2, ob = (r, a, o) => { const [x, z] = pol(r, a); return { t: 'obox', x, z, a, team: -1, ...o }; };
+      out.push({ t: 'cyl', x: 0, z: 0, r: ZF.court, h: 5, look: 'court', team: -1 }, { t: 'cyl', x: 0, z: 0, r: 5.5, h: 5.6, look: 'pedestal', team: -1 });
+      for (let g = 0; g < 4; g++) {
+        const a = g * Q;
+        out.push(ob(22.6, a, { t: 'oramp', hu: 2.8, hv: 4.6, h0: 5, h1: 0.6, look: 'stone' }), ob(29, a, { hu: 3.6, hv: 4.6, h: 0.6, look: 'bridge' }));
+        for (let s = 0; s < 6; s++) { const b = a + 0.27 + (s / 5) * (Q - 0.54); out.push(ob(19.3, b, { a: b + Q, hu: 1.85, hv: 0.75, h: 7.4, look: 'wall' })); } // 城垛：比廣場高 2.4，站在後面打得到外面
+        out.push({ t: 'cyl', ...xz(13.5, a + Q / 2), r: 2.4, h: 12, look: 'tower', team: -1 }); // 瞭望塔（跳得上去）
+        out.push(ob(50, a + Q / 4, { a: a + Q / 4 + 0.5, hu: 4.2, hv: 3, h: 4.4, look: 'cheese' }), ob(50, a + Q * 0.75, { a: a + Q * 0.75 - 0.5, hu: 4.2, hv: 3, h: 4.4, look: 'cheese' })); // 起司塊
+        [-0.17, 0.17].forEach((d) => out.push({ t: 'cyl', ...xz(68, a + d), r: 2.8, h: 3.2, look: 'hay', team: -1 })); // 土路兩邊的乾草捆
+        out.push({ t: 'cyl', ...xz(78, a + Q / 2 + 0.2), r: 3.6, h: 6.5, look: 'pumpkin', team: -1 });
+      }
+      return out;
+    },
+    base: (x, z) => { const r = Math.hypot(x, z); if (r >= ZF.moat0 && r <= ZF.moat1) return -12; let h = 0; if (r > 60) for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + Math.PI / 4 + 0.32; h += bump(x, z, Math.cos(a) * 84, Math.sin(a) * 84, 13, 2.2); } return h; },
+    tint: (x, z, h) => { const r = Math.hypot(x, z); if (h < -4) return 0x8fd8ff; if (r < ZF.moat0) return 0xe9dcc4;
+      const a = Math.atan2(z, x), q = Math.abs(((a / (Math.PI / 4)) % 1 + 1) % 1 - 0.5) * 2, lane = (1 - q) * r * (Math.PI / 4); // 離最近的土路（每 45 度一條）多遠
+      return lane < 4.5 && r > ZF.moat1 ? 0xe8c99a : (Math.floor(x / 9) + Math.floor(z / 9)) % 2 ? 0xa9e38f : 0x9cdb84; },
+    sky: [0x6b5fe0, 0xff9fc0, 0xffd9a8], fog: 0xf7cfd6, hemi: [0xfff0f6, 0xffd9b0],
+    river: { color: 0x7fd3ff, rough: 0.08 },
+    look: { court: 0xf3e7d2, pedestal: 0xfff1a8, stone: 0xe2d4ff, wall: 0xc6b2ff, tower: 0xff9ebb, bridge: 0xd9a86c, cheese: 0xffd23f, hay: 0xf2c46b, pumpkin: 0xff9a3c },
+    rough: { hay: 0.95, ground: 0.85 },
+    ground: (g) => { tiles(g, '#efe3cc', ['#fbf3e4', '#f4e8d2'], 26); },
+    fence: [0xc6b2ff, 0xffd23f, 0xff9ebb, 0x9be7d0],
+    make: {
+      court: (p, k) => { k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r - 0.2, 0.55, 10, 72), k.plain(0xffffff, 0.4), p.x, p.h - 0.05, p.z); t.rotation.x = Math.PI / 2; },
+      pedestal: (p, k) => { k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r, 0.4, 8, 48), k.plain(0xffc93c, 0.3, { metalness: 0.4 }), p.x, p.h, p.z); t.rotation.x = Math.PI / 2; },
+      wall: (p, k) => { const m = k.obox(p, { r: 0.5 }); const c = new THREE.Mesh(new THREE.BoxGeometry(p.hu * 1.1, 1.1, p.hv * 2.3), k.mat('wall')); c.position.y = p.h + 0.3; m.add(c); },
+      bridge: (p, k) => k.rails(k.obox(p, { bottom: -1.6 }), k.local(p), 0xff8fab),
+      tower: (p, k) => { k.cyl(p); const pole = k.add(new THREE.CylinderGeometry(0.2, 0.2, 7, 8), k.plain(0xffffff, 0.4), p.x, p.h + 3.5, p.z); const fl = new THREE.Mesh(new THREE.ConeGeometry(1.3, 3.6, 3), k.plain(0xffd23f, 0.6)); fl.rotation.z = -Math.PI / 2; fl.position.set(1.8, 2.4, 0); pole.add(fl); k.tick((t) => { pole.rotation.y = Math.sin(t * 0.9 + p.x) * 0.7; }); const t = k.add(new THREE.TorusGeometry(p.r, 0.35, 8, 32), k.plain(0xffffff, 0.4), p.x, p.h, p.z); t.rotation.x = Math.PI / 2; },
+      cheese: (p, k) => { const m = k.obox(p, { r: 0.6 }), dark = k.plain(0xe0a800, 0.7); [[-2, 2.6, 3.05], [1.8, 1.4, 3.05], [0.2, 3.3, -3.05], [-2.6, 1.2, -3.05], [3.2, 3, 0.4]].forEach(([u, y, v], i) => { const h = new THREE.Mesh(new THREE.SphereGeometry(0.7 + (i % 2) * 0.35, 12, 8), dark); h.position.set(u, y, v); h.scale.z = 0.35; m.add(h); }); },
+      hay: (p, k) => { k.cyl(p); const b = k.plain(0xc98a3c, 0.8); [0.9, 2.3].forEach((y) => { const t = k.add(new THREE.TorusGeometry(p.r + 0.04, 0.16, 6, 32), b, p.x, y, p.z); t.rotation.x = Math.PI / 2; }); },
+      pumpkin: (p, k) => { // 大南瓜（站得上去）：一瓣一瓣的、上面有綠色的蒂
+        const pm = k.mat('pumpkin'); for (let i = 0; i < 8; i++) { const a = (i / 8) * TAU, s = new THREE.Mesh(new THREE.SphereGeometry(p.r * 0.62, 14, 10), pm); s.position.set(p.x + Math.cos(a) * p.r * 0.42, p.h * 0.48, p.z + Math.sin(a) * p.r * 0.42); s.scale.y = 1.25; s.castShadow = true; k.root.add(s); }
+        k.add(new THREE.CylinderGeometry(p.r * 0.75, p.r * 0.75, 0.6, 20), pm, p.x, p.h - 0.3, p.z); k.add(new THREE.CylinderGeometry(0.4, 0.55, 1.6, 8), k.plain(0x4f9a3a, 0.7), p.x, p.h + 0.7, p.z);
+      },
+    },
+    outside: (k) => { // 黃昏的田野：草地、遠處的樹、起司山、月亮、場地邊上八個老鼠洞
+      k.floor(0x8fd37a); const r = k.rnd;
+      for (let i = 0; i < 20; i++) { const a = (i / 20) * TAU + r() * 0.12, d = 150 + r() * 60, s = 9 + r() * 6; const t = k.add(new THREE.SphereGeometry(s, 14, 10), k.plain(i % 3 ? 0x6cbf6a : 0x8bd07a, 0.85), Math.cos(a) * d, s + 6, Math.sin(a) * d); k.add(new THREE.CylinderGeometry(1.4, 2, 10, 8), k.plain(0x8b5e3c, 0.8), t.position.x, 4, t.position.z); }
+      const moon = new THREE.Mesh(new THREE.SphereGeometry(24, 24, 16), new THREE.MeshBasicMaterial({ color: 0xfff3c4, fog: false })); moon.position.set(-260, 170, -330); k.root.add(moon);
+      const holeM = new THREE.MeshBasicMaterial({ color: 0x2a1d3a }), rimM = k.plain(0xffd23f, 0.5), eyeM = new THREE.MeshBasicMaterial({ color: 0xb6ff6a });
+      for (let i = 0; i < 8; i++) { // 老鼠洞：起司色的拱門框、黑黑的洞、裡面一雙一閃一閃的綠眼睛
+        const a = (i / 8) * TAU, g = new THREE.Group(); g.position.set(Math.cos(a) * 101.5, 0, Math.sin(a) * 101.5); g.rotation.y = -a - Math.PI / 2; k.root.add(g);
+        const arch = new THREE.Shape(); arch.moveTo(-6, 0); arch.lineTo(-6, 5); arch.absarc(0, 5, 6, Math.PI, 0, true); arch.lineTo(6, 0); arch.lineTo(-6, 0);
+        const rim = new THREE.Mesh(new THREE.ExtrudeGeometry(arch, { depth: 2.2, bevelEnabled: true, bevelSize: 0.6, bevelThickness: 0.5, bevelSegments: 2 }), rimM); rim.position.z = -1.5; g.add(rim);
+        const inner = new THREE.Shape(); inner.moveTo(-4.4, 0); inner.lineTo(-4.4, 5); inner.absarc(0, 5, 4.4, Math.PI, 0, true); inner.lineTo(4.4, 0); inner.lineTo(-4.4, 0);
+        const hole = new THREE.Mesh(new THREE.ShapeGeometry(inner), holeM); hole.position.z = 1.3; g.add(hole);
+        const eyes = new THREE.Group(); [-1.2, 1.2].forEach((x) => { const e = new THREE.Mesh(new THREE.SphereGeometry(0.55, 10, 8), eyeM); e.position.set(x, 4.6, 1.5); e.scale.z = 0.3; eyes.add(e); }); g.add(eyes);
+        const ph = r() * 9; k.tick((t) => { const b = (t * 0.7 + ph) % 4; eyes.visible = !(b > 3.75); eyes.position.x = Math.sin(t * 0.8 + ph) * 1.4; });
+      }
+      k.clouds(0xffe3ee);
+    },
+  };
 
   world.MAPS = MAPS;
   world.MAP_KEYS = ['park', 'candy', 'ship', 'fair', 'skate', 'round'];
@@ -3704,7 +3812,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function build(key) {
     const D = MAPS[key], prims = primsOf(D), root = new THREE.Group(); root.visible = false; scene0.add(root);
     const lim = D.lim || RECT.lim, ang = D.teams ? teamAng(D.teams) : RECT.ang, bx = D.bx || 108;
-    const spawns = D.teams ? ringSpawns(ang) : [[{ x: -bx + 8, z: -7 }, { x: -bx + 8, z: 7 }], [{ x: bx - 8, z: 7 }, { x: bx - 8, z: -7 }]];
+    const spawns = D.spawns || (D.teams ? ringSpawns(ang) : [[{ x: -bx + 8, z: -7 }, { x: -bx + 8, z: 7 }], [{ x: bx - 8, z: 7 }, { x: bx - 8, z: -7 }]]);
     const mats = {}, ticks = [], rnd = seeded(7);
     const plain = (c, r = 0.5, o) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: r }, o));
     const mat = (look) => mats[look] || (mats[look] = SC.ink.patch(new THREE.MeshStandardMaterial({ color: look === 'lightR' ? 0xff4a5a : D.look[look] != null ? D.look[look] : 0xffffff, roughness: (D.rough && D.rough[look]) || 0.62, metalness: 0 })));
@@ -4772,6 +4880,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       head.scale.set(1 + pat * 0.1, 1 - pat * 0.16, 1 + pat * 0.1); head.rotation.z = k >= 1 ? Math.sin(now * 2.2) * 0.12 : 0; head.rotation.x = -0.15 * hk;
       mouth.scale.setScalar(1 + pat * 0.2); tassel.rotation.y = Math.sin(now * 3) * 0.6; duck.rotation.z = Math.sin(now * 2.2 + 1) * 0.05 * hk;
     };
+    // 殭屍保衛戰（Yen 2026-11-21）：小鴨站在堡壘中央的台子上，防護罩放大成蓋住小鴨的大圓頂。k＝防護罩剩下的比例，bite＝這一格被咬了幾口
+    st.fortSet = (y, s, goo) => { st.domeY = y; st.domeS = s; bubble.visible = true; bubble.scale.setScalar(s); bubble.position.y = y; energy.visible = true; bubbleMat.opacity = 0.3; crackMat.opacity = 0; blobs.forEach((b) => (b.visible = false)); st.nb = 0; if (goo) blobMat.color.copy(goo); duck.position.y = 0.3; duck.rotation.set(0, 0, 0); duck.scale.setScalar(1); head.rotation.set(0, 0, 0); eyesOpen.forEach((o) => (o.visible = true)); happy.forEach((o) => (o.visible = false)); st.wob = 0; st.t = 0; g.visible = true; duck.visible = true; };
+    st.fortBlob = (dx, dy, dz) => { v.set(dx, dy, dz).normalize(); const b = blobs[st.nb++ % blobs.length]; b.visible = true; b.position.copy(v).multiplyScalar(4.12); b.lookAt(v.x * 9, v.y * 9, v.z * 9); const sc = 0.6 + Math.random() * 0.6; b.scale.set(sc, sc, 0.28); };
+    st.fortCam = (inside) => { st.camIn = !!inside; };
+    st.fortHappy = (on) => { eyesOpen.forEach((o) => (o.visible = !on)); happy.forEach((o) => (o.visible = on)); };
+    st.fortTick = (dt, now, k, bite, mood) => {
+      st.t += dt; if (bite) st.wob = Math.max(st.wob, 0.45);
+      st.wob = Math.max(0, st.wob - dt * 3.5); const w = Math.sin(st.wob * 18) * st.wob * 0.05, s = st.domeS || 1;
+      if (bubble.visible) { bubble.position.y = st.domeY; bubble.scale.set(s * (1 + w + Math.sin(now * 3.1) * 0.012), s * (1 - w + Math.sin(now * 3.1 + 1.5) * 0.012), s * (1 + w));
+        const low = k < 0.3; bubbleMat.emissive.setHex(low ? 0xff6b8b : 0x5ac8ff); bubbleMat.emissiveIntensity = 0.3 + st.wob * 1.1 + (low ? Math.max(0, Math.sin(now * 9)) * 0.7 : 0); crackMat.opacity = SC.clamp(1 - k, 0, 1) * 0.95;
+        enTex.offset.x = (now * 0.12) % 1; enTex.offset.y = (now * 0.35) % 1; enTex2.offset.x = (-now * 0.2) % 1; enTex2.offset.y = (-now * 0.22) % 1; en1.rotation.y = now * 0.4; en2.rotation.y = -now * 0.55;
+        zapT -= dt; if (zapT <= 0) { zapT = 0.05 + Math.random() * 0.07; zapRedo(); zapMat.opacity = 0.6 + Math.random() * 0.4; } st.ci = SC.damp(st.ci == null ? 1 : st.ci, st.camIn ? 0.12 : 1, 6, dt); enMat.opacity = (0.26 + st.wob * 0.5) * st.ci; enMat2.opacity = 0.16 * st.ci; bubbleMat.opacity = 0.3 * Math.max(0.3, st.ci); zapMat.opacity *= st.ci; } // 殭屍保衛戰：罩子淡一點，看得到在咬的殭屍鼠；鏡頭在罩子裡面時幾乎透明
+      // mood：'calm' 東張西望、'scared' 被咬時發抖跳腳、'happy' 開心地蹦
+      if (mood === 'happy') { st.vy -= 34 * dt; duck.position.y += st.vy * dt; if (duck.position.y <= 0.3) { duck.position.y = 0.3; st.vy = 9; } duck.rotation.y += dt * 4; head.rotation.z = Math.sin(now * 6) * 0.15; tassel.rotation.y += dt * 10; return; }
+      const sc = mood === 'scared'; duck.position.y = 0.3 + (sc ? Math.abs(Math.sin(now * 14)) * 0.5 : Math.abs(Math.sin(now * 2.2)) * 0.15);
+      duck.rotation.y = sc ? Math.sin(now * 23) * 0.18 + Math.sin(now * 0.9) * 1.6 : Math.sin(now * 0.7) * 1.2; head.rotation.z = sc ? Math.sin(now * 30) * 0.12 : Math.sin(now * 1.7) * 0.12;
+      mouth.scale.setScalar(1 + Math.max(0, Math.sin(now * (sc ? 16 : 3))) * (sc ? 0.3 : 0.15)); tassel.rotation.y = Math.sin(now * 2.4) * 0.5;
+    };
+    st.fortBreak = () => { bubble.visible = false; };
     st.unhold = () => { if (!st.held) return; st.held = false; if (st.home) st.home.add(g); g.visible = true; };
     return st;
   }
@@ -5594,7 +5721,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // - 三方對戰（Yen 2026-11-19）：房間剛好 3 人時，房主可以選「三方」，每人一隊、三種顏色，場地固定是圓形的時鐘廣場。
 // 限制：只有登入 Claude、而且被邀請看這個頁面的人連得進來；只拿公開連結的人不行。
 (() => {
-  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: null, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false, vc: false, by: -1 });
+  const N = (SC.net = { state: 'check', code: '', list: [], isHost: false, rule: 'turf', map: 'random', tri: null, mix: 'pick', asg: {}, match: null, msg: '', busy: false, live: null, online: true, referee: false, vc: false, zb: false, by: -1 });
+  // 殭屍保衛戰（Yen 2026-11-21）：zb＝「一起打電腦」的第三種。真人（最多 4 人）都在第 1 隊，空位由電腦隊友補到 4 隻，一起守小鴨堡壘（07z_zombie.js）。
+  // 一個人也能開打。殭屍由裁判那台算，狀態放在裁判 presence 的 zs；別台打到殭屍送事件 'Z'。
   // 第 69 版（Yen）：「一起打電腦」vc：房間裡的真人全部同一隊，對上同樣人數的電腦（2對2、3對3、4對4）。
   // 電腦由這場的裁判那台來算（裁判換人就換那台接手），電腦的狀態放在裁判的 presence.cs，電腦的事件在類型後面加「#編號」
   const KINDS = ['maomao', 'shuang', 'banban', 'taro'], PI = Math.PI;
@@ -5695,7 +5824,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     prof = { n, k, w: p.w }; if (N.state === 'lobby') send({ n: N.quick ? '' : n, k, w: p.w }); // 配對房不送暱稱
   };
   // 分隊（Yen 2026-11-19）：mix 'rand'＝開打時隨機分隊，'pick'＝房主指定（點玩家換隊，沒指定的照進房順序輪流）。asg：peer → 隊伍
-  const hostPatch = () => ({ vc: N.vc ? 1 : 0, df: N.dif, r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
+  const hostPatch = () => ({ vc: N.vc ? 1 : 0, zb: N.zb ? 1 : 0, df: N.dif, r: N.rule, mp: N.map, tm: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, as: N.list.slice(0, 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
   // 這場要上場的人分到哪一隊：回傳 [{ peer, team }]。兩隊每隊最多 2 人、兩隊都要有人；三方對戰每人一隊
   N.lineup = (rand) => {
     if (N.vc) return N.list.slice(0, 4).map((r, i) => ({ peer: r.peer, i, team: 0 })); // 一起打電腦：真人都在第 1 隊
@@ -5718,13 +5847,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     N.asg = asg; send(hostPatch()); sig = '';
   };
   N.dif = 'normal'; N.setDif = (d) => { if (!N.isHost || !SC.DIFFICULTY[d]) return; N.dif = d; send(hostPatch()); sig = ''; };
-  N.setVc = (on) => { if (!N.isHost) return; N.vc = !!on; send(hostPatch()); sig = ''; };
+  N.setVc = (on, zb) => { if (!N.isHost) return; N.vc = !!on; N.zb = !!on && !!zb; send(hostPatch()); sig = ''; };
   N.setRule = (rule) => { if (!N.isHost) return; N.rule = rule === 'knockout' ? 'knockout' : 'turf'; send(hostPatch()); sig = ''; };
   const okMap = (v) => v === 'random' || (SC.world.MAPS && !!SC.world.MAPS[v]);
   N.setMap = (v) => { if (!N.isHost || !okMap(v)) return; N.map = v; send(hostPatch()); sig = ''; }; // 房主選場地（Yen 2026-11-17）
   N.setTri = (on) => { if (!N.isHost) return; N.tri = !!on; send(hostPatch()); sig = ''; }; // 3 人時：三方對戰或 2 對 1
   // tri＝每人一隊（3～6 人；Yen 2026-11-19 先要三方、再要四方以上）。兩隊模式最多 4 人
   N.rankOk = (n) => n >= 2 && n <= 6 && n !== 5; // 積分賽：2＝1對1、3＝三方、4＝2對2、6＝3對3
+  N.zbOn = () => !!(N.vc && N.zb && !N.quick); N.minStart = () => (N.zbOn() ? 1 : 2);
   N.triOn = () => (N.ranked ? N.list.length === 3 : !N.vc && N.list.length >= 3 && (N.tri != null ? N.tri : N.list.length !== 4)); // 沒選過：3 人三方、4 人 2 對 2、5～6 人大亂鬥
   N.nTeams = () => (N.triOn() ? Math.min(6, N.list.length) : 2);
   N.cap = () => (N.ranked || N.triOn() ? 6 : 4);
@@ -5733,7 +5863,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.ink = 'random'; // 房主在主選單挑的墨水顏色：開打時傳給大家，房主那隊用這個顏色（第 69 版：每台看到的顏色一樣）
   const inkOf = (pl) => { const pr = SC.inkPair(N.ink), me = pl.find((e) => e[0] === myPeer); return pr && me ? { ink: pr.a.hex, it: me[1] } : {}; };
   N.start = (dif = N.dif) => {
-    if (!room || !N.isHost || N.list.length < 2 || N.live) return;
+    if (!room || !N.isHost || N.list.length < N.minStart() || N.live) return;
+    if (N.zbOn()) { const L = N.list.slice(0, 4), pl = L.map((r, i) => [r.peer, 0, i]); return send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: 'zombie', map: 'zfort', n: 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L.map((r) => ({ peer: r.peer, team: 0 })), 2), vc: 4 - pl.length, df: SC.DIFFICULTY[dif] ? dif : 'normal', ...inkOf(pl) } }); } // 殭屍保衛戰：真人都在第 1 隊，電腦隊友補到 4 隻
     const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
     send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.ranked ? 'mix' : N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', ...inkOf(pl) } });
   };
@@ -5753,8 +5884,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: Array.isArray(h.kd) && KINDS.includes(h.kd[e[1]]) ? h.kd[e[1]] : e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e[0] === myPeer, gone: false };
     });
     const nC = Math.max(0, Math.min(4, h.vc | 0)), ck = Array.isArray(h.kd) && KINDS.includes(h.kd[1]) ? h.kd[1] : 'shuang';
-    const cpus = Array.from({ length: nC }, (_, k) => ({ idx: h.pl.length + k, team: (1 - g0 + nT) % nT, slot: k, kind: ck, cpu: true }));
-    N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' || h.rule === 'mix' ? h.rule : 'turf', map: nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
+    const zb = h.rule === 'zombie', cpus = Array.from({ length: nC }, (_, k) => zb ? { idx: h.pl.length + k, team: 0, slot: h.pl.length + k, kind: Array.isArray(h.kd) && KINDS.includes(h.kd[0]) ? h.kd[0] : 'maomao', cpu: true } : { idx: h.pl.length + k, team: (1 - g0 + nT) % nT, slot: k, kind: ck, cpu: true });
+    N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' || h.rule === 'mix' || h.rule === 'zombie' ? h.rule : 'turf', map: zb ? 'zfort' : nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
     out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
     if (N.onBegin) N.onBegin(N.match);
   }
@@ -5800,7 +5931,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const host = list[0], h = host ? validH(host.q.h) : null, m = N.match;
     N.list = list; N.isHost = !!host && host.isMe; N.online = room.connected ? room.connected() : true;
     if (!N.isHost && host && (host.q.r === 'turf' || host.q.r === 'knockout')) N.rule = host.q.r;
-    if (!N.isHost && host && (host.q.vc === 0 || host.q.vc === 1)) N.vc = !!host.q.vc;
+    if (!N.isHost && host && (host.q.vc === 0 || host.q.vc === 1)) { N.vc = !!host.q.vc; N.zb = N.vc && host.q.zb === 1; }
     if (!N.isHost && host && SC.DIFFICULTY[host.q.df]) N.dif = host.q.df;
     if (!N.isHost && host && okMap(host.q.mp)) N.map = host.q.mp;
     if (!N.isHost && host && (host.q.tm === 0 || host.q.tm === 2 || host.q.tm === 3)) N.tri = host.q.tm ? host.q.tm === 3 : null;
@@ -5833,7 +5964,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (qT != null && qT <= 0) { qT = null; qSent = null; send({ qs: null }); N.start(); }
       }
     } else if (N.quick && N.isHost && qSent != null) { qT = null; qSent = null; send({ qs: null }); }
-    const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer] + (r.q.rd === 1 ? 'R' : '')).join('|') + N.vc + N.dif + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + N.qs + (m ? m.id + m.over : '');
+    const s2 = list.map((r) => r.peer + r.kind + r.nick + N.asg[r.peer] + (r.q.rd === 1 ? 'R' : '')).join('|') + N.vc + N.zb + N.dif + N.rule + N.map + N.tri + N.mix + N.live + N.state + N.online + N.qs + (m ? m.id + m.over : '');
     if (s2 !== sig) { sig = s2; changed(); }
     if (h && h.st === 'play' && (!m || m.id !== h.id) && !done.has(h.id) && myPeer) {
       if (h.pl.some((e) => e[0] === myPeer)) return begin(h, list);
@@ -5859,6 +5990,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const patch = { mi: m.id, hb: (hb = (hb + 1) % 1e6), s: turn(g.netSnap(), S_FLIP, S_YAW, -1).map(r2), e: out.map((e) => e.d) };
       while (patch.e.length && JSON.stringify(patch).length > 3000) patch.e.shift(); // presence 上限 4 KiB
       if (m.cpus.length) patch.cs = N.referee ? g.netCpuSnaps().map((s) => turn(s, S_FLIP, S_YAW, -1).map(r2)) : null;
+      if (m.rule === 'zombie') { patch.zs = N.referee && SC.zb.on ? SC.zb.pack() : null; while (patch.zs && JSON.stringify(patch).length > 3700 && patch.zs.length > 8) patch.zs.length -= 7; while (patch.e.length && JSON.stringify(patch).length > 3900) patch.e.shift(); } // 殭屍的狀態（裁判那台）；太長就少送幾隻
       if (N.referee) {
         hostT -= 0.05;
         if (hostT <= 0) { hostT = 0.5; const sc = g.netScore(); patch.sc = [m.id, ...toGlobal(sc.v || [sc.a, sc.b, sc.c || 0]).map(r4)]; }
@@ -5880,6 +6012,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (d.length <= 12 && d.every(Number.isFinite)) g.netEvent(who, ty, turn(d, FLIP[ty] || [], YAW[ty], 1));
       }
       if (Array.isArray(q.s) && q.s.length >= S_LEN && q.s.length <= 20 && q.s.every(Number.isFinite)) g.netState(pl.idx, turn(q.s.slice(), S_FLIP, S_YAW, 1), clock);
+      if (ref && pl.peer === ref.peer && m.rule === 'zombie' && Array.isArray(q.zs)) SC.zb.apply(q.zs);
       if (ref && pl.peer === ref.peer && Array.isArray(q.cs)) q.cs.forEach((s, k) => { const c = m.cpus[k]; if (c && Array.isArray(s) && s.length >= S_LEN && s.length <= 20 && s.every(Number.isFinite)) g.netState(c.idx, turn(s.slice(), S_FLIP, S_YAW, 1), clock); });
     }
     if (N.match !== m || m.over) return;
@@ -9250,6 +9383,471 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 })();
 
+// 殭屍保衛戰（Yen 2026-11-21）：連線房間的新玩法。四隻貓（人不夠就電腦隊友補）守在「小鴨堡壘」中央，保護博士小鴨和他的大防護罩。
+// 五分鐘一局；殭屍鼠從場地邊的八個老鼠洞走出來，經過四座橋進城，咬防護罩。撐過五分鐘就贏，防護罩被咬破、小鴨被吃掉就輸。
+// 殭屍鼠都是原創的可愛造型（一隻眼睛是叉叉、頭上貼 OK 繃、手往前伸），給五歲小朋友玩，不可怕。
+// 固定時間有特別事件：殭屍潮、氣球突襲、大胃王（大殭屍）、地底突襲、最後大潮。事件前 5 秒畫面上方跳出大圖示卡，老鼠洞上冒出綠色光柱，小地圖閃。
+// 規則：
+// - 殭屍鼠走在我方墨水上會變慢（黏黏的）；走在沒塗的地上會留下綠色黏液（對手墨水，貓走上去會變慢）。
+// - 殭屍鼠碰到貓會咬一口；大胃王會跺腳震飛附近的貓（地上先亮紅圈）。
+// - 連線時由這場的裁判那台算殭屍（跟電腦一樣），狀態放在 presence.zs；別台打到殭屍送事件 'Z' 給裁判，自己先預測打爆的畫面。
+//   裁判換人時，接手的那台從最後收到的狀態繼續算。每台只算「自己的貓被咬」，裁判另外算電腦隊友。
+(() => {
+  const C = SC.CFG, V3 = THREE.Vector3, TAU = Math.PI * 2, Q = Math.PI / 2;
+  const LEN = 300, SHIELD = 1000, MAXZ = 40, POOL = 48, DOME_R = 8, DOME_Y = 1.6, DOME_S = DOME_R / 4.1, COURT = 5;
+  const Z = (SC.zb = { on: false, LEN, SHIELD, list: [], targets: [], shield: SHIELD, ev: -1, evPh: 0, end: 0, pops: 0 });
+  // 殭屍鼠種類。hp 是普通強度的血量；sp 速度；chew 每秒咬掉防護罩多少；bite 咬貓一口多少；s 模型大小；cap 一下最多扣多少（大胃王不會被絕招一下打爆）
+  const TY = [
+    { k: 'walk', hp: 90, sp: 7.5, chew: 5, bite: 18, s: 1, body: 0xa8e6a1, belly: 0xe4f7d9 },
+    { k: 'run', hp: 55, sp: 12.5, chew: 4, bite: 14, s: 0.8, body: 0xd7ef7e, belly: 0xf6fbd4 },
+    { k: 'fat', hp: 420, sp: 4.6, chew: 16, bite: 30, s: 1.5, body: 0xbfaeea, belly: 0xece6ff, wide: 1.35 },
+    { k: 'balloon', hp: 35, sp: 7, chew: 6, bite: 0, s: 0.9, body: 0xa8e6a1, belly: 0xe4f7d9, fly: true },
+    { k: 'dig', hp: 80, sp: 8.5, chew: 7, bite: 18, s: 0.95, body: 0x9fdcc0, belly: 0xe2f6ec },
+    { k: 'big', hp: 2600, sp: 3.4, chew: 24, bite: 40, s: 3.2, body: 0x97d889, belly: 0xe8f8dc, cap: 220, wide: 1.2 },
+  ];
+  const TI = {}; TY.forEach((t, i) => { t.i = i; TI[t.k] = i; });
+  // 強度（房主選的）：血量、數量、咬防護罩的速度
+  const DIF = { easy: { hp: 0.7, n: 0.7, chew: 0.55 }, normal: { hp: 1, n: 1, chew: 1 }, hard: { hp: 1.3, n: 1.15, chew: 1.2 }, crazy: { hp: 1.6, n: 1.3, chew: 1.4 }, hell: { hp: 2, n: 1.5, chew: 1.6 } };
+  // 固定時間的事件（秒）。圖示：horde 殭屍潮、balloon 氣球突襲、big 大胃王、dig 地底突襲、final 最後大潮
+  const EVENTS = [
+    { t: 45, k: 'horde', n: 12, holes: 2 },
+    { t: 90, k: 'balloon', n: 8 },
+    { t: 130, k: 'big', n: 1 },
+    { t: 175, k: 'horde', n: 15, holes: 4, run: 0.35 },
+    { t: 210, k: 'dig', n: 7 },
+    { t: 245, k: 'big', n: 2 },
+    { t: 270, k: 'final', n: 22, holes: 8, run: 0.3, fat: 0.15, balloon: 6 },
+  ];
+  const WARN = 5;
+  const EV_NAME = { horde: '殭屍潮來了！', balloon: '氣球殭屍從天上來！', big: '大胃王來了！', dig: '殭屍從地底下鑽出來！', final: '最後大潮！撐住！' };
+  Z.EVENTS = EVENTS; Z.duckD = 22;
+
+  let ctx = null, scene = null, duck = null, nextId = 1, spawnT = 0, dif = DIF.normal, authWas = false, chewSfxAt = 0, quackAt = 0, endT = 0, endFx = null, holeFx = [], marks = [], seenAt = 0, lastBite = false;
+  const holeAng = (i) => (i / 8) * TAU, gateAng = (b) => b * Q;
+  const H = (x, z) => SC.world.height(x, z);
+  const G = () => SC.game;
+  const auth = () => !(G().mode === 'net') || SC.net.referee;
+
+  // ---------- 模型：每隻殭屍鼠合成一個網格（頂點顏色），手機上一隻只畫一次 ----------
+  const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _s = new V3(), _p = new V3(), _c = new THREE.Color();
+  function merge(parts) {
+    let n = 0; const gs = parts.map((pt) => { const g = (pt.g.index ? pt.g.toNonIndexed() : pt.g.clone()); _e.set(pt.r ? pt.r[0] : 0, pt.r ? pt.r[1] : 0, pt.r ? pt.r[2] : 0); _q.setFromEuler(_e); _s.set(...(pt.s || [1, 1, 1])); _p.set(...pt.p); _m.compose(_p, _q, _s); g.applyMatrix4(_m); n += g.attributes.position.count; return [g, pt.c]; });
+    const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), col = new Float32Array(n * 3); let o = 0;
+    gs.forEach(([g, c]) => { const P = g.attributes.position, N = g.attributes.normal; _c.setHex(c); for (let i = 0; i < P.count; i++, o++) { pos[o * 3] = P.getX(i); pos[o * 3 + 1] = P.getY(i); pos[o * 3 + 2] = P.getZ(i); nor[o * 3] = N.getX(i); nor[o * 3 + 1] = N.getY(i); nor[o * 3 + 2] = N.getZ(i); col[o * 3] = _c.r; col[o * 3 + 1] = _c.g; col[o * 3 + 2] = _c.b; } g.dispose(); });
+    const out = new THREE.BufferGeometry(); out.setAttribute('position', new THREE.BufferAttribute(pos, 3)); out.setAttribute('normal', new THREE.BufferAttribute(nor, 3)); out.setAttribute('color', new THREE.BufferAttribute(col, 3)); out.computeBoundingSphere(); return out;
+  }
+  const SPH = (r, w = 14, h = 10) => new THREE.SphereGeometry(r, w, h), BOX = (x, y, z) => new THREE.BoxGeometry(x, y, z), CAP = (r, l) => new THREE.CapsuleGeometry(r, l, 4, 8);
+  const PINK = 0xff9fb4, INKC = 0x1b1430, WHITE = 0xffffff;
+  function mouseGeo(t) {
+    const B = t.body, w = t.wide || 1, P = [];
+    const add = (g, c, p, s, r) => P.push({ g, c, p, s, r });
+    add(SPH(1.25), B, [0, 1.6, 0], [w, 1.15, 0.95]); add(SPH(0.85), t.belly, [0, 1.5, 0.72 * (w > 1.1 ? 1.15 : 1)], [0.85 * w, 0.95, 0.5]);
+    add(BOX(0.62, 0.52, 0.1), 0x9b8be0, [0.55 * w, 2.0, 0.92], null, [0, 0, 0.3]); [-0.18, 0, 0.18].forEach((d) => add(BOX(0.05, 0.6, 0.06), WHITE, [0.55 * w + d, 2.0, 0.98], null, [0, 0, 0.3 + Math.PI / 2])); // 補丁和縫線
+    add(SPH(1.25, 18, 14), B, [0, 3.35, 0.15]);
+    [-1, 1].forEach((sd) => { add(SPH(0.78, 12, 8), B, [sd * 1.05, 4.35, -0.05], [1, 1, 0.32]); add(SPH(0.52, 12, 8), PINK, [sd * 1.05, 4.35, 0.12], [1, 1, 0.3]); });
+    add(SPH(0.42, 12, 8), WHITE, [-0.46, 3.55, 1.1], [1, 1.1, 0.6]); add(SPH(0.2, 8, 6), INKC, [-0.4, 3.5, 1.38]); add(SPH(0.07, 6, 4), WHITE, [-0.34, 3.58, 1.5]); // 一隻圓眼睛
+    add(BOX(0.56, 0.13, 0.1), INKC, [0.48, 3.55, 1.3], null, [0, 0, 0.785]); add(BOX(0.56, 0.13, 0.1), INKC, [0.48, 3.55, 1.3], null, [0, 0, -0.785]); // 一隻叉叉眼睛
+    add(SPH(0.21, 8, 6), PINK, [0, 3.12, 1.38]); [-1, 1].forEach((sd) => add(SPH(0.26, 8, 6), 0xffb3c6, [sd * 0.82, 3.0, 1.02], [1, 0.6, 0.4]));
+    [-0.13, 0.13].forEach((x) => add(BOX(0.22, 0.32, 0.1), WHITE, [x, 2.72, 1.2])); // 兩顆大門牙
+    add(BOX(0.95, 0.28, 0.08), 0xffd9a8, [0.3, 4.12, 0.95], null, [-0.35, 0, 0.5]); // OK 繃
+    [-1, 1].forEach((sd) => { add(CAP(0.27, 1.15), B, [sd * 0.95 * w, 2.3, 0.95], null, [Math.PI / 2 - 0.15, 0, 0]); add(SPH(0.34, 10, 8), PINK, [sd * 0.95 * w, 2.42, 1.65]); add(SPH(0.42, 10, 8), PINK, [sd * 0.55, 0.22, 0.25], [1, 0.5, 1.4]); });
+    const tail = new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new V3(0, 1.0, -1.05), new V3(0, 0.9, -1.9), new V3(0.3, 1.6, -2.4), new V3(0.6, 2.4, -2.0)]), 16, 0.13, 6, false); add(tail, PINK, [0, 0, 0]);
+    if (t.k === 'run') { add(new THREE.TorusGeometry(1.2, 0.16, 6, 24), 0xff4a5a, [0, 3.85, 0.05], null, [Math.PI / 2 - 0.2, 0, 0]); add(BOX(0.3, 0.9, 0.08), 0xff4a5a, [0.1, 3.6, -1.25], null, [0.4, 0, 0.3]); } // 跑跑鼠：紅頭帶
+    if (t.k === 'dig') { add(SPH(1.32, 16, 10, 0, TAU, 0, Math.PI / 2), 0xffc93c, [0, 3.7, 0.1], [1, 0.8, 1]); add(SPH(0.3, 8, 6), 0xfff7b0, [0, 4.1, 1.35]); } // 鑽鑽鼠：礦工帽和燈
+    if (t.k === 'big') { // 大胃王：圍兜、王冠、大叉子
+      add(new THREE.ConeGeometry(1.1, 1.6, 3), WHITE, [0, 2.2, 1.05], [w, 1, 0.3], [Math.PI, 0, 0]); add(SPH(0.16, 8, 6), 0xff6b8b, [0, 2.75, 1.25]);
+      add(new THREE.CylinderGeometry(0.75, 0.9, 0.55, 5, 1, true), 0xffd23f, [0, 4.55, 0.1]); [0, 1, 2, 3, 4].forEach((i) => { const a = (i / 5) * TAU; add(new THREE.ConeGeometry(0.2, 0.5, 4), 0xffd23f, [Math.cos(a) * 0.8, 5.0, 0.1 + Math.sin(a) * 0.8]); });
+      add(new THREE.CylinderGeometry(0.1, 0.1, 3.2, 6), 0xd8dee9, [1.15 * w, 3.3, 1.7]); add(BOX(0.8, 0.14, 0.14), 0xd8dee9, [1.15 * w, 4.9, 1.7]); [-0.3, 0, 0.3].forEach((d) => add(BOX(0.1, 0.7, 0.1), 0xd8dee9, [1.15 * w + d, 5.3, 1.7]));
+    }
+    return merge(P);
+  }
+  const GEO = TY.map(mouseGeo);
+  const balloonGeo = merge([{ g: SPH(2.1, 18, 14), c: WHITE, p: [0, 7.6, -0.3], s: [1, 1.15, 1] }, { g: new THREE.ConeGeometry(0.35, 0.5, 8), c: WHITE, p: [0, 5.2, -0.3], r: [Math.PI, 0, 0] }, { g: new THREE.CylinderGeometry(0.04, 0.04, 2.6, 4), c: 0xffffff, p: [0, 3.9, -0.3] }]);
+  const BCOL = [0xff8fab, 0x9be7ff, 0xffd97a, 0xc9b5ff, 0x9be7d0];
+  const barGeo = new THREE.PlaneGeometry(1, 1), barBg = new THREE.MeshBasicMaterial({ color: INKC, depthTest: false, transparent: true, opacity: 0.85 }), barFg = new THREE.MeshBasicMaterial({ color: 0xff5a7a, depthTest: false });
+  const moundGeo = merge([{ g: SPH(2.2, 14, 8, 0, TAU, 0, Math.PI / 2), c: 0xb07a4a, p: [0, 0, 0], s: [1, 0.55, 1] }, { g: SPH(0.6, 8, 6), c: 0x8b5a32, p: [1.4, 0.3, 0.6] }, { g: SPH(0.5, 8, 6), c: 0x8b5a32, p: [-1.2, 0.25, -0.9] }]);
+
+  function makeMesh(z) {
+    const t = TY[z.ty], mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55, emissive: 0xffffff, emissiveIntensity: 0 });
+    const g = new THREE.Group(), body = new THREE.Mesh(GEO[z.ty], mat); body.castShadow = t.s > 1.2; body.scale.setScalar(t.s); g.add(body);
+    let bal = null; if (t.fly) { bal = new THREE.Mesh(balloonGeo, new THREE.MeshStandardMaterial({ color: BCOL[z.id % BCOL.length], roughness: 0.25 })); bal.scale.setScalar(t.s); g.add(bal); }
+    const bar = new THREE.Group(), bg = new THREE.Mesh(barGeo, barBg), fg = new THREE.Mesh(barGeo, barFg); bg.scale.set(2.6, 0.45, 1); fg.scale.set(2.4, 0.3, 1); fg.position.z = 0.01; bg.renderOrder = fg.renderOrder = 8; bar.add(bg, fg); bar.visible = false; bar.position.y = 5.4 * t.s + (t.fly ? 6 : 0.4); if (t.k === 'big') bar.scale.setScalar(2); g.add(bar);
+    const mound = t.k === 'dig' ? new THREE.Mesh(moundGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 })) : null; if (mound) { mound.visible = false; scene.add(mound); }
+    scene.add(g); return { g, body, mat, bal, bar, fg, mound };
+  }
+  function dropMesh(z) { if (!z.m) return; scene.remove(z.m.g); z.m.mat.dispose(); if (z.m.bal) z.m.bal.material.dispose(); if (z.m.mound) scene.remove(z.m.mound); z.m = null; }
+
+  // 子彈判定用的靶子（固定一池，放進 G.hit；有殭屍時才 alive）
+  for (let k = 0; k < POOL; k++) { const tg = { isTarget: true, id: 'zz' + k, name: '殭屍鼠', team: 1, alive: false, pos: new V3(0, -99, 0), vel: new V3(), hy0: 0, hy1: 4.6, hr: 1.6, cy: 2.4, z: null, zb: true }; tg.zHurt = (amt, from, cause) => (tg.z ? hurt(tg.z, amt, from, cause) : false); Z.targets.push(tg); }
+  const bindTarget = (z) => { const tg = Z.targets.find((q) => !q.z); if (!tg) return; tg.z = z; z.tg = tg; const t = TY[z.ty]; tg.hy0 = t.fly ? 0 : 0; tg.hy1 = 4.6 * t.s + (t.fly ? 1 : 0); tg.hr = 1.35 * t.s * (t.wide || 1); tg.cy = 2.3 * t.s; syncTarget(z); };
+  const freeTarget = (z) => { if (!z.tg) return; z.tg.z = null; z.tg.alive = false; z.tg.pos.set(0, -99, 0); z.tg = null; };
+  const syncTarget = (z) => { const tg = z.tg; if (!tg) return; tg.alive = z.st === 'walk' || z.st === 'eat' || z.st === 'fly'; tg.prio = (z.st === 'eat' ? 16 : 0) + (TY[z.ty].k === 'big' ? 22 : TY[z.ty].k === 'fat' ? 6 : 0) + (Math.hypot(z.x, z.z) < Z.duckD ? 10 : 0); tg.pos.set(z.x, z.y, z.z); tg.vel.set(z.vx || 0, 0, z.vz || 0); if (TY[z.ty].fly && z.st === 'fly') { tg.hy0 = 0; tg.hy1 = 10 * TY[z.ty].s; tg.hr = 2.2; tg.cy = 6; } }; // prio：電腦隊友先打在咬的、大胃王、靠近小鴨的
+
+  // ---------- 生殭屍 ----------
+  function make(ty, x, z, o = {}) {
+    const t = TY[ty], hp = Math.round(t.hp * dif.hp);
+    const q = { id: o.id || nextId++, ty, x, z, y: o.y != null ? o.y : H(x, z), hp: o.hp != null ? o.hp : hp, max: hp, br: o.br != null ? o.br : 0, ph: o.ph || 0, st: o.st || 'walk', t: 0, yaw: Math.atan2(-x, -z), vx: 0, vz: 0, side: Math.random() < 0.5 ? -1 : 1, sideT: 0, gooT: Math.random() * 0.4, bite: new Map(), stompN: o.stompN || 0, warn: 0, stompT: 4 + Math.random() * 2, flash: 0, chewT: 0, und: o.und || 0, hop: o.hop || 0, nx: x, nz: z, ny: null, wave: Math.random() * 6, pred: null, predAt: 0, dieT: 0 };
+    q.m = makeMesh(q); Z.list.push(q); bindTarget(q); return q;
+  }
+  const nearGate = (a) => { const k = Math.round(a / Q); return ((k % 4) + 4) % 4; };
+  function spawnAt(ty, hole) {
+    if (Z.list.filter((q) => q.st !== 'dead').length >= MAXZ) return null;
+    const a = holeAng(hole) + (Math.random() - 0.5) * 0.08, r = 95, x = Math.cos(a) * r, z = Math.sin(a) * r;
+    let br = nearGate(a); if (hole % 2) br = Math.random() < 0.5 ? nearGate(a - 0.4) : nearGate(a + 0.4); // 斜角的洞：隨機走左邊或右邊的橋
+    const q = make(ty, x, z, { br, hop: 0.5 }); if (q) { ctx.burst(x, q.y + 1, z, ctx.colors[1], 10, 12, 0.5); } return q;
+  }
+  function spawnFly(a) { const r = 92, x = Math.cos(a) * r, z = Math.sin(a) * r; return make(TI.balloon, x, z, { y: 24 + Math.random() * 6, st: 'fly' }); }
+  function spawnDig() { const a = Math.random() * TAU, r = 10.5 + Math.random() * 9, x = Math.cos(a) * r, z = Math.sin(a) * r; return make(TI.dig, x, z, { st: 'under', und: 2.6, ph: 2, y: H(x, z) - 3 }); }
+
+  // ---------- 開始、結束 ----------
+  Z.start = (c) => {
+    ctx = c; scene = c.scene; Z.on = true; Z.stop(true); Z.on = true; nextId = 1; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.pops = 0; Z.killed = 0; Z.result = null; endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
+    dif = DIF[c.dif] || DIF.normal;
+    if (!duck) { duck = SC.duck.make(); duck.g.scale.setScalar(1); }
+    scene.add(duck.g); duck.g.position.set(0, 5.6, 0); duck.g.rotation.set(0, 0, 0); duck.fortSet(DOME_Y + (COURT - 5.6), DOME_S, c.colors[1]); duck.g.visible = true;
+    if (!holeFx.length) for (let i = 0; i < 8; i++) { // 事件前老鼠洞上的光柱
+      const g = new THREE.Group(), a = holeAng(i), m = new THREE.Mesh(new THREE.CylinderGeometry(5, 6.5, 60, 20, 1, true), new THREE.MeshBasicMaterial({ color: 0xb6ff6a, transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+      m.position.y = 30; g.add(m); const ex = new THREE.Sprite(new THREE.SpriteMaterial({ map: bangTex(), depthTest: false, transparent: true })); ex.scale.set(9, 9, 1); ex.position.y = 22; ex.renderOrder = 9; g.add(ex); g.userData.ex = ex;
+      g.position.set(Math.cos(a) * 93, 0, Math.sin(a) * 93); g.visible = false; scene.add(g); holeFx.push(g);
+    }
+    holeFx.forEach((g) => { if (g.parent !== scene) scene.add(g); g.visible = false; g.userData.on = 0; });
+    hud(true); setCard(null);
+  };
+  Z.stop = (keep) => {
+    Z.list.forEach((q) => { freeTarget(q); dropMesh(q); }); Z.list.length = 0; marks.forEach((m) => scene && scene.remove(m.o)); marks.length = 0;
+    if (!keep) { Z.on = false; if (duck && duck.g.parent) duck.g.parent.remove(duck.g); holeFx.forEach((g) => (g.visible = false)); hud(false); setCard(null); }
+  };
+  function bangTex() { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const g = cv.getContext('2d'); g.fillStyle = '#ff4a5a'; g.strokeStyle = '#fff'; g.lineWidth = 10; g.beginPath(); g.arc(64, 64, 52, 0, TAU); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.font = '900 86px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('!', 64, 70); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
+
+  // ---------- 受傷 ----------
+  function hurt(z, amt, from, cause) {
+    const g = G(); if (!z || z.st === 'dead' || z.st === 'under' || g.state !== 'play') return false;
+    z.flash = 1; if (!from) return false;
+    if (from.remote) return true; // 別台的子彈：只閃一下，扣血由開槍那台通知
+    if (from.ai && g.aiD) amt *= 0.75 / (g.aiD().dmg || 1); // 電腦隊友打殭屍不要太弱（對戰時電腦的傷害有打折）
+    const t = TY[z.ty]; if (t.cap) amt = Math.min(amt, t.cap); if (cause === 'special' && !t.cap) amt = 999;
+    if (from.isPlayer) { SC.audio.sfx.hit(); SC.ui.hitMarker(false); }
+    if (!auth()) { // 自己先預測：打到 0 就先演打爆，1.2 秒內沒消失就還原
+      const base = z.pred != null && g.time - z.predAt < 1.2 ? z.pred : z.hp; z.pred = base - amt; z.predAt = g.time; ctx.sendHit(from, z.id, Math.round(amt), cause);
+      if (z.pred <= 0 && !z.predDead) { z.predDead = g.time; pop(z, from, true); }
+      return true;
+    }
+    damage(z, amt, from); return true;
+  }
+  function damage(z, amt, from) {
+    if (z.st === 'dead' || z.st === 'under') return; z.hp -= amt; z.flash = 1;
+    if (z.hp <= 0) { if (!z.predDead) pop(z, from, false); kill(z); }
+  }
+  function kill(z) { Z.killed++; z.st = 'dead'; z.dieT = 0; z.hp = 0; if (z.tg) z.tg.alive = false; }
+  function pop(z, from, pred) { // 打爆：「啵」一聲變成一團白煙和小星星，地上留下我方墨水
+    const t = TY[z.ty], y = z.y + 2.4 * t.s, col = ctx.colors[0];
+    ctx.burst(z.x, y, z.z, col, 18 + t.s * 8, 22, 0.6); ctx.burst(z.x, y, z.z, new THREE.Color(0xffffff), 12, 16, 0.5); ctx.ring(z.x, H(z.x, z.z) + 0.3, z.z, col, 3 + t.s * 2, 0.35);
+    if (H(z.x, z.z) > -4) SC.ink.splat(0, z.x, H(z.x, z.z), z.z, 3 + t.s * 1.5);
+    if (z.m) z.m.g.visible = false; if (z.m && z.m.mound) z.m.mound.visible = false;
+    const near = ctx.near(z.x, z.y, z.z); if (near > 0.05) { SC.audio.sfx.zpop && SC.audio.sfx.zpop(near, t.s); }
+    if (from && !from.remote) { from.kos++; if (from.isPlayer) { Z.pops++; SC.ui.hitMarker(true); if (t.k === 'big') { SC.ui.banner('打倒大胃王了！', 1.8); SC.audio.sfx.koGot(); } } }
+    if (t.fly && z.st === 'fly') ctx.burst(z.x, z.y + 7.5 * t.s, z.z, new THREE.Color(BCOL[z.id % BCOL.length]), 14, 18, 0.45);
+  }
+  Z.netHit = (from, id, amt) => { if (!auth()) return; const z = Z.list.find((q) => q.id === id); if (z) damage(z, SC.clamp(amt, 0, 999), from); };
+
+  // ---------- 每一格 ----------
+  const _v = new V3();
+  function steer(z, tx, tz, sp, dt) {
+    let dx = tx - z.x, dz = tz - z.z; const d = Math.hypot(dx, dz) || 1; dx /= d; dz /= d;
+    const h0 = H(z.x, z.z), look = 2.4 * TY[z.ty].s + 1.2, ok = (ux, uz) => { const h = H(z.x + ux * look, z.z + uz * look); return h > -3 && H(z.x + ux * 1.4, z.z + uz * 1.4) - h0 < 1.5; }; // 遠一點看有沒有水，近一點看是不是牆（斜坡可以走）
+    let ux = dx, uz = dz;
+    if (!ok(ux, uz)) { let found = false; if (z.sideT <= 0) z.side = Math.random() < 0.5 ? -1 : 1;
+      for (const a of [0.45, 0.9, 1.35, 1.8]) for (const s of [z.side, -z.side]) { const c = Math.cos(a * s), sn = Math.sin(a * s), vx = dx * c - dz * sn, vz = dx * sn + dz * c; if (ok(vx, vz)) { ux = vx; uz = vz; found = true; z.side = s; z.sideT = 1; break; } if (found) break; }
+      if (!found) { ux = -dx; uz = -dz; } }
+    z.sideT -= dt;
+    z.vx = SC.damp(z.vx, ux * sp, 6, dt); z.vz = SC.damp(z.vz, uz * sp, 6, dt);
+    const nx = z.x + z.vx * dt, nz = z.z + z.vz * dt, hn = H(nx, nz);
+    if (hn > -3 && hn - h0 < 1.7) { z.x = nx; z.z = nz; } else { z.vx *= -0.3; z.vz *= -0.3; }
+    return d;
+  }
+  function simulate(dt) {
+    const g = G(), now = g.time, live = Z.list.filter((q) => q.st !== 'dead');
+    // 事件
+    const ni = Z.ev + 1, E = EVENTS[ni];
+    if (E && Z.evPh === 0 && now >= E.t - WARN) { Z.ev = ni; Z.evPh = 1; Z.evHoles = pickHoles(E); }
+    else if (Z.ev >= 0 && Z.evPh === 1 && now >= EVENTS[Z.ev].t) { Z.evPh = 2; fire(EVENTS[Z.ev]); }
+    else if (Z.evPh === 2 && Z.ev >= 0 && now >= EVENTS[Z.ev].t + 8) Z.evPh = 0;
+    if (Z.burstQ && Z.burstQ.length) { Z.burstT -= dt; while (Z.burstT <= 0 && Z.burstQ.length) { Z.burstT += 0.22; const [ty, h] = Z.burstQ.shift(); spawnAt(ty, h); } }
+    // 平常一直有：越後面越多、種類越多
+    spawnT -= dt;
+    if (spawnT <= 0 && now < LEN - 2) { const k = now / LEN; spawnT = SC.lerp(3.2, 1.05, k) / dif.n; const r = Math.random(), ty = now > 150 && r < 0.14 ? TI.fat : now > 60 && r < 0.42 ? TI.run : TI.walk; spawnAt(ty, (Math.random() * 8) | 0); }
+    // 每隻殭屍
+    for (const z of live) {
+      const t = TY[z.ty]; z.t += dt;
+      if (z.st === 'under') { z.und -= dt; if (z.und <= 0) { z.st = 'walk'; z.y = H(z.x, z.z); z.hop = 0.6; ctx.burst(z.x, z.y + 1, z.z, new THREE.Color(0xb07a4a), 24, 18, 0.6); } continue; }
+      if (z.st === 'fly') {
+        const d = Math.hypot(z.x, z.z), top = 5.6 + DOME_Y + DOME_R + 0.4;
+        if (d > 3) { const sp = t.sp; z.vx = (-z.x / d) * sp; z.vz = (-z.z / d) * sp; z.x += z.vx * dt; z.z += z.vz * dt; z.y = SC.damp(z.y, d < 30 ? top + 2 : 26, 0.8, dt); }
+        else { z.vx = z.vz = 0; z.y = SC.damp(z.y, top, 3, dt); if (z.y < top + 0.6) { z.st = 'eat'; z.onTop = 1; } }
+        continue;
+      }
+      if (z.st === 'eat') { if (!z.onTop) { const d = Math.hypot(z.x, z.z), want = DOME_R + 1.0 * t.s * (t.wide || 1); if (d > want + 0.6) { z.st = 'walk'; z.ph = 2; } } Z.shield -= t.chew * dif.chew * dt; z.chewT += dt; continue; }
+      // 走路：橋外面 → 城門裡 → 小鴨
+      const ga = gateAng(z.br), wp = z.ph === 0 ? [Math.cos(ga) * 42, Math.sin(ga) * 42] : z.ph === 1 ? [Math.cos(ga) * 17, Math.sin(ga) * 17] : [0, 0];
+      const own = SC.ink.ownerAt(z.x, z.z), sp = t.sp * (own === 1 ? 0.55 : 1) * (z.hop > 0 ? 0.4 : 1);
+      const d = steer(z, wp[0], wp[1], sp, dt); z.y = H(z.x, z.z);
+      if (z.ph === 0 && (d < 5 || Math.hypot(z.x, z.z) < 40)) z.ph = 1; else if (z.ph === 1 && (d < 4 || Math.hypot(z.x, z.z) < 17)) z.ph = 2;
+      if (z.ph === 2 && Math.hypot(z.x, z.z) <= DOME_R + 1.0 * t.s * (t.wide || 1)) { z.st = 'eat'; z.vx = z.vz = 0; }
+      // 大胃王：附近有貓就跺腳（先亮紅圈 0.9 秒）
+      if (t.k === 'big') { z.stompT -= dt; if (z.warn > 0) { z.warn -= dt; if (z.warn <= 0) { z.warn = 0; z.stompN++; } } else if (z.stompT <= 0) { z.stompT = 5.5; if (g.actors.some((a) => a.alive && Math.hypot(a.pos.x - z.x, a.pos.z - z.z) < 20)) z.warn = 0.9; } }
+    }
+    // 互相推開（不要疊在一起）
+    for (let i = 0; i < live.length; i++) { const a = live[i]; if (a.st !== 'walk' && a.st !== 'eat') continue; for (let j = i + 1; j < live.length; j++) { const b = live[j]; if (b.st !== 'walk' && b.st !== 'eat') continue; const dx = b.x - a.x, dz = b.z - a.z, R = 1.3 * (TY[a.ty].s + TY[b.ty].s), d2 = dx * dx + dz * dz; if (d2 > R * R || d2 < 1e-6) continue; const d = Math.sqrt(d2), k = ((R - d) / d) * 0.5; const ea = a.st === 'eat', eb = b.st === 'eat'; if (!ea) { a.x -= dx * k * (eb ? 2 : 1); a.z -= dz * k * (eb ? 2 : 1); } if (!eb) { b.x += dx * k * (ea ? 2 : 1); b.z += dz * k * (ea ? 2 : 1); } } }
+    for (const z of live) if (z.st === 'eat' && !z.onTop) { const d = Math.hypot(z.x, z.z), want = DOME_R + 1.0 * TY[z.ty].s * (TY[z.ty].wide || 1); if (d < want - 0.3) { z.x *= want / d; z.z *= want / d; } } // 咬防護罩的不會被擠進去
+    // 打爆的殭屍留 0.5 秒（讓別台看得到）再移除
+    for (let i = Z.list.length - 1; i >= 0; i--) { const z = Z.list[i]; if (z.st === 'dead' && (z.dieT += dt) > 0.5) { freeTarget(z); dropMesh(z); Z.list.splice(i, 1); } }
+    // 結束
+    if (!Z.end) { if (Z.shield <= 0) { Z.shield = 0; Z.end = 2; } else if (now >= LEN) Z.end = 1; }
+  }
+  function pickHoles(E) { const n = E.holes || 0, s = (Math.random() * 8) | 0; if (n >= 8) return [0, 1, 2, 3, 4, 5, 6, 7]; if (n === 4) return [0, 2, 4, 6].map((h) => (h + (s % 2)) % 8); if (n === 2) return [s, (s + 4) % 8]; if (E.k === 'big') return E.n === 2 ? [s, (s + 4) % 8] : [s]; return []; }
+  function fire(E) {
+    const holes = Z.evHoles || [], n = Math.round(E.n * (E.k === 'big' ? 1 : dif.n)); Z.burstQ = Z.burstQ || []; Z.burstT = 0;
+    if (E.k === 'horde' || E.k === 'final') { for (let i = 0; i < n; i++) { const r = Math.random(), ty = E.fat && r < E.fat ? TI.fat : E.run && r < (E.fat || 0) + E.run ? TI.run : TI.walk; Z.burstQ.push([ty, holes[i % holes.length]]); } }
+    if (E.k === 'big') holes.forEach((h) => spawnAt(TI.big, h));
+    const nb = E.k === 'balloon' ? n : E.balloon || 0; for (let i = 0; i < nb; i++) spawnFly(Math.random() * TAU);
+    if (E.k === 'dig') for (let i = 0; i < n; i++) spawnDig();
+  }
+
+  // 每台都算：自己的貓（裁判另外算電腦隊友）被咬、被跺腳
+  function bites(dt) {
+    const g = G(); let bit = false;
+    for (const z of Z.list) {
+      if (z.st !== 'walk' && z.st !== 'eat') continue; const t = TY[z.ty]; if (!t.bite) continue;
+      for (const a of g.actors) {
+        if (!a.alive || a.remote || a.gone || a.submerged || g.time < a.protectUntil) continue;
+        const R = 1.25 * t.s * (t.wide || 1) + 1.7; if (Math.abs(a.pos.y - z.y) > 3 + t.s * 2 || Math.hypot(a.pos.x - z.x, a.pos.z - z.z) > R) continue;
+        const last = z.bite.get(a) || -9; if (g.time - last < 0.9) continue; z.bite.set(a, g.time); z.chomp = 1; ctx.bite(a, t.bite, z); bit = true;
+      }
+    }
+    return bit;
+  }
+  function stomp(z) {
+    const g = G(), y = H(z.x, z.z), R = 17; ctx.ring(z.x, y + 0.3, z.z, new THREE.Color(0xffd23f), R, 0.5); ctx.burst(z.x, y + 1, z.z, new THREE.Color(0xb07a4a), 40, 30, 0.8); const nr = ctx.near(z.x, y, z.z); if (nr > 0.05) { SC.audio.sfx.bomb(); ctx.shake(nr * 0.7); }
+    g.actors.forEach((a) => { if (!a.alive || a.remote || a.gone) return; const dx = a.pos.x - z.x, dz = a.pos.z - z.z, d = Math.hypot(dx, dz); if (d > R || a.pos.y > y + 8) return; ctx.bite(a, 40, z, true); a.vel.set((dx / (d || 1)) * 24, 24, (dz / (d || 1)) * 24); a.onGround = false; a.launchT = 0.4; });
+  }
+
+  // ---------- 畫面 ----------
+  const RED = new THREE.Color(0xff5a7a);
+  function render(dt, cam) {
+    const g = G(), now = performance.now() / 1000, ended = g.state === 'ended';
+    let chewing = 0;
+    for (const z of Z.list) {
+      const m = z.m; if (!m) continue; const t = TY[z.ty];
+      if (!auth() && z.st !== 'dead') { const k = 1 - Math.exp(-10 * dt); if (Math.hypot(z.nx - z.x, z.nz - z.z) > 25) { z.x = z.nx; z.z = z.nz; } else { z.vx = (z.nx - z.x) * 10; z.vz = (z.nz - z.z) * 10; z.x += (z.nx - z.x) * k; z.z += (z.nz - z.z) * k; } z.y = z.ny != null && (t.fly || z.st === 'under') ? SC.damp(z.y, z.ny, 10, dt) : z.st === 'eat' && z.onTop ? z.ny || z.y : H(z.x, z.z); }
+      if (z.predDead && z.st !== 'dead' && g.time - z.predDead > 1.4) { z.predDead = 0; z.pred = null; m.g.visible = true; } // 預測打爆沒成立：再出現
+      syncTarget(z); if (z.predDead) { if (z.tg) z.tg.alive = false; continue; }
+      if (z.st === 'dead') { m.g.visible = false; if (m.mound) m.mound.visible = false; continue; }
+      if (z.st === 'under') { m.g.visible = false; if (m.mound) { m.mound.visible = true; m.mound.position.set(z.x, H(z.x, z.z), z.z); const k = Math.sin(now * 30) * 0.08; m.mound.scale.set(1 + k, 1 - k + Math.min(1, z.t) * 0.3, 1 + k); } if (Math.random() < dt * 8) ctx.burst(z.x, H(z.x, z.z) + 0.5, z.z, new THREE.Color(0xb07a4a), 2, 8, 0.4); continue; }
+      if (m.mound) m.mound.visible = false;
+      m.g.visible = true; if (z.hop > 0) z.hop -= dt;
+      const sp = Math.hypot(z.vx, z.vz), eat = z.st === 'eat';
+      const wy = eat ? Math.atan2(-z.x, -z.z) : sp > 0.5 ? Math.atan2(z.vx, z.vz) : z.yaw; z.yaw += SC.angDiff(z.yaw, wy) * Math.min(1, dt * 8);
+      const w = now * (eat ? 14 : 2 + sp * 0.9) + z.wave, hop = z.hop > 0 ? Math.sin((1 - z.hop / 0.6) * Math.PI) * 3 : 0;
+      m.g.position.set(z.x, z.y + hop + (eat ? 0 : Math.abs(Math.sin(w)) * 0.35 * t.s), z.z); m.g.rotation.y = z.yaw;
+      m.body.rotation.z = eat ? Math.sin(w) * 0.05 : Math.sin(w) * 0.16; m.body.rotation.x = eat ? 0.28 + Math.max(0, Math.sin(w)) * 0.22 : 0.08;
+      if (z.chomp > 0) z.chomp = Math.max(0, z.chomp - dt * 4); const sq = 1 + (z.chomp || 0) * 0.15 + (eat ? Math.max(0, Math.sin(w)) * 0.06 : 0); m.body.scale.set(t.s * sq, t.s / sq, t.s * sq);
+      if (m.bal) { m.bal.visible = z.st === 'fly'; m.bal.rotation.z = Math.sin(now * 1.3 + z.id) * 0.12; }
+      z.flash = Math.max(0, (z.flash || 0) - dt * 7); m.mat.emissiveIntensity = z.flash * 0.8;
+      if (z.warn > 0 && z.m) { m.mat.emissive.copy(RED); m.mat.emissiveIntensity = 0.3 + Math.max(0, Math.sin(now * 30)) * 0.5; } else m.mat.emissive.setHex(0xffffff);
+      const hpK = SC.clamp((z.pred != null && g.time - z.predAt < 1.2 ? Math.min(z.pred, z.hp) : z.hp) / z.max, 0, 1); m.bar.visible = hpK < 0.999 && !ended; if (m.bar.visible) { m.fg.scale.x = 2.4 * hpK; m.fg.position.x = -1.2 * (1 - hpK); m.bar.quaternion.copy(cam.quaternion).premultiply(_q.copy(m.g.quaternion).invert()); }
+      if (eat) { chewing++; if (now - chewSfxAt > 0.32) { chewSfxAt = now; const n = ctx.near(z.x, z.y, z.z); if (n > 0.08) SC.audio.sfx.chomp && SC.audio.sfx.chomp(n * 0.8); } if (Math.random() < dt * 3) { duck.fortBlob(z.x, (z.onTop ? 9 : 2) + Math.random() * 2, z.z); ctx.burst(z.x * 0.92, z.y + 2.6 * t.s, z.z * 0.92, new THREE.Color(0xbff0ff), 3, 8, 0.35); } }
+      // 黏液：走在沒塗的地上留下綠色的對手墨水（大胃王每一步都留）
+      if (!ended && z.st === 'walk' && (z.gooT -= dt) <= 0) { z.gooT = 0.45; const own = SC.ink.ownerAt(z.x, z.z), gy = H(z.x, z.z); if (gy > -4 && (own === 0 || t.k === 'big')) SC.ink.stamp(1, z.x, gy, z.z, 1.5 * t.s); }
+      // 大胃王跺腳：紅圈預告，跺下去時每台各自算自己的貓
+      if (t.k === 'big') { if (z.warn > 0) warnRing(z, now); else if (z.ring) z.ring.visible = false; if (z.stompSeen == null) z.stompSeen = z.stompN; if (z.stompN !== z.stompSeen) { z.stompSeen = z.stompN; stomp(z); } }
+    }
+    return chewing;
+  }
+  function warnRing(z, now) {
+    if (!z.ring) { z.ring = new THREE.Mesh(new THREE.RingGeometry(15.5, 17, 48), new THREE.MeshBasicMaterial({ color: 0xff4a5a, transparent: true, opacity: 0.6, depthWrite: false, side: THREE.DoubleSide })); z.ring.rotation.x = -Math.PI / 2; scene.add(z.ring); marks.push({ o: z.ring }); }
+    z.ring.visible = true; z.ring.position.set(z.x, H(z.x, z.z) + 0.25, z.z); z.ring.material.opacity = 0.35 + Math.max(0, Math.sin(now * 24)) * 0.5;
+  }
+
+  Z.tick = (dt, cam) => {
+    if (!Z.on) return; const g = G(), playing = g.state === 'play';
+    const a = auth(); if (a && !authWas && g.mode === 'net') { spawnT = 1; Z.burstQ = []; } authWas = a; // 裁判換人：從收到的狀態接著算
+    if (playing && a && !Z.end) simulate(dt);
+    if (playing && !Z.end) { if (bites(dt)) lastBite = true; }
+    const chewing = render(dt, cam);
+    // 事件卡、光柱
+    const E = Z.ev >= 0 ? EVENTS[Z.ev] : null, warnOn = playing && Z.evPh === 1 && E;
+    setCard(warnOn ? E : null, warnOn ? Math.max(0, Math.ceil(E.t - g.time)) : 0);
+    const now = performance.now() / 1000;
+    holeFx.forEach((h, i) => { const on = warnOn && (Z.evHoles || []).includes(i); h.visible = !!on; if (on) { h.userData.ex.position.y = 22 + Math.abs(Math.sin(now * 4)) * 4; h.children[0].material.opacity = 0.25 + Math.max(0, Math.sin(now * 8)) * 0.2; } });
+    if (warnOn && Z.lastWarn !== Z.ev) { Z.lastWarn = Z.ev; SC.audio.sfx.zhorn && SC.audio.sfx.zhorn(); }
+    if (playing && Z.evPh === 2 && Z.lastFire !== Z.ev) { Z.lastFire = Z.ev; SC.ui.banner(EV_NAME[E.k] || '', 1.8); SC.audio.sfx.zgroan && SC.audio.sfx.zgroan(); }
+    // 小鴨
+    const k = Z.shield / SHIELD;
+    if (cam) duck.fortCam(Math.hypot(cam.position.x, cam.position.y - (5.6 + DOME_Y), cam.position.z) < DOME_R + 1.5); // 鏡頭跑進罩子裡：罩子變透明，不擋畫面
+    if (!endFx) { duck.fortTick(dt, now, k, chewing > 0, chewing > 0 ? 'scared' : 'calm'); if (chewing && now - quackAt > (k < 0.35 ? 1.1 : 2.6) && playing) { quackAt = now; SC.audio.sfx.quack(); } }
+    hudTick(k, chewing);
+    if (Z.end && !endFx) endStart(Z.end === 1);
+    if (endFx) endTick(dt, now);
+  };
+
+  // ---------- 結束演出 ----------
+  function endStart(won) {
+    endFx = { won, t: 0, fe: [] }; const col = ctx.colors[0];
+    holeFx.forEach((h) => (h.visible = false)); setCard(null); Z.list.forEach((z) => { if (z.ring) z.ring.visible = false; z.warn = 0; });
+    if (won) { // 守住了：殭屍鼠全部變回粉紅色的普通老鼠，跳一跳跑走；小鴨開心地蹦
+      Z.list.forEach((z) => { if (z.st === 'dead' || !z.m) return; z.cure = 1; ctx.burst(z.x, z.y + 3, z.z, new THREE.Color(0xff9fb4), 10, 12, 0.6); });
+      duck.fortHappy(true); duck.vy = 9; SC.audio.sfx.win(); setTimeout(() => SC.audio.sfx.quack(), 300);
+      for (let i = 0; i < 6; i++) setTimeout(() => { if (!endFx) return; ctx.burst((Math.random() - 0.5) * 20, 18 + Math.random() * 6, (Math.random() - 0.5) * 20, new THREE.Color(BCOL[i % BCOL.length]), 40, 26, 0.9); SC.audio.sfx.firework && SC.audio.sfx.firework(); }, 200 + i * 380);
+    } else { // 被吃掉了：防護罩碎掉，一團煙（裡面冒星星），煙散掉後小鴨不見了，只剩幾根黃色羽毛飄下來
+      duck.fortBreak(); SC.audio.sfx.shatter(); ctx.burst(0, 12, 0, new THREE.Color(0xbff0ff), 60, 34, 0.8);
+      Z.list.forEach((z) => { if (z.st === 'dead' || z.st === 'under' || !z.m) return; z.rush = { x: z.x, z: z.z, y: z.y }; });
+    }
+  }
+  function endTick(dt, now) {
+    const F = endFx; F.t += dt; const t = F.t;
+    if (F.won) {
+      duck.fortTick(dt, now, Z.shield / SHIELD, false, 'happy');
+      Z.list.forEach((z) => { if (!z.cure || !z.m) return; const m = z.m; m.mat.color.lerp(_c.setHex(0xffc2d6), Math.min(1, dt * 3)); m.mat.emissive.setHex(0xff9fb4); m.mat.emissiveIntensity = Math.max(0, 0.6 - t * 0.4);
+        const d = Math.hypot(z.x, z.z) || 1, sp = t > 0.8 ? 14 : 0; z.x += (z.x / d) * sp * dt; z.z += (z.z / d) * sp * dt; z.y = H(z.x, z.z); m.g.position.set(z.x, z.y + Math.abs(Math.sin(now * 9 + z.id)) * 2.2, z.z); m.g.rotation.y = Math.atan2(z.x, z.z); m.body.rotation.x = -0.15; if (m.bal) m.bal.visible = false; m.bar.visible = false; if (t > 3.5) m.g.visible = false; });
+      return;
+    }
+    if (t < 1.8) { // 衝過去、一團煙
+      Z.list.forEach((z) => { if (!z.rush || !z.m) return; const k = Math.min(1, t / 0.6); z.x = z.rush.x * (1 - k) * 0.4 + z.rush.x * 0.6 * (1 - k * 0.6); z.z = z.rush.z * (1 - k) * 0.4 + z.rush.z * 0.6 * (1 - k * 0.6); z.m.g.position.set(z.x, z.y + Math.abs(Math.sin(now * 12 + z.id)) * 1.5, z.z); z.m.bar.visible = false; if (z.m.bal) z.m.bal.visible = false; });
+      if (t > 0.5 && Math.random() < dt * 14) { ctx.burst((Math.random() - 0.5) * 9, 7 + Math.random() * 6, (Math.random() - 0.5) * 9, new THREE.Color(Math.random() < 0.5 ? 0xffffff : 0xd6d0e6), 10, 14, 0.7); if (Math.random() < 0.4) ctx.burst(0, 10, 0, new THREE.Color(0xffd23f), 4, 20, 0.4); }
+      if (t > 0.5 && now - chewSfxAt > 0.12) { chewSfxAt = now; SC.audio.sfx.chomp && SC.audio.sfx.chomp(1); }
+      if (t > 1.2 && duck.g.visible) { duck.g.visible = false; }
+      return;
+    }
+    if (!F.feath) { F.feath = 1; SC.audio.sfx.zburp && SC.audio.sfx.zburp(); for (let i = 0; i < 7; i++) { const f = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 6), new THREE.MeshStandardMaterial({ color: 0xffd93b, roughness: 0.6 })); f.scale.set(1, 0.15, 2); f.position.set((Math.random() - 0.5) * 6, 16 + Math.random() * 4, (Math.random() - 0.5) * 6); scene.add(f); marks.push({ o: f }); F.fe.push({ f, ph: Math.random() * 6 }); } }
+    F.fe.forEach((q) => { q.f.position.y = Math.max(5.7, q.f.position.y - dt * 2.2); q.f.position.x += Math.sin(now * 2 + q.ph) * dt * 2; q.f.rotation.z = Math.sin(now * 3 + q.ph) * 0.6; });
+    Z.list.forEach((z) => { if (!z.rush || !z.m) return; z.m.g.position.y = z.y + Math.abs(Math.sin(now * 5 + z.id)) * 0.6; z.m.body.rotation.x = -0.25; z.m.body.rotation.z = Math.sin(now * 5 + z.id) * 0.2; }); // 吃飽了摸肚子晃來晃去
+  }
+  // 結束鏡頭：繞著堡壘慢慢轉
+  Z.endCam = (camera, t) => {
+    if (!endFx) return false; const a = 0.6 + t * 0.12, D = camera.aspect < 1 ? 70 : 52;
+    camera.position.set(Math.sin(a) * D, 30, Math.cos(a) * D); camera.up.set(0, 1, 0); camera.lookAt(0, 8, 0); camera.updateProjectionMatrix(); return true;
+  };
+  Z.result = null;
+  Z.makeResult = () => ({ won: Z.end === 1, frac: SC.clamp(Z.shield / SHIELD, 0, 1), pops: Z.killed, secs: Math.min(LEN, G().time) });
+
+  // ---------- 連線 ----------
+  // zs：[版本, 時間×10, 防護罩, 事件編號, 事件階段, 結束, 下一個編號, 每隻 7 個數字…]
+  // 每隻：[編號, 種類 + 橋×8 + 階段×32 + 狀態×128, x×10, z×10, y×10, 血量％, 跺腳次數×2 + 預告]
+  const ST = ['walk', 'eat', 'fly', 'under', 'dead'];
+  Z.pack = () => {
+    const out = [1, Math.round(G().time * 10), Math.round(Z.shield), Z.ev, Z.evPh, Z.end, nextId];
+    out.push(Z.evHoles ? Z.evHoles.reduce((m, h) => m | (1 << h), 0) : 0);
+    for (const z of Z.list) { if (out.length > 7 + 7 * 46) break; out.push(z.id, z.ty + z.br * 8 + z.ph * 32 + Math.max(0, ST.indexOf(z.st)) * 128 + (z.onTop ? 1024 : 0), Math.round(z.x * 10), Math.round(z.z * 10), Math.round((z.st === 'under' ? -z.und : z.y) * 10), Math.round(SC.clamp(z.hp / z.max, 0, 1) * 100), z.stompN * 2 + (z.warn > 0 ? 1 : 0)); }
+    return out;
+  };
+  Z.apply = (zs) => {
+    if (!Z.on || auth() || !Array.isArray(zs) || zs[0] !== 1 || zs.length < 8 || !zs.every(Number.isFinite)) return;
+    Z.shield = SC.clamp(zs[2], 0, SHIELD); if (zs[3] >= -1 && zs[3] < EVENTS.length) { Z.ev = zs[3] | 0; Z.evPh = zs[4] | 0; } if (!Z.end && (zs[5] === 1 || zs[5] === 2)) { Z.end = zs[5]; Z.netEnd = G().time; } nextId = Math.max(nextId, zs[6] | 0);
+    Z.evHoles = []; for (let h = 0; h < 8; h++) if (zs[7] & (1 << h)) Z.evHoles.push(h);
+    const seen = new Set();
+    for (let i = 8; i + 6 < zs.length; i += 7) {
+      const id = zs[i], code = zs[i + 1], ty = code & 7, st = ST[(code >> 7) & 7] || 'walk'; if (!TY[ty]) continue; seen.add(id);
+      let z = Z.list.find((q) => q.id === id); const x = zs[i + 2] / 10, zz = zs[i + 3] / 10, y = zs[i + 4] / 10;
+      if (!z) { if (st === 'dead') continue; z = make(ty, x, zz, { id, st, y: st === 'under' ? H(x, zz) - 3 : y, und: st === 'under' ? -y : 0 }); if (st === 'walk' && Math.hypot(x, zz) > 88) z.hop = 0.5; }
+      z.br = (code >> 3) & 3; z.ph = (code >> 5) & 3; z.onTop = !!(code & 1024); z.nx = x; z.nz = zz; z.ny = st === 'under' ? null : y; if (st === 'under') z.und = -y;
+      z.hp = (zs[i + 5] / 100) * z.max; z.stompN = zs[i + 6] >> 1; z.warn = zs[i + 6] & 1 ? 0.5 : 0;
+      if (st === 'dead' && z.st !== 'dead') { if (!z.predDead) pop(z, null, false); kill(z); } else if (st !== 'dead') { if (z.st === 'under' && st === 'walk') { z.hop = 0.6; ctx.burst(x, H(x, zz) + 1, zz, new THREE.Color(0xb07a4a), 24, 18, 0.6); } z.st = st; }
+    }
+    for (let i = Z.list.length - 1; i >= 0; i--) { const z = Z.list[i]; if (seen.has(z.id)) continue; if (z.st !== 'dead' && !z.predDead) pop(z, null, false); freeTarget(z); dropMesh(z); Z.list.splice(i, 1); }
+  };
+
+  // ---------- HUD ----------
+  // 上方中間：小鴨的臉＋防護罩血條；下面一條五分鐘的時間軸，上面有每個事件的圖示，貓掌一路往終點旗子走
+  const ICON = {
+    duck: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="22" r="14" fill="#ffd93b" stroke="#1b1430" stroke-width="2.6"/><path d="M9 11h22l-11-6z" fill="#26213a" stroke="#1b1430" stroke-width="2"/><circle cx="15" cy="20" r="2.4" fill="#1b1430"/><circle cx="25" cy="20" r="2.4" fill="#1b1430"/><ellipse cx="20" cy="28" rx="6" ry="3" fill="#ff8a5c" stroke="#1b1430" stroke-width="1.8"/></svg>',
+    mouse: (c = '#a8e6a1', extra = '') => `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="9" cy="11" r="7" fill="${c}" stroke="#1b1430" stroke-width="2.4"/><circle cx="31" cy="11" r="7" fill="${c}" stroke="#1b1430" stroke-width="2.4"/><circle cx="9" cy="11" r="3.6" fill="#ff9fb4"/><circle cx="31" cy="11" r="3.6" fill="#ff9fb4"/><circle cx="20" cy="23" r="13" fill="${c}" stroke="#1b1430" stroke-width="2.6"/><circle cx="15" cy="21" r="3.4" fill="#fff" stroke="#1b1430" stroke-width="1.4"/><circle cx="15.5" cy="21.5" r="1.6" fill="#1b1430"/><path d="M23 19l4 4M27 19l-4 4" stroke="#1b1430" stroke-width="2.2" stroke-linecap="round"/><circle cx="20" cy="27" r="1.8" fill="#ff7a9a"/><rect x="18" y="29" width="4" height="4" fill="#fff" stroke="#1b1430" stroke-width="1"/>${extra}</svg>`,
+  };
+  const EV_ICON = {
+    horde: `<span class="zi-stack">${ICON.mouse()}${ICON.mouse()}${ICON.mouse()}</span>`,
+    balloon: ICON.mouse('#a8e6a1', '<circle cx="31" cy="-2" r="0" />').replace('viewBox="0 0 40 40"', 'viewBox="0 -18 40 58"').replace('<circle cx="9"', '<ellipse cx="30" cy="-8" rx="8" ry="9" fill="#ff8fab" stroke="#1b1430" stroke-width="2.4"/><path d="M30 1v8" stroke="#1b1430" stroke-width="1.6"/><circle cx="9"'),
+    big: ICON.mouse('#97d889', '<path d="M12 7l3 4 5-5 5 5 3-4v6H12z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6" stroke-linejoin="round"/>'),
+    dig: ICON.mouse('#9fdcc0', '<path d="M8 15a12 9 0 0 1 24 0z" fill="#ffc93c" stroke="#1b1430" stroke-width="2"/><ellipse cx="20" cy="39" rx="18" ry="4" fill="#b07a4a" stroke="#1b1430" stroke-width="1.6"/>'),
+    final: `<span class="zi-stack">${ICON.mouse('#bfaeea')}${ICON.mouse('#97d889', '<path d="M12 7l3 4 5-5 5 5 3-4v6H12z" fill="#ffd23f" stroke="#1b1430" stroke-width="1.6"/>')}${ICON.mouse('#d7ef7e')}</span>`,
+  };
+  Z.icon = (k) => EV_ICON[k] || ICON.mouse();
+  let H_ = null;
+  function hud(on) {
+    if (on && !H_) {
+      const top = document.querySelector('#hud .h-top'), hudEl = document.getElementById('hud'); if (!top || !hudEl) return;
+      const bar = document.createElement('div'); bar.className = 'h-zb'; bar.id = 'zb-bar';
+      bar.innerHTML = `<div class="zb-row"><i class="zb-duck">${ICON.duck}</i><div class="zb-shield" role="progressbar" aria-label="防護罩"><i class="zb-fill"></i><b class="zb-pct"></b></div><span class="zb-pops"><i>${ICON.mouse()}</i><b>0</b></span></div>`
+        + `<div class="zb-line" aria-hidden="true"><i class="zb-done"></i>${EVENTS.map((e) => `<span class="zb-ev" data-k="${e.k}" style="left:${((e.t / LEN) * 100).toFixed(1)}%">${EV_ICON[e.k]}</span>`).join('')}<span class="zb-flag">🏁</span><span class="zb-paw">🐾</span></div>`;
+      top.appendChild(bar);
+      const card = document.createElement('div'); card.className = 'h-zcard'; card.id = 'zb-card'; card.innerHTML = '<div class="zc-ic"></div><div class="zc-t"><b></b><span class="zc-n"></span></div>'; hudEl.appendChild(card);
+      H_ = { bar, card, fill: bar.querySelector('.zb-fill'), pct: bar.querySelector('.zb-pct'), pops: bar.querySelector('.zb-pops b'), done: bar.querySelector('.zb-done'), paw: bar.querySelector('.zb-paw'), evs: [...bar.querySelectorAll('.zb-ev')], duck: bar.querySelector('.zb-duck'), last: {} };
+    }
+    const hudEl = document.getElementById('hud'); if (hudEl) hudEl.classList.toggle('zb', !!on);
+  }
+  let cardK = null, cardN = -1;
+  function setCard(E, n) {
+    if (!H_) return; const k = E ? E.k : null;
+    if (k !== cardK) { cardK = k; H_.card.classList.toggle('on', !!k); if (k) { H_.card.dataset.k = k; H_.card.querySelector('.zc-ic').innerHTML = EV_ICON[k]; H_.card.querySelector('b').textContent = EV_NAME[k]; } }
+    if (k && n !== cardN) { cardN = n; H_.card.querySelector('.zc-n').textContent = n > 0 ? n : ''; if (n > 0 && n <= 3) SC.audio.sfx.count(); }
+  }
+  function hudTick(k, chewing) {
+    if (!H_) return; const L = H_.last, g = G(), pc = Math.round(k * 100);
+    if (L.pc !== pc) { L.pc = pc; H_.fill.style.width = pc + '%'; H_.pct.textContent = pc + '%'; H_.bar.classList.toggle('low', pc < 30); }
+    const c = chewing > 0; if (L.c !== c) { L.c = c; H_.bar.classList.toggle('chew', c); }
+    if (L.pops !== Z.pops) { L.pops = Z.pops; H_.pops.textContent = Z.pops; }
+    const tk = Math.round(SC.clamp(g.time / LEN, 0, 1) * 400); if (L.tk !== tk) { L.tk = tk; H_.done.style.width = tk / 4 + '%'; H_.paw.style.left = tk / 4 + '%'; H_.evs.forEach((e, i) => e.classList.toggle('past', g.time >= EVENTS[i].t)); }
+  }
+  Z.hudOn = () => !!(H_ && Z.on);
+
+  // 小地圖：小鴨、殭屍鼠（綠點；大胃王大點、氣球藍點）、事件要來的老鼠洞閃紅
+  Z.drawMap = (c, mx, my, sc) => {
+    if (!Z.on) return; const now = performance.now() / 1000;
+    c.fillStyle = Z.shield / SHIELD < 0.3 && Math.sin(now * 10) > 0 ? '#ff5a7a' : '#ffd93b'; c.strokeStyle = '#1b1430'; c.lineWidth = 1.4; c.beginPath(); c.arc(mx(0), my(0), 4.2, 0, 7); c.fill(); c.stroke();
+    for (const z of Z.list) { if (z.st === 'dead' || z.predDead) continue; const t = TY[z.ty]; c.fillStyle = z.st === 'under' ? '#b07a4a' : t.fly ? '#7fd3ff' : t.k === 'big' ? '#4fbf3a' : '#7ee05a'; c.beginPath(); c.arc(mx(z.x), my(z.z), t.k === 'big' ? 4.4 : t.k === 'fat' ? 2.8 : 2, 0, 7); c.fill(); if (t.k === 'big') c.stroke(); }
+    if (Z.evPh === 1 && Math.sin(now * 12) > 0) (Z.evHoles || []).forEach((h) => { const a = holeAng(h); c.fillStyle = '#ff4a5a'; c.beginPath(); c.arc(mx(Math.cos(a) * 92), my(Math.sin(a) * 92), 5, 0, 7); c.fill(); });
+  };
+  // 電腦隊友要打的殭屍、沒事時站哪裡守
+  Z.enemies = () => Z.list.filter((z) => (z.st === 'walk' || z.st === 'eat' || z.st === 'fly') && !z.predDead && z.tg).map((z) => z.tg);
+  Z.guardPt = (a) => { const slot = (a.slot | 0) % 4, busy = [0, 0, 0, 0]; Z.list.forEach((z) => { if (z.st === 'walk' || z.st === 'eat') busy[z.br]++; });
+    let b = slot; const top = busy.indexOf(Math.max(...busy)); if (busy[top] > busy[slot] + 3) b = top; const ga = gateAng(b) + (Math.random() - 0.5) * 0.5, r = 12 + Math.random() * 6; return { x: Math.cos(ga) * r, z: Math.sin(ga) * r }; };
+  Z.pushOut = (a) => { // 貓不能走進防護罩
+    if (!Z.on || !a || !a.pos || endFx && !endFx.won) return; const d = Math.hypot(a.pos.x, a.pos.z), R = DOME_R + 1.4; if (d >= R || a.pos.y > 5.6 + DOME_Y + DOME_R) return;
+    const nx = d > 1e-3 ? a.pos.x / d : 1, nz = d > 1e-3 ? a.pos.z / d : 0; a.pos.x = nx * R; a.pos.z = nz * R; const vn = a.vel.x * nx + a.vel.z * nz; if (vn < 0) { a.vel.x -= vn * nx; a.vel.z -= vn * nz; }
+  };
+
+  // ---------- 文字（四種語言）----------
+  SC.i18n.add([
+    ['殭屍保衛戰', 'Zombie Defense', 'ゾンビ防衛戦', '좀비 방어전'],
+    ['殭屍潮來了！', 'Zombie wave incoming!', 'ゾンビの大群が来た！', '좀비 떼가 온다!'],
+    ['氣球殭屍從天上來！', 'Balloon zombies from the sky!', '風船ゾンビが空から来る！', '풍선 좀비가 하늘에서 온다!'],
+    ['大胃王來了！', 'Here comes the Big Eater!', '大食いキングが来た！', '대식가 왕이 온다!'],
+    ['殭屍從地底下鑽出來！', 'Zombies digging up from below!', 'ゾンビが地面から出てくる！', '좀비가 땅속에서 나온다!'],
+    ['最後大潮！撐住！', 'Final wave! Hold on!', '最後の大群！がんばれ！', '마지막 대공세! 버텨!'],
+    ['打倒大胃王了！', 'You beat the Big Eater!', '大食いキングをたおした！', '대식가 왕을 쓰러뜨렸다!'],
+    ['防護罩', 'Shield', 'バリア', '보호막'],
+    ['殭屍鼠', 'Zombie Mouse', 'ゾンビネズミ', '좀비 쥐'],
+    ['被殭屍鼠抓到了', 'Caught by a zombie mouse', 'ゾンビネズミにつかまった', '좀비 쥐에게 잡혔다'],
+    ['被殭屍鼠抓到了！', 'Caught by a zombie mouse!', 'ゾンビネズミにつかまった！', '좀비 쥐에게 잡혔다!'],
+    ['守住了！', 'You held the fort!', '守りきった！', '지켜냈다!'],
+    ['小鴨被吃掉了…', 'The duckling got eaten…', 'アヒルが食べられちゃった…', '오리가 먹혀 버렸어…'],
+    ['守住博士小鴨！', 'Protect Dr. Duckling!', 'アヒル博士を守れ！', '오리 박사를 지켜라!'],
+    ['殭屍鼠要來咬小鴨的防護罩！打爆牠們，撐過五分鐘就贏', 'Zombie mice want to chew the duckling\'s shield! Pop them and survive 5 minutes to win', 'ゾンビネズミがバリアをかじりに来る！やっつけて5分守れば勝ち', '좀비 쥐가 보호막을 갉으러 와요! 터뜨리면서 5분 버티면 승리'],
+    ['把地面塗成你的顏色，殭屍鼠走上去會變慢！', 'Paint the ground: zombie mice slow down on your ink!', '地面をぬると、ゾンビネズミがおそくなる！', '땅을 칠하면 좀비 쥐가 느려져요!'],
+    ['撐了', 'Survived', 'がんばった時間', '버틴 시간'],
+    ['防護罩剩下', 'Shield left', 'のこったバリア', '남은 보호막'],
+    ['打爆的殭屍鼠', 'Zombies popped', 'やっつけたゾンビ', '터뜨린 좀비'],
+    ['我們這隊', 'Our team', 'ぼくたちのチーム', '우리 팀'],
+    ['電腦隊友', 'CPU teammates', 'CPUのなかま', '컴퓨터 동료'],
+    ['打爆', 'Popped', 'やっつけた', '터뜨림'],
+    ['被抓到', 'Caught', 'つかまった', '잡힘'],
+    ['一個人也能開打，空位由電腦隊友補上', 'You can start alone; CPU teammates fill empty spots', 'ひとりでも始められるよ。あいた席はCPUのなかまが入る', '혼자서도 시작할 수 있어요. 빈자리는 컴퓨터 동료가 채워요'],
+    ['四個人一起守住博士小鴨。五分鐘內殭屍鼠會從四面八方來，還有殭屍潮、大胃王和特別事件', 'Four cats protect Dr. Duckling together. For five minutes zombie mice come from every side, plus zombie waves, the Big Eater and surprise events', '4ひきでアヒル博士を守ろう。5分間、ゾンビネズミがあちこちから来るよ。大群や大食いキング、びっくりイベントも', '네 마리가 함께 오리 박사를 지켜요. 5분 동안 좀비 쥐가 사방에서 오고, 좀비 떼와 대식가 왕, 깜짝 이벤트도 있어요'],
+    ['小鴨堡壘', 'Duck Fort', 'アヒルのとりで', '오리 요새'],
+    ['護城河', 'the moat', 'おほり', '해자'],
+    ['掉進護城河', 'Fell in the moat', 'おほりに落ちた', '해자에 빠졌다'],
+  ]);
+  SC.i18n.pat(/^電腦隊友 ×(\d+)$/, ['CPU teammates ×$1', 'CPUのなかま ×$1', '컴퓨터 동료 ×$1']);
+})();
+
 // 對戰核心：角色移動、五段跳、墨貓潛行、三種武器＋墨水彈、傷害與重生、AI、鏡頭、回合流程。
 (() => {
   const C = SC.CFG, W = SC.world, INK = SC.ink, V3 = THREE.Vector3;
@@ -9260,7 +9858,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const SCOPE_ZOOM = 4; // 狙擊鏡最大倍率（Yen 2026-11-14：放大距離要夠）
   const V0 = Math.sqrt(2 * C.GRAVITY * C.GROUND_JUMP_HEIGHT), V1 = Math.sqrt(2 * C.GRAVITY * C.AIR_JUMP_HEIGHT);
   const t1 = new V3(), t2 = new V3(), t3 = new V3(), viewDir = new V3(), PMAX = 1.5;
-  const WEAPONS = ['W01', 'W02', 'W03', 'W04', 'W05'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special', 'W04', 'W05'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
+  const WEAPONS = ['W01', 'W02', 'W03', 'W04', 'W05'], CAUSES = ['W01', 'W02', 'W03', 'bomb', 'fall', 'special', 'W04', 'W05', 'zombie'], CAN_REACH = 5.1; // 罐頭半寬＋一點縫
   let slowT = 0, slowK = 0.35, countdownT = 0, endT = 0, lastCount = 0, finalOn = false, swingSeq = 0, vic = null, judged = false, splatSfxAt = 0, resultsShown = false, nextSprayAt = 0, spraySerial = 0;
   G.cam = cam; G.colors = colors; G.dbg = { proj: projectiles, bombs }; // 測試用
 
@@ -9280,7 +9878,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   G.watched = watched;
   G.specNext = (d = 1) => { if (!G.spec) return; const n = G.actors.length; for (let k = 1; k <= n; k++) { const i = (((G.watchI || 0) + d * k) % n + n) % n; if (!G.actors[i].gone) { G.watchI = i; break; } } cam.fp = null; SC.ui.onWatch && SC.ui.onWatch(); };
   const netOn = () => G.mode === 'net';
-  const aiD = () => SC.DIFFICULTY[G.demo ? 'hard' : G.opts.difficulty] || SC.DIFFICULTY.normal; // 展示畫面用最強的電腦，看起來比較熱鬧
+  let ZB_AI = null; const aiD = () => G.rule === 'zombie' ? ZB_AI || (ZB_AI = { ...SC.DIFFICULTY.hard, engage: 46, fireDuty: 0.55, react: 0.9, tough: 1 }) : SC.DIFFICULTY[G.demo ? 'hard' : G.opts.difficulty] || SC.DIFFICULTY.normal; G.aiD = aiD; // 殭屍保衛戰：電腦隊友固定用「認真」的身手，殭屍強度另外照房主選的 // 展示畫面用最強的電腦，看起來比較熱鬧
   G.player = player;
   let BS = SC.boss; // 目前這關的魔王（1 喵抓抓大王、2 胖嘟嘟魔王、3 氣球小豬船長、4 鑽地兔工頭、5 狐狸大王機甲；6～15 見 07k～07t）
   SC.bossList = () => [SC.boss, SC.boss2, SC.boss3, SC.boss4, SC.boss5, SC.boss6, SC.boss7, SC.boss8, SC.boss9, SC.boss10, SC.boss11, SC.boss12, SC.boss13, SC.boss14, SC.boss15]; // 三個世界，一個世界五關
@@ -9309,7 +9907,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function spawn(a) {
     const boss = G.mode === 'boss', s = boss ? BS.spawn : spawnPt(a.team, a.slot | 0);
-    a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
+    a.pos.set(s.x, H(s.x, s.z), s.z); a.vel.set(0, 0, 0); a.visY = a.pos.y; a.yaw = boss ? 0 : G.rule === 'zombie' ? Math.atan2(s.x, s.z) : Math.PI * 1.5 - W.ang[a.team]; a.pitch = 0; a.climb = a.crest = null; a.launchT = 0;
     a.cat.group.scale.setScalar(1); SC.swimTrail.cut(a);
     a.hp = 100; a.ink = 100; a.alive = true; a.spT = null; if (a.spRing) a.spRing.visible = false; bladeAimHide(a); a.form = 'biped'; a.submerged = false; a.onGround = true; a.jumps = 0; a.charge = -1; a.rolling = false; a.dash = null; a.dashUsed = false;
     a.invisUntil = a.xrayUntil = a.sprayUntil = a.wideUntil = 0; a.kx = a.kz = 0; a.puff = a.hitStop = 0; a.hitBy = null; if (a.cat.face) a.cat.face(null); a.spKind = null; a.blade = null; a.predKo = 0; a.pred = null; a.inWater = false; a.poolCd = 0;
@@ -9352,6 +9950,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const mine = !G.demo && !net && SC.inkPair(G.opts.ink); if (mine) G.palette = mine; // 主選單挑的顏色；連線時改用房主挑的顏色，大家看到的一樣（第 69 版，Yen）
     const inks = mine ? SC.teamInks(mine, 6) : G.palette.list || SC.teamInks(G.palette, 6);
     colors.forEach((c, i) => c.setHex(inks[i % inks.length].hex));
+    const zb = !!(net && net.rule === 'zombie'); if (zb) { const hsl = {}; colors[0].getHSL(hsl); colors[1].setHex(hsl.h > 0.17 && hsl.h < 0.47 && hsl.s > 0.25 ? 0xb27cff : 0x8fe04a); } // 殭屍保衛戰：殭屍鼠的黏液固定是萊姆綠（我方是綠色系時改紫色）
     INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
     W.setTeamColors(...colors.slice(0, G.teams)); INK.reset(); SC.wallInk.reset(W.noInk);
     G.actors.forEach((a) => { scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); if (a.subArr) scene.remove(a.subArr); if (a.bladeAim) scene.remove(a.bladeAim, a.bladeAim.userData.tip); if (a.spRing) scene.remove(a.spRing); if (a.xray) scene.remove(a.xray); }); SC.swimTrail.clear(); document.body.classList.remove('wlock'); // 第 85 版：上一場絕招的圈、透視剪影、灰武器鈕都清掉
@@ -9364,7 +9963,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       : duo ? [makeActor(0, 0, G.opts.kind, !G.demo), makeActor(1, 0, G.opts.kind, false), makeActor(2, 1, other, false), makeActor(3, 1, other, false)] // 同一種貓固定同一隊（Yen 11/14）
         : [makeActor(0, 0, G.opts.kind, true), makeActor(2, 1, other, false)];
     if (!net) G.actors.forEach((a, i) => { if (G.actors.slice(0, i).some((b) => b.kind === a.kind)) a.name += '2'; }); // 同隊兩隻一樣的貓，名字加個 2 分得出來
-    G.time = 0; endT = 0; G.failAt = null; finalOn = false; resultsShown = false; G.paused = G.menu = false; G.winner = null; G.rule = net ? net.rule : !G.demo && G.mode === 'versus' && G.opts.vrule === 'knockout' ? 'knockout' : 'turf'; G.koFinal = null; // 第 67 版（Yen）：電腦對戰也能選擊倒戰
+    G.time = 0; endT = 0; G.failAt = null; finalOn = false; resultsShown = false; G.paused = G.menu = false; G.winner = null; G.rule = net ? net.rule : !G.demo && G.mode === 'versus' && G.opts.vrule === 'knockout' ? 'knockout' : 'turf'; G.koFinal = null; G.zbRes = null; // 第 67 版（Yen）：電腦對戰也能選擊倒戰
     G.actors.forEach((a, i) => {
       if (!net) a.slot = i % 2; a.cat.setTeamColor(colors[a.team]); a.weapon = a.isPlayer ? loadout()[0] : 'W01'; a.cat.setWeapon(a.weapon); spawn(a); a.protectUntil = 0;
       const css = '#' + colors[a.team].getHexString();
@@ -9372,6 +9971,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     });
     if (G.mode === 'sandbox') makeTargets();
     G.hit = G.actors.concat(G.targets, boss ? BS.targets || (BS.target ? [BS.target] : []) : []);
+    if (zb) { G.hit = G.hit.concat(SC.zb.targets); SC.zb.start({ scene, colors, dif: G.opts.difficulty, burst: SC.fx.burst, ring: SC.fx.ring, near: (x, y, z) => near(t2.set(x, y, z)), shake: (k) => { cam.shake = Math.min(1, cam.shake + k); },
+      bite: (a, dmg, z, stomp) => { if (!damage(a, dmg, null, 'zombie') || stomp || !a.alive) return; const dx = a.pos.x - z.x, dz = a.pos.z - z.z, d = Math.hypot(dx, dz) || 1; a.kx = (a.kx || 0) + (dx / d) * 7; a.kz = (a.kz || 0) + (dz / d) * 7; if (a.isPlayer) A.sfx.chomp && A.sfx.chomp(1); }, // 被咬一口：往後彈開一點
+      sendHit: (from, id, amt, cause) => nev(from, 'Z', id, amt, CAUSES.indexOf(cause)) }); }
+    else SC.zb.stop();
     camera.up.set(0, 1, 0);
     if (G.demo) { G.state = 'play'; A.music('toy'); }
     else if (solo) { G.state = 'play'; lastCount = 0; A.music(boss ? 'boss' + SC.clamp(Math.ceil((+G.opts.stage || 1) / 5), 1, 3) : 'toy'); A.musicLevel(0); }
@@ -9463,6 +10066,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   function hurt(t, amount, from, cause) {
     if (t.bossHurt) return G.state === 'play' && t.bossHurt(amount, from, cause);
+    if (t.zHurt) return G.state === 'play' && t.zHurt(amount, from, cause); // 殭屍保衛戰的殭屍鼠（07z_zombie.js）
     if (t.isTarget) return hurtTarget(t, amount, from);
     if ((t.ai || t.cpu) && !G.demo) amount /= aiD().tough || 1; // 瘋狂／地獄：電腦比較耐打
     amount *= towerK(t, from);
@@ -10405,6 +11009,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     return best ? { x: best.pos.x, z: best.pos.z } : null;
   }
   function pickTarget(a) {
+    if (G.rule === 'zombie' && SC.zb.on) { a.ai.target = SC.zb.guardPt(a); a.ai.retargetAt = G.time + SC.rand(3, 6); return; } // 殭屍保衛戰：守在城門附近
     let best = null, bs = -9; const L = W.lim;
     for (let i = 0; i < 16; i++) {
       const x = SC.rand(-L.x + 6, L.x - 6), z = SC.rand(-L.z + 6, L.z - 6), h = H(x, z); if (h < -3 || h > 17 || W.gated(x, z) || W.gated(x + 3, z) || W.gated(x - 3, z)) continue; // 多層場地：高台上也會去塗（第 91 版：城牆電腦上不去，不去那邊）
@@ -10423,6 +11028,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (ai.senseT <= 0) {
       ai.senseT = 0.16; let best = null, bd = D.engage * (KO ? 1.5 : 1) + 12;
       for (const e of G.actors) { if (e.team === a.team || !e.alive || e.submerged) continue; const d = e.pos.distanceTo(a.pos); if (e.invisUntil > now && d > 12) continue; if (d < bd && visible(a, e)) { bd = d; best = e; } }
+      if (G.rule === 'zombie' && SC.zb.on) { for (const e of SC.zb.enemies()) { const d = e.pos.distanceTo(a.pos) - (e.prio || 0); if (d < bd && visible(a, e)) { bd = d; best = e; } } } // 殭屍保衛戰：打殭屍鼠，靠近小鴨的優先
       if (best !== ai.enemy) { ai.enemy = best; ai.seeAt = now; }
     }
     if (ai.enemy && !ai.enemy.alive) ai.enemy = null;
@@ -10433,7 +11039,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (e) {
       const dx = e.pos.x - a.pos.x, dz = e.pos.z - a.pos.z, d = Math.hypot(dx, dz) || 1, ux = dx / d, uz = dz / d;
       if (now > ai.errAt) { ai.errAt = now + 0.3; ai.err.set((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 0.6, (Math.random() - 0.5) * 2).multiplyScalar(D.aimErr * d); }
-      const lead = (d / C.W01.speed) * 0.7; a.aim.set(e.pos.x + e.vel.x * lead + ai.err.x, e.pos.y + (e.form === 'cat' ? 0.6 : 2.6) + ai.err.y, e.pos.z + e.vel.z * lead + ai.err.z);
+      const lead = (d / C.W01.speed) * 0.7; a.aim.set(e.pos.x + e.vel.x * lead + ai.err.x, e.pos.y + (e.isTarget ? e.cy : e.form === 'cat' ? 0.6 : 2.6) + ai.err.y, e.pos.z + e.vel.z * lead + ai.err.z);
       if (now > ai.strafeAt) { ai.strafeAt = now + SC.rand(0.7, 1.6); ai.strafe = Math.random() < 0.5 ? -1 : 1; }
       const radial = a.hp < (KO ? 25 : 38) || ai.refill ? -1 : d > (KO ? 22 : 36) ? (KO ? 1 : 0.8) : d < (KO ? 11 : 17) ? -0.6 : 0; // 擊倒戰：靠近一點打、比較不退
       mx = ux * radial - uz * ai.strafe * 0.8; mz = uz * radial + ux * ai.strafe * 0.8;
@@ -10500,8 +11106,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (best) best.mvp = true;
     return rows.sort((x, y) => (G.teams >= 3 ? 0 : x.team - y.team) || y.pts - x.pts);
   };
-  G.netScore = () => { const s = INK.score(); return { ...s, v: s.v.slice(0, G.teams) }; };
-  G.netResult = () => { const s = G.netScore(); return { a: s.a, b: s.b, c: s.c, v: s.v, ko: koScore() }; };
+  G.netScore = () => { if (G.rule === 'zombie') return { a: SC.zb.shield / SC.zb.SHIELD, b: 0, c: 0, v: [SC.zb.shield / SC.zb.SHIELD, 0] }; const s = INK.score(); return { ...s, v: s.v.slice(0, G.teams) }; };
+  G.netResult = () => { if (G.rule === 'zombie') { const r = SC.zb.makeResult(); return { v: [r.won ? 1 : 0, r.frac], ko: [r.pops, Math.round(r.secs)] }; } const s = G.netScore(); return { a: s.a, b: s.b, c: s.c, v: s.v, ko: koScore() }; };
   // 自己的狀態：位置、速度、面向、旗標、武器、蓄力、體力、墨水、被擊倒次數
   G.netSnap = (p = player()) => {
     return [p.pos.x, p.pos.y, p.pos.z, p.vel.x, p.onGround ? 0 : p.vel.y, p.vel.z, p.yaw, p.pitch,
@@ -10554,6 +11160,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (type === 'X') spImpact(a, d[0], d[1], d[2], false);
     else if (type === 'Y') { const k = SP_KINDS[d[0] | 0]; SC.fx.burst(a.pos.x, a.pos.y + 2, a.pos.z, colors[a.team], 30, 24, 0.6); if (near(a) > 0.05) A.sfx.spUp(near(a) * 0.7); if (k === 'blade') { a.cat.slash = 1; a.cat.slashKind = 3; } }
     else if (type === 'q') { if (projectiles.length < 460) sprayRing(a, d[0], d[1], d[2], d[3], d[4], 0, d[5] || 10); a.sprayAng = d[3]; a.sprayUntil = G.time + 0.3; }
+    else if (type === 'Z') SC.zb.netHit(a, d[0], d[1]); // 殭屍保衛戰：別台打到殭屍鼠，裁判這台扣血
     else if (type === 'h') { const t = G.netActor(d[0]); if (t && !t.remote && t.alive && a.team !== t.team) damage(t, SC.clamp(d[1], 0, 100), a, CAUSES[d[2]] || 'W01'); } // 打到自己或自己這台算的電腦
     else if (type === 'k') { if (a.alive) ko(a, d[0] >= 0 ? G.netActor(d[0]) || null : null, CAUSES[d[1]] || 'fall', d.slice(2).map((i) => G.netActor(i)).filter((e) => e && e !== a)); }
   };
@@ -10562,7 +11169,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const a = G.netActor(idx); if (!a || a.gone) return;
     a.gone = true; a.alive = false; a.charge = -1; a.cat.group.visible = false; if (a.sight) a.sight.visible = false;
     if (G.state === 'ended') return;
-    if (G.actors.some((e) => e.team !== 0 && !e.gone)) SC.ui.tip(`${a.name}離線了`, 3);
+    if (G.rule === 'zombie' || G.actors.some((e) => e.team !== 0 && !e.gone)) SC.ui.tip(`${a.name}離線了`, 3); // 殭屍保衛戰：大家同一隊，有人離線也繼續守
     else { SC.ui.tip('對手都離線了，這場提早結束', 4); finish(); }
   };
   G.netFinish = (res) => { if (netOn() && (G.state === 'play' || G.state === 'countdown')) finish(res); };
@@ -10720,6 +11327,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       cam.shake = SC.damp(cam.shake, 0, 6, dt); if (cam.shake > 0.01) { shakeOff(0.9); }
       camera.updateProjectionMatrix(); return;
     }
+    if (G.state === 'ended' && G.rule === 'zombie' && SC.zb.endCam(camera, endT)) { // 殭屍保衛戰：鏡頭飛到堡壘旁邊繞圈，看小鴨的結局
+      const k = SC.clamp(endT / 1.1, 0, 1), e = k * k * (3 - 2 * k), q0 = cam.q0 || (cam.q0 = camera.quaternion.clone()), q1 = camera.quaternion.clone(); t1.copy(camera.position);
+      if (e < 1) { camera.position.lerpVectors(cam.pos, t1, e); camera.quaternion.copy(q0).slerp(q1, e); } camera.updateProjectionMatrix(); return;
+    }
     if (G.state === 'ended' && G.mode !== 'boss') { // 結算：鏡頭升到正上方看整張地圖
       const k = SC.clamp(endT / 1.6, 0, 1), e = k * k * (3 - 2 * k), tan = Math.tan((camera.fov * Math.PI) / 360), portrait = aspect < 1;
       const X = W.lim.x, Z = W.lim.z, hh = portrait ? Math.max((X + 14) / tan / 0.62, (Z + 10) / (tan * aspect)) : Math.max((Z + 8) / tan / 0.6, (X + 10) / (tan * aspect));
@@ -10844,7 +11455,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const s = h.size * Math.min(1, (1 - k) * 6) * (1 + Math.sin(h.life * 12) * 0.06); h.sp.scale.set(s, s, 1); h.sp.material.opacity = Math.min(1, k * 2.5); if (h.life <= 0) h.sp.visible = false; });
   }
 
+  function zbFinish(res) { // 殭屍保衛戰的結算。res.v＝[贏了 1／輸了 0, 防護罩剩幾成]，res.ko＝[打爆幾隻, 撐了幾秒]
+    const Z = SC.zb, r = res && res.v && res.ko ? { won: res.v[0] > 0.5, frac: SC.clamp(res.v[1], 0, 1), pops: Math.max(0, res.ko[0] | 0), secs: SC.clamp(res.ko[1], 0, Z.LEN) } : Z.makeResult();
+    if (!Z.end) Z.end = r.won ? 1 : 2; if (!r.won) Z.shield = Math.min(Z.shield, 0); G.zbRes = r;
+    G.final = { a: r.frac, b: 0, c: 0, v: [r.won ? 1 : 0, r.frac] }; G.winner = r.won ? 0 : 1; G.koFinal = [r.pops, Math.round(r.secs)]; G.mixFinal = null;
+    if (netOn()) SC.net.end({ v: G.final.v, ko: G.koFinal });
+    cam.q0 = camera.quaternion.clone(); cam.pos.copy(camera.position);
+    if (r.won) SC.ui.banner('守住了！', 2.2, true);
+  }
   function finish(res) { // res：連線對戰時房主公布的結果
+    if (G.rule === 'zombie') { G.state = 'ended'; endT = 0; I.active = false; I.release(); if (document.pointerLockElement) document.exitPointerLock(); if (G.menu) { G.menu = false; SC.ui.onPause(false); } zbFinish(res);
+      projectiles.length = 0; bombs.forEach((b) => (b.mesh.visible = false)); bombs.length = 0; G.actors.forEach((a) => { a.charge = -1; if (a.sight) a.sight.visible = false; a.cat.setTag('', '', false); a.xrayUntil = a.sprayUntil = a.wideUntil = a.invisUntil = 0; if (a.spRing) a.spRing.visible = false; if (a.xray) a.xray.visible = false; bladeAimHide(a); }); document.body.classList.remove('wlock');
+      A.music(null); vic = null; judged = false; return; }
     G.state = 'ended'; endT = 0; I.active = false; I.release(); if (document.pointerLockElement) document.exitPointerLock(); if (G.menu) { G.menu = false; SC.ui.onPause(false); }
     const s = res || INK.score(), fv = (s.v || [s.a, s.b, s.c || 0]).slice(0, G.teams); G.final = { a: fv[0], b: fv[1], c: G.teams >= 3 ? fv[2] || 0 : 0, v: fv };
     // 最高的那隊贏；前兩名差不到 0.05% 算平手（三方對戰也一樣）
@@ -10917,6 +11539,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (G.demo) { if (G.time > 150) { G.start({ demo: true }); return; } }
         else if (G.mode === 'sandbox') updateTargets(dt);
         else if (G.mode === 'boss') bossFrame(dt);
+        else if (G.rule === 'zombie') { const Z = SC.zb, zl = Z.LEN - G.time; // 殭屍保衛戰：撐到五分鐘或防護罩破掉就結束（由裁判那台宣布）
+          if (!finalOn && zl <= C.FINAL_SECONDS) { finalOn = true; A.music('final'); }
+          if (zl <= 10 && Math.ceil(zl) !== Math.ceil(zl + dt) && zl > 0) A.sfx.tick();
+          if (Z.end && (!netOn() || SC.net.referee)) finish(); else if (Z.end && Z.netEnd && G.time - Z.netEnd > 4) finish(); else if (zl < -6) finish(); }
         else {
           if (!finalOn && left <= C.FINAL_SECONDS) { finalOn = true; SC.ui.banner('最後 30 秒！', 1.6); A.music('final'); }
           if (left <= 10 && Math.ceil(left) !== Math.ceil(left + dt) && left > 0) A.sfx.tick();
@@ -10924,6 +11550,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         }
       } else if (G.state === 'ended') { if (G.mode === 'boss') { BS.update(dt); if (hug) hugUpdate(dt); } endT += dt;
         if (G.mode !== 'boss') {
+          if (!judged && endT > 1.9 && G.rule === 'zombie') { judged = true; if (G.winner !== 0) { SC.ui.banner('小鴨被吃掉了…', 2.4, true); A.sfx.lose(); } }
           if (!judged && endT > 1.7) { // 先宣布地圖塗布的勝負
             judged = true; const f = G.final, ko = G.koFinal, mx = G.rule === 'mix' && G.mixFinal, byKo = G.rule === 'knockout' || !!mx;
             const tri = G.teams >= 3, nums = mx ? mx.map((v) => v.toFixed(1)) : byKo ? ko.map(String) : f.v.map((v) => (v * 100).toFixed(1) + '%');
@@ -10933,13 +11560,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           // 第 94 版（Yen 11/21 14:18）：結束後鏡頭停在整張場地的俯視圖，不再演勝負小劇場；勝負改在結算的成績圖上，貓咪站在柱子上歡呼／垂頭喪氣
           if (vic) victory(dt);
         }
-        if (endT > (G.mode === 'boss' ? (G.bossResult && !G.bossResult.fail ? (hug ? 0.7 + HUG.LEN : 3.6) : 1.9) : vic ? VIC_AT + VIC_LEN : VIC_AT + 0.4) && !resultsShown) { resultsShown = true; SC.ui.onResults(); } }
+        if (endT > (G.mode === 'boss' ? (G.bossResult && !G.bossResult.fail ? (hug ? 0.7 + HUG.LEN : 3.6) : 1.9) : vic ? VIC_AT + VIC_LEN : G.rule === 'zombie' ? 5.4 : VIC_AT + 0.4) && !resultsShown) { resultsShown = true; SC.ui.onResults(); } }
       if (G.state !== 'ended') {
         I.update(dt); if (p) { if (G.cine) { p.ctl.mx = p.ctl.mz = 0; p.ctl.fire = p.ctl.cat = false; } else controlPlayer(p, dt); } else if (G.spec) spectate(dt);
         G.actors.forEach((a) => { if (a.ai && a.alive && G.state === 'play') think(a, dt); });
         G.actors.forEach((a) => updateActor(a, dt));
+        if (G.rule === 'zombie') G.actors.forEach((a) => { if (a.alive && !a.remote) SC.zb.pushOut(a); }); // 貓不能鑽進小鴨的防護罩
         updateProjectiles(dt); updateBombs(dt);
       }
+      if (G.rule === 'zombie' && SC.zb.on && !G.demo) SC.zb.tick(dt, camera);
       const now = performance.now() / 1000, rf = rpFrame();
       G.actors.forEach((a) => {
         if (rf) { if (a.subArr) a.subArr.visible = false; rpActor(a, rf, dt, now); return; }
@@ -11235,7 +11864,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
               <div class="net-row"><span>房號</span><b class="net-code" id="net-room"></b><button type="button" class="btn small" id="net-ready" hidden>準備</button><button type="button" class="btn small" id="net-leave">離開房間</button></div>
               <ul class="net-list" id="net-list"></ul>
               <div class="chat" id="chat"><ul class="chat-log" id="chat-log" aria-live="polite"></ul><div class="chat-stk" data-chat="stk"></div><div class="chat-row" data-chat="row"><input type="text" maxlength="40" placeholder="說點什麼…" autocomplete="off" enterkeyhint="send" aria-label="聊天"><button type="button" class="btn small">送出</button></div></div>
-              <div class="row" id="pick-vc"><button type="button" class="pick ros-pick" data-v="0" aria-label="真人對打"><span class="vs">${HEAD('a')}<i>VS</i>${HEAD('b')}</span><b>真人對打</b></button><button type="button" class="pick ros-pick" data-v="1" aria-label="一起打電腦"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i><span class="two"><svg class="head" viewBox="0 0 40 36" aria-hidden="true"><path d="M6 10l3-8 7 6h8l7-6 3 8v14q0 9-14 9T6 24z" fill="#9aa3b5" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><rect x="10" y="13" width="20" height="10" rx="4" fill="#1b1430"/><circle cx="15" cy="18" r="2.6" fill="#5df2ff"/><circle cx="25" cy="18" r="2.6" fill="#5df2ff"/><path d="M20 2v-3" stroke="#1b1430" stroke-width="2.4"/><circle cx="20" cy="-1" r="2" fill="#ff4a5a"/></svg><svg class="head" viewBox="0 0 40 36" aria-hidden="true"><path d="M6 10l3-8 7 6h8l7-6 3 8v14q0 9-14 9T6 24z" fill="#9aa3b5" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><rect x="10" y="13" width="20" height="10" rx="4" fill="#1b1430"/><circle cx="15" cy="18" r="2.6" fill="#5df2ff"/><circle cx="25" cy="18" r="2.6" fill="#5df2ff"/><path d="M20 2v-3" stroke="#1b1430" stroke-width="2.4"/><circle cx="20" cy="-1" r="2" fill="#ff4a5a"/></svg></span></span><b>一起打電腦</b></button></div>
+              <div class="row" id="pick-vc"><button type="button" class="pick ros-pick" data-v="0" aria-label="真人對打"><span class="vs">${HEAD('a')}<i>VS</i>${HEAD('b')}</span><b>真人對打</b></button><button type="button" class="pick ros-pick" data-v="1" aria-label="一起打電腦"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i><span class="two"><svg class="head" viewBox="0 0 40 36" aria-hidden="true"><path d="M6 10l3-8 7 6h8l7-6 3 8v14q0 9-14 9T6 24z" fill="#9aa3b5" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><rect x="10" y="13" width="20" height="10" rx="4" fill="#1b1430"/><circle cx="15" cy="18" r="2.6" fill="#5df2ff"/><circle cx="25" cy="18" r="2.6" fill="#5df2ff"/><path d="M20 2v-3" stroke="#1b1430" stroke-width="2.4"/><circle cx="20" cy="-1" r="2" fill="#ff4a5a"/></svg><svg class="head" viewBox="0 0 40 36" aria-hidden="true"><path d="M6 10l3-8 7 6h8l7-6 3 8v14q0 9-14 9T6 24z" fill="#9aa3b5" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><rect x="10" y="13" width="20" height="10" rx="4" fill="#1b1430"/><circle cx="15" cy="18" r="2.6" fill="#5df2ff"/><circle cx="25" cy="18" r="2.6" fill="#5df2ff"/><path d="M20 2v-3" stroke="#1b1430" stroke-width="2.4"/><circle cx="20" cy="-1" r="2" fill="#ff4a5a"/></svg></span></span><b>一起打電腦</b></button><button type="button" class="pick ros-pick zb-pick" data-v="2" aria-label="殭屍保衛戰"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i class="zb-shield-ic">🛡</i><span class="zb-mice">${(SC.zb ? SC.zb.icon('walk') : '').replace('<svg', '<svg class="head"')}</span></span><b>殭屍保衛戰</b></button></div>
               <div class="row dif-mini" id="pick-vdif" hidden>${['easy', 'normal', 'hard', 'crazy', 'hell'].map((d) => `<button type="button" class="pick dif-pick" data-v="${d}" aria-label="${SC.DIFFICULTY[d].name}">${MOOD[d]}<b>${SC.DIFFICULTY[d].name}</b></button>`).join('')}</div>
               <div class="row" id="pick-mix"><button type="button" class="pick ros-pick" data-v="rand" aria-label="隨機分隊"><span class="vs"><svg class="dice" viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="5" width="30" height="30" rx="8" fill="#fff" stroke="#1b1430" stroke-width="3" transform="rotate(-10 20 20)"/><circle cx="13" cy="14" r="3" fill="#ff6b8b"/><circle cx="20" cy="20" r="3" fill="#4ecbff"/><circle cx="27" cy="26" r="3" fill="#ffc93c"/></svg></span><b>隨機分隊</b></button><button type="button" class="pick ros-pick" data-v="pick" aria-label="指定組隊"><span class="vs">${HEAD('a')}<svg class="swap-ic" viewBox="0 0 40 30" aria-hidden="true"><path d="M6 10h26l-6-6M34 20H8l6 6" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>${HEAD('b')}</span><b>指定組隊</b></button></div>
               <div class="row" id="pick-teams" hidden><button type="button" class="pick ros-pick" data-v="3" aria-label="三方對戰"><span class="vs">${HEAD('a')}${HEAD('b')}${HEAD('c')}</span><b>三方對戰</b></button><button type="button" class="pick ros-pick" data-v="2" aria-label="2 對 1"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i>${HEAD('b')}</span><b>2 對 1</b></button></div>
@@ -11331,12 +11960,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         $('net-create').parentNode.hidden = rk; $('net-nick').parentNode.hidden = rk; q.classList.toggle('rk', rk); q.querySelector('b').textContent = lock ? '登入後開始' : rk ? '開始配對' : '塗地戰配對'; $('net-quick2').hidden = lock || rk; $('net-quick2').querySelector('b').textContent = '擊倒戰配對'; els['m-title'].querySelector('#net-opts h3').textContent = rk ? '積分賽' : '連線房間'; }
       $('net-msg').textContent = n.state === 'check' ? '正在檢查能不能連線…' : n.state === 'none' ? window.SC_PUBLIC ? '這台裝置現在不能連線。' : '這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。' : n.msg || (window.SC_PUBLIC && SC.relay.stats && n.code ? '中繼站：' + (SC.relay.stats.up.join('、') || '重新連線中') : '');
       ['net-create', 'net-join', 'net-code', 'net-quick', 'net-quick2'].forEach((id) => ($(id).disabled = n.state !== 'idle' || n.busy));
-      const me = n.list.find((r) => r.isMe), waiting = n.live && !n.played(n.live), ready = n.state === 'lobby' && me && n.isHost && n.list.length >= 2 && !n.live;
+      const me = n.list.find((r) => r.isMe), waiting = n.live && !n.played(n.live), ready = n.state === 'lobby' && me && n.isHost && n.list.length >= n.minStart() && !n.live;
       start.disabled = !ready; start.textContent = !inRoom ? (sel.rk ? '先按開始配對' : '先開房間或加入房間') : n.isHost || !me ? '開始對戰' : '等房主開始';
       if (!inRoom) return;
       $('net-ready').hidden = !n.ranked; $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
-      const tri = n.triOn(), vc = !!n.vc, rand = n.mix === 'rand' && !vc, L = n.lineup(false);
+      const tri = n.triOn(), vc = !!n.vc, zb = n.zbOn(), rand = n.mix === 'rand' && !vc, L = n.lineup(false);
       n.list.forEach((r, i) => {
         const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'), w = L.find((x) => x.peer === r.peer), t = w ? w.team : -1;
         f.className = 'net-face'; f.innerHTML = ui.face(w && !rand ? n.teamKinds(L, n.nTeams())[t] : r.kind); name.textContent = (r.nick || '玩家' + (i + 1)) + (r.isMe ? '（你）' : '');
@@ -11344,8 +11973,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (w && !rand && !vc && n.isHost) { const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'net-swap'; sw.dataset.peer = r.peer; sw.setAttribute('aria-label', '換隊'); sw.textContent = '⇄'; li.append(sw); } // 房主點這顆換隊
         ul.append(li);
       });
-      if (vc) { const k = Math.min(4, n.list.length), li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'); f.className = 'net-face'; f.innerHTML = MOOD[n.dif] || MOOD.normal; name.textContent = '電腦 ×' + k; tag.textContent = (SC.DIFFICULTY[n.dif] || SC.DIFFICULTY.normal).name; li.className = 't1 cpu'; li.append(f, name, tag); ul.append(li); } // 一起打電腦：電腦人數跟真人一樣
-      $('pick-vc').hidden = !!n.quick; $('pick-vc').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (vc ? '1' : '0')); b.disabled = !n.isHost; });
+      if (zb) { const k = Math.max(0, 4 - Math.min(4, n.list.length)); if (k) { const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'); f.className = 'net-face'; f.innerHTML = ui.face(n.teamKinds(L, 2)[0]); name.textContent = '電腦隊友 ×' + k; tag.textContent = '我們這隊'; li.className = 't0 cpu'; li.append(f, name, tag); ul.append(li); } } // 殭屍保衛戰：空位由電腦隊友補到 4 隻
+      else if (vc) { const k = Math.min(4, n.list.length), li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'); f.className = 'net-face'; f.innerHTML = MOOD[n.dif] || MOOD.normal; name.textContent = '電腦 ×' + k; tag.textContent = (SC.DIFFICULTY[n.dif] || SC.DIFFICULTY.normal).name; li.className = 't1 cpu'; li.append(f, name, tag); ul.append(li); } // 一起打電腦：電腦人數跟真人一樣
+      $('pick-vc').hidden = !!n.quick; $('pick-vc').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (zb ? '2' : vc ? '1' : '0')); b.disabled = !n.isHost; });
       $('pick-vdif').hidden = !vc; $('pick-vdif').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.dif); b.disabled = !n.isHost; });
       if (vc) $('pick-mix').hidden = true;
       $('pick-mix').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.mix); b.disabled = !n.isHost; });
@@ -11354,8 +11984,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         b2.querySelector('b').textContent = k === 3 ? '2 對 1' : '兩隊對戰'; } // 3 人以上：每人一隊或兩隊
       $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.triOn() ? '3' : '2')); b.disabled = !n.isHost; });
       $('pick-rule').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.rule); b.disabled = !n.isHost; });
-      mapSync();
-      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.list.length === 5 ? '5 個人要等第 6 個人加入，才能 3 對 3 開打' : n.qs != null ? `${n.qs} 秒後開打` : `${RK_FMT[n.list.length] || ''}：大家都按「即刻開戰」就開打`) : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
+      mapSync(); if (zb) { $('pick-rule').hidden = true; $('map-opt').hidden = true; } // 殭屍保衛戰：固定小鴨堡壘、不分規則
+      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.list.length === 5 ? '5 個人要等第 6 個人加入，才能 3 對 3 開打' : n.qs != null ? `${n.qs} 秒後開打` : `${RK_FMT[n.list.length] || ''}：大家都按「即刻開戰」就開打`) : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : zb && n.isHost && n.list.length < 4 ? '一個人也能開打，空位由電腦隊友補上' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
@@ -11441,7 +12071,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     $('pick-mix').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setMix(b.dataset.v); netSync(); } });
     $('net-list').addEventListener('click', (e) => { const b = e.target.closest('.net-swap'); if (b && SC.net.isHost) { click(); SC.net.swap(b.dataset.peer); netSync(); } });
     $('pick-teams').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setTri(b.dataset.v === '3'); netSync(); } });
-    $('pick-vc').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setVc(b.dataset.v === '1'); SC.net.setDif(sel.difficulty); netSync(); } });
+    $('pick-vc').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setVc(b.dataset.v !== '0', b.dataset.v === '2'); SC.net.setDif(sel.difficulty); netSync(); } });
     $('pick-vdif').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); sel.difficulty = b.dataset.v; SC.net.setDif(b.dataset.v); save(); netSync(); } });
     $('pick-rule').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (b && SC.net.isHost) { click(); SC.net.setRule(b.dataset.v); netSync(); } });
     $('m-title').addEventListener('pointerdown', (e) => { if (e.target === $('m-title') && SC.game.menuSplat) { SC.audio.init(); SC.game.menuSplat(e.clientX, e.clientY); } }); // 第 89 版：點主選單旁邊的空地噴墨水
@@ -11507,6 +12137,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     els['my-face'].innerHTML = ui.face((g.player() || g.opts).kind); ui.onWeapon((g.player() || {}).weapon || lo[0]); if (g.spec) ui.onWatch();
     els.hud.classList.toggle('solo', g.mode === 'sandbox'); els.hud.classList.toggle('boss', g.mode === 'boss'); last.timer = null;
     els.lives.classList.remove('intro'); if (g.mode === 'boss') { void els.lives.offsetWidth; els.lives.classList.add('intro'); els.timer.classList.remove('final'); return; }
+    if (g.rule === 'zombie') { const og = g.opts; setTimeout(() => { if (G().opts !== og || G().rule !== 'zombie' || G().state !== 'play') return; ui.banner('守住博士小鴨！', 2.2, true); ui.tip('殭屍鼠要來咬小鴨的防護罩！打爆牠們，撐過五分鐘就贏', 6); }, 3400); setTimeout(() => { if (G().opts === og && G().rule === 'zombie' && G().state === 'play') ui.tip('把地面塗成你的顏色，殭屍鼠走上去會變慢！', 5); }, 14000); return; } // 倒數完才出（不跟 3、2、1 疊在一起）
     if (g.mode === 'net' || g.rule === 'knockout') ui.tip(g.rule === 'mix' ? '複合賽：塗地 1% 算 1 分，擊倒一次算 3 分，總分高的隊伍獲勝' : tri ? (g.rule === 'knockout' ? (g.teams > 3 ? g.teams + ' 方' : '三方') + '擊倒戰：每個人自己一隊，擊倒最多的人獲勝' : (g.teams > 3 ? g.teams + ' 方' : '三方') + '塗地戰：每個人自己一隊，塗得最多的人獲勝') : g.rule === 'knockout' ? '擊倒戰：時間到時，擊倒對手比較多的隊伍獲勝' : '塗地戰：時間到時，塗得比較多的隊伍獲勝', 6);
     if (g.mode === 'net' || g.rule === 'knockout') return;
     if (g.mode === 'sandbox' && g.opts.tut) { els.timer.textContent = '🎈'; els.timer.classList.remove('final'); return; }
@@ -11535,7 +12166,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.tip = (text, dur) => { els.tip.textContent = text; els.tip.classList.add('on'); tipT = dur; };
   let noInkTimer = 0; ui.lowInk = () => { document.body.classList.add('noink'); clearTimeout(noInkTimer); noInkTimer = setTimeout(() => document.body.classList.remove('noink'), 2200); const t = performance.now() / 1000; if (t - lowInkAt < 4) return; lowInkAt = t; ui.tip(SC.input.isTouch ? '墨水不夠了！按住「墨貓」潛進自己的墨水補充' : '墨水不夠了！按住 Shift 潛進自己的墨水補充', 3); }; // 第 87 版：沒墨時「墨貓」鈕跳動、旁邊出現手指（不用讀字）
   const fallTxt = () => (G().mode === 'boss' ? '掉下去了' : '掉進' + (SC.world.riverName || '河')); // 每張場地的河不一樣（牛奶河、巧克力河、大海…）
-  const CAUSE = { W01: '漆彈槍', W02: '滾刷', W03: '狙擊槍', W04: '散彈槍', W05: '墨刀', bomb: '墨水彈', fall: '掉進河裡', boss: '被喵抓抓大王擊倒', special: '絕招' };
+  const CAUSE = { W01: '漆彈槍', W02: '滾刷', W03: '狙擊槍', W04: '散彈槍', W05: '墨刀', bomb: '墨水彈', fall: '掉進河裡', boss: '被喵抓抓大王擊倒', special: '絕招', zombie: '被殭屍鼠抓到了' };
   ui.feed = (from, t, cause) => {
     const el = document.createElement('div'); el.className = 'feed-item';
     const tag = (a) => `<span class="${['ta', 'tb', 'tc'][a.team] || 'tb'}">${a.isPlayer ? '你' : a.name}</span>`;
@@ -11545,7 +12176,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.applyLoadout = () => { const g = G();
     const lo = g.loadout(); els.weapons.querySelectorAll('.w-chip[data-w]').forEach((c) => (c.hidden = !lo.includes(c.dataset.w))); const firstBomb = els.weapons.querySelector('.w-chip.bomb'); lo.forEach((w, i) => { const c = els.weapons.querySelector('.w-chip[data-w="' + w + '"]'); if (!c) return; c.querySelector('kbd').textContent = i + 1; els.weapons.insertBefore(c, firstBomb); }); SC.input.setLoadout(lo); // 第 64 版：畫面上的按鍵也只寫 1、2
   };
-  ui.onKo = (from, cause) => { els.tip.classList.remove('on'); tipT = 0; els['ko-got'].classList.remove('on'); els['ko-t'].textContent = from ? `被${from.name}的${CAUSE[cause]}擊倒了！` : cause === 'boss' ? `被${G().bossMod().name}擊倒了！` : fallTxt() + '！'; els.ko.classList.add('on');
+  ui.onKo = (from, cause) => { els.tip.classList.remove('on'); tipT = 0; els['ko-got'].classList.remove('on'); els['ko-t'].textContent = from ? `被${from.name}的${CAUSE[cause]}擊倒了！` : cause === 'boss' ? `被${G().bossMod().name}擊倒了！` : cause === 'zombie' ? '被殭屍鼠抓到了！' : fallTxt() + '！'; els.ko.classList.add('on');
     const kl = els['ko-lives'], g = G(), boss = g.mode === 'boss'; kl.hidden = !boss;
     if (boss) { const left = Math.max(0, C.BOSS_LIVES - g.player().deaths); [...kl.children].forEach((h, i) => { h.className = i < left ? '' : i === left ? 'break' : 'gone'; }); }
   };
@@ -11683,8 +12314,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function resPodium(g) {
     const box = $('res-pod'); if (g.mode === 'boss' || !g.final) { box.hidden = true; return; }
-    const n = g.teams || 2, f = g.final, ko = g.koFinal, mx = g.rule === 'mix' && g.mixFinal, byKo = g.rule === 'knockout' && ko, v = f.v || [f.a, f.b, f.c || 0];
-    const val = (t) => (mx ? mx[t] : byKo ? ko[t] : v[t]) || 0, lab = (t) => (mx ? (mx[t] || 0).toFixed(1) : byKo ? String(ko[t] || 0) : ((v[t] || 0) * 100).toFixed(1) + '%');
+    const zb = g.rule === 'zombie', n = zb ? 1 : g.teams || 2, f = g.final, ko = g.koFinal, mx = g.rule === 'mix' && g.mixFinal, byKo = g.rule === 'knockout' && ko, v = f.v || [f.a, f.b, f.c || 0];
+    const val = (t) => (zb ? 1 : mx ? mx[t] : byKo ? ko[t] : v[t]) || 0, lab = (t) => (zb ? '🛡 ' + Math.round((v[1] || 0) * 100) + '%' : mx ? (mx[t] || 0).toFixed(1) : byKo ? String(ko[t] || 0) : ((v[t] || 0) * 100).toFixed(1) + '%');
     let top = 0; for (let t = 0; t < n; t++) top = Math.max(top, val(t));
     const rows = g.board(), many = rows.length > 6, w = g.winner;
     box.classList.toggle('many', many); box.innerHTML = Array.from({ length: n }, (_, t) => {
@@ -11695,7 +12326,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     box.hidden = false;
   }
   ui.onResults = () => {
-    const g = G(), w = g.winner, p = g.player(); resPodium(g); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true;
+    const g = G(), w = g.winner, p = g.player(); resPodium(g); els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['m-results'].classList.toggle('zb', g.rule === 'zombie'); praiseV = null; els.praise.hidden = true;
     { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } // 第 91 版：每打完一場得到一張貼紙 els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
@@ -11708,6 +12339,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       els['res-stats'].innerHTML = `<div><span>通關時間</span><b>${fmtT(r.seconds)}</b></div><div><span>被擊倒</span><b>${r.splats} 次</b></div>`;
       rank.show(String(+g.opts.stage || 1), r.seconds, (g.player() || g.opts).kind);
       els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0; setTimeout(() => SC.audio.sfx.win(), 300); SC.audio.music('toy'); return;
+    }
+    if (g.rule === 'zombie') { // 殭屍保衛戰：守住了／小鴨被吃掉了，撐了多久、防護罩剩多少、打爆幾隻，每隻貓打爆幾隻
+      const r = g.zbRes || { won: false, frac: 0, pops: 0, secs: 0 }, sec = Math.round(r.secs), esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';');
+      $('btn-again').textContent = '回房間'; $('btn-menu').textContent = '離開房間';
+      els.verdict.textContent = r.won ? '守住了！' : '小鴨被吃掉了…'; els.verdict.dataset.r = r.won ? 'win' : 'lose';
+      const rows = g.actors.filter((a) => a.team === 0).map((a) => ({ a, me: a === p, name: a.isPlayer ? '你' : a.name, k: a.kos, d: a.deaths, gone: a.gone })).sort((x, y) => y.k - x.k), top = rows.length && rows[0].k > 0 ? rows[0] : null;
+      els['res-stats'].classList.add('has-board');
+      els['res-stats'].innerHTML = `<div class="zb-res"><div><span>撐了</span><b>${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}</b></div><div><span>防護罩剩下</span><b>${Math.round(r.frac * 100)}%</b></div><div><span>打爆的殭屍鼠</span><b>${r.pops}</b></div></div>`
+        + `<table class="board"><thead><tr><th></th><th>打爆</th><th>被抓到</th></tr></thead><tbody>` + rows.map((q) => `<tr class="${q.me ? 'me' : ''}${q.gone ? ' gone' : ''}${q === top ? ' mvp' : ''}"><td class="nm"><div><i class="dot" style="background:#${g.colors[0].getHexString()}"></i><span>${esc(q.name)}</span>${q === top ? '<em>MVP</em>' : ''}</div></td><td>${q.k}</td><td>${q.d}</td></tr>`).join('') + '</tbody></table>';
+      els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0; SC.audio.music('toy'); return;
     }
     const net = g.mode === 'net'; $('btn-again').textContent = net ? '回房間' : '再來一場'; $('btn-menu').textContent = net ? '離開房間' : '回主選單';
     els.verdict.textContent = g.spec ? '比賽結束！' : w === 'tie' ? '平手！' : w === 0 ? '勝利！' : '惜敗…'; els.verdict.dataset.r = g.spec || w === 'tie' ? 'tie' : w === 0 ? 'win' : 'lose';
@@ -11755,6 +12396,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
     mapCtx.putImageData(mapImg, 0, 0);
     const mx = (x) => ((x + L.x) / (L.x * 2)) * mw, my = (z) => ((z + L.z) / (L.z * 2)) * mh;
+    if (g.rule === 'zombie' && SC.zb) SC.zb.drawMap(mapCtx, mx, my);
     g.targets.forEach((t) => { if (!t.alive) return; const x = mx(t.pos.x), y = my(t.pos.z); mapCtx.fillStyle = '#' + g.colors[1].getHexString(); mapCtx.strokeStyle = '#1b1430'; mapCtx.lineWidth = 1; mapCtx.fillRect(x - 2, y - 2, 4, 4); mapCtx.strokeRect(x - 2, y - 2, 4, 4); });
     g.actors.forEach((a) => {
       if (!a.alive || (a.team !== 0 && a.submerged)) return;
@@ -11784,7 +12426,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
     if (g.demo) return;
     const p = g.player() || (g.watched && g.watched()); if (!p) return;
-    const left = Math.max(0, C.ROUND_SECONDS - g.time), secs = Math.ceil(left);
+    const left = Math.max(0, (g.rule === 'zombie' && SC.zb ? SC.zb.LEN : C.ROUND_SECONDS) - g.time), secs = Math.ceil(left);
     if (g.mode === 'boss') {
       const b = g.bossMod(), t = Math.floor(b.time);
       set('timer', t, (v) => { els.timer.textContent = Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); });
@@ -12328,6 +12970,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const useFb = on && !!CONFIG.firebase;
 
   if (SC.i18n && SC.i18n.add) SC.i18n.add([
+    ['寫一句打氣的話', 'Write a cheer', '応援のひとこと', '응원 한마디'], ['登入後留言', 'Sign in to leave a message', 'ログインしてメッセージ', '로그인하고 메시지 남기기'], ['💌 留言', '💌 Message', '💌 メッセージ', '💌 메시지'],
+    ['愛心贊助留言', 'Support with a message', '応援メッセージつき支援', '응원 메시지와 함께 후원'], ['ATM、超商贊助（限台灣）', 'ATM / convenience store (Taiwan only)', 'ATM・コンビニ（台湾のみ）', 'ATM·편의점 (대만 전용)'], [' Apple Pay 贊助', ' Apple Pay support', ' Apple Pay 支援', ' Apple Pay 후원'],
     ['送一顆愛心', 'Send a heart', 'ハートを送る', '하트 보내기'],
     ['寫一句話替作者打氣，也可以一起贊助。', 'Write a few words to cheer the maker on. You can also support the game.', '作者に応援のひとことを。いっしょに支援もできます。', '제작자에게 응원 한마디를 남겨 주세요. 후원도 함께 할 수 있어요.'],
     ['寫一句打氣的話（最多 120 字）', 'Write a cheer (up to 120 characters)', '応援のひとこと（120文字まで）', '응원 한마디 (최대 120자)'],
@@ -12653,8 +13297,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .ac-me{display:flex;align-items:center;gap:12px;margin:10px 0}.ac-me img{width:52px;height:52px;border-radius:50%}
 .ac-err{color:#c2185b}
 .ac-row .tier{justify-content:space-between;padding:0 16px}.ac-row .tier b{color:#e5306b;font-size:19px}.ac-row .tier small{font-size:12px;color:#7a6f96;font-weight:700}.ac-row .tier:disabled{cursor:default;opacity:1;background:#fff8d6}
-.ac-row .pp{background:#ffc439}.ac-two{grid-template-columns:1fr 1fr}.ppw{font-style:italic;font-weight:900;color:#003087;font-size:19px}.ppw i{color:#009cde}
-.ch-in{width:100%;min-height:76px;margin-top:10px;border:2px solid #1b1430;border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical;box-sizing:border-box}
+.ac-row .pp{background:#ffc439}.ac-two{grid-template-columns:1fr 1fr}.ac-three{grid-template-columns:1fr 1fr 1fr}.ac-row .ap{background:#000;color:#fff;border-color:#000}.ac-row .give{background:#ff4f7b;color:#fff}.ppw{font-style:italic;font-weight:900;color:#003087;font-size:19px}.ppw i{color:#009cde}
+.ch-in{width:100%;min-height:76px;background:#fff;color:#1b1430;margin-top:10px;border:2px solid #1b1430;border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical;box-sizing:border-box}
 .ac-more{width:100%;margin-top:12px;min-height:44px;border-radius:12px;border:2px dashed #7a6f96;background:#faf8ff;font:inherit;font-size:14px;font-weight:800;color:#1b1430;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:0 12px;gap:8px;text-align:left}
 .ch-list{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}.ch-list li{border:2px solid #eee;border-radius:12px;padding:8px 10px}.ch-list li div{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.ch-list small{color:#7a6f96;font-size:11.5px;text-align:right}.ch-list p{margin:4px 0 0!important;white-space:pre-wrap;word-break:break-word}
 .ac-note{font-size:12.5px!important;color:#5b4f7a;margin-top:10px!important}
@@ -12688,7 +13332,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 按愛心先寫一句打氣的話；可以只送愛心，也可以一起贊助（標明信用卡或 PayPal）。
   // 留言存在 Firestore cheers/，只有作者（CONFIG.contact 那個已驗證信箱登入）讀得到，不公開；要登入才能送，30 秒一則（規則擋洗版）。
   const CHEER_MAX = 120, lang = () => (SC.i18n && SC.i18n.lang) || 'zh';
-  const cheer = { text: '', busy: false, msg: '', ok: false, more: false, inbox: null, inboxErr: '', sentAt: 0 };
+  const cheer = { text: '', busy: false, msg: '', ok: false, more: false, give: false, inbox: null, inboxErr: '', sentAt: 0 };
   const isAdmin = () => !!(account.user && CONFIG.contact && account.user.email && account.user.email.toLowerCase() === CONFIG.contact.toLowerCase());
   cheer.send = async (pay) => {
     const u = account.user, m = cheer.text.trim().slice(0, CHEER_MAX); if (!u || !m || cheer.busy) return false;
@@ -12708,7 +13352,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     catch (e) { cheer.inbox = []; cheer.inboxErr = '讀不到留言（' + ((e && e.code) || '網路') + '）'; }
     paint();
   };
-  const PAYTAG = { card: '💳 信用卡贊助', paypal: '🅿️ PayPal 贊助', ecpay: '🏪 綠界贊助', '': '💌 愛心' };
+  const PAYTAG = { card: '💳 信用卡贊助', paypal: '🅿️ PayPal 贊助', applepay: ' Apple Pay 贊助', ecpay: '🏪 綠界贊助', '': '💌 愛心' };
   let accBtn = null, frBtn = null, wrap = null, view = '', err = '', renaming = false;
   const badge = () => { if (!frBtn) return; const n = fr.list.filter((f) => f.on).length; let b = frBtn.querySelector('.ac-dot'); if (!n) { if (b) b.remove(); return; } if (!b) { b = document.createElement('i'); b.className = 'ac-dot'; frBtn.appendChild(b); } b.textContent = n > 9 ? '9+' : String(n); };
 
@@ -12756,20 +13400,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     } else {
       const u2 = account.user, zh = lang() === 'zh';
       const tiers = `<div class="ac-row">${CONFIG.donate.map((d) => (d = { ...d, url: CONFIG.ecpayOpen ? d.url || CONFIG.donateUrl : '' }) && d.url ? `<a class="d tier" data-pay="ecpay" href="${esc(d.url)}" target="_blank" rel="noopener"><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b></a>` : `<button type="button" class="d tier" disabled><span>${esc(d.name)}</span><b>${esc(d.price || '')}</b><small>即將開放</small></button>`).join('')}</div>`;
-      h += `<h2>${I_HEART}送一顆愛心</h2><p>寫一句話替作者打氣，也可以一起贊助。</p>`;
+      // Yen 11-21 19:09：精簡。「留言」免費；「愛心贊助留言」展開後直接選信用卡／PayPal／Apple Pay（都在 PayPal 付款頁）；最下面 ATM、超商（限台灣，綠界）
+      h += `<h2>${I_HEART}送一顆愛心</h2>`;
       if (useFb) {
-        h += `<textarea id="ch-in" class="ch-in" maxlength="${CHEER_MAX}" placeholder="寫一句打氣的話（最多 ${CHEER_MAX} 字）" aria-label="愛心留言">${esc(cheer.text)}</textarea>`;
-        if (!u2) h += `<p class="ac-note">登入後才能送出留言（避免有人洗版）。贊助不用登入。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}</div>`;
-        else h += `<p class="ac-note">署名：<b translate="no">${esc(account.name())}</b>。留言只有作者看得到，不會公開。</p><div class="ac-row"><button type="button" class="d" data-ch="free"${cheer.busy ? ' disabled' : ''}>💌 只送愛心留言</button></div>`;
+        h += `<textarea id="ch-in" class="ch-in" maxlength="${CHEER_MAX}" placeholder="寫一句打氣的話" aria-label="愛心留言">${esc(cheer.text)}</textarea>`;
+        if (!u2) h += `<div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}登入後留言</button>` : ''}</div>`;
+        else h += `<div class="ac-row"><button type="button" class="d" data-ch="free"${cheer.busy ? ' disabled' : ''}>💌 留言</button></div>`;
         if (cheer.msg) h += `<p class="${cheer.ok ? 'fr-ok' : 'ac-err'}">${esc(cheer.msg)}</p>`;
       }
       if (CONFIG.paypal) {
-        h += `<p class="ac-sub">${useFb && u2 ? '想一起贊助嗎？留言會標明你選的方式：' : '想贊助嗎？'}</p><div class="ac-row ac-two"><a class="d pp" data-pay="card" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">💳 信用卡</a><a class="d pp" data-pay="paypal" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener"><b class="ppw">Pay<i>Pal</i></b></a></div>`;
-        h += `<p class="ac-note">兩個按鈕都會打開 PayPal 的安全付款頁。用信用卡的話，在付款頁選「扣帳卡或信用卡」，不用 PayPal 帳號。金額自己填。</p><p class="ac-note">以新台幣計價，國外的卡和 PayPal 會自動換算成你的貨幣；發卡銀行可能另收海外交易手續費。</p>`;
-        if (zh) h += `<p class="ac-note">在台灣的朋友：PayPal 不支援台灣帳戶付款給台灣帳戶，台灣發的卡也可能付不了，建議用下面的「其他贊助方式」。</p>`;
+        h += `<div class="ac-row"><button type="button" class="d give" data-ch="give" aria-expanded="${cheer.give}">${I_HEART}愛心贊助留言</button></div>`;
+        if (cheer.give) h += `<div class="ac-row ac-three"><a class="d pp" data-pay="card" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">💳 信用卡</a><a class="d pp" data-pay="paypal" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener"><b class="ppw">Pay<i>Pal</i></b></a><a class="d pp ap" data-pay="applepay" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener"><b translate="no"> Pay</b></a></div>`;
       }
-      if (zh && CONFIG.donate.length) h += `<button type="button" class="ac-more" data-ch="more" aria-expanded="${cheer.more}">其他贊助方式（綠界：信用卡、ATM、超商）<span>${cheer.more ? '▴' : '▾'}</span></button>` + (cheer.more ? `${tiers}<p class="ac-note">幣別新台幣，可用台灣的信用卡、ATM 轉帳、超商代碼付款。綠界付款頁上也可以填名字和留言。</p>` : '');
-      if (CONFIG.donateNote) h += `<p class="ac-note">${esc(CONFIG.donateNote)}</p>`;
+      if (zh && CONFIG.donate.length) h += `<button type="button" class="ac-more" data-ch="more" aria-expanded="${cheer.more}">ATM、超商贊助（限台灣）<span>${cheer.more ? '▴' : '▾'}</span></button>` + (cheer.more ? tiers + (CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : '') : '');
       if (isAdmin()) h += `<div class="ac-row"><button type="button" data-ch="inbox">📬 收到的愛心留言</button></div>`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
@@ -12787,7 +13430,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     wrap.querySelectorAll('[data-join]').forEach((b) => (b.onclick = () => { const r = b.dataset.join; close(); if (SC.net && SC.net.joinFriend) SC.net.joinFriend(r); }));
     wrap.querySelectorAll('[data-rm]').forEach((b) => (b.onclick = () => friends.remove(b.dataset.rm)));
     const cin = wrap.querySelector('#ch-in'); if (cin) { cin.addEventListener('input', () => { cheer.text = cin.value; }); cin.addEventListener('keydown', (e) => e.stopPropagation()); }
-    wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'back') { view = 'donate'; paint(); } }));
+    wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'give') { cheer.give = !cheer.give; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'back') { view = 'donate'; paint(); } }));
     wrap.querySelectorAll('a[data-pay]').forEach((a) => a.addEventListener('click', () => { if (account.user && cheer.text.trim()) setTimeout(() => cheer.send(a.dataset.pay), 0); })); // 付款頁照常開新分頁；有寫留言就順便送出、標明付款方式
     wrap.querySelectorAll('[data-buy]').forEach((b) => (b.onclick = () => { err = ''; buy(b.dataset.buy).catch((e) => { err = e.message === 'login' ? '請先登入。' : '付款頁面打不開，等一下再試一次。' + (e.detail ? '（' + e.detail + '）' : ''); paint(); }); }));
   };
