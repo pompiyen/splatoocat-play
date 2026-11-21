@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='972ff7a5047a';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='0c1a31f6b7f2';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -6170,7 +6170,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const patch = { mi: m.id, hb: (hb = (hb + 1) % 1e6), s: turn(g.netSnap(), S_FLIP, S_YAW, -1).map(r2), e: out.map((e) => e.d) };
       while (patch.e.length && JSON.stringify(patch).length > 3000) patch.e.shift(); // presence 上限 4 KiB
       if (m.cpus.length) patch.cs = N.referee ? g.netCpuSnaps().map((s) => turn(s, S_FLIP, S_YAW, -1).map(r2)) : null;
-      if (m.rule === 'zombie') { patch.zs = N.referee && SC.zb.on ? SC.zb.pack() : null; while (patch.zs && JSON.stringify(patch).length > 3700 && patch.zs.length > 10 + patch.zs[9] * 4) patch.zs.length -= SC.zb.ZN; while (patch.e.length && JSON.stringify(patch).length > 3900) patch.e.shift(); } // 殭屍的狀態（裁判那台）；太長就少送幾隻
+      if (m.rule === 'zombie') { patch.zs = N.referee && SC.zb.on ? SC.zb.pack() : null; while (patch.zs && JSON.stringify(patch).length > 3700 && patch.zs.length > 15 + patch.zs[9] * 4 + patch.zs[10] * 5) patch.zs.length -= SC.zb.ZN; while (patch.e.length && JSON.stringify(patch).length > 3900) patch.e.shift(); } // 殭屍的狀態（裁判那台）；太長就少送幾隻
       if (N.referee) {
         hostT -= 0.05;
         if (hostT <= 0) { hostT = 0.5; const sc = g.netScore(); patch.sc = [m.id, ...toGlobal(sc.v || [sc.a, sc.b, sc.c || 0]).map(r4)]; }
@@ -9634,6 +9634,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const EV_NAME = { horde: '殭屍潮來了！', balloon: '氣球殭屍從天上來！', big: '大胃王來了！', dig: '殭屍從地底下鑽出來！', final: '最後大潮！撐住！', boom: '炸彈鼠來了！', tongue: '舌頭鼠來了！', charge: '衝撞鼠來了！', spit: '吐毒鼠來了！', lid: '鍋蓋鼠來了！', jelly: '果凍鼠來了！', king: '起司寶寶大王來了！' };
   Z.EVENTS = EVENTS; Z.duckD = 22 * S;
 
+  // 第 114 版（Yen 22:50「偶爾掉一些不同樣的一次性神兵，可以一次大清掃」）：城裡偶爾冒出發光的神兵，碰到就用掉（一次性）
+  // 0 彩虹大浪：從小鴨往外一圈彩虹浪，打爆附近的殭屍；1 巨大貓掌：天上掉下一隻大貓掌，拍扁殭屍最多的那一堆；2 泡泡飛飛：每隻殭屍被泡泡包起來飛上天破掉；3 冰淇淋凍凍：全部殭屍凍住 6 秒（打它傷害 ×1.5）
+  const POW = { first: 50, gap: 35, gapR: 12, life: 25, max: 2, cpuWait: 12, R: 3.2, rain: 110, rainDmg: 450, pawR: 22, pawT: 0.6, bub: 1.6, ice: 6, iceBoss: 3, bossDmg: 260 };
+  const POW_NAME = ['彩虹大浪！', '巨大貓掌！', '泡泡飛飛！', '冰淇淋凍凍！'], POW_COL = [0xff6b8b, 0xff9fd0, 0x9be7ff, 0xbff0ff];
+  let powId = 1, powT = 0; Z.pows = []; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; let pwSeen = 0, pawAt = 0;
   let pudId = 1; Z.puds = []; const PUDP = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]];
   let ctx = null, scene = null, duck = null, nextId = 1, spawnT = 0, dif = DIF.normal, authWas = false, chewSfxAt = 0, quackAt = 0, endT = 0, endFx = null, holeFx = [], marks = [], seenAt = 0, lastBite = false;
   const holeAng = (i) => (i / 8) * TAU, gateAng = (b) => b * Q;
@@ -9737,7 +9742,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // ---------- 開始、結束 ----------
   Z.start = (c) => {
-    ctx = c; scene = c.scene; Z.on = true; Z.stop(true); Z.on = true; nextId = 1; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; (G().actors || []).forEach((a) => { a.zbHold = null; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
+    ctx = c; scene = c.scene; Z.on = true; Z.stop(true); Z.on = true; nextId = 1; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
     dif = DIF[c.dif] || DIF.normal;
     if (!duck) { duck = SC.duck.make(); duck.g.scale.setScalar(1); }
     scene.add(duck.g); duck.g.position.set(0, PED, 0); duck.g.rotation.set(0, 0, 0); duck.g.scale.setScalar(S); duck.fortSet((DOME_Y + (COURT - PED)) / S, DOME_S, c.colors[1]); // 小鴨和罩子一起放大 duck.g.visible = true;
@@ -9750,7 +9755,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     hud(true); setCard(null);
   };
   Z.stop = (keep) => {
-    Z.list.forEach((q) => { freeTarget(q); dropMesh(q); }); Z.list.length = 0; if (alarmEl) alarmEl.classList.remove('on'); if (alarm3) { alarm3.ring.visible = alarm3.bang.visible = false; } Z.puds = []; for (const [, o] of pudObj) scene && scene.remove(o); pudObj.clear(); fxHide(); if (helpEl) helpEl.classList.remove('on'); marks.forEach((m) => scene && scene.remove(m.o)); marks.length = 0; ghosts.forEach((q) => scene && scene.remove(q.g)); ghosts.length = 0;
+    Z.list.forEach((q) => { freeTarget(q); dropMesh(q); }); Z.list.length = 0; if (alarmEl) alarmEl.classList.remove('on'); if (alarm3) { alarm3.ring.visible = alarm3.bang.visible = false; } Z.puds = []; for (const [, o] of pudObj) scene && scene.remove(o); pudObj.clear(); Z.pows = []; for (const [, o] of powObj) scene && scene.remove(o); powObj.clear(); if (pawFx) { scene && scene.remove(pawFx.g); pawFx = null; } fxHide(); if (helpEl) helpEl.classList.remove('on'); marks.forEach((m) => scene && scene.remove(m.o)); marks.length = 0; ghosts.forEach((q) => scene && scene.remove(q.g)); ghosts.length = 0;
     if (!keep) { Z.on = false; if (duck && duck.g.parent) duck.g.parent.remove(duck.g); holeFx.forEach((g) => (g.visible = false)); hud(false); setCard(null); }
   };
   function bangTex(c = '#ff4a5a') { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const g = cv.getContext('2d'); g.fillStyle = c; g.strokeStyle = '#fff'; g.lineWidth = 10; g.beginPath(); g.arc(64, 64, 52, 0, TAU); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.font = '900 86px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('!', 64, 70); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
@@ -9798,7 +9803,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (from && !from.remote) { from.kos++; if (from.isPlayer) { Z.pops++; SC.ui.hitMarker(true); if (t.k === 'big') { SC.ui.banner('打倒大胃王了！', 1.8); SC.audio.sfx.koGot(); } } }
     if (t.fly && z.st === 'fly') ctx.burst(z.x, z.y + 7.5 * t.s, z.z, new THREE.Color(BCOL[z.id % BCOL.length]), 14, 18, 0.45);
   }
-  Z.netHit = (from, id, amt) => { if (!auth()) return; const z = Z.list.find((q) => q.id === id); if (z) damage(z, SC.clamp(amt, 0, 999), from); };
+  Z.netHit = (from, id, amt) => { if (!auth()) return; if (id < 0) { const pk = Z.pows.find((q) => q.id === -id); if (pk) firePow(pk, from); return; } const z = Z.list.find((q) => q.id === id); if (z) damage(z, SC.clamp(amt, 0, 999), from); };
 
   // ---------- 每一格 ----------
   const _v = new V3();
@@ -9893,6 +9898,20 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else return false;
     z.act = 1; z.actT = 0; z.vx = z.vz = 0; z.trav = 1; return true;
   }
+  function dropPow() {
+    if (Z.pows.length >= POW.max) return; for (let tr = 0; tr < 12; tr++) { const a = Math.random() * TAU, r = DOME_R + 7 + Math.random() * 12, x = Math.cos(a) * r, z = Math.sin(a) * r; if (H(x, z) < COURT - 2) continue; Z.pows.push({ id: powId++, k: (Math.random() * 4) | 0, x, z, life: POW.life, born: G().time }); return; }
+  }
+  function claimPow(pk, a) { // 碰到神兵：裁判直接用；別台先藏起來、通知裁判
+    if (auth()) { firePow(pk, a); return; } if (pk.claimed) return; pk.claimed = G().time; ctx.sendHit(a, -pk.id, 0, 'W01');
+  }
+  function firePow(pk, a) {
+    const i = Z.pows.indexOf(pk); if (i < 0) return; Z.pows.splice(i, 1); const live = Z.list.filter((z) => z.st !== 'dead' && z.st !== 'under'); let cx = pk.x, cz = pk.z; Z.pwBy = a && !a.remote ? a : null;
+    if (pk.k === 0) { cx = 0; cz = 0; for (const z of live) if (Math.hypot(z.x, z.z) < POW.rain) damage(z, TY[z.ty].cap ? POW.bossDmg : POW.rainDmg, Z.pwBy); }
+    if (pk.k === 1) { let best = 0; for (const z of live) { let n = 0; for (const q of live) if (Math.hypot(q.x - z.x, q.z - z.z) < POW.pawR * 0.8) n++; if (n > best) { best = n; cx = z.x; cz = z.z; } } pawAt = G().time + POW.pawT; }
+    if (pk.k === 2) for (const z of live) { if (TY[z.ty].cap) { damage(z, POW.bossDmg, Z.pwBy); continue; } z.bub = POW.bub; z.bubBy = Z.pwBy; if (z.st === 'eat' && !z.onTop) z.st = 'walk'; }
+    if (pk.k === 3) for (const z of live) { const t = TY[z.ty].k === 'king' ? POW.iceBoss : POW.ice; z.dz = Math.max(z.dz || 0, t); z.ice = t; }
+    Z.pw = { seq: Z.pw.seq + 1, k: pk.k, x: cx, z: cz };
+  }
   function boomGo(z) { // 炸彈鼠自己爆炸：裁判扣防護罩、炸旁邊的殭屍；每台在畫面那邊各自算自己的貓
     z.n++; z.boomed = 1; const domeD = Math.hypot(z.x, z.z) - DOME_R; if (domeD < SPX.boom.blast * 0.6) Z.shield -= 60 * dif.chew;
     blastZombies(z, 60); z.st = 'dead'; z.dieT = 0; z.hp = 0; if (z.tg) z.tg.alive = false;
@@ -9900,6 +9919,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function simulate(dt) {
     const g = G(), now = g.time, live = Z.list.filter((q) => q.st !== 'dead'), cats = g.actors.filter((a) => a.alive && !a.gone && !a.isTarget);
     for (let i = Z.puds.length - 1; i >= 0; i--) { const q = Z.puds[i]; let ours = 0; for (const [ox, oz] of PUDP) if (SC.ink.ownerAt(q.x + ox * PUD.r * 0.6, q.z + oz * PUD.r * 0.6) === 1) ours++; q.life -= dt * (1 + ours * 1.2); if (q.life <= 0) Z.puds.splice(i, 1); } // 第 112 版：毒水上面塗我們的墨水，毒水就消得很快
+    // 神兵：隔一陣子在城裡冒出一個（同時最多 2 個，25 秒沒人撿就消失）
+    for (let i = Z.pows.length - 1; i >= 0; i--) if ((Z.pows[i].life -= dt) <= 0) Z.pows.splice(i, 1);
+    if ((powT -= dt) <= 0 && now < LEN - 8) { powT = POW.gap + Math.random() * POW.gapR; dropPow(); }
+    if (pawAt && now >= pawAt) { pawAt = 0; const P = Z.pw; for (const z of Z.list) if (z.st !== 'dead' && z.st !== 'under' && Math.hypot(z.x - P.x, z.z - P.z) < POW.pawR) damage(z, TY[z.ty].cap ? POW.bossDmg : 999, Z.pwBy || null); }
     // 事件
     const ni = Z.ev + 1, E = EVENTS[ni];
     if (E && Z.evPh === 0 && now >= E.t - WARN) { Z.ev = ni; Z.evPh = 1; Z.evHoles = pickHoles(E); }
@@ -9922,6 +9945,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         else { z.vx = z.vz = 0; z.y = SC.damp(z.y, top, 3, dt); if (z.y < top + 0.6) { z.st = 'eat'; z.onTop = 1; } }
         continue;
       }
+      if (z.bub > 0) { z.bub -= dt; z.vx = z.vz = 0; z.act = 0; z.y += 7 * dt; if (z.bub <= 0) damage(z, 9999, z.bubBy || null); continue; } // 泡泡飛飛：被泡泡包著往上飄，飄完就破掉
+      if (z.ice > 0) z.ice -= dt;
       if (z.dz > 0) { z.dz -= dt; z.vx = z.vz = 0; if (z.st === 'eat') z.st = 'walk'; continue; } // 頭暈：原地轉圈圈，不走、不咬、不出招
       if (t.sp2 && z.st === 'walk' && special(z, t, dt, g, cats) && !(z.trav && t.k !== 'charge' && z.act < 3)) continue; // 舌頭鼠、吐毒鼠路上出招時腳不停
       if (t.k === 'king' && z.st === 'eat' && !(z.dz > 0) && kingAct(z, t, dt, g, cats)) continue;
@@ -9948,6 +9973,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const holes = Z.evHoles || [], n = Math.round(E.n * (E.k === 'big' || E.k === 'king' ? 1 : dif.n)); Z.burstQ = Z.burstQ || []; Z.burstT = 0;
     if (E.k === 'horde' || E.k === 'final') { for (let i = 0; i < n; i++) { const r = Math.random(), ty = E.fat && r < E.fat ? TI.fat : E.run && r < (E.fat || 0) + E.run ? TI.run : TI.walk; Z.burstQ.push([ty, holes[i % holes.length]]); } }
     if (E.k === 'big') holes.forEach((h) => spawnAt(TI.big, h));
+    if (E.k === 'king') dropPow(); // 大王出場時送一個神兵
     const nb = E.k === 'balloon' ? n : E.balloon || 0; for (let i = 0; i < nb; i++) spawnFly(Math.random() * TAU);
     if (E.k === 'dig') for (let i = 0; i < n; i++) spawnDig();
     if (TI[E.k] != null && TY[TI[E.k]].spk) for (let i = 0; i < n; i++) Z.burstQ.push([TI[E.k], holes[i % holes.length]]);
@@ -9972,6 +9998,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function catFx(dt) {
     const g = G(), now = g.time, mine = g.actors.filter((a) => a.alive && !a.remote && !a.gone && !a.isTarget), all = g.actors.filter((a) => a.alive && !a.gone && !a.isTarget);
     for (const a of mine) {
+      for (const pk of Z.pows) { if (pk.claimed || a.cpu && pk.born != null && now - pk.born < POW.cpuWait) continue; if (Math.hypot(a.pos.x - pk.x, a.pos.z - pk.z) < POW.R && Math.abs(a.pos.y - H(pk.x, pk.z)) < 5) { claimPow(pk, a); break; } } // 撿神兵（電腦隊友等 12 秒才撿，先讓玩家撿）
       if (!a.zbHold && now >= a.protectUntil && !a.submerged) for (const z of Z.list) {
         if (z.st !== 'walk' || z.predDead) continue; const k = TY[z.ty].k;
         if (k === 'tongue' && z.act === 3 && z.actT < 0.8 && !heldBy(z)) { mouth(z, _mo); if (Math.abs(a.pos.y - z.y) < 6 && segD(a.pos.x, a.pos.z, _mo.x, _mo.z, z.ax, z.az) < 1.8) { grab(a, z, 1); break; } } // 裁判那邊已經伸完舌頭、先猜捲到了：這台的貓在舌頭上就算被捲到
@@ -10002,7 +10029,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function ram(a, z) {
     a.zbRam = z.id * 100 + z.n; const dx = z.vx || a.pos.x - z.x, dz = z.vz || a.pos.z - z.z, d = Math.hypot(dx, dz) || 1, sx = (a.pos.x - z.x) * (dz / d) - (a.pos.z - z.z) * (dx / d) > 0 ? 1 : -1; // 往衝的方向、偏一點旁邊飛出去
     ctx.bite(a, 25 * dK(), z, true); if (!a.alive) return;
-    a.vel.set((dx / d) * 30 + (dz / d) * sx * 10, 55, (dz / d) * 30 - (dx / d) * sx * 10); // 飛高大約 8、飛遠大約 20 a.onGround = false; a.launchT = 0.6; a.climb = null; a.jumps = Math.max(a.jumps || 0, 1);
+    a.vel.set((dx / d) * 30 + (dz / d) * sx * 10, 55, (dz / d) * 30 - (dx / d) * sx * 10); /* 飛高大約 8、飛遠大約 20 */ a.onGround = false; a.launchT = 0.6; a.climb = null; a.jumps = Math.max(a.jumps || 0, 1);
     ctx.burst(a.pos.x, a.pos.y + 2, a.pos.z, new THREE.Color(0xffd23f), 22, 22, 0.6); const n = ctx.near(a.pos.x, a.pos.y, a.pos.z); if (n > 0.05) { SC.audio.sfx.boing(); ctx.shake(n * 0.5); }
   }
   function free(a, saver) {
@@ -10067,7 +10094,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (t.k === 'boom' && z.n !== z.nSeen) { z.nSeen = z.n; z.boomed = 1; boomFx(z); } // 炸彈鼠爆炸（每台各自演、各自算自己的貓）
       if (!auth() && z.act > 0) z.actT += dt;
       if ((t.sp2 || z.fx) && (z.st !== 'walk' || z.predDead)) fxOff(z);
-      if (!auth() && z.st !== 'dead') { const k = 1 - Math.exp(-10 * dt); if (Math.hypot(z.nx - z.x, z.nz - z.z) > 25) { z.x = z.nx; z.z = z.nz; } else { z.vx = (z.nx - z.x) * 10; z.vz = (z.nz - z.z) * 10; z.x += (z.nx - z.x) * k; z.z += (z.nz - z.z) * k; } z.y = z.ny != null && (t.fly || z.st === 'under') ? SC.damp(z.y, z.ny, 10, dt) : z.st === 'eat' && z.onTop ? z.ny || z.y : H(z.x, z.z); }
+      if (!auth() && z.st !== 'dead') { const k = 1 - Math.exp(-10 * dt); if (Math.hypot(z.nx - z.x, z.nz - z.z) > 25) { z.x = z.nx; z.z = z.nz; } else { z.vx = (z.nx - z.x) * 10; z.vz = (z.nz - z.z) * 10; z.x += (z.nx - z.x) * k; z.z += (z.nz - z.z) * k; } z.y = z.ny != null && (t.fly || z.st === 'under' || z.bubOn) ? SC.damp(z.y, z.ny, 10, dt) : z.st === 'eat' && z.onTop ? z.ny || z.y : H(z.x, z.z); }
       if (z.predDead && z.st !== 'dead' && g.time - z.predDead > 1.4) { z.predDead = 0; z.pred = null; m.g.visible = true; } // 預測打爆沒成立：再出現
       syncTarget(z); if (z.predDead) { if (z.tg) z.tg.alive = false; continue; }
       if (z.st === 'dead') { m.g.visible = false; if (m.mound) m.mound.visible = false; continue; }
@@ -10089,6 +10116,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (!ended && z.st === 'walk' && (z.gooT -= dt) <= 0) { z.gooT = 0.45; const own = SC.ink.ownerAt(z.x, z.z), gy = H(z.x, z.z); if (gy > -4 && (own === 0 || t.k === 'big')) SC.ink.stamp(1, z.x, gy, z.z, 1.5 * t.s); }
       if (t.sp2) specialFx(z, t, m, now, w);
       if (t.spk || t.jelly) extraFx(z, t, m, now, dt);
+      powZFx(z, t, m, now);
       // 大胃王跺腳：紅圈預告，跺下去時每台各自算自己的貓
       if (t.k === 'big') { if (z.warn > 0) warnRing(z, now); else if (z.ring) z.ring.visible = false; if (z.stompSeen == null) z.stompSeen = z.stompN; if (z.stompN !== z.stompSeen) { z.stompSeen = z.stompN; stomp(z); } }
     }
@@ -10149,6 +10177,42 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       F.sos.position.set(a.pos.x, a.pos.y + 7 + Math.abs(k) * 0.6, a.pos.z);
     }
   }
+  // ---------- 神兵（第 114 版）----------
+  const bubMat = new THREE.MeshStandardMaterial({ color: 0xbfeaff, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.38, depthWrite: false }), shineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  function powZFx(z, t, m, now) { // 每隻殭屍：被泡泡包住、被冰淇淋凍住
+    const on = z.bub > 0 || z.bubOn, B = fxOf(z, 'bb', () => { const q = new THREE.Group(), b = new THREE.Mesh(BALL, bubMat), h = new THREE.Mesh(BALL, shineMat); h.scale.setScalar(0.12); h.position.set(-0.45, 0.5, 0.6); q.add(b, h); return q; });
+    B.visible = on; if (on) { const r = 3.0 * t.s * (t.wide || 1); B.position.set(z.x, m.g.position.y + 2.4 * t.s, z.z); B.scale.setScalar(r * (1 + Math.sin(now * 7 + z.id) * 0.05)); m.body.rotation.z = Math.sin(now * 5 + z.id) * 0.4; m.body.rotation.x = -0.3; }
+    if (z.ice > 0) { m.mat.emissive.setHex(0x9be7ff); m.mat.emissiveIntensity = 0.6; m.body.rotation.z = 0; if (Math.random() < 0.05) ctx.burst(z.x, z.y + 3 * t.s, z.z, new THREE.Color(0xffffff), 2, 6, 0.4); }
+  }
+  const powObj = new Map(); let pawFx = null;
+  function powMesh(k) { // 地上的神兵：發光光柱＋地上光圈＋浮在空中轉圈的圖示
+    const g = new THREE.Group(), col = POW_COL[k], beam = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 40, 16, 1, true), flat(col, 0.22)); beam.position.y = 20; g.add(beam);
+    const ring = new THREE.Mesh(RING, flat(col, 0.8)); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.3; ring.scale.setScalar(POW.R); g.add(ring);
+    const ic = new THREE.Group(), M = (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.35, emissive: c, emissiveIntensity: 0.35 });
+    if (k === 0) [[0xff5a7a, 1.6], [0xffd23f, 1.25], [0x5ab4ff, 0.9]].forEach(([c, r]) => { const t = new THREE.Mesh(new THREE.TorusGeometry(r, 0.2, 8, 20, Math.PI), M(c)); ic.add(t); }); // 彩虹
+    if (k === 1) { const pad = new THREE.Mesh(BALL, M(0xff9fd0)); pad.scale.set(1.0, 0.85, 0.5); ic.add(pad); [-0.95, -0.35, 0.35, 0.95].forEach((x, i) => { const t = new THREE.Mesh(BALL, M(0xff9fd0)); t.scale.set(0.38, 0.42, 0.3); t.position.set(x, 1.05 + (i === 1 || i === 2 ? 0.25 : 0), 0); ic.add(t); }); } // 貓掌
+    if (k === 2) { const b = new THREE.Mesh(BALL, bubMat), h = new THREE.Mesh(BALL, shineMat); b.scale.setScalar(1.5); h.scale.setScalar(0.25); h.position.set(-0.5, 0.6, 1.2); ic.add(b, h); [[1.4, 1.2], [-1.3, -0.9]].forEach(([x, y]) => { const q = new THREE.Mesh(BALL, bubMat); q.scale.setScalar(0.5); q.position.set(x, y, 0); ic.add(q); }); } // 泡泡
+    if (k === 3) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.75, 2.0, 12), M(0xe8b070)); c.rotation.x = Math.PI; c.position.y = -0.9; ic.add(c); const a = new THREE.Mesh(BALL, M(0xff9fd0)), b = new THREE.Mesh(BALL, M(0x9be8c8)); a.scale.setScalar(0.85); a.position.y = 0.4; b.scale.setScalar(0.75); b.position.y = 1.35; ic.add(a, b); } // 冰淇淋
+    ic.position.y = 4.2; ic.scale.setScalar(1.3); g.add(ic); g.userData.ic = ic; g.userData.ring = ring; g.userData.beam = beam; return g;
+  }
+  function powFx(dt) {
+    const g = G(), now = performance.now() / 1000, ids = new Set();
+    if (!auth()) for (const q of Z.pows) q.life -= dt;
+    for (const q of Z.pows) { if (q.claimed && g.time - q.claimed > 2) q.claimed = 0; ids.add(q.id); let o = powObj.get(q.id);
+      if (!o) { o = powMesh(q.k); o.position.set(q.x, H(q.x, q.z), q.z); scene.add(o); powObj.set(q.id, o); const n = ctx.near(q.x, o.position.y, q.z); SC.audio.sfx.spReady && SC.audio.sfx.spReady(); ctx.burst(q.x, o.position.y + 4, q.z, new THREE.Color(POW_COL[q.k]), 20, 18, 0.6); }
+      const blink = q.life < 5 && Math.sin(now * 14) < 0; o.visible = !q.claimed && !blink && g.state === 'play'; const u = o.userData; u.ic.rotation.y = now * 2.2; u.ic.position.y = 4.2 + Math.sin(now * 3 + q.id) * 0.5; u.ring.scale.setScalar(POW.R * (1 + Math.sin(now * 5) * 0.08)); u.beam.material.opacity = 0.15 + Math.max(0, Math.sin(now * 4)) * 0.15; if (Math.random() < dt * 6) ctx.burst(q.x + (Math.random() - 0.5) * 3, o.position.y + 1 + Math.random() * 6, q.z + (Math.random() - 0.5) * 3, new THREE.Color(POW_COL[q.k]), 1, 4, 0.5); }
+    for (const [id, o] of powObj) if (!ids.has(id)) { scene.remove(o); powObj.delete(id); }
+    if (Z.pw.seq !== pwSeen) { pwSeen = Z.pw.seq; if (Z.pw.seq > 0 && g.state === 'play') powBoom(Z.pw.k, Z.pw.x, Z.pw.z); }
+    if (pawFx) { const P = pawFx; P.t += dt; const y0 = H(P.x, P.z), k = Math.min(1, P.t / POW.pawT); P.g.position.set(P.x, y0 + 70 * (1 - k * k), P.z); if (k >= 1 && !P.hit) { P.hit = 1; ctx.ring(P.x, y0 + 0.4, P.z, new THREE.Color(0xff9fd0), POW.pawR, 0.6); ctx.burst(P.x, y0 + 2, P.z, new THREE.Color(0xff9fd0), 50, 34, 0.8); ctx.burst(P.x, y0 + 2, P.z, new THREE.Color(0xffffff), 30, 28, 0.7); if (y0 > -4) SC.ink.splat(0, P.x, y0, P.z, POW.pawR * 0.7); const n = ctx.near(P.x, y0, P.z); SC.audio.sfx.bomb(); ctx.shake(0.4 + n * 0.5); }
+      if (P.t > POW.pawT + 1.1) { P.g.children.forEach((c) => { c.material.transparent = true; c.material.opacity = Math.max(0, 1 - (P.t - POW.pawT - 1.1) * 2); }); } if (P.t > POW.pawT + 1.7) { scene.remove(P.g); pawFx = null; } }
+  }
+  function powBoom(k, x, z) { // 有人用了神兵：每台都演
+    SC.ui.banner(POW_NAME[k], 1.8); const y = H(x, z);
+    if (k === 0) { [0xff5a7a, 0xffd23f, 0x5ab4ff, 0x9be86a].forEach((c, i) => setTimeout(() => ctx.ring(0, COURT + 1 + i * 0.4, 0, new THREE.Color(c), POW.rain, 1.1), i * 120)); for (let i = 0; i < 16; i++) { const a = (i / 16) * TAU, r = 30 + (i % 3) * 22, px = Math.cos(a) * r, pz = Math.sin(a) * r, h = H(px, pz); if (h > -4) SC.ink.splat(0, px, h, pz, 7); } SC.audio.sfx.spDome ? SC.audio.sfx.spDome() : SC.audio.sfx.firework(); ctx.shake(0.4); }
+    if (k === 1) { if (pawFx) scene.remove(pawFx.g); const g = new THREE.Group(), M = new THREE.MeshStandardMaterial({ color: 0xff9fd0, roughness: 0.4 }), W = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 }); const pad = new THREE.Mesh(BALL, M); pad.scale.set(8, 3, 7); g.add(pad); [-7.5, -2.6, 2.6, 7.5].forEach((dx, i) => { const t = new THREE.Mesh(BALL, M); t.scale.set(2.6, 2.4, 2.6); t.position.set(dx, 0.6, -8 - (i === 1 || i === 2 ? 2 : 0)); g.add(t); }); const fur = new THREE.Mesh(new THREE.CylinderGeometry(9, 10, 30, 18), W); fur.position.y = 16; g.add(fur); g.position.set(x, y + 70, z); scene.add(g); pawFx = { g, x, z, t: 0, hit: 0 }; SC.audio.sfx.zhorn && SC.audio.sfx.zhorn(); }
+    if (k === 2) { ctx.burst(0, COURT + 6, 0, new THREE.Color(0xbfeaff), 60, 30, 1.0); SC.audio.sfx.pop && SC.audio.sfx.pop(); setTimeout(() => SC.audio.sfx.pop && SC.audio.sfx.pop(), 500); setTimeout(() => SC.audio.sfx.pop && SC.audio.sfx.pop(), 1500); }
+    if (k === 3) { ctx.ring(0, COURT + 1, 0, new THREE.Color(0xbff0ff), POW.rain, 1.0); ctx.burst(0, COURT + 10, 0, new THREE.Color(0xffffff), 70, 40, 1.2); SC.audio.sfx.shieldUp ? SC.audio.sfx.shieldUp() : SC.audio.sfx.ding(); }
+  }
   // 毒水灘：紫色、一直冒泡泡，快消失時變淡
   const pudGeo = new THREE.CircleGeometry(1, 28); pudGeo.rotateX(-Math.PI / 2); const pudObj = new Map();
   function pudFx(dt) {
@@ -10177,7 +10241,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const a = auth(); if (a && !authWas && g.mode === 'net') { spawnT = 1; Z.burstQ = []; } authWas = a; // 裁判換人：從收到的狀態接著算
     if (playing && a && !Z.end) simulate(dt);
     if (playing && !Z.end) { if (bites(dt)) lastBite = true; catFx(dt); }
-    const chewing = render(dt, cam); holdFx(performance.now() / 1000); pudFx(dt); helpHud();
+    const chewing = render(dt, cam); holdFx(performance.now() / 1000); pudFx(dt); powFx(dt); helpHud();
     // 事件卡、光柱
     const E = Z.ev >= 0 ? EVENTS[Z.ev] : null, warnOn = playing && Z.evPh === 1 && E;
     setCard(warnOn ? E : null, warnOn ? Math.max(0, Math.ceil(E.t - g.time)) : 0);
@@ -10239,25 +10303,28 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 每灘：[編號, x×10, z×10, 剩幾秒×10]；每隻：[編號, 種類 + 橋×16 + 階段×64 + 狀態×256 + 站在罩子上×2048 + 動作×4096, x×10, z×10, y×10, 血量％, 次數×2 + 預告, 瞄準 x, 瞄準 z]
   const ST = ['walk', 'eat', 'fly', 'under', 'dead'], ZN = 9; Z.ZN = ZN;
   Z.pack = () => {
-    const out = [3, Math.round(G().time * 10), Math.round(SC.clamp(Z.shield / SHIELD, 0, 1) * 10000), Z.ev, Z.evPh, Z.end, nextId, Z.evHoles ? Z.evHoles.reduce((m, h) => m | (1 << h), 0) : 0, Z.list.length, Z.puds.length];
+    const out = [4, Math.round(G().time * 10), Math.round(SC.clamp(Z.shield / SHIELD, 0, 1) * 10000), Z.ev, Z.evPh, Z.end, nextId, Z.evHoles ? Z.evHoles.reduce((m, h) => m | (1 << h), 0) : 0, Z.list.length, Z.puds.length, Z.pows.length, Z.pw.seq, Z.pw.k, Math.round(Z.pw.x), Math.round(Z.pw.z)]; // 第 4 版：多了神兵（數量、最後一次用掉的編號／種類／位置）
     for (const q of Z.puds) out.push(q.id, Math.round(q.x * 10), Math.round(q.z * 10), Math.round(q.life * 10));
-    for (const z of Z.list) out.push(z.id, z.ty + z.br * 16 + z.ph * 64 + Math.max(0, ST.indexOf(z.st)) * 256 + (z.onTop ? 2048 : 0) + (z.act || 0) * 4096 + (z.dz > 0 ? 16384 : 0), Math.round(z.x * 10), Math.round(z.z * 10), Math.round((z.st === 'under' ? -z.und : z.y) * 10), Math.round(SC.clamp(z.hp / z.max, 0, 1) * 100), (TY[z.ty].k === 'big' ? z.stompN : z.n) * 2 + (z.warn > 0 ? 1 : 0), Math.round(z.ax), Math.round(z.az));
+    for (const q of Z.pows) out.push(q.id, q.k, Math.round(q.x * 10), Math.round(q.z * 10), Math.round(q.life * 10));
+    for (const z of Z.list) out.push(z.id, z.ty + z.br * 16 + z.ph * 64 + Math.max(0, ST.indexOf(z.st)) * 256 + (z.onTop ? 2048 : 0) + (z.act || 0) * 4096 + (z.dz > 0 ? 16384 : 0) + (z.bub > 0 ? 32768 : 0) + (z.ice > 0 ? 65536 : 0), Math.round(z.x * 10), Math.round(z.z * 10), Math.round((z.st === 'under' ? -z.und : z.y) * 10), Math.round(SC.clamp(z.hp / z.max, 0, 1) * 100), (TY[z.ty].k === 'big' ? z.stompN : z.n) * 2 + (z.warn > 0 ? 1 : 0), Math.round(z.ax), Math.round(z.az));
     return out;
   };
   Z.apply = (zs) => {
-    if (!Z.on || auth() || !Array.isArray(zs) || zs[0] !== 3 || zs.length < 10 || !zs.every(Number.isFinite)) return;
-    Z.shield = SC.clamp(zs[2] / 10000, 0, 1) * SHIELD; // 第 3 版：送比例（萬分之幾），不送血量，兩邊上限不同也不會一邊 50% 一邊 100% if (zs[3] >= -1 && zs[3] < EVENTS.length) { Z.ev = zs[3] | 0; Z.evPh = zs[4] | 0; } if (!Z.end && (zs[5] === 1 || zs[5] === 2)) { Z.end = zs[5]; Z.netEnd = G().time; } nextId = Math.max(nextId, zs[6] | 0);
+    if (!Z.on || auth() || !Array.isArray(zs) || zs[0] !== 4 || zs.length < 15 || !zs.every(Number.isFinite)) return;
+    Z.shield = SC.clamp(zs[2] / 10000, 0, 1) * SHIELD; /* 第 3 版起：送比例（萬分之幾），兩邊上限不同也不會一邊 50% 一邊 100% */ if (zs[3] >= -1 && zs[3] < EVENTS.length) { Z.ev = zs[3] | 0; Z.evPh = zs[4] | 0; } if (!Z.end && (zs[5] === 1 || zs[5] === 2)) { Z.end = zs[5]; Z.netEnd = G().time; } nextId = Math.max(nextId, zs[6] | 0);
     Z.evHoles = []; for (let h = 0; h < 8; h++) if (zs[7] & (1 << h)) Z.evHoles.push(h);
-    const nAll = zs[8] | 0, nP = SC.clamp(zs[9] | 0, 0, 12); let i = 10; const puds = [];
+    const nAll = zs[8] | 0, nP = SC.clamp(zs[9] | 0, 0, 12), nK = SC.clamp(zs[10] | 0, 0, 4); let i = 15; const puds = [], pows = [];
+    if (zs[11] !== Z.pw.seq) Z.pw = { seq: zs[11], k: SC.clamp(zs[12] | 0, 0, 3), x: zs[13], z: zs[14] };
     for (let k = 0; k < nP && i + 3 < zs.length; k++, i += 4) puds.push({ id: zs[i], x: zs[i + 1] / 10, z: zs[i + 2] / 10, life: zs[i + 3] / 10 });
-    Z.puds = puds;
+    for (let k = 0; k < nK && i + 4 < zs.length; k++, i += 5) { const old = Z.pows.find((q) => q.id === zs[i]); pows.push({ id: zs[i], k: SC.clamp(zs[i + 1] | 0, 0, 3), x: zs[i + 2] / 10, z: zs[i + 3] / 10, life: zs[i + 4] / 10, claimed: old && old.claimed && G().time - old.claimed < 2 ? old.claimed : 0 }); }
+    Z.puds = puds; Z.pows = pows;
     const seen = new Set(); let got = 0;
     for (; i + ZN - 1 < zs.length; i += ZN) {
       const id = zs[i], code = zs[i + 1], ty = code & 15, st = ST[(code >> 8) & 7] || 'walk', act = (code >> 12) & 3; if (!TY[ty]) continue; seen.add(id); got++;
       let z = Z.list.find((q) => q.id === id); const x = zs[i + 2] / 10, zz = zs[i + 3] / 10, y = zs[i + 4] / 10, cnt = zs[i + 6] >> 1;
       if (!z) { if (st === 'dead') continue; z = make(ty, x, zz, { id, st, y: st === 'under' ? H(x, zz) - 3 : y, und: st === 'under' ? -y : 0, n: cnt, act }); if (st === 'walk' && Math.hypot(x, zz) > 88 * S) z.hop = 0.5; }
       z.br = (code >> 4) & 3; z.ph = (code >> 6) & 3; z.onTop = !!(code & 2048); z.nx = x; z.nz = zz; z.ny = st === 'under' ? null : y; if (st === 'under') z.und = -y;
-      if (act !== z.act) { z.act = act; z.actT = 0; } z.ax = zs[i + 7]; z.az = zs[i + 8]; z.dz = code & 16384 ? Math.max(z.dz || 0, 0.3) : 0;
+      if (act !== z.act) { z.act = act; z.actT = 0; } z.ax = zs[i + 7]; z.az = zs[i + 8]; z.dz = code & 16384 ? Math.max(z.dz || 0, 0.3) : 0; z.bubOn = !!(code & 32768); z.ice = code & 65536 ? 1 : 0;
       z.hp = (zs[i + 5] / 100) * z.max; if (TY[z.ty].k === 'big') z.stompN = cnt; else z.n = cnt; z.warn = zs[i + 6] & 1 ? 0.5 : 0;
       if (TY[z.ty].k === 'boom' && z.n !== z.nSeen) { z.nSeen = z.n; z.boomed = 1; boomFx(z); }
       if (st === 'dead' && z.st !== 'dead') { if (!z.predDead && !z.boomed) pop(z, null, false); kill(z); } else if (st !== 'dead') { if (z.st === 'under' && st === 'walk') { z.hop = 0.6; ctx.burst(x, H(x, zz) + 1, zz, new THREE.Color(0xb07a4a), 24, 18, 0.6); } z.st = st; }
@@ -10365,6 +10432,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['吐毒鼠來了！', 'Goo-spitting mice incoming!', 'ドクドクネズミが来た！', '독침 쥐가 온다!'],
     ['鍋蓋鼠來了！', 'Pot-lid mice incoming!', 'なべぶたネズミが来た！', '냄비뚜껑 쥐가 온다!'],
     ['果凍鼠來了！', 'Jelly mice incoming!', 'ゼリーネズミが来た！', '젤리 쥐가 온다!'],
+    ['彩虹大浪！', 'Rainbow Wave!', 'にじの大波！', '무지개 큰 파도!'],
+    ['巨大貓掌！', 'Giant Cat Paw!', 'きょだいネコパンチ！', '거대한 고양이 발!'],
+    ['泡泡飛飛！', 'Bubble Float!', 'あわあわフワフワ！', '방울방울 둥둥!'],
+    ['冰淇淋凍凍！', 'Ice Cream Freeze!', 'アイスでカチコチ！', '아이스크림 꽁꽁!'],
     ['起司寶寶大王來了！', 'The Cheese Baby King is here!', 'チーズベビーキングが来た！', '치즈 아기 왕이 왔다!'],
     ['打倒起司寶寶大王了！', 'You beat the Cheese Baby King!', 'チーズベビーキングをたおした！', '치즈 아기 왕을 쓰러뜨렸다!'],
     ['救到了！', 'Rescued!', 'たすけた！', '구했다!'],
@@ -12986,7 +13057,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   ui.onResults = () => {
     const g = G(), w = g.winner, p = g.player(); resPodium(g); els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['m-results'].classList.toggle('zb', g.rule === 'zombie'); praiseV = null; els.praise.hidden = true;
-    { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } // 第 91 版：每打完一場得到一張貼紙 els['res-stats'].classList.remove('has-board'); rank.hide();
+    { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } /* 第 91 版：每打完一場得到一張貼紙 */ els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
       if (r.fail) { // 三條命用完
