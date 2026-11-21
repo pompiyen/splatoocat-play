@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='a0f57f6bd3f7';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='dd85825f12dc';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -951,6 +951,16 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .rk-wpn .wpn-pick b { font-size: 13px; line-height: 1.1; }
 @media (max-width: 560px) { .rk-go-btn { min-height: 84px; font-size: 30px; } .rk-wpn .row { grid-template-columns: repeat(3, minmax(0, 1fr)); } .rk-wpn .wpn-pick .wi { width: 56px; height: 56px; } }
 .rk-go-btn.wait .bolt { display: none; }
+/* 第 121.1 版：回到比賽 */
+#m-rejoin .card.rjn { position: relative; width: min(300px, 100%); justify-items: center; padding: 30px 24px 22px; }
+.rjn-go { width: 150px; height: 150px; border-radius: 50%; border: 0; padding: 0; background: #ff5fa2; box-shadow: 0 8px 0 #b8326f; cursor: pointer; animation: rjnPulse 1.1s ease-in-out infinite; }
+.rjn-go svg { width: 100%; height: 100%; display: block; }
+.rjn-go:active { transform: translateY(4px); box-shadow: 0 4px 0 #b8326f; animation: none; }
+.rjn-t { margin: 0; font-size: 24px; font-weight: 900; }
+.rjn-x { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; border-radius: 50%; border: 0; padding: 10px; background: rgba(255, 255, 255, .14); cursor: pointer; }
+.rjn-x svg { width: 100%; height: 100%; display: block; }
+@keyframes rjnPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+@media (prefers-reduced-motion: reduce) { .rjn-go { animation: none; } }
 
 </style>
 <div id="app">
@@ -1046,7 +1056,8 @@ SC.CFG = {
   ROLL_WIDE: 2.2, ROLL_WIDE_T: 8, ROLL_SP_SPEED: 1.5, // 第 106 版（Yen）：滾刷絕招 8 秒（第 99 版是 6 秒）、速度 ×1.5、不耗墨、能滾上牆
   // 第 82 版（Yen）：滾刷絕招改成刷頭寬度 2.2 倍、5 秒（原本是隱形）
   BLADE_CHARGE: 0.5, // 第 69 版（Yen）：墨刀絕招先蓄力 0.5 秒，這段時間還能轉方向
-  SPRAY_DMG: 24, SPRAY_SLOW: 0.6, // 第 69 版：散彈槍絕招每顆 24（原本 40），連射時移動速度 0.6 倍
+  SPRAY_DMG: 31.2, SPRAY_SLOW: 0.6, // 舊的轉圈亂射（只剩舊版連線事件 q 用）；連射時移動速度 0.6 倍
+  SPRAY_SHOTS: 6, SPRAY_GAP: 0.13, SPRAY_K: 1.3, // 第 121.1 版（Yen 11-22 00:30 威力 1.3 倍、00:35 改成快速連射六發散彈）：六發一般散彈，每顆 28×1.3＝36.4，不耗墨，約 0.8 秒打完
   SEA_Y: -7, SEA_SLOW: 0.45, SEA_HURT: 24, /* 第 83 版（Yen）：每秒扣血 16→24，所有場地的河和海都一樣 */ POOL_R: 4.5, POOL_VY: 120, // 第 66 版：海盜船的海（浮在 -7、變慢、每秒扣 16 血）和漩渦（半徑、往上噴的速度）
   SP_R: 18, SP_HEIGHT: 22, SP_KILL_H: 50, // SP_KILL_H：往上多高都會被打到（五段跳最高約 48）
   BOSS_LIVES: 3, // Yen 2026-11-17：魔王關只有三條命，三次都被擊倒就挑戰失敗
@@ -1160,6 +1171,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['隱形 6 秒！對手看不到你', 'Invisible for 6 s! Rivals can\'t see you', '6秒間とうめい！相手から見えない', '6초 동안 투명! 상대가 못 봐요'],
     ['透視 8 秒！牆後面的對手會變成紅色', 'X-ray for 8 s! Rivals behind walls turn red', '8秒間すけて見える！カベの向こうの相手が赤くなる', '8초 동안 투시! 벽 뒤 상대가 빨갛게 보여요'],
     ['四面八方亂掃射！', 'Spin and spray everywhere!', '全方向にうちまくれ！', '사방으로 마구 쏴라!'],
+    ['散彈六連發！', 'Six-shot blast!', 'ショットガン6連発！', '산탄 6연발!'],
     ['四面八方爆射！', 'Blast in every direction!', '全方向にドカンとうて！', '사방으로 한 번에 펑!'],
     ['毛毛', 'Maomao', 'マオマオ', '마오마오'],
     ['雙雙', 'Shuangshuang', 'シュアンシュアン', '솽솽'],
@@ -1522,7 +1534,14 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   pat(/^掉進(.+)了！會一直扣血，快跳回岸上$/, ['You fell into the $1! It hurts, jump back to shore!', '$1に落ちた！体力が減るよ、岸にジャンプ！', '$1에 빠졌어요! 체력이 줄어요, 물가로 점프!']);
   pat(/^掉進(.+?)(！?)$/, ['Fell into $1$2', '$1に落ちた$2', '$1에 빠졌다$2']);
   add([['！', '!', '！', '!']]);
-  pat(/^(.+)離線了$/, ['$1 left the game', '$1がぬけた', '$1님이 나갔어요']);
+  pat(/^(.+)離線了$/, ['$1 lost connection', '$1の通信が切れた', '$1님 연결이 끊겼어요']);
+  pat(/^(.+)回來了！$/, ['$1 is back!', '$1がもどってきた！', '$1님이 돌아왔어요!']);
+  add([ // 第 121.1 版：斷線再連回去
+    ['回到比賽', 'Back to the match', '試合にもどる', '경기로 돌아가기'],
+    ['回到比賽了！', 'Back in the match!', '試合にもどった！', '경기로 돌아왔어요!'],
+    ['剛剛那場已經打完了', 'That match is already over', 'さっきの試合はもう終わったよ', '아까 경기는 벌써 끝났어요'],
+    ['不要', 'No thanks', 'やめる', '안 할래요'],
+  ]);
   pat(/^(.+)擊破！(\d+) 秒後會再出現$/, ['$1 broken! Back in $2 s', '$1をこわした！$2秒後にまた出るよ', '$1 부쉈다! $2초 뒤 다시 나와요']);
   pat(/^(擊倒|塗地) (.+ 比 .+)$/, (m, li) => [['KOs ', 'たおした ', '쓰러뜨림 '], ['Paint ', 'ぬった ', '칠하기 ']][m[1] === '擊倒' ? 0 : 1][li] + m[2].split(' 比 ').join([' vs ', ' 対 ', ' 대 '][li]));
   pat(/^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
@@ -6014,6 +6033,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   let api = null, room = null, myPeer = null, clock = 0, joinAt = 0, prof = { n: '', k: 'maomao', w: 'W01' }, sig = '', seq = 0, out = [], sendT = 0, hostT = 0, hostSeen = '', rot = 0, rc = 1, rs = 0, nT = 2, g0 = 0, seen = new Map(), lastSeq = {}, missing = {}, heard = {}, hb = 0, done = new Set(); // done：自己已經打完或離開的場次，房主的狀態還沒更新時不要又被拉進去
   const r2 = (v) => Math.round(v * 100) / 100, r4 = (v) => Math.round(v * 10000) / 10000, G = () => SC.game;
   const changed = () => { if (N.onChange) N.onChange(); };
+  // 斷線再連回去（Yen 11-22 00:21「斷線後要能再連回去，尤其是積分賽」）：
+  // 每台裝置有一個固定的編號 SID（存在 localStorage），開打時房主把每個人的 SID 一起放進名單（h.sd）。
+  // 重新整理或關掉再打開時，連線編號（peer）會變，但 SID 不變：別人看到同一個 SID、同一場（mi）的新 peer，就把那個位置接回給他。
+  // 對戰中每秒把自己這場的狀態存一份（sc-rj：房間、場次、剩下秒數、擊倒／倒下／助攻／塗地／絕招），回來時照這份接著打。
+  const SID = (() => { let v = ''; try { v = localStorage.getItem('sc-sid') || ''; if (!/^[a-z0-9]{8,16}$/.test(v)) { v = Math.random().toString(36).slice(2, 12).padEnd(8, '0'); localStorage.setItem('sc-sid', v); } } catch (e) { v = Math.random().toString(36).slice(2, 12).padEnd(8, '0'); } return v; })();
+  N.sid = SID;
+  const saveRec = (r) => { try { localStorage.setItem('sc-rj', JSON.stringify(r)); } catch (e) {} };
+  const clearRec = () => { try { localStorage.removeItem('sc-rj'); } catch (e) {} };
+  N.rejoinRec = () => { let r = null; try { r = JSON.parse(localStorage.getItem('sc-rj') || 'null'); } catch (e) { r = null; }
+    if (!r || typeof r.rn !== 'string' || !/^sc-[a-z]{0,2}\d{1,4}$/.test(r.rn) || typeof r.mid !== 'string' || !Number.isFinite(r.at) || !Number.isFinite(r.left)) return null;
+    const age = (Date.now() - r.at) / 1000; return age >= 0 && age < Math.min(r.left + 10, 400) ? r : null; };
+  N.forgetRejoin = clearRec;
+  let rjSaveT = 0, lastReal = 0, offT = 0;
   N.build = typeof window !== 'undefined' && typeof window.SC_BUILD === 'string' ? window.SC_BUILD : ''; // 版本不同的人同房會各算各的（Yen 21:42：小鴨血條有人 50% 有人 100%），大廳標出來、不讓開打
   N.mixed = () => N.list.some((r) => r.old);
   const send = (patch) => { if (room) room.presence(patch).catch(() => {}); };
@@ -6046,10 +6078,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     try { r = await api.join('sc-' + code); } catch (e) { why = (e && e.code) || ''; }
     N.busy = false;
     if (!r) { N.msg = why === 'not_permitted' || why === 'not_granted' ? '這個帳號不能連線，要請房主先邀請你看這個頁面' : window.SC_PUBLIC ? '連不上連線中繼站，檢查一下網路，等一下再試一次' : '連不上房間，等一下再試一次'; return changed(); }
-    attach(r, code, 0);
+    attach(r, code, 0, false, null, 'sc-' + code);
   };
-  function attach(r, code, qi, ranked, qrule) {
-    chatOut = []; chatSeen = {}; N.chatLog = [];
+  function attach(r, code, qi, ranked, qrule, rn) {
+    N.rn = rn || ''; N.rj = null; N.rjFail = false; chatOut = []; chatSeen = {}; N.chatLog = [];
     room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); N.qrule = qrule === 'knockout' || ranked === 'knockout' ? 'knockout' : 'turf'; N.rmode = 'all'; N.rsize = 6; N.ready = false; N.rkDone = false; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
     if (qi) { N.rule = N.qrule; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; } N.vc = false;
     changed();
@@ -6070,17 +6102,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       await wait(1500);
       const ps = (r.peers ? r.peers() : []).filter((p) => !(p.isMe && p.sameTab) && p.presence && p.presence.v === 1 && typeof p.presence.j === 'number').sort((a, b) => a.presence.j - b.presence.j);
       const h = ps.length ? validH(ps[0].presence.h) : null;
-      if (ps.length < (ranked ? 6 : 4) && !(h && h.st === 'play')) { N.busy = false; return attach(r, (ranked ? 'R' : rule === 'knockout' ? 'QK' : 'Q') + i, i, ranked, rule); }
+      if (ps.length < (ranked ? 6 : 4) && !(h && h.st === 'play')) { N.busy = false; return attach(r, (ranked ? 'R' : rule === 'knockout' ? 'QK' : 'Q') + i, i, ranked, rule, (ranked ? 'sc-ra' : rule === 'knockout' ? 'sc-qk' : 'sc-q') + i); }
       try { r.leave().catch(() => {}); } catch (e) {}
     }
     N.busy = false; N.msg = '找不到空房間，等一下再試一次'; changed();
+  };
+  // 回到剛剛那場：照存下來的房間名字再進去一次，等房主的名單出現就用自己的 SID 接回原本的位置
+  N.rejoin = async () => {
+    const rec = N.rejoinRec(); if (!rec || !api || N.busy || room) return false;
+    N.busy = true; N.msg = '連線中…'; changed();
+    let r = null; try { r = await api.join(rec.rn); } catch (e) { r = null; }
+    N.busy = false; if (!r) { N.msg = window.SC_PUBLIC ? '連不上連線中繼站，檢查一下網路，等一下再試一次' : '連不上房間，等一下再試一次'; changed(); return false; }
+    attach(r, rec.code || '', rec.qi | 0, rec.rk ? (rec.qr === 'knockout' ? 'knockout' : 1) : false, rec.qr, rec.rn); N.rj = { ...rec, t0: clock }; changed(); return true;
   };
   N.setReady = (v) => { if (!room || !N.ranked) return; N.ready = !!v; send({ rd: N.ready ? 1 : 0 }); sig = ''; changed(); };
   N.create = () => N.open(String(1000 + Math.floor(Math.random() * 9000)));
 
   N.leave = () => {
     if (!room) return;
-    const r = room; room = null; N.match = null; N.list = []; N.isHost = false; N.live = null; N.state = 'idle'; N.code = ''; sig = ''; N.quick = 0; N.ranked = false; N.ready = false; N.qs = null; qT = null;
+    clearRec(); N.rj = null; const r = room; room = null; N.match = null; N.list = []; N.isHost = false; N.live = null; N.state = 'idle'; N.code = ''; sig = ''; N.quick = 0; N.ranked = false; N.ready = false; N.qs = null; qT = null;
     try { r.leave().catch(() => {}); } catch (e) {}
     changed();
   };
@@ -6130,17 +6170,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 房主按開始：照進房順序輪流分到兩隊，最多 4 人；剛好 3 人又選了三方對戰，就每人一隊
   N.ink = 'random'; // 房主在主選單挑的墨水顏色：開打時傳給大家，房主那隊用這個顏色（第 69 版：每台看到的顏色一樣）
   const inkOf = (pl) => { const pr = SC.inkPair(N.ink), me = pl.find((e) => e[0] === myPeer); return pr && me ? { ink: pr.a.hex, it: me[1] } : {}; };
+  const sdOf = (pl) => pl.map((e) => { const r = N.list.find((x) => x.peer === e[0]); return r && typeof r.q.sd === 'string' ? r.q.sd.slice(0, 16) : ''; });
   N.start = (dif = N.dif) => {
     if (!room || !N.isHost || N.list.length < N.minStart() || N.live) return;
-    if (N.zbOn()) { const L = N.list.slice(0, 6), pl = L.map((r, i) => [r.peer, 0, i]); return send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: 'zombie', map: 'zfort', n: 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L.map((r) => ({ peer: r.peer, team: 0 })), 2), vc: Math.max(0, 4 - pl.length), df: SC.DIFFICULTY[dif] ? dif : 'normal', ...inkOf(pl) } }); } // 殭屍保衛戰：真人都在第 1 隊，電腦隊友補到 4 隻
+    if (N.zbOn()) { const L = N.list.slice(0, 6), pl = L.map((r, i) => [r.peer, 0, i]); return send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: 'zombie', map: 'zfort', n: 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L.map((r) => ({ peer: r.peer, team: 0 })), 2), vc: Math.max(0, 4 - pl.length), df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } }); } // 殭屍保衛戰：真人都在第 1 隊，電腦隊友補到 4 隻
     const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
-    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.ranked ? 'mix' : N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', ...inkOf(pl) } });
+    send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.ranked ? 'mix' : N.rule, map: tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } });
   };
 
   // spec：比賽開打後才進房的人（Yen 2026-11-19）只看不打，從房主那隊的角度看，不送任何資料
-  function begin(h, list, spec) {
+  function begin(h, list, spec, rec) {
     if (N.ranked) { N.rkDone = true; if (N.ready) { N.ready = false; send({ rd: 0 }); } } // 積分賽：開打就把「準備」清掉，打完不會被舊的準備觸發下一場
-    const mine = spec ? null : h.pl.find((e) => e[0] === myPeer); nT = h.n >= 3 && h.n <= 6 ? h.n : 2; g0 = mine ? mine[1] : 0;
+    const sd = Array.isArray(h.sd) && h.sd.length === h.pl.length ? h.sd : null, mine = spec ? null : h.pl.find((e) => e[0] === myPeer) || (rec && sd && sd.indexOf(SID) >= 0 ? h.pl[sd.indexOf(SID)] : null); nT = h.n >= 3 && h.n <= 6 ? h.n : 2; g0 = mine ? mine[1] : 0;
     // 兩隊、三隊：把場地轉到自己的出生台在左邊。四隊以上不轉（出生台不是平均分開），改由場地把隊伍編號換成自己這台的（world.teamOffset）
     rot = nT >= 4 ? 0 : (-g0 * 2 * PI) / nT; rc = Math.cos(rot); rs = nT === 2 ? 0 : Math.sin(rot); if (nT === 2 && g0) rc = -1; // 兩隊時剛好轉 180 度，用 -1 免得小數誤差
     const pal = SC.PALETTES[Math.abs(h.pal | 0) % SC.PALETTES.length], hp = SC.inkPair(h.ink), P = hp || (h.fp ? { a: pal.b, b: pal.a, c: pal.c } : pal), inks = SC.teamInks(P, 6), it = hp ? Math.abs(h.it | 0) % nT : 0;
@@ -6149,13 +6190,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const players = h.pl.map((e, idx) => {
       const r = list.find((x) => x.peer === e[0]);
       // 開打那一刻剛好沒收到某人的資料（公開中繼站可能漏訊息）也要把他算進來，不然整場都看不到他（Yen 2026-11-19：各玩各的）
-      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: Array.isArray(h.kd) && KINDS.includes(h.kd[e[1]]) ? h.kd[e[1]] : e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e[0] === myPeer, gone: false };
+      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: Array.isArray(h.kd) && KINDS.includes(h.kd[e[1]]) ? h.kd[e[1]] : e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e === mine, gone: false, sid: sd && typeof sd[idx] === 'string' ? sd[idx] : '' };
     });
     const nC = Math.max(0, Math.min(4, h.vc | 0)), ck = Array.isArray(h.kd) && KINDS.includes(h.kd[1]) ? h.kd[1] : 'shuang';
     const zb = h.rule === 'zombie', cpus = Array.from({ length: nC }, (_, k) => zb ? { idx: h.pl.length + k, team: 0, slot: h.pl.length + k, kind: Array.isArray(h.kd) && KINDS.includes(h.kd[0]) ? h.kd[0] : 'maomao', cpu: true } : { idx: h.pl.length + k, team: (1 - g0 + nT) % nT, slot: k, kind: ck, cpu: true });
     N.match = { cpus, df: SC.DIFFICULTY[h.df] ? h.df : 'normal', id: h.id, h, teams: nT, rule: h.rule === 'knockout' || h.rule === 'mix' || h.rule === 'zombie' ? h.rule : 'turf', map: zb ? 'zfort' : nT >= 3 ? 'round' + nT : okMap(h.map) && h.map !== 'random' ? h.map : 'park', off: g0, players, palette: { a: cols[0], b: cols[1], c: cols[2] || P.c, list: cols }, over: false, score: null, spec: !!spec };
-    out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock;
+    out = []; lastSeq = {}; missing = {}; heard = {}; seen = new Map(); sendT = 0; hostT = 0; N.referee = false; N.match.at = clock; N.match.rj = !!rec; rjSaveT = 0; offT = 0;
     if (N.onBegin) N.onBegin(N.match);
+    if (rec && G().netResume) G().netResume(rec); // 接著剛剛那場打：分數、時間照存下來的
   }
 
   // 自己這邊發生的事（開槍、命中、被擊倒）。數字留兩位小數，狙擊方向留四位。
@@ -6167,7 +6209,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // 這場結束。房主把結果公布給大家。res: { a, b, c, ko: [各隊擊倒] }。送出去的是 [場次, 各隊塗地..., 各隊擊倒...]（依房主排的隊伍順序）
   N.end = (res) => {
-    const m = N.match; if (!m || m.over) return; m.over = true; done.add(m.id);
+    const m = N.match; if (!m || m.over) return; m.over = true; done.add(m.id); clearRec();
     const patch = { s: null, e: null };
     if (N.referee) patch.res = [m.id, ...toGlobal(res.v || [res.a, res.b, res.c || 0]).map(r4), ...toGlobal(res.ko)];
     if (N.isHost) patch.h = { ...m.h, st: 'end' };
@@ -6175,7 +6217,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   // 中途離開這場，回到房間。裁判離開的話這場直接結束。
   N.quit = () => {
-    const m = N.match; if (!m) return;
+    const m = N.match; if (!m) return; clearRec();
     if (!m.over) { if (N.referee) N.end(G().netResult()); else { done.add(m.id); send({ mi: null, s: null, e: null }); } }
     N.match = null; sig = '';
   };
@@ -6187,7 +6229,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (clock - joinAt < 1.3) return;
       // 進房時間：一定排在已經在房間裡的人後面，不受各台裝置時鐘誤差影響
       let maxJ = 0; for (const p of peers) { const j = p.presence && p.presence.j; if (typeof j === 'number' && j > maxJ) maxJ = j; }
-      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : prof.n, k: prof.k, w: prof.w, u: prof.u || '', r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build });
+      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : prof.n, k: prof.k, w: prof.w, u: prof.u || '', r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build, sd: SID, rj: null });
     }
     const list = [];
     for (const p of peers) {
@@ -6223,7 +6265,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     N.live = h && h.st === 'play' ? h.id : null;
     if (N.quick && N.state === 'lobby' && !N.live && (!m || m.over)) {
       const i = list.findIndex((r) => r.isMe);
-      if (i >= (N.ranked ? N.rsize : 4)) { const q = N.quick, rk = N.ranked, qr = N.qrule; N.leave(); N.quickJoin(q + 1, rk, qr); return; } // 擠進來超過人數：換下一間
+      if (i >= (N.ranked ? N.rsize : 4) && !N.rj) { const q = N.quick, rk = N.ranked, qr = N.qrule; N.leave(); N.quickJoin(q + 1, rk, qr); return; } // 擠進來超過人數：換下一間
       if (N.isHost) { // 房主倒數自動開打：2 人等 15 秒，4 人到齊 4 秒
         if (N.ranked && N.rkDone) qT = null; // 積分賽一間房只打一場（Yen 23:16）：打完不再自動開下一場
         else if (N.ranked) { const all = N.rankOk(list.length) && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 10; qT -= dt; } } // 積分賽：人到齊、大家都準備好，10 秒後開打（Yen 11-22：這 10 秒用來選武器） // Yen 11-21：大家都按「即刻開戰」就照現有人數開打（5 人要等第 6 人）
@@ -6236,18 +6278,31 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (s2 !== sig) { sig = s2; changed(); }
     if (h && h.st === 'play' && (!m || m.id !== h.id) && !done.has(h.id) && myPeer) {
       if (h.pl.some((e) => e[0] === myPeer)) return begin(h, list);
-      if (N.state === 'lobby' && !m) return begin(h, list, true); // 晚進來：直接觀戰
+      if (N.rj && N.rj.mid === h.id && Array.isArray(h.sd) && h.sd.includes(SID)) { const rec = N.rj; N.rj = null; return begin(h, list, false, rec); } // 斷線回來：接回自己原本的位置
+      if (N.state === 'lobby' && !m && !N.rj) return begin(h, list, true); // 晚進來：直接觀戰
     }
+    if (N.rj && N.state === 'lobby' && clock - N.rj.t0 > 8) { N.rj = null; clearRec(); N.leave(); N.rjFail = true; N.msg = '剛剛那場已經打完了'; changed(); return; } // 等了 8 秒還是沒看到那一場：已經打完了
     const g = G(); if (!m || m.over || g.mode !== 'net') return;
 
-    // 這場的裁判：名單裡排最前面、還在送資料的人
-    let ref = null;
+    // 自己這台卡住（手機切到背景）或斷線超過 2 秒：這段時間別人塗的地沒收到，不再當裁判（rj）
+    const nowR = performance.now(); if (lastReal && nowR - lastReal > 2500) m.rj = true; lastReal = nowR;
+    offT = N.online ? 0 : offT + dt; if (offT > 2) m.rj = true;
+    // 重新整理後回來的人：連線編號換了，用 SID 認回來
     for (const pl of m.players) {
-      if (pl.isMe) { ref = pl; break; }
+      if (pl.isMe || !pl.sid) continue; const p0 = peers.find((x) => x.peer === pl.peer); if (p0 && p0.presence && p0.presence.mi === m.id) continue;
+      const alt = peers.find((x) => x.peer !== pl.peer && x.presence && x.presence.sd === pl.sid && x.presence.mi === m.id && !m.players.some((o) => o.peer === x.peer));
+      if (alt) { pl.peer = alt.peer; missing[alt.peer] = 0; seen.delete(alt.peer); delete lastSeq[alt.peer]; }
+    }
+    // 這場的裁判：名單裡排最前面、還在送資料的人（斷線回來的人排到最後才輪到，他的地圖少了中間塗的）
+    let ref = null, alt = null;
+    for (const pl of m.players) {
+      if (pl.isMe) { if (m.rj) { alt = alt || pl; continue; } ref = pl; break; }
       const p = peers.find((x) => x.peer === pl.peer), q = p && p.presence;
       if (q && seen.get(pl.peer) !== q) heard[pl.peer] = clock;
-      if (!pl.gone && q && q.mi === m.id && clock - (heard[pl.peer] == null ? m.at : heard[pl.peer]) < (window.SC_PUBLIC ? 5 : 3)) { ref = pl; break; }
+      if (!pl.gone && q && q.mi === m.id && clock - (heard[pl.peer] == null ? m.at : heard[pl.peer]) < (window.SC_PUBLIC ? 5 : 3)) { if (q.rj === 1) { alt = alt || pl; continue; } ref = pl; break; }
     }
+    if (!ref) ref = alt;
+    if (!m.spec && clock - rjSaveT > 1 && g.netLeft) { rjSaveT = clock; saveRec({ rn: N.rn, code: N.code, qi: N.quick | 0, rk: N.ranked ? 1 : 0, qr: N.qrule, mid: m.id, at: Date.now(), left: g.netLeft(), t: g.time, st: g.netMine() }); }
     N.referee = !!ref && ref.isMe;
     if (m.cpus.length && !m.spec) g.netCpuOwner(N.referee); // 電腦歸裁判那台算
 
@@ -6255,13 +6310,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     sendT -= dt;
     if (sendT <= 0 && !m.spec) {
       sendT = m.players.length >= 5 ? 0.075 : m.players.length >= 4 ? 0.06 : 0.05; out = out.filter((e) => clock - e.at < 0.9);
-      const patch = { mi: m.id, hb: (hb = (hb + 1) % 1e6), s: turn(g.netSnap(), S_FLIP, S_YAW, -1).map(r2), e: out.map((e) => e.d) };
+      const patch = { mi: m.id, hb: (hb = (hb + 1) % 1e6), s: turn(g.netSnap(), S_FLIP, S_YAW, -1).map(r2), e: out.map((e) => e.d), rj: m.rj ? 1 : 0 };
       while (patch.e.length && JSON.stringify(patch).length > 3000) patch.e.shift(); // presence 上限 4 KiB
       if (m.cpus.length) patch.cs = N.referee ? g.netCpuSnaps().map((s) => turn(s, S_FLIP, S_YAW, -1).map(r2)) : null;
       if (m.rule === 'zombie') { patch.zd = SC.zb.on && SC.zb.deadList ? SC.zb.deadList() : null; /* 第 121 版：最近看到被打爆的殭屍編號 */ patch.zs = N.referee && SC.zb.on ? SC.zb.pack() : null; while (patch.zs && JSON.stringify(patch).length > 3700 && patch.zs.length > 15 + patch.zs[9] * 4 + patch.zs[10] * 5) patch.zs.length -= SC.zb.ZN; while (patch.e.length && JSON.stringify(patch).length > 3900) patch.e.shift(); } // 殭屍的狀態（裁判那台）；太長就少送幾隻
       if (N.referee) {
         hostT -= 0.05;
-        if (hostT <= 0) { hostT = 0.5; const sc = g.netScore(); patch.sc = [m.id, ...toGlobal(sc.v || [sc.a, sc.b, sc.c || 0]).map(r4)]; }
+        if (hostT <= 0) { hostT = 0.5; const sc = g.netScore(); patch.sc = [m.id, ...toGlobal(sc.v || [sc.a, sc.b, sc.c || 0]).map(r4)]; patch.tm = r2(g.time); } // tm：裁判的比賽時間，卡住回來的人照這個對時
       }
       if (N.isHost && (!h || h.id !== m.id)) patch.h = { ...m.h, st: 'play' }; // 原本的房主離開了：接手房間，讓晚進來的人知道還在打
       send(patch);
@@ -6269,10 +6324,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     // 收別人的事件與狀態（事件先處理，這樣「被擊倒」會比「已倒下」的狀態早到）
     for (const pl of m.players) {
-      if (pl.isMe || pl.gone) continue;
+      if (pl.isMe || pl.lost) continue;
       const p = peers.find((x) => x.peer === pl.peer), q = p && p.presence;
-      if (!q || q.mi !== m.id) { if ((missing[pl.peer] = (missing[pl.peer] || 0) + dt) > (window.SC_PUBLIC ? 8 : 4)) { pl.gone = true; g.netGone(pl.idx); if (N.match !== m || m.over) return; } continue; }
-      missing[pl.peer] = 0; if (seen.get(pl.peer) === q) continue; seen.set(pl.peer, q); heard[pl.peer] = clock;
+      // 沒有資料：先讓他消失（8 秒），40 秒都沒回來才算真的離開；還在房間但已經離開這場（按了離開）就直接算離開
+      if (!q || q.mi !== m.id) { const ms = (missing[pl.peer] = (missing[pl.peer] || 0) + dt); if (!pl.gone && ms > (window.SC_PUBLIC ? 8 : 4)) { pl.gone = true; g.netGone(pl.idx); if (N.match !== m || m.over) return; }
+        if (pl.gone && (ms > 40 || (q && q.v === 1 && ms > (window.SC_PUBLIC ? 8 : 4)))) { pl.lost = true; g.netGone(pl.idx, true); if (N.match !== m || m.over) return; } continue; }
+      missing[pl.peer] = 0; if (pl.gone) { pl.gone = false; if (g.netBack) g.netBack(pl.idx); } // 斷線的人回來了 if (seen.get(pl.peer) === q) continue; seen.set(pl.peer, q); heard[pl.peer] = clock;
       if (Array.isArray(q.e)) for (const ev of q.e) {
         if (!Array.isArray(ev) || !(ev[0] > (lastSeq[pl.peer] || 0)) || typeof ev[1] !== 'string') continue;
         lastSeq[pl.peer] = ev[0]; const d = ev.slice(2), tp = ev[1].split('#'), who = tp.length === 2 ? +tp[1] : pl.idx, ty = tp[0];
@@ -6286,7 +6343,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
     if (N.match !== m || m.over) return;
     // 分數與結果以裁判為準。任何一位已經宣布這場結果的人都算數（例如原本的裁判回來前，接手的人已經宣布了）。
-    if (!N.referee && ref) { const p = peers.find((x) => x.peer === ref.peer), sc = p && p.presence.sc; if (Array.isArray(sc) && sc.length === nT + 1 && sc[0] === m.id && sc.slice(1).every(Number.isFinite)) { const v = toLocal(sc.slice(1)); m.score = { a: v[0], b: v[1], c: v[2] || 0, v }; } }
+    if (!N.referee && ref) { const p = peers.find((x) => x.peer === ref.peer), sc = p && p.presence.sc; if (Array.isArray(sc) && sc.length === nT + 1 && sc[0] === m.id && sc.slice(1).every(Number.isFinite)) { const v = toLocal(sc.slice(1)); m.score = { a: v[0], b: v[1], c: v[2] || 0, v }; if (Number.isFinite(p.presence.tm) && g.netTime) g.netTime(p.presence.tm); } }
     for (const pl of m.players) {
       if (pl.isMe) continue; const p = peers.find((x) => x.peer === pl.peer), r = p && p.presence.res;
       if (Array.isArray(r) && r.length === 1 + nT * 2 && r[0] === m.id && r.slice(1).every(Number.isFinite)) { const v = toLocal(r.slice(1, 1 + nT)); return g.netFinish({ a: v[0], b: v[1], c: v[2] || 0, v, ko: toLocal(r.slice(1 + nT)) }); }
@@ -11258,10 +11315,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
 
   // 散彈槍：用種子決定每顆的偏移，連線時每台噴出來的形狀一樣
-  function fireW04(a) {
+  function fireW04(a, sp) { // sp：絕招的六連發（不耗墨，每顆威力 C.SPRAY_K 倍）
     const w = C.W04, m = muzzle(a, t1), dir = t2.copy(aimPt(a)).sub(m).normalize(), seed = (Math.random() * 1e9) | 0, boost = paintBoost(a);
-    pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, a.ai ? aiD().dmg : 1);
+    pellets(a, m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed, (a.ai ? aiD().dmg : 1) * (sp ? C.SPRAY_K : 1));
     if (netOn()) nev(a, 'g', m.x, m.y, m.z, dir.x, dir.y, dir.z, boost, seed);
+    if (sp) { a.lastShotAt = G.time; a.cat.recoil = 2.2; a.cat.reload = 1; A.sfx.shotgun(near(a) * 1.15); cam.shake = a.isPlayer && !G.demo ? Math.min(1, cam.shake + 0.22) : cam.shake; if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 3.6, 0.08); return; }
     a.ink -= w.ink; a.lastShotAt = G.time; a.cat.recoil = 1.8; a.cat.reload = 1; A.sfx.shotgun(near(a)); A.sfx.reload(near(a));
     if (near(a) > 0.15) SC.fx.pop(m.x, m.y, m.z, WHITE, 3, 0.08);
   }
@@ -11810,7 +11868,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 武器
     const canAct = active && a.form === 'biped' && now >= a.switchUntil;
     if (a.heroK != null && G.rule === 'zombie' && SC.zbHero && !a.remote) { SC.zbHero.fire(a, !!ctl.fire && canAct, dt, muzzle(a, t1), aimPt(a)); ctl.fire = false; } /* 第 116 版：殭屍保衛戰的神兵拿在手上時，按射擊是用神兵 */
-    if (a.sprayUntil > now) { ctl.fire = false; if (now >= a.sprayNext && a.form === 'biped') { sprayTick(a); a.sprayNext = now + 0.12; } } // 散彈槍絕招（第 69 版，Yen）：連續往四面八方亂射 3 秒，每顆比較弱
+    if (a.sprayUntil > now) { ctl.fire = false; if (a.sprayN > 0 && now >= a.sprayNext && a.form === 'biped') { fireW04(a, true); a.sprayN--; a.sprayNext = now + C.SPRAY_GAP; } } // 散彈槍絕招（第 121.1 版，Yen 11-22 00:35）：朝準星快速連射六發散彈
     if ((ctl.fire || ctl.bomb) && a.protectUntil > now + 0.5) a.protectUntil = now + 0.5; // 重生無敵：開槍或丟彈後只剩 0.5 秒（第 60 版：不再一開槍就沒了，擊倒戰也有短暫無傷）
     a.rolling = false;
     if (a.weapon === 'W01') {
@@ -11896,7 +11954,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     a.spRing.material.color.copy(colors[a.team]); a.spRing.userData.fill.material.color.copy(colors[a.team]); return a.spRing;
   }
   // ---------- 第 63 版：每把武器自己的絕招（魔王關和電腦還是用砸地） ----------
-  // 漆彈槍：砸地。滾刷：隱形 6 秒。狙擊槍：透視 8 秒（牆後的對手變紅色）。散彈槍：原地轉圈往四面八方亂射約 3 秒。墨刀：往前劃一條墨水直線，再沿著線衝殺過去。
+  // 漆彈槍：砸地。滾刷：隱形 6 秒。狙擊槍：透視 8 秒（牆後的對手變紅色）。散彈槍：朝準星快速連射六發散彈（第 121.1 版，原本是轉圈亂射 3 秒）。墨刀：往前劃一條墨水直線，再沿著線衝殺過去。
   const wideK = (a) => (a.wideUntil > G.time ? C.ROLL_WIDE : 1); // 滾刷絕招：刷頭變寬
   const SP_KIND = { W02: 'wide', W03: 'xray', W04: 'spray', W05: 'blade' }, SP_KINDS = ['slam', 'invis', 'xray', 'spray', 'blade', 'wide'];
   const XRAY_MAT = new THREE.MeshBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false });
@@ -11967,7 +12025,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (kind === 'invis') { a.invisUntil = now + 6; if (a.isPlayer) SC.ui.tip('隱形 6 秒！對手看不到你', 2.4); }
     else if (kind === 'wide') { a.wideUntil = now + C.ROLL_WIDE_T; a.spDur = C.ROLL_WIDE_T; if (a.isPlayer) SC.ui.tip('滾刷變超寬、超快 8 秒！不耗墨，還能滾上牆！', 2.8); }
     else if (kind === 'xray') { a.xrayUntil = now + 8; a.spDur = 8; if (a.isPlayer) { SC.ui.tip('透視 8 秒！牆後面的對手會變成紅色', 2.4); SC.ui.flash('rgba(255,40,40,.35)', 0.3); } }
-    else if (kind === 'spray') { a.sprayUntil = now + 3; a.spDur = 3; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('四面八方亂掃射！', 2); }
+    else if (kind === 'spray') { a.sprayN = C.SPRAY_SHOTS; a.spDur = C.SPRAY_SHOTS * C.SPRAY_GAP + 0.15; a.sprayUntil = now + a.spDur; a.sprayNext = now; a.sprayAng = a.yaw; if (a.isPlayer) SC.ui.tip('散彈六連發！', 1.6); }
     else if (kind === 'blade') { a.spKind = 'blade'; a.spT = 0; a.blade = null; a.bladeAir = !a.inWater && a.pos.y - H(a.pos.x, a.pos.z) > 4; a.form = 'biped'; a.submerged = false; a.vel.set(0, 0, 0); a.cat.slash = 0; a.cat.squash = -0.5; if (a.isPlayer) SC.ui.tip('蓄力中，轉方向瞄準！', 1); } // 第 69 版：先蓄力，路線等蓄完才決定
     if (netOn()) nev(a, 'Y', SP_KINDS.indexOf(kind));
   }
@@ -12265,13 +12323,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const dw = wDiff(kw, killer.killW); if (dw < 0) revive(killer); else if (dw > 0) return; } // 我先：我活回來；他先：這個擊倒不算，他那台會活回來
       if (a.alive) ko(a, killer, CAUSES[d[1]] || 'fall', d.slice(hasK ? 3 : 2).map((i) => G.netActor(i)).filter((e) => e && e !== a)); }
   };
-  // 有人離線（或離開這場）
-  G.netGone = (idx) => {
-    const a = G.netActor(idx); if (!a || a.gone) return;
-    a.gone = true; a.alive = false; a.charge = -1; a.cat.group.visible = false; if (a.sight) a.sight.visible = false;
+  function goPlay() { lastCount = 0; G.state = 'play'; SC.ui.banner('開戰！', 1.1); A.sfx.go(); A.music('castle'); }
+  // 有人離線（或離開這場）。第 121.1 版：先只是消失（final 沒給），他回來就再出現（netBack）；final＝真的離開（40 秒沒回來或按了離開）
+  G.netGone = (idx, final) => {
+    const a = G.netActor(idx); if (!a || (a.gone && !final) || a.lost) return;
+    if (!a.gone) { a.gone = true; a.alive = false; a.charge = -1; a.cat.group.visible = false; if (a.sight) a.sight.visible = false; if (a.subArr) a.subArr.visible = false; }
+    if (final) a.lost = true;
     if (G.state === 'ended') return;
-    if (G.rule === 'zombie' || G.actors.some((e) => e.team !== 0 && !e.gone)) SC.ui.tip(`${a.name}離線了`, 3); // 殭屍保衛戰：大家同一隊，有人離線也繼續守
-    else { SC.ui.tip('對手都離線了，這場提早結束', 4); finish(); }
+    if (!final) { SC.ui.tip(`${a.name}離線了`, 3); return; }
+    if (!(G.rule === 'zombie' || G.actors.some((e) => e.team !== 0 && !e.lost))) { SC.ui.tip('對手都離線了，這場提早結束', 4); finish(); } // 殭屍保衛戰：大家同一隊，有人離線也繼續守
+  };
+  G.netBack = (idx) => { const a = G.netActor(idx); if (!a || !a.gone || a.lost) return; a.gone = false; if (G.state !== 'ended') SC.ui.tip(`${a.name}回來了！`, 2.5); }; // 位置、活著沒有，下一則狀態就會帶過來
+  // 斷線回來（第 121.1 版）：自己這場的數字、剩下時間
+  G.netMine = () => { const p = player(); return p ? { d: p.deaths | 0, k: p.kos | 0, a: p.ast | 0, c: p.credited | 0, pt: Math.round(p.paint || 0), sp: Math.round(p.sp || 0) } : null; };
+  G.netLeft = () => Math.max(0, Math.round(((G.rule === 'zombie' && SC.zb ? SC.zb.LEN : C.ROUND_SECONDS) - G.time) * 10) / 10);
+  G.netTime = (t) => { if (!netOn() || !Number.isFinite(t) || G.state === 'ended') return; if (G.state === 'countdown' && t > 0.5) { goPlay(); G.time = t; } else if (G.state === 'play' && Math.abs(G.time - t) > 2) G.time = t; };
+  G.netResume = (rec) => {
+    const p = player(), s = rec && rec.st; if (!p) return;
+    if (s) { p.deaths = Math.max(0, s.d | 0); p.kos = Math.max(0, s.k | 0); p.ast = Math.max(0, s.a | 0); p.credited = Math.max(0, s.c | 0); p.paint = Math.max(0, +s.pt || 0); p.sp = SC.clamp(+s.sp || 0, 0, 100); }
+    G.netTime(SC.clamp((+rec.t || 0) + Math.max(0, (Date.now() - rec.at) / 1000), 0.6, 999)); SC.ui.tip('回到比賽了！', 2.5);
   };
   G.netFinish = (res) => { if (netOn() && (G.state === 'play' || G.state === 'countdown')) finish(res); };
 
@@ -12639,7 +12709,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (G.state === 'countdown') {
         countdownT -= dt; const n = Math.ceil(countdownT - 0.6);
         if (n !== lastCount && n >= 1 && n <= 3) { lastCount = n; SC.ui.banner(String(n), 0.9, true); A.sfx.count(); }
-        if (countdownT <= 0.6 && lastCount !== 0) { lastCount = 0; G.state = 'play'; SC.ui.banner('開戰！', 1.1); A.sfx.go(); A.music('castle'); }
+        if (countdownT <= 0.6 && lastCount !== 0) goPlay();
       }
       if (G.state === 'play') {
         G.time += dt; const left = C.ROUND_SECONDS - G.time;
@@ -12682,7 +12752,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         if (a.wsp && a.spT == null) { a.wsp.t += dt; spRingShow(a, spRingOf(a), a.wsp.t, a.wsp.x, a.wsp.g, a.wsp.z); if (a.wsp.t >= SP_DOWN) a.wsp = null; }
         if (puffTick(a, dt) && (!a.alive || a.predKo)) return; if (!a.alive) return;
         a.visY = a.onGround ? SC.damp(a.visY, a.pos.y, 22, dt) : a.pos.y;
-        a.cat.group.position.set(a.pos.x, a.visY, a.pos.z); a.cat.group.rotation.y = a.sprayUntil > G.time ? a.sprayAng : a.yaw;
+        a.cat.group.position.set(a.pos.x, a.visY, a.pos.z); a.cat.group.rotation.y = a.yaw;
         const me = viewer(), foe = me && me.team !== a.team, inv = a.invisUntil > G.time; // 滾刷絕招：隱形（對手看不到，自己和隊友看到半透明）
         const swim = a.form === 'cat' && a.submerged && a.onGround, still = swim && a.speed < C.SUB_STILL_V; a.subStill = still ? (a.subStill || 0) + dt : 0; const hide = a.subStill > C.SUB_STILL_T; // 第 71 版（Yen）：潛墨不動時對手完全看不到，自己和隊友看到淡淡的
         a.cat.group.visible = (!(G.time < a.protectUntil && Math.floor(now * 14) % 2 === 0) || G.state !== 'play') && !(a.isPlayer && cam.zoom > 1.4) && !a.predKo && !(hide && foe);
@@ -13049,6 +13119,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       </div>
     </div>
 
+    <div class="menu dim" id="m-rejoin" hidden>
+      <div class="card rjn">
+        <button type="button" class="rjn-go" id="btn-rejoin" aria-label="回到比賽"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="46" fill="#fff"/><path d="M36 54a26 26 0 1 1 6 26" fill="none" stroke="#ff5fa2" stroke-width="10" stroke-linecap="round"/><path d="M22 46l14 12 12-16" fill="none" stroke="#ff5fa2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 44l22 16-22 16z" fill="#1b1430" stroke="#1b1430" stroke-width="4" stroke-linejoin="round"/></svg></button>
+        <p class="rjn-t">回到比賽</p>
+        <button type="button" class="rjn-x" id="btn-rejoin-x" aria-label="不要"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+
     <div class="menu dim" id="m-fsguide" hidden>
       <div class="card fsg">
         <h2>全螢幕玩</h2>
@@ -13311,6 +13389,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     $('btn-full').addEventListener('pointerdown', (e) => e.stopPropagation());
     on('btn-full', fsToggle); on('btn-full2', fsToggle);
     on('btn-fsguide-close', () => ($('m-fsguide').hidden = true));
+    // 第 121.1 版（Yen 11-22「斷線後要能再連回去，尤其是積分賽」）：重新整理或關掉再打開時，剛剛那場還在打，就跳出大大的「回到比賽」鈕（不用讀字）
+    { let shown = '';
+      const rj = $('m-rejoin'), check = () => { const N = SC.net, rec = N && N.rejoinRec ? N.rejoinRec() : null, ok = !!rec && N.state === 'idle' && !N.code && !N.busy && !els['m-title'].hidden && G().mode !== 'net';
+        if (ok && shown !== rec.mid) { shown = rec.mid; rj.hidden = false; } else if (!ok && !rj.hidden) rj.hidden = true; };
+      setInterval(check, 600);
+      on('btn-rejoin', () => { rj.hidden = true; const rec = SC.net.rejoinRec(); if (!rec) return; const want = rec.rk ? 'ranked' : 'net', b = $('pick-mode').querySelector(`.pick[data-v="${want}"]`); if (b && modeKey() !== want) b.click(); SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon }); SC.net.rejoin(); });
+      on('btn-rejoin-x', () => { rj.hidden = true; SC.net.forgetRejoin(); }); }
     if (!window.SC_PUBLIC) $('fsg-note').innerHTML = '要先用 <b>spalacat.com</b> 打開遊戲，再照上面三步做（Claude 裡面的版本不能加到主畫面）。';
     on('btn-mute', ui.toggleMute); on('btn-mute2', ui.toggleMute);
     on('btn-cat-mode', () => { SC.input.catToggle = !SC.input.catToggle; SC.input.clearLatch(); $('btn-cat-mode').textContent = '墨貓鈕：' + (SC.input.catToggle ? '點一下切換' : '按住'); save(); });
