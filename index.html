@@ -855,6 +855,8 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 #m-title.step-setup #pick-mode .pick.on .mico { grid-row: 1 / 3; }
 #m-title.step-setup #pick-mode .pick.on b { align-self: end; } #m-title.step-setup #pick-mode .pick.on small { align-self: start; }
 @media (max-height: 520px) { #m-title.step-mode #pick-mode .pick { min-height: 0; padding: 8px 6px; } #m-title.step-mode #pick-mode .mico { width: 60px; height: 41px; } #m-title.step-mode #pick-mode .pick b { font-size: 16px; } #m-title.step-setup .mode-back { height: 46px; } }
+/* 第 108 版：狙擊沒開鏡的散布圈（虛線），開鏡後縮掉 */
+.c-spread { position: absolute; display: none; border-radius: 50%; border: 3px dashed rgba(255, 255, 255, .85); box-shadow: 0 0 0 1px rgba(27, 20, 48, .5); pointer-events: none; transition: width .12s, height .12s, left .12s, top .12s; }
 
 </style>
 <div id="app">
@@ -920,7 +922,7 @@ SC.CFG = {
   W02: { id: 'W02', name: '滾刷', swingInk: 8 / INK_LAST, rollInk: 0.42 / INK_LAST, swingInterval: 0.5, rollDelay: 0.2, swingRange: 19, airRange: 40, // 跳起來甩：直的一道、噴得遠（Yen 11/14，像漆彈大作戰的跳甩）
     
     swingRadius: 3.4, rollerHalf: 5.8, /* 第 103 版（Yen）：刷頭看起來是實際塗墨寬度的 9 成（塗出的帶子半寬約 1.12×rollRadius×PAINT≈6.5） */ rollRadius: 3.85, rollSpeedMin: 1.08, rollSpeedMax: 1.38, rollRamp: 0.7, swingDamage: 48, rollDamage: 100, rollHitInterval: 0.4 },
-  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, playerCharge: 0.35, deskInterval: 1, /* 第 100 版（Yen）：玩家不用集氣（電腦版左鍵一按就射、平板按住 0.35 秒就滿）；電腦按了就射的版本每發間隔 1 秒 */ minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
+  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, playerCharge: 0.35, deskInterval: 1, spread: 0.07, /* 第 108 版（Yen）：沒開鏡最多偏 4 度 */ /* 第 100 版（Yen）：玩家不用集氣（電腦版左鍵一按就射、平板按住 0.35 秒就滿）；電腦按了就射的版本每發間隔 1 秒 */ minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
    
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
@@ -10037,7 +10039,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // opts: { kind, weapon, difficulty, mode: 'versus'｜'sandbox'｜'boss'｜'net', roster: '1v1'｜'2v2', demo, net: SC.net.match }
   G.start = (opts) => {
-    if (I.setBombSlot) I.setBombSlot(false); I.scope = false; // 第 98 版：每一場開始都回到第一把武器、狙擊鏡關著
+    if (I.setBombSlot) I.setBombSlot(false); I.scope = false; G.scopeOut = -9; // 第 98 版：每一場開始都回到第一把武器、狙擊鏡關著
     if (opts.weapon && !opts.loadout) G.opts.loadout = null; Object.assign(G.opts, opts); G.opts.tut = !!opts.tut; G.demo = !!opts.demo; if (!G.opts.tut && SC.tut && SC.tut.active) SC.tut.stop(); G.mode = G.demo ? 'versus' : G.opts.mode || 'versus'; slowT = 0; cam.fin = null; G.cine = false; vic = null; judged = false; hugEnd();
     const net = netOn() ? G.opts.net : null, boss = G.mode === 'boss', solo = boss || G.mode === 'sandbox', duo = G.demo || G.opts.roster !== '1v1';
     const all = SC.bossList(); BS = (boss && all[(+G.opts.stage || 1) - 1]) || SC.boss; let off = false; all.forEach((m) => { if (m && m !== BS && m.setActive(false, scene)) off = true; });
@@ -10452,10 +10454,20 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   G.sniperRay = (m, dir) => sniperRay(player(), m, dir); // 測試用
   G.testShot = (a, x, y, z, vx, vy, vz) => projectiles.push({ x, y, z, vx, vy, vz, team: a.team, owner: a, dmg: C.W01.damage, r: 1, range: 99, g: 0, travel: 0, drip: 0, life: 0, vr: 0.8, color: colors[a.team], cause: 'W01' }); // 測試用：直直飛的一發
   const fullC = (a) => (a.isPlayer ? C.W03.playerCharge : C.W03.fullCharge); G.sniperFull = fullC;
+  // 第 108 版（Yen 11/21 20:41）：狙擊槍沒開鏡會射偏，開鏡才準。電腦版看鏡頭放大了多少（右鍵開鏡，4 倍才完全準）；
+  // 觸控版看按住蓄力了多久（按滿 0.35 秒才完全準，點一下就放開會偏）。偏的角度最多 C.W03.spread（弧度），在圓錐裡隨機。
+  let scopeAim = 0; G.scopeOut = -9;
+  const sniperSpread = (a) => { if (!a.isPlayer) return 0; const k = I.isTouch ? SC.clamp((a.charge - C.W03.minCharge) / (fullC(a) - C.W03.minCharge), 0, 1) : scopeAim; return C.W03.spread * (1 - k) * (1 - k * 0.5); };
+  G.sniperSpread = () => { const p = player(); return p ? sniperSpread(p) : 0; };
+  function scatter(dir, ang) {
+    if (ang <= 0) return; const u = new V3(), v = new V3(); u.set(-dir.z, 0, dir.x); if (u.lengthSq() < 1e-6) u.set(1, 0, 0); u.normalize(); v.crossVectors(dir, u).normalize();
+    const t = Math.tan(ang * Math.sqrt(Math.random())), ph = Math.random() * Math.PI * 2; dir.addScaledVector(u, t * Math.cos(ph)).addScaledVector(v, t * Math.sin(ph)).normalize();
+  }
   function fireSniper(a) {
     const w = C.W03, c = SC.clamp((a.charge - w.minCharge) / (fullC(a) - w.minCharge), 0, 1);
     if (a.ink < w.ink) { if (a.isPlayer) { A.sfx.empty(); SC.ui.lowInk(); emptyFx(a); } return; } // 第 85 版：蓄力中丟了墨水彈，墨水不夠就不發射（不會變負的）
-    const m = new V3(), dir = new V3(); sniperRay(a, m, dir); const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
+    const m = new V3(), dir = new V3(); sniperRay(a, m, dir); scatter(dir, sniperSpread(a)); if (a.isPlayer) G.lastSniperDir = dir; // 測試用 const boost = paintBoost(a), shot = sniperShot(a, m, dir, c, boost, null);
+    if (a.isPlayer && !I.isTouch && I.scope) G.scopeOut = G.time + 0.42; // 第 108 版（Yen）：開鏡射出後，畫面先退回沒開鏡，再自動拉回遠鏡
     if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
   }
@@ -11398,10 +11410,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const baseFov = aspect < 1 ? 78 : 60;
     // 狙擊蓄力時放大：一按就先 1.8 倍，蓄滿到 SCOPE_ZOOM 倍；鏡頭移到貓咪頭部，角色不會擋住準星
     // 第 98 版（Yen）：電腦版改成按右鍵開關狙擊鏡（一開就 4 倍），蓄力不再自動放大；觸控版照舊按住蓄力放大
-    const sniping = p && p.isPlayer && !G.demo && p.alive && p.weapon === 'W03' && G.state === 'play', charging = sniping && (I.isTouch ? p.charge >= 0 : I.scope);
+    const sniping = p && p.isPlayer && !G.demo && p.alive && p.weapon === 'W03' && G.state === 'play', charging = sniping && (I.isTouch ? p.charge >= 0 : I.scope && G.time >= G.scopeOut);
     const ck = charging ? (I.isTouch ? SC.clamp(p.charge / fullC(p), 0, 1) : 1) : 0;
     cam.zoom = SC.damp(cam.zoom, charging ? 1.8 + (SCOPE_ZOOM - 1.8) * ck * (2 - ck) : 1, charging ? 14 : 10, dt);
-    const scopeK = SC.clamp((cam.zoom - 1) / 0.8, 0, 1);
+    const scopeK = SC.clamp((cam.zoom - 1) / 0.8, 0, 1); scopeAim = sniping && !I.isTouch && I.scope ? SC.clamp((cam.zoom - 1) / (SCOPE_ZOOM - 1.05), 0, 1) : 0;
+    if (SC.ui.spread) { const ang = sniping ? sniperSpread(p) : 0; SC.ui.spread(ang > 0.002 ? (Math.tan(ang) / Math.tan((camera.fov * Math.PI) / 360)) * (window.innerHeight / 2) : 0); } // 準星外圈：會偏多少
     camera.fov = (2 * Math.atan(Math.tan((baseFov * Math.PI) / 360) / cam.zoom) * 180) / Math.PI;
     SC.ui.scope(scopeK);
     if (G.demo || !p) {
@@ -11945,7 +11958,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="h-feed" id="feed"></div>
       <div class="h-spec" id="h-spec" hidden><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M2 16Q24-8 46 16 24 40 2 16z" fill="#fff" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="16" r="8" fill="#1b1430"/><circle cx="27" cy="13" r="2.6" fill="#fff"/></svg><span>觀戰中</span><i class="dot" id="spec-dot"></i><b id="spec-name"></b><button type="button" class="spec-next" id="spec-next" aria-label="換人看"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 6l14 10L8 26z" fill="currentColor"/><rect x="23" y="6" width="4" height="20" rx="2" fill="currentColor"/></svg></button></div>
       <div class="h-scope" id="scope"></div>
-      <div class="h-cross" id="cross"><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div><div class="h-hs" id="hs-pop">爆頭！</div><div class="h-sptime" id="sp-time" hidden><b id="sp-time-n">6</b></div>
+      <div class="h-cross" id="cross"><i class="c-spread"></i><i class="c-ring"></i><i class="c-dot"></i><i class="c-hit"></i></div><div class="h-hs" id="hs-pop">爆頭！</div><div class="h-sptime" id="sp-time" hidden><b id="sp-time-n">6</b></div>
       <div class="h-weapons" id="weapons">
         ${['W01', 'W02', 'W03', 'W04', 'W05'].map((w, i) => `<div class="w-chip" data-w="${w}">${ui.icon(w)}<span><kbd>${i + 1}</kbd><b>${C[w].name}</b></span></div>`).join('')}<div class="w-chip bomb">${ui.icon('BOMB')}<span><kbd>3</kbd><b>墨水彈</b></span></div><div class="w-chip bomb">${ui.icon('CAT')}<span><kbd>Shift</kbd><b>墨貓</b></span></div>
       </div>
@@ -12341,6 +12354,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   ui.bombSlot = (on) => { const bc = els.weapons && els.weapons.querySelector('.w-chip.bomb'); if (!bc) return; bc.classList.toggle('on', on); els.weapons.querySelectorAll('.w-chip[data-w]').forEach((c) => c.classList.toggle('off', on)); }; // 第 98 版：選了 3（墨水彈）時亮起來
   ui.onWeapon = (id) => { els.weapons.querySelectorAll('.w-chip').forEach((c) => c.classList.toggle('on', c.dataset.w === id)); els.cross.dataset.w = id; SC.input.setWeapon(id); };
+  ui.spread = (px) => { const e = els.cross && els.cross.querySelector('.c-spread'); if (!e) return; const v = Math.round(px / 2) * 2; if (last.spread === v) return; last.spread = v; e.style.display = v >= 26 ? 'block' : 'none'; if (v >= 26) { e.style.width = e.style.height = v * 2 + 'px'; e.style.left = e.style.top = -v + 'px'; } }; // 第 108 版：狙擊沒開鏡時準星外一圈虛線，表示子彈會偏到哪裡
   ui.scope = (k) => { if (!els.scope) return; const v = Math.round(k * 20) / 20; if (last.scope !== v) { last.scope = v; els.scope.style.opacity = v; els.cross.classList.toggle('scoped', v > 0.5); } };
   ui.hurt = () => { hurtK = 1; };
   ui.hurtDir = (ang) => { const box = els.hdir; if (!box) return; const now = performance.now(); for (const c of [...box.children]) if (Math.abs(SC.angDiff(+c.dataset.a, ang)) < 0.35 && now - c.dataset.t < 300) return; if (box.children.length > 3) box.firstChild.remove(); const i = document.createElement('i'); i.dataset.a = ang; i.dataset.t = now; i.style.setProperty('--a', ang + 'rad'); box.appendChild(i); setTimeout(() => i.remove(), 650); }; // 第 88 版：從哪裡被打，畫面那一邊亮紅色弧光 0.6 秒
