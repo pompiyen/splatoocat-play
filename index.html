@@ -256,6 +256,11 @@ button { font: inherit; color: inherit; }
 .res-bar b { font-weight: 400; min-width: 3.4em; } .res-bar b:first-child { text-align: right; }
 .h-bar.big { width: clamp(160px, 44vw, 520px); height: 26px; border-radius: 14px; } .h-bar.big i { transition: none; }
 .res-bottom { display: grid; gap: 12px; justify-items: center; }
+.res-row { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; max-width: calc(100vw - 32px); }
+.res-map { width: clamp(150px, 40vmin, 340px); height: auto; border: 3px solid #fff; border-radius: 14px; background: var(--navy); box-shadow: 0 4px 0 var(--navy); }
+.res-map.round { border-radius: 50%; } .res-map[hidden] { display: none; }
+.res-map.pop { animation: resMapIn .5s cubic-bezier(.2, 1.5, .4, 1) .3s backwards; }
+@keyframes resMapIn { from { transform: scale(.4) rotate(-8deg); opacity: 0; } }
 .res-stats { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .res-stats > div { background: var(--navy); border: 3px solid #fff; border-radius: 14px; padding: 6px 14px; display: grid; justify-items: center; gap: 2px; }
 .res-stats span { font-size: 12px; color: var(--dim); } .res-stats b { font: 400 22px/1 var(--f-display); }
@@ -704,6 +709,8 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .stk.ghost { opacity: .45; cursor: default; } .stk.wig { animation: meowTilt .5s ease-in-out; }
 .stk i { position: absolute; right: 0; bottom: 0; font: 900 13px/1 var(--f-body); font-style: normal; background: var(--navy); color: #fff; border-radius: 8px; padding: 2px 5px; }
 @media (max-height: 520px) { .stk-new .stk-pop { width: 54px; height: 54px; } }
+@media (max-height: 520px) { .res-map { width: clamp(110px, 34vh, 180px); } }
+@media (max-width: 480px) { .praise { gap: 6px; transform: scale(.78); margin: -6px 0 0; } }
 
 </style>
 <div id="app">
@@ -769,7 +776,8 @@ SC.CFG = {
   W02: { id: 'W02', name: '滾刷', swingInk: 8 / INK_LAST, rollInk: 0.42 / INK_LAST, swingInterval: 0.5, rollDelay: 0.2, swingRange: 19, airRange: 40, // 跳起來甩：直的一道、噴得遠（Yen 11/14，像漆彈大作戰的跳甩）
     
     swingRadius: 3.4, rollRadius: 3.85, rollSpeedMin: 1.08, rollSpeedMax: 1.38, rollRamp: 0.7, swingDamage: 48, rollDamage: 100, rollHitInterval: 0.4 },
-  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, minRange: 85, maxRange: 150,
+  W03: { id: 'W03', name: '狙擊槍', ink: 14 / INK_LAST, minCharge: 0.22, fullCharge: 1.1, interval: 0.85, minRange: 400, maxRange: 400, // 第 93 版（Yen 11/21 14:06）：任何場地、任何位置都射得到對手（最大場地對角約 320）
+   
     minDamage: 100, maxDamage: 100, // Yen 2026-11-14：狙擊槍一發擊倒（Roblox 版是 36～100）
      minRadius: 2.2, maxRadius: 3.6 },
   // 散彈槍（Yen 2026-11-19）：一次噴出一把小墨彈成扇形；貼近全中一發擊倒，遠一點只中幾顆
@@ -9634,12 +9642,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (netOn()) nev(a, 'z', m.x, m.y, m.z, dir.x, dir.y, dir.z, c, boost, shot.len, shot.hit ? 1 : 0);
     a.ink -= w.ink; a.lastShotAt = G.time; a.nextShotAt = G.time + w.interval;
   }
-  // 第 92 版（Yen 11/21 13:53）：站在城牆上，狙擊射程變兩倍（蓄滿 300），射得到對面城牆和牆上的對手
-  function sniperRange(a, c) { const w = C.W03, r = SC.lerp(w.minRange, w.maxRange, c); return G.mode !== 'boss' && a.pos.y > 30 && W.gated(a.pos.x, a.pos.z) ? r * 2 : r; }
+  // 第 93 版（Yen 11/21 14:06）：狙擊射程 400，任何場地、任何位置都射得到（原本第 92 版只有站在城牆上才變兩倍）
+  function sniperRange(a, c) { const w = C.W03; return SC.lerp(w.minRange, w.maxRange, c); }
+  // 第 93 版（Yen）：狙擊的光束經過牆邊，跟經過地板一樣在牆上留下一條塗墨軌跡（往左、往右、往前找 8 以內的牆）
+  function sniperWallTrail(team, x, y, z, dir, r, col) {
+    const hl = Math.hypot(dir.x, dir.z); if (hl < 0.05) return; const fx = dir.x / hl, fz = dir.z / hl;
+    for (const [kx, kz] of [[-fz, fx], [fz, -fx], [fx, fz]]) for (let d = 1; d <= 8; d++) { const px = x + kx * d, pz = z + kz * d; if (H(px, pz) > y + 0.5) { wallPaint(team, x + kx * (d - 1), z + kz * (d - 1), px, pz, y, r, col); break; } }
+  }
   // 狙擊槍的一槍：沿線塗地、判定命中、畫光束。replay 是連線時別人開的槍（{ len, hit }），照他那邊算好的長度重播，不再判定命中。
   function sniperShot(a, m, dir, c, boost, replay) {
     const w = C.W03, range = sniperRange(a, c), dmg = SC.lerp(w.minDamage, w.maxDamage, c), rad = SC.lerp(w.minRadius, w.maxRadius, c) * C.PAINT * boost, end = new V3();
-    const maxT = replay ? Math.min(320, replay.len) : range;
+    const maxT = replay ? Math.min(420, replay.len) : range;
     let hitActor = null, t = 0, paintT = 0; INK.by = a;
     for (; t <= maxT; t += 1) {
       const x = m.x + dir.x * t, y = m.y + dir.y * t, z = m.z + dir.z * t, h = H(x, z); end.set(x, y, z);
@@ -9650,7 +9663,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (hitActor) break;
       if (y <= h) { if (G.mode === 'boss') { if (h - y > 1.5) BS.paintWall(a.team, x, y, z, rad * 1.2); BS.onImpact(x, y, z, 'W03'); }
         const back = Math.max(0, t - 1), bx = m.x + dir.x * back, bz = m.z + dir.z * back, gh = H(bx, bz); if (h - y > 1.5) wallPaint(a.team, bx, bz, x, z, y, rad * 0.9, colors[a.team]); if (gh > -4) INK.splat(a.team, h - y < 1.5 ? x : bx, h - y < 1.5 ? h : gh, h - y < 1.5 ? z : bz, rad * 1.5, dir.x, dir.z); break; }
-      if (t >= paintT) { paintT = t + 2.4; if (h > -4 && y - h < 18) INK.stamp(a.team, x, h, z, rad); }
+      if (t >= paintT) { paintT = t + 2.4; if (h > -4 && y - h < 18) INK.stamp(a.team, x, h, z, rad); if (G.mode !== 'boss') sniperWallTrail(a.team, x, y, z, dir, rad * 0.7, colors[a.team]); }
     }
     if (hitActor) { hurt(hitActor, dmg, a, 'W03'); INK.splat(a.team, hitActor.pos.x, H(hitActor.pos.x, hitActor.pos.z), hitActor.pos.z, rad); }
     else if (replay && replay.hit) { const gh = H(end.x, end.z); if (gh > -4) INK.splat(a.team, end.x, gh, end.z, rad); }
@@ -11115,7 +11128,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         <div class="res-bar"><b id="res-a">0.0%</b><div class="h-bar big"><i id="res-bar-a"></i><i id="res-bar-c" class="mid"></i><i id="res-bar-b"></i></div><b id="res-b">0.0%</b><b id="res-c">0.0%</b></div>
       </div>
       <div class="res-bottom">
-        <div class="res-stats" id="res-stats"></div>
+        <div class="res-row"><canvas class="res-map" id="res-map" width="300" height="150" aria-label="塗地結果地圖" hidden></canvas><div class="res-stats" id="res-stats"></div></div>
         <div class="res-rank" id="res-rank" hidden></div>
         <div class="actions"><button type="button" class="btn primary" id="btn-again">再來一場</button><button type="button" class="btn" id="btn-menu">回主選單</button></div>
       </div>
@@ -11493,8 +11506,24 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ui.rank = rank;
 
   let loseRun = 0;
+  // 第 93 版（Yen 11/21 14:06）：結算畫面除了數據，也顯示整張場地從上往下看的塗地結果（地形用明暗分出高低）
+  function resMap(g) {
+    const cv = $('res-map'); if (g.mode === 'boss' || !SC.ink.owner) { cv.hidden = true; return; }
+    const L = SC.world.lim, Hh = SC.world.height, mw = 300, mh = Math.max(60, Math.round((mw * L.z) / L.x)); cv.width = mw; cv.height = mh; cv.classList.toggle('round', !!(L.r || L.e));
+    const cx = cv.getContext('2d'), img = cx.createImageData(mw, mh), d = img.data, own = SC.ink.owner, pt = SC.ink.paintable, sx = (L.x * 2) / mw, sz = (L.z * 2) / mh;
+    const hex = (c) => [c.getHex() >> 16, (c.getHex() >> 8) & 255, c.getHex() & 255], rgb = [[250, 240, 222], ...g.colors.map(hex)];
+    let prev = new Float32Array(mw), row = new Float32Array(mw);
+    for (let y = 0; y < mh; y++) { const wz = -L.z + (y + 0.5) * sz;
+      for (let x = 0; x < mw; x++) { const wx = -L.x + (x + 0.5) * sx, p = (y * mw + x) * 4, h = (row[x] = Hh(wx, wz));
+        if ((L.r || L.e) && SC.world.outOf(L, wx, wz)) { d[p + 3] = 0; continue; }
+        const i = SC.ink.cellIndex(wx, wz), c = i >= 0 && pt[i] ? rgb[own[i]] || rgb[0] : h < -1 ? [150, 210, 245] : [200, 195, 222];
+        const up = y ? prev[x] : h, lf = x ? row[x - 1] : h, k = 1 + SC.clamp((up - h) * 0.05 + (lf - h) * 0.03, -0.28, 0.2) + SC.clamp(h, -4, 40) * 0.004; // 往左上打光：牆的邊比較暗，高的地方稍亮
+        d[p] = Math.min(255, c[0] * k); d[p + 1] = Math.min(255, c[1] * k); d[p + 2] = Math.min(255, c[2] * k); d[p + 3] = 255; }
+      const t = prev; prev = row; row = t; }
+    cx.putImageData(img, 0, 0); cv.hidden = false; cv.classList.remove('pop'); void cv.offsetWidth; cv.classList.add('pop');
+  }
   ui.onResults = () => {
-    const g = G(), w = g.winner, p = g.player(); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true;
+    const g = G(), w = g.winner, p = g.player(); resMap(g); els['m-results'].classList.toggle('boss', g.mode === 'boss'); praiseV = null; els.praise.hidden = true;
     { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } // 第 91 版：每打完一場得到一張貼紙 els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
