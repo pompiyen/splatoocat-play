@@ -11857,6 +11857,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
             <button type="button" class="pick ico-pick" data-v="boss">${ICON.boss}<b>魔王關卡</b><small>十五隻大魔王</small></button>
             <button type="button" class="pick ico-pick" data-v="net">${ICON.net}<b>連線對戰</b><small>和朋友開房間</small></button>
             <button type="button" class="pick ico-pick" data-v="ranked">${ICON.ranked}<b>積分賽</b><small>配對拿積分升牌位</small></button></div></div>
+          <div class="opt" id="rk-opt" hidden></div>
           <div class="opt" id="stage-opt" hidden><h3>選魔王</h3><div class="row" id="pick-world">${WORLDS.map((w, i) => `<button type="button" class="pick ico-pick world-pick w${i + 1}" data-v="${i + 1}" aria-label="世界 ${i + 1} ${w.name}">${w.icon}<b>世界 ${i + 1}</b><small>${w.name}</small></button>`).join('')}</div><div class="row" id="pick-stage"></div></div>
           <div class="opt" id="kind-opt"><h3>選貓咪</h3><div class="row" id="pick-kind">
             <button type="button" class="pick cat-pick" data-v="maomao">${ui.face('maomao')}<b>毛毛</b><small>金吉拉・臭臉擔當</small></button>
@@ -12031,7 +12032,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
-      $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
+      { const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '進入試玩' : sel.mode === 'boss' ? '挑戰魔王' : '開戰！';
       SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); netSync();
     };
     // 選關：世界列 + 這個世界的五張魔王卡
@@ -12051,11 +12052,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const pick = (groupId, key) => {
       const g = $(groupId), sync = () => g.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === (key === 'mode' ? modeKey() : sel[key])));
       g.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return;
-        if (key === 'mode') { const rk = b.dataset.v === 'ranked'; if (rk && !sel.rk && SC.ranked) setTimeout(() => SC.ranked.open(), 0); // 點積分賽自動跳出牌位視窗（Yen 21:35）
+        if (key === 'mode') { const rk = b.dataset.v === 'ranked'; // 積分賽的牌位改放在版面裡（rk-opt），不再跳視窗（Yen 2026-11-21）
           if (sel.mode === 'net' && !!sel.rk !== rk && SC.net.code) SC.net.leave(); sel.rk = rk; sel[key] = rk ? 'net' : b.dataset.v; } // 積分賽＝連線對戰＋積分房（換模式就離開原本的房間）
         else sel[key] = b.dataset.v; sync(); modeSync(); click(); if (key === 'kind') { SC.audio.sfx.meow(b.dataset.v); b.classList.remove('meow'); void b.offsetWidth; b.classList.add('meow'); } }); sync(); // 第 89 版：點貓咪，貓咪歪頭喊一聲喵
     };
     const click = () => { SC.audio.init(); SC.audio.sfx.ui(); };
+    ui.pickRanked = () => { const t = $('m-title'), b = $('pick-mode').querySelector('[data-v="ranked"]'); if (!t || t.hidden || !b) return false; if (modeKey() !== 'ranked') b.click(); else SC.ranked.open('rank'); t.querySelector('#rk-opt').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return true; };
     ui.modeSyncPicks = () => $('pick-mode').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === modeKey()));
     ['kind', 'difficulty', 'mode', 'roster', 'vrule', 'ink', 'stage'].forEach((k) => pick('pick-' + k, k)); // 武器不在選單選，進場後再換
     $('pick-world').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; const w = +b.dataset.v; if (worldOf(sel.stage) !== w) { const all = SC.bossList(); let i = (w - 1) * 5; while (i < w * 5 - 1 && !all[i]) i++; sel.stage = String(i + 1); } renderStages(); modeSync(); click(); });
@@ -12764,6 +12766,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .rkd-up{animation:none}
 .rkd-ov{position:fixed;inset:0;z-index:60;background:rgba(10,6,24,.72);display:flex;align-items:center;justify-content:center;padding:12px}
 .rkd-ov[hidden]{display:none}
+.rkd-pn.rkd-inl{width:100%;max-height:none;overflow:visible;border-width:3px;box-shadow:0 4px 0 #000}.rkd-inl .rkd-head{margin-right:0}
 .rkd-pn{background:var(--navy-2);border:4px solid #fff;border-radius:22px;box-shadow:0 6px 0 #000;width:min(560px,100%);max-height:100%;overflow:auto;padding:14px;position:relative;color:var(--cream)}
 .rkd-x{position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:50%;border:3px solid #fff;background:var(--navy);color:#fff;font:400 22px/1 var(--f-display);cursor:pointer}
 .rkd-head{display:flex;align-items:center;gap:12px;margin:0 44px 10px 0}.rkd-head .rkd-i{width:76px;height:76px;flex:none}
@@ -12868,7 +12871,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const i = weekly.last.findIndex((r) => r.uid === uid); weekly.status = i < 0 ? '' : i < 3 ? 'top3' : 'top10'; weekly.loaded = weekId(n);
         try { localStorage.setItem(ST_KEY, JSON.stringify({ wk: weekId(n), s: weekly.status })); } catch (e) {}
       } catch (e) { /* 讀不到就先不顯示 */ }
-      weekly.busy = false; paintBadge(); if (ov && !ov.hidden && tab === 'week') openPanel(tab);
+      weekly.busy = false; paintBadge(); if (((ov && !ov.hidden) || host()) && tab === 'week') openPanel(tab);
     },
     mine: () => { if (weekly.status && weekly.loaded === weekId()) return weekly.status; try { const o = JSON.parse(localStorage.getItem(ST_KEY) || 'null'); return o && o.wk === weekId() ? o.s || '' : ''; } catch (e) { return ''; } },
   };
@@ -12895,9 +12898,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     badge.setAttribute('aria-label', tr('牌位') + ' ' + tr(TIERS[t].n));
   };
   const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  // 積分賽的牌位／排行／徽章直接放在選單版面裡（Yen 2026-11-21 19:43：不要彈出視窗）
+  const host = () => { const h = document.getElementById('rk-opt'); return h && !h.hidden ? h : null; };
+  const onTab = (e) => { const tb = e.target.closest('[data-tab]'); if (!tb) return false; openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return true; };
   const openPanel = (want) => {
     style(); const s = load(), t = tierOf(s.p); if (typeof want === 'string') tab = want;
-    if (!ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
+    const inl = host();
+    if (!inl && typeof want !== 'string' && SC.ui && SC.ui.pickRanked && SC.ui.pickRanked()) return; // 標題上的牌位按鈕：切到積分賽，積分就在版面裡
+    if (inl && !inl.dataset.rk) { inl.dataset.rk = '1'; inl.addEventListener('click', onTab); }
+    if (!inl && !ov) { ov = document.createElement('div'); ov.className = 'rkd-ov'; ov.addEventListener('click', (e) => { const tb = e.target.closest('[data-tab]'); if (tb) { openPanel(tb.dataset.tab); if (tb.dataset.tab === 'week') weekly.load(); return; } if (e.target === ov || e.target.closest('.rkd-x')) close(); }); document.body.appendChild(ov); }
     const nxt = t >= TOP ? '' : ` / ${(t + 1) * PER}`, wkp = s.wk && s.wk.id === weekId() ? s.wk.p : 0, f = FRAME[weekly.mine()];
     const tabs = `<div class="rkd-tabs">${[['rank', '🏅', '牌位'], ['week', '📅', '本週排行'], ['ach', '🎖️', '徽章']].map(([k, i, n]) => `<button type="button" data-tab="${k}" class="${tab === k ? 'on' : ''}"><em>${i}</em>${tr(n)}</button>`).join('')}</div>`;
     const head = `<div class="rkd-head"><span class="rkd-i">${icon(t)}${f ? `<i class="rkd-fr">${f.i}</i>` : ''}</span><div><b>${tr(TIERS[t].n)}</b>${stars(s.p)}<small>${tr('積分')} ${s.p}${nxt}　·　${s.m} ${tr('場')}${f ? '　·　' + f.i + ' ' + tr(f.n) : ''}</small></div></div>`;
@@ -12920,9 +12929,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       </div>
       <p class="rkd-foot"><span>🏅 ${tr('只有積分賽算分')}</span><span>📈 ${tr('牌位越高，加分越少、輸了扣越多')}</span><span>🛡️ ${tr('鈴鐺以下不會掉牌位')}</span><span>🛡️ ${tr('升上肉球以上有 3 場保護')}</span>${s.pr > 0 ? `<span>🛡️×${s.pr}</span>` : ''}</p>`;
     }
-    ov.innerHTML = `<div class="rkd-pn" role="dialog" aria-label="${tr('牌位')}"><button type="button" class="rkd-x" aria-label="${tr('關閉')}">×</button>
+    if (inl) { inl.innerHTML = `<div class="rkd-pn rkd-inl" aria-label="${tr('牌位')}">${head}${tabs}${body}</div>`; if (ov) ov.hidden = true; }
+    else { ov.innerHTML = `<div class="rkd-pn" role="dialog" aria-label="${tr('牌位')}"><button type="button" class="rkd-x" aria-label="${tr('關閉')}">×</button>
       ${head}${tabs}${body}</div>`;
-    ov.hidden = false;
+    ov.hidden = false; }
     if (tab === 'week' && weekly.can() && weekly.loaded !== weekId()) weekly.load();
   };
   const close = () => { if (ov) ov.hidden = true; };
