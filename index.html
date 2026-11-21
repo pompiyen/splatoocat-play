@@ -5597,7 +5597,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.clock = () => clock;
   N.played = (id) => done.has(id);
   N.clean = (s) => String(s == null ? '' : s).replace(/[^\p{L}\p{N} _-]/gu, '').trim().slice(0, 8);
-  const validH = (h) => (h && typeof h === 'object' && typeof h.id === 'string' && Array.isArray(h.pl) && h.pl.length >= 1 && h.pl.length <= 6 && (h.n == null || (h.n === 2 && h.pl.length <= 4) || (h.n >= 3 && h.n <= 6 && h.pl.length === h.n))
+  const validH = (h) => (h && typeof h === 'object' && typeof h.id === 'string' && Array.isArray(h.pl) && h.pl.length >= 1 && h.pl.length <= 6 && (h.n == null || (h.n === 2 && h.pl.length <= 6) || (h.n >= 3 && h.n <= 6 && h.pl.length === h.n))
     && h.pl.every((e) => Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] < (h.n || 2) && Number.isInteger(e[2]) && e[2] >= 0 && e[2] <= 3) ? h : null); // 第 70 版：一起打電腦時一隊最多 4 人（座位 0～3）
   // 場地座標換算：dir 1＝收到的（大家共用的座標→自己畫面），-1＝送出去的。轉 rot 角度，面向角跟著減
   const turn = (a, idx, yaw, dir) => {
@@ -5627,7 +5627,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   function attach(r, code, qi, ranked, qrule) {
     chatOut = []; chatSeen = {}; N.chatLog = [];
-    room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); N.qrule = qrule === 'knockout' || ranked === 'knockout' ? 'knockout' : 'turf'; N.rmode = ranked === '1v1' ? '1v1' : '2v2'; N.rsize = N.ranked && ranked === '1v1' ? 2 : 4; N.ready = false; N.rkDone = false; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
+    room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); N.qrule = qrule === 'knockout' || ranked === 'knockout' ? 'knockout' : 'turf'; N.rmode = 'all'; N.rsize = 6; N.ready = false; N.rkDone = false; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
     if (qi) { N.rule = N.qrule; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; } N.vc = false;
     changed();
   }
@@ -5642,12 +5642,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!api || N.busy || room) return;
     N.busy = true; N.msg = '正在找房間…'; changed();
     for (let i = from || 1; i <= QROOMS; i++) {
-      let r = null; try { r = await api.join((ranked === '1v1' ? 'sc-rs' : ranked === 'knockout' ? 'sc-rk' : ranked ? 'sc-r' : rule === 'knockout' ? 'sc-qk' : 'sc-q') + i); } catch (e) { r = null; }
+      let r = null; try { r = await api.join((ranked ? 'sc-ra' : rule === 'knockout' ? 'sc-qk' : 'sc-q') + i); } catch (e) { r = null; }
       if (!r) continue;
       await wait(1500);
       const ps = (r.peers ? r.peers() : []).filter((p) => !(p.isMe && p.sameTab) && p.presence && p.presence.v === 1 && typeof p.presence.j === 'number').sort((a, b) => a.presence.j - b.presence.j);
       const h = ps.length ? validH(ps[0].presence.h) : null;
-      if (ps.length < (ranked === '1v1' ? 2 : 4) && !(h && h.st === 'play')) { N.busy = false; return attach(r, (ranked === '1v1' ? 'RS' : ranked === 'knockout' ? 'RK' : ranked ? 'R' : rule === 'knockout' ? 'QK' : 'Q') + i, i, ranked, rule); }
+      if (ps.length < (ranked ? 6 : 4) && !(h && h.st === 'play')) { N.busy = false; return attach(r, (ranked ? 'R' : rule === 'knockout' ? 'QK' : 'Q') + i, i, ranked, rule); }
       try { r.leave().catch(() => {}); } catch (e) {}
     }
     N.busy = false; N.msg = '找不到空房間，等一下再試一次'; changed();
@@ -5672,7 +5672,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 這場要上場的人分到哪一隊：回傳 [{ peer, team }]。兩隊每隊最多 2 人、兩隊都要有人；三方對戰每人一隊
   N.lineup = (rand) => {
     if (N.vc) return N.list.slice(0, 4).map((r, i) => ({ peer: r.peer, i, team: 0 })); // 一起打電腦：真人都在第 1 隊
-    const tri = N.triOn(), n = N.nTeams(), cap = tri ? 1 : 2, who = N.list.slice(0, tri ? n : 4).map((r, i) => ({ peer: r.peer, i, team: rand ? -1 : N.asg[r.peer] }));
+    const tri = N.triOn(), n = N.nTeams(), cap = tri ? 1 : N.ranked ? 3 : 2, who = N.list.slice(0, tri ? n : N.ranked ? 6 : 4).map((r, i) => ({ peer: r.peer, i, team: rand ? -1 : N.asg[r.peer] }));
     if (rand) for (let i = who.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [who[i], who[j]] = [who[j], who[i]]; }
     const cnt = new Array(n).fill(0);
     who.forEach((w) => { if (!(w.team >= 0 && w.team < n) || cnt[w.team] >= cap) w.team = -1; else cnt[w.team]++; });
@@ -5697,9 +5697,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.setMap = (v) => { if (!N.isHost || !okMap(v)) return; N.map = v; send(hostPatch()); sig = ''; }; // 房主選場地（Yen 2026-11-17）
   N.setTri = (on) => { if (!N.isHost) return; N.tri = !!on; send(hostPatch()); sig = ''; }; // 3 人時：三方對戰或 2 對 1
   // tri＝每人一隊（3～6 人；Yen 2026-11-19 先要三方、再要四方以上）。兩隊模式最多 4 人
-  N.triOn = () => !N.vc && N.list.length >= 3 && (N.tri != null ? N.tri : N.list.length !== 4); // 沒選過：3 人三方、4 人 2 對 2、5～6 人大亂鬥
+  N.rankOk = (n) => n >= 2 && n <= 6 && n !== 5; // 積分賽：2＝1對1、3＝三方、4＝2對2、6＝3對3
+  N.triOn = () => (N.ranked ? N.list.length === 3 : !N.vc && N.list.length >= 3 && (N.tri != null ? N.tri : N.list.length !== 4)); // 沒選過：3 人三方、4 人 2 對 2、5～6 人大亂鬥
   N.nTeams = () => (N.triOn() ? Math.min(6, N.list.length) : 2);
-  N.cap = () => (N.triOn() ? 6 : 4);
+  N.cap = () => (N.ranked || N.triOn() ? 6 : 4);
 
   // 房主按開始：照進房順序輪流分到兩隊，最多 4 人；剛好 3 人又選了三方對戰，就每人一隊
   N.ink = 'random'; // 房主在主選單挑的墨水顏色：開打時傳給大家，房主那隊用這個顏色（第 69 版：每台看到的顏色一樣）
@@ -5796,10 +5797,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     N.live = h && h.st === 'play' ? h.id : null;
     if (N.quick && N.state === 'lobby' && !N.live && (!m || m.over)) {
       const i = list.findIndex((r) => r.isMe);
-      if (i >= (N.ranked ? N.rsize : 4)) { const q = N.quick, rk = N.ranked && N.rmode, qr = N.qrule; N.leave(); N.quickJoin(q + 1, rk, qr); return; } // 擠進來超過人數：換下一間
+      if (i >= (N.ranked ? N.rsize : 4)) { const q = N.quick, rk = N.ranked, qr = N.qrule; N.leave(); N.quickJoin(q + 1, rk, qr); return; } // 擠進來超過人數：換下一間
       if (N.isHost) { // 房主倒數自動開打：2 人等 15 秒，4 人到齊 4 秒
         if (N.ranked && N.rkDone) qT = null; // 積分賽一間房只打一場（Yen 23:16）：打完不再自動開下一場
-        else if (N.ranked) { const all = list.length === N.rsize && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 3; qT -= dt; } } // 積分賽：人到齊、大家都準備好，3 秒後開打
+        else if (N.ranked) { const all = N.rankOk(list.length) && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 3; qT -= dt; } } // 積分賽：人到齊、大家都準備好，3 秒後開打 // Yen 11-21：大家都按「即刻開戰」就照現有人數開打（5 人要等第 6 人）
         else if (list.length < 2) qT = null; else { if (qT == null) qT = 15; if (list.length >= 4) qT = Math.min(qT, 4); qT -= dt; }
         const qs = qT == null ? null : Math.max(0, Math.ceil(qT)); if (qs !== qSent) { qSent = qs; send({ qs }); }
         if (qT != null && qT <= 0) { qT = null; qSent = null; send({ qs: null }); N.start(); }
@@ -11274,7 +11275,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const MAP_LEDE = { random: '場地每次隨機挑一張。', park: '場地：貓咪遊樂園，好多層的高台、斜坡和城牆步道，爬到最高的貓窩上面看全場！', candy: '場地：甜點廚房，小心巧克力河！', ship: '場地：海盜船，兩艘大船隔著大海。爬上船長室、跳下貨艙，走跳板、碼頭或踩礁石過去，小心別掉進海裡！', fair: '場地：歡樂遊樂場，是一座大山坡，旋轉木馬在山頂。從山腳往上衝，搶下山頂！', skate: '場地：滑板場，橢圓形的大滑板場，外圈一整圈都是可以滑上去的碗邊，還有大碗池和 U 型滑道。', round: '場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。' };
     const modeKey = () => (sel.mode === 'net' && sel.rk ? 'ranked' : sel.mode);
     const LEDE = { versus: () => `${sel.roster === '1v1' ? '1 對 1' : '2 對 2'} ${sel.vrule === 'knockout' ? '擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。' : '塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。'}${MAP_LEDE[sel.map] || ''}`,
-      ranked: () => '積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 2% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。' + (SC.account && SC.account.needed ? '要先登入才能玩。' : ''),
+      ranked: () => '積分賽：按「開始配對」進配對房，大家都按「即刻開戰」就照現有人數開打：2 人 1 對 1、3 人三方對戰、4 人 2 對 2、6 人 3 對 3（5 人要等第 6 人）。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 2% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。' + (SC.account && SC.account.needed ? '要先登入才能玩。' : ''),
       sandbox: () => '一個人不限時自由練習。場上有氣球靶和會噴對手墨水的灑水器，打壞了過幾秒會再出現。',
       boss: () => ({ 2: '魔王關卡 2：胖嘟嘟魔王。躲開地上的紅色預告，魔王累到冒星星的時候用力打。身上沾滿墨水就會爆開，打完三個回合就過關。',
         3: '魔王關卡 3：氣球小豬船長。把綁著船長的氣球一顆顆打破，他摔下來冒星星的時候用力打。',
@@ -11288,24 +11289,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       $('pick-map').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === cur); b.disabled = net && !n.isHost; });
     };
     // 連線房間畫面。暱稱是別人打的字，一律用 textContent 放進畫面。
+    const RK_FMT = { 2: '1 對 1', 3: '三方對戰', 4: '2 對 2', 6: '3 對 3' }; // 積分賽照人數決定（Yen 11-21）
     const netSync = () => {
       const n = SC.net, on = sel.mode === 'net', inRoom = n.state === 'joining' || n.state === 'lobby', start = $('btn-start');
       $('net-opts').hidden = !on; els['m-title'].classList.toggle('net-on', on); start.disabled = false; mapSync(); if (!on) return; // 連線對戰不用先選武器，對戰中隨時切換
       $('net-out').hidden = inRoom; $('net-in').hidden = !inRoom;
       { const rk = !!sel.rk, lock = rk && SC.account && SC.account.needed && !SC.account.user, q = $('net-quick'); // 積分賽：只有「開始配對」，沒有開房間和房號
-        $('net-create').parentNode.hidden = rk; $('net-nick').parentNode.hidden = rk; q.classList.toggle('rk', rk); q.querySelector('b').textContent = lock ? '登入後開始' : rk ? '1 對 1' : '塗地戰配對'; $('net-quick2').hidden = lock; $('net-quick2').querySelector('b').textContent = rk ? '2 對 2' : '擊倒戰配對'; els['m-title'].querySelector('#net-opts h3').textContent = rk ? '積分賽' : '連線房間'; }
+        $('net-create').parentNode.hidden = rk; $('net-nick').parentNode.hidden = rk; q.classList.toggle('rk', rk); q.querySelector('b').textContent = lock ? '登入後開始' : rk ? '開始配對' : '塗地戰配對'; $('net-quick2').hidden = lock || rk; $('net-quick2').querySelector('b').textContent = '擊倒戰配對'; els['m-title'].querySelector('#net-opts h3').textContent = rk ? '積分賽' : '連線房間'; }
       $('net-msg').textContent = n.state === 'check' ? '正在檢查能不能連線…' : n.state === 'none' ? window.SC_PUBLIC ? '這台裝置現在不能連線。' : '這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。' : n.msg || (window.SC_PUBLIC && SC.relay.stats && n.code ? '中繼站：' + (SC.relay.stats.up.join('、') || '重新連線中') : '');
       ['net-create', 'net-join', 'net-code', 'net-quick', 'net-quick2'].forEach((id) => ($(id).disabled = n.state !== 'idle' || n.busy));
       const me = n.list.find((r) => r.isMe), waiting = n.live && !n.played(n.live), ready = n.state === 'lobby' && me && n.isHost && n.list.length >= 2 && !n.live;
       start.disabled = !ready; start.textContent = !inRoom ? (sel.rk ? '先按開始配對' : '先開房間或加入房間') : n.isHost || !me ? '開始對戰' : '等房主開始';
       if (!inRoom) return;
-      $('net-ready').hidden = !n.ranked; $('net-ready').textContent = n.ready ? '✔ 已準備' : '準備'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? (n.rmode === '1v1' ? '積分賽 1 對 1' : '積分賽 2 對 2') : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
+      $('net-ready').hidden = !n.ranked; $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
       const tri = n.triOn(), vc = !!n.vc, rand = n.mix === 'rand' && !vc, L = n.lineup(false);
       n.list.forEach((r, i) => {
         const li = document.createElement('li'), f = document.createElement('span'), name = document.createElement('b'), tag = document.createElement('small'), w = L.find((x) => x.peer === r.peer), t = w ? w.team : -1;
         f.className = 'net-face'; f.innerHTML = ui.face(w && !rand ? n.teamKinds(L, n.nTeams())[t] : r.kind); name.textContent = (r.nick || '玩家' + (i + 1)) + (r.isMe ? '（你）' : '');
-        tag.textContent = n.ranked ? (r.q.rd === 1 ? '✔ 準備好了' : '還沒準備') : (i === 0 ? '房主・' : '') + (!w ? '等下一場' : vc ? '我們這隊' : rand ? '開打時抽籤' : `第 ${t + 1} 隊`); li.className = !w ? 'wait' : rand ? 'tr' : 't' + t; li.append(f, name, tag);
+        tag.textContent = n.ranked ? (r.q.rd === 1 ? '⚡ 按了即刻開戰' : '還沒按') : (i === 0 ? '房主・' : '') + (!w ? '等下一場' : vc ? '我們這隊' : rand ? '開打時抽籤' : `第 ${t + 1} 隊`); li.className = !w ? 'wait' : rand ? 'tr' : 't' + t; li.append(f, name, tag);
         if (w && !rand && !vc && n.isHost) { const sw = document.createElement('button'); sw.type = 'button'; sw.className = 'net-swap'; sw.dataset.peer = r.peer; sw.setAttribute('aria-label', '換隊'); sw.textContent = '⇄'; li.append(sw); } // 房主點這顆換隊
         ul.append(li);
       });
@@ -11320,7 +11322,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.triOn() ? '3' : '2')); b.disabled = !n.isHost; });
       $('pick-rule').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.rule); b.disabled = !n.isHost; });
       mapSync();
-      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < n.rsize ? `正在等其他玩家加入…（${n.list.length}/${n.rsize}）` : n.qs != null ? `${n.qs} 秒後開打` : '大家都按「準備」就開打') : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
+      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.list.length === 5 ? '5 個人要等第 6 個人加入，才能 3 對 3 開打' : n.qs != null ? `${n.qs} 秒後開打` : `${RK_FMT[n.list.length] || ''}：大家都按「即刻開戰」就開打`) : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
       { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); } // 選單上的小貓頭用自己挑的顏色
@@ -11394,8 +11396,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     SC.net.onChange = () => { netSync(); chatSync(); };
     if (SC.account && SC.account.onChange) SC.account.onChange(() => modeSync()); // 登入／登出：積分賽按鈕和說明跟著變
     SC.net.onBegin = (m) => { sel.mode = 'net'; sel.rk = !!SC.net.ranked; ui.modeSyncPicks(); els['m-title'].hidden = true; els['m-results'].hidden = true; els['m-pause'].hidden = true; els['m-help'].hidden = true; G().start({ ...sel, mode: 'net', demo: false, net: m }); };
-    const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === '1v1' || rule === '2v2') lastRk = rule; SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
-    on('net-quick', () => quick(sel.rk ? '1v1' : 'turf')); on('net-quick2', () => quick(sel.rk ? '2v2' : 'knockout')); // Yen 11-21：一般連線配對也分塗地戰、擊倒戰 on('net-ready', () => SC.net.setReady(!SC.net.ready)); let lastRk = '2v2'; ui.rankedAgain = () => quick(lastRk); // Yen 22:00：1 對 1、2 對 2，要大家按準備 // 積分賽（Yen 21:35）：塗地和擊倒合併成一個配對，每場隨機
+    const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === 'all') lastRk = rule; SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
+    on('net-quick', () => quick(sel.rk ? 'all' : 'turf')); on('net-quick2', () => quick(sel.rk ? '2v2' : 'knockout')); // Yen 11-21：一般連線配對也分塗地戰、擊倒戰 on('net-ready', () => SC.net.setReady(!SC.net.ready)); let lastRk = 'all'; ui.rankedAgain = () => quick(lastRk); // Yen 22:00：1 對 1、2 對 2，要大家按準備 // 積分賽（Yen 21:35）：塗地和擊倒合併成一個配對，每場隨機
     on('net-create', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.create(); });
     on('net-join', () => { SC.net.profile({ n: nick, k: sel.kind, w: sel.weapon }); SC.net.open($('net-code').value); });
     on('net-leave', () => SC.net.leave());
@@ -11880,6 +11882,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const PLACE2 = { win: 30, tie: 12, lose: 0 }, PLACEN = [30, 15, 6, 0, 0, 0], KO = 3, AST = 1, KO_CAP = 18, MVP = 5;
   // 不同人數不同算法（Yen 22:00）：1 對 1 全靠自己，擊倒每個 +4（最多 +20），沒有助攻和 MVP；2 對 2 照上面（擊倒 +3、助攻 +1、最多 +18、MVP +5）
   const SOLO = { KO: 4, KO_CAP: 20 };
+  // Yen 11-21：積分賽照人數決定賽制，各有各的擊倒分（KO 每次、AST 助攻、CAP 上限、MVP）
+  const FMT = { 2: { KO: 4, AST: 0, CAP: 20, MVP: 0 }, 3: { KO: 4, AST: 0, CAP: 20, MVP: 0 }, 4: { KO: 3, AST: 1, CAP: 18, MVP: 5 }, 6: { KO: 2, AST: 1, CAP: 18, MVP: 5 } };
+  const PLACE3 = [30, 12, 0]; // 三方對戰：第一、第二、第三名
   const PAINT_PER = 2, PAINT_CAP = 15; // Yen 11-21：塗地也算個人積分，自己塗到全場 2% 加 1 分，最多 +15
   // 成就徽章：原創名字＋表情圖示（小朋友看圖就懂）。test(m)：m 是這一場的統計
   const ACH = [
@@ -11918,8 +11923,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['登入後開始', 'Sign in to play', 'ログインしてね', '로그인하고 시작'],
     ['複合賽：塗地 1% 算 1 分，擊倒一次算 3 分，總分高的隊伍獲勝', 'Combo: 1 point per 1% painted, 3 points per KO; the higher total wins', 'ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち', '복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리'],
     ['複合賽', 'Combo', 'ミックスバトル', '복합전'],
-    ['積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 2% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。', 'Ranked: pick 1v1 or 2v2 to auto-match; it starts when the room is full and everyone is ready. Every match is Combo: 1 point per 1% painted, 3 per KO; higher total wins. One match per queue. Win, paint turf (1 pt per 2% of the map you paint), KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow).', 'ランク戦：1対1か2対2をえらんで自動マッチング。人がそろって、みんなが準備OKで開始。毎回ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち。1試合で終わり。勝つ、ぬる（自分でマップの2%ぬるごとに1点）、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。', '랭크전: 1대1이나 2대2를 골라 자동 매칭, 인원이 차고 모두 준비하면 시작. 매번 복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리. 한 판이면 끝. 이기고, 칠하고 (맵의 2%를 칠할 때마다 1점), 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개).'],
-    ['積分賽：選 1 對 1 或 2 對 2 自動配對，人到齊、大家都按準備才開打。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 2% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。要先登入才能玩。', 'Ranked: pick 1v1 or 2v2 to auto-match; it starts when the room is full and everyone is ready. Every match is Combo: 1 point per 1% painted, 3 per KO; higher total wins. One match per queue. Win, paint turf (1 pt per 2% of the map you paint), KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow). Sign in first.', 'ランク戦：1対1か2対2をえらんで自動マッチング。人がそろって、みんなが準備OKで開始。毎回ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち。1試合で終わり。勝つ、ぬる（自分でマップの2%ぬるごとに1点）、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。ログインが必要です。', '랭크전: 1대1이나 2대2를 골라 자동 매칭, 인원이 차고 모두 준비하면 시작. 매번 복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리. 한 판이면 끝. 이기고, 칠하고 (맵의 2%를 칠할 때마다 1점), 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개). 먼저 로그인하세요.'],
+    ['積分賽：按「開始配對」進配對房，大家都按「即刻開戰」就照現有人數開打：2 人 1 對 1、3 人三方對戰、4 人 2 對 2、6 人 3 對 3（5 人要等第 6 人）。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 2% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。', 'Ranked: press Find Match to enter a ranked room. When everyone presses Start Now, the match starts with whoever is there: 2 = 1v1, 3 = three-way, 4 = 2v2, 6 = 3v3 (5 players wait for a 6th). Every match is Combo: 1 point per 1% painted, 3 per KO; higher total wins. One match per queue. Win, paint turf (1 pt per 2% of the map you paint), KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow).', 'ランク戦：「マッチ開始」でランク部屋へ。みんなが「すぐ対戦」を押すと今の人数で開始：2人は1対1、3人は三つどもえ、4人は2対2、6人は3対3（5人の時は6人目を待つ）。毎回ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち。1試合で終わり。勝つ、ぬる（自分でマップの2%ぬるごとに1点）、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。', '랭크전: "매칭 시작"으로 랭크 방에 들어가요. 모두 "바로 시작"을 누르면 지금 인원으로 시작: 2명 1대1, 3명 3파전, 4명 2대2, 6명 3대3 (5명이면 6번째를 기다려요). 매번 복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리. 한 판이면 끝. 이기고, 칠하고 (맵의 2%를 칠할 때마다 1점), 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개).'],
+    ['積分賽：按「開始配對」進配對房，大家都按「即刻開戰」就照現有人數開打：2 人 1 對 1、3 人三方對戰、4 人 2 對 2、6 人 3 對 3（5 人要等第 6 人）。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 2% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。要先登入才能玩。', 'Ranked: press Find Match to enter a ranked room. When everyone presses Start Now, the match starts with whoever is there: 2 = 1v1, 3 = three-way, 4 = 2v2, 6 = 3v3 (5 players wait for a 6th). Every match is Combo: 1 point per 1% painted, 3 per KO; higher total wins. One match per queue. Win, paint turf (1 pt per 2% of the map you paint), KO rivals and get MVP to earn points, then rank up (Yarn Ball → Fish Snack → Bell → Paw → Crown → Rainbow). Sign in first.', 'ランク戦：「マッチ開始」でランク部屋へ。みんなが「すぐ対戦」を押すと今の人数で開始：2人は1対1、3人は三つどもえ、4人は2対2、6人は3対3（5人の時は6人目を待つ）。毎回ミックスバトル：ぬった1%で1点、たおすと3点、合計が多いチームの勝ち。1試合で終わり。勝つ、ぬる（自分でマップの2%ぬるごとに1点）、たおす、MVPでポイントアップ。たまるとランクアップ（毛糸玉 → 小魚 → 鈴 → 肉球 → 王冠 → 虹）。ログインが必要です。', '랭크전: "매칭 시작"으로 랭크 방에 들어가요. 모두 "바로 시작"을 누르면 지금 인원으로 시작: 2명 1대1, 3명 3파전, 4명 2대2, 6명 3대3 (5명이면 6번째를 기다려요). 매번 복합전: 칠하기 1%에 1점, 처치 1번에 3점, 합계가 높은 팀 승리. 한 판이면 끝. 이기고, 칠하고 (맵의 2%를 칠할 때마다 1점), 처치하고, MVP를 받으면 포인트가 올라 랭크 업 (털실 뭉치 → 멸치 → 방울 → 발바닥 → 왕관 → 무지개). 먼저 로그인하세요.'],
     ['先按開始配對', 'Tap Find match first', 'まずマッチング開始を押してね', '먼저 매칭 시작을 눌러요'],
     ['塗地積分賽', 'Ranked Turf', 'ナワバリランク戦', '땅따먹기 랭크전'], ['擊倒積分賽', 'Ranked KO', 'ノックアウトランク戦', '처치 랭크전'], ['先選一種積分賽', 'Pick a ranked battle first', 'まずランク戦をえらんでね', '먼저 랭크전을 골라요'],
     ['再配對一場', 'Find another match', 'もう一度マッチング', '다시 매칭'],
@@ -11936,6 +11941,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['只在積分賽拿得到', 'Only in ranked matches', 'ランク戦だけでもらえる', '랭크전에서만 받아요'],
     ['現在的牌位', 'Your rank now', 'いまのランク', '지금 랭크'],
     ['加分', 'Gains', 'ポイント', '획득'],
+    ['三方', '3-way', '三つどもえ', '3파전'], ['三方第二名', '3-way 2nd place', '三つどもえ2位', '3파전 2위'],
     ['塗地（全場每 2%）', 'Paint (per 2% of map)', 'ぬり（マップ2%ごと）', '칠하기 (맵 2%마다)'],
     ['塗地戰配對', 'Turf War match', 'ナワバリマッチ', '땅따먹기 매칭'],
     ['擊倒戰配對', 'Knockout match', 'ノックアウトマッチ', '처치전 매칭'],
@@ -11964,11 +11970,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['贏的那場擊倒', 'KOs in a win', '勝った試合のたおした数', '이긴 판의 처치'], ['升上肉球以上有 3 場保護', '3 protected matches after reaching Paw or higher', '肉球以上に上がると3試合は下がらない', '발바닥 이상 승급 후 3판 보호'],
     ['跟其他玩家核對結果中…', 'Checking the result with other players…', 'ほかのプレイヤーと結果をたしかめ中…', '다른 플레이어와 결과 확인 중…'], ['沒有其他玩家的結果可以核對，這場不算分', 'No other player confirmed the result, so this match gives no points', 'ほかのプレイヤーの結果とたしかめられなかったので、この試合はポイントなし', '다른 플레이어와 결과를 확인하지 못해 이 경기는 포인트가 없어요'], ['大家的結果一致', 'Result confirmed by everyone', 'みんなの結果が一致', '모두의 결과가 일치'],
     ['1 對 1', '1 vs 1', '1対1', '1대1'], ['2 對 2', '2 vs 2', '2対2', '2대2'], ['準備', 'Ready', '準備OK', '준비'], ['✔ 已準備', '✔ Ready', '✔ 準備OK', '✔ 준비 완료'],
+    ['開始配對', 'Find match', 'マッチ開始', '매칭 시작'], ['⚡ 即刻開戰', '⚡ Start now', '⚡ すぐ対戦', '⚡ 바로 시작'], ['✔ 等大家按', '✔ Waiting for others', '✔ みんなを待っています', '✔ 다른 사람 기다리는 중'],
+    ['⚡ 按了即刻開戰', '⚡ Pressed Start', '⚡ 対戦OK', '⚡ 시작 누름'], ['還沒按', 'Not yet', 'まだ', '아직'], ['三方對戰', 'Three-way', '三つどもえ', '3파전'], ['3 對 3', '3 vs 3', '3対3', '3대3'],
+    ['5 個人要等第 6 個人加入，才能 3 對 3 開打', '5 players: waiting for a 6th to play 3 vs 3', '5人なので6人目を待って3対3で始めます', '5명이라 6번째를 기다려 3대3으로 시작해요'],
+    ['正在等其他玩家加入…', 'Waiting for other players…', 'ほかのプレイヤーを待っています…', '다른 플레이어를 기다리는 중…'],
     ['✔ 準備好了', '✔ Ready', '✔ 準備OK', '✔ 준비 완료'], ['還沒準備', 'Not ready', 'まだ', '준비 전'], ['大家都按「準備」就開打', 'Starts when everyone taps Ready', 'みんなが「準備OK」を押したら開始', '모두 「준비」를 누르면 시작'],
     ['積分賽 1 對 1', 'Ranked 1v1', 'ランク戦 1対1', '랭크전 1대1'], ['積分賽 2 對 2', 'Ranked 2v2', 'ランク戦 2対2', '랭크전 2대2'],
     ['這場不算積分', 'This match gives no points', 'この試合はポイントなし', '이 경기는 포인트 없음'],
   ]);
 
+  if (SC.i18n && SC.i18n.pat) SC.i18n.pat(/^(1 對 1|三方對戰|2 對 2|3 對 3)：大家都按「即刻開戰」就開打$/, (m, li) => SC.tr(m[1]) + ['. Everyone press Start now to begin', '：みんなが「すぐ対戦」を押すと開始', ': 모두 "바로 시작"을 누르면 시작'][li]);
   if (SC.i18n && SC.i18n.pat) { SC.i18n.pat(/^總分 (.+) 比 (.+)$/, ['Total $1 vs $2', '合計 $1 対 $2', '합계 $1 대 $2']); SC.i18n.pat(/^(\d+) 分$/, ['$1 pts', '$1点', '$1점']); SC.i18n.pat(/^複合賽・塗地是塗了幾平方公尺$/, ['Combo · Paint = square meters painted', 'ミックスバトル・ぬった＝ぬった広さ（平方メートル）', '복합전 · 칠하기 = 칠한 넓이(제곱미터)']); }
   if (SC.i18n && SC.i18n.pat) SC.i18n.pat(/^正在等其他玩家加入…（(\d)\/(\d)）$/, ['Waiting for other players… ($1/$2)', 'ほかのプレイヤーを待っています…（$1/$2）', '다른 플레이어를 기다리는 중… ($1/$2)']);
   // 牌位徽章：彩色圓章＋圖案（全部原創的簡單圖形）
@@ -12062,10 +12073,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     let place, win = false, lost = false, label;
     if ((g.teams || 2) >= 3) {
       const v = g.rule === 'mix' ? g.mixFinal || [] : g.rule === 'knockout' ? g.koFinal || [] : (g.final && g.final.v) || [], mine = v[p.team] || 0;
-      const rank = v.filter((x) => x > mine).length + 1; place = PLACEN[Math.min(rank, PLACEN.length) - 1]; win = rank === 1; lost = rank > Math.ceil(v.length / 2); label = rank === 1 ? '第一名' : '名次';
+      const rank = v.filter((x) => x > mine).length + 1; place = (v.length === 3 ? PLACE3 : PLACEN)[Math.min(rank, v.length === 3 ? 3 : PLACEN.length) - 1]; win = rank === 1; lost = rank > Math.ceil(v.length / 2); label = rank === 1 ? '第一名' : '名次';
     } else { const r = g.winner === 'tie' ? 'tie' : g.winner === p.team ? 'win' : 'lose'; place = PLACE2[r]; win = r === 'win'; lost = r === 'lose'; label = r === 'win' ? '贏' : r === 'tie' ? '平手' : '輸'; }
-    const solo = g.actors.filter((a) => !a.cpu && !a.isTarget).length <= 2, row = (g.board ? g.board() : []).find((r) => r.me), mvp = !solo && row && row.mvp ? MVP : 0;
-    const kos = Math.round((solo ? Math.min(SOLO.KO_CAP, (p.kos | 0) * SOLO.KO) : Math.min(KO_CAP, (p.kos | 0) * KO + (p.ast | 0) * AST)) * (win ? WIN_KO : 1));
+    const nH = g.actors.filter((a) => !a.cpu && !a.isTarget).length, F = FMT[nH] || FMT[nH <= 2 ? 2 : nH >= 5 ? 6 : 4], row = (g.board ? g.board() : []).find((r) => r.me), mvp = F.MVP && row && row.mvp ? F.MVP : 0;
+    const kos = Math.round(Math.min(F.CAP, (p.kos | 0) * F.KO + (p.ast | 0) * F.AST) * (win ? WIN_KO : 1));
     const paint = Math.min(PAINT_CAP, Math.floor(share(p) / PAINT_PER));
     const before = load(), t0 = tierOf(before.p), mult = GAIN[t0], loss = ENTRY[t0], gain = Math.round((place + kos + mvp + paint) * mult);
     const floor = t0 <= SAFE || before.pr > 0 ? t0 * PER : SAFE * PER, ws = win ? before.ws + 1 : 0, np = Math.max(floor, before.p + gain - loss), t1 = tierOf(np);
@@ -12160,7 +12171,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       <div class="rkd-h">${tr('怎麼拿分')}<small>　${tr('現在的牌位')}：${tr('加分')} ×${GAIN[t]}</small></div>
       <div class="rkd-how">
         <div><em>🏆</em>${tr('贏')}<b>+${PLACE2.win}</b></div><div><em>🤝</em>${tr('平手')}<b>+${PLACE2.tie}</b></div><div><em>🙂</em>${tr('輸')}<b>0</b></div>
-        <div><em>💥</em>${tr('擊倒')}（2v2）<b>+${KO}</b></div><div><em>💥</em>${tr('擊倒')}（1v1）<b>+${SOLO.KO}</b></div><div><em>🔥</em>${tr('贏的那場擊倒')}<b>×${WIN_KO}</b></div><div><em>🎨</em>${tr('塗地（全場每 2%）')}<b>+1</b></div><div><em>🎟️</em>${tr('入場費')}<b class="${ENTRY[t] ? 'neg' : ''}">${ENTRY[t] ? '−' + ENTRY[t] : '0'}</b></div><div><em>✋</em>${tr('助攻')}（2v2）<b>+${AST}</b></div><div><em>👑</em>MVP（2v2）<b>+${MVP}</b></div>
+        <div><em>💥</em>${tr('擊倒')}（1v1・${tr('三方')}）<b>+${FMT[2].KO}</b></div><div><em>💥</em>${tr('擊倒')}（2v2）<b>+${FMT[4].KO}</b></div><div><em>💥</em>${tr('擊倒')}（3v3）<b>+${FMT[6].KO}</b></div><div><em>🔥</em>${tr('贏的那場擊倒')}<b>×${WIN_KO}</b></div><div><em>🎨</em>${tr('塗地（全場每 2%）')}<b>+1</b></div><div><em>🎟️</em>${tr('入場費')}<b class="${ENTRY[t] ? 'neg' : ''}">${ENTRY[t] ? '−' + ENTRY[t] : '0'}</b></div><div><em>✋</em>${tr('助攻')}（2v2・3v3）<b>+${FMT[4].AST}</b></div><div><em>👑</em>MVP（2v2・3v3）<b>+${FMT[4].MVP}</b></div><div><em>🥈</em>${tr('三方第二名')}<b>+${PLACE3[1]}</b></div>
       </div>
       <p class="rkd-foot"><span>🏅 ${tr('只有積分賽算分')}</span><span>📈 ${tr('牌位越高，加分越少、輸了扣越多')}</span><span>🛡️ ${tr('鈴鐺以下不會掉牌位')}</span><span>🛡️ ${tr('升上肉球以上有 3 場保護')}</span>${s.pr > 0 ? `<span>🛡️×${s.pr}</span>` : ''}</p>`;
     }
