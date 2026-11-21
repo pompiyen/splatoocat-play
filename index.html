@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='46d31978505d';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='bfd26cabf565';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -4421,7 +4421,77 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
     outside: (k) => { k.tbHa = TB_HA; OLD_TOY.outside(k); },
   };
-  world.ZMAPS = ['zfort', 'zcandy', 'zsnow', 'ztoy'];
+  // 7e. 第 130 版（Yen「只有一條路線 但會有大量屍潮」，照協調者的建議做）：一條長街大屍潮。小鴨在街尾的台子上，只有一條又長又直的街，殭屍全部從街頭（北邊）湧過來。
+  // 街上有三道木頭路障（07z 畫、會被咬壞，撿齒輪拿過去可以修）；殭屍擠在路障前會疊成老鼠山，疊到最高就翻過去——要趕快把山打散。兩邊是房子，屋頂可以站上去往下打，屋頂上有砲台。
+  const ST_HA = [-0.07, -0.05, -0.03, -0.01, 0.01, 0.03, 0.05, 0.07].map((d) => -Math.PI / 2 + d), STW = 18;
+  MAPS.zstreet = { ...zBase, spawns: zSp, name: '殭屍大街', lim: { x: 200, z: 200, r: 200 },
+    zb: { n: 1.25, hole: 190, ha: ST_HA, dig: [60, 60], drop: [50, 120], alt: [40, 60], tank: 178, pr: 26, maxz: 1.2,
+      gates: [{ a: -Math.PI / 2, g: -Math.PI / 2, path: [[0, -160], [0, -112], [0, -68], [0, -50], [0, -22]], mix: ['mini', 0.45], sign: [0, -176, 16] }],
+      bars: [-150, -105, -62], barW: STW, tur: [[-27, -130], [27, -130], [-27, -84], [27, -84]] },
+    gen: () => { const out = zPlaza([], 28);
+      out.push({ t: 'oramp', x: 0, z: -37, a: -Math.PI / 2, hu: 9.5, hv: 9, h0: 10, h1: 0.4, look: 'stone', team: -1 }); // 小鴨台往街上的斜坡
+      for (let z = -52, i = 0; z > -196; z -= 24, i++) [-1, 1].forEach((s) => out.push({ t: 'obox', x: s * (STW + 12), z: z - 12, a: 0, hu: 12, hv: 12, h: [9, 12, 10, 13][(i + (s > 0 ? 1 : 0)) % 4], look: 'house' + ((i + (s > 0 ? 2 : 0)) % 4), team: -1 })); // 街兩邊的房子（屋頂站得上去）
+      [-1, 1].forEach((s) => out.push({ t: 'obox', x: s * (STW + 6), z: -46, a: 0, hu: 6, hv: 6, h: 5, look: 'house1', team: -1 }, { t: 'obox', x: s * (STW + 6), z: -48, a: 0, hu: 2, hv: 2, h: 2.5, look: 'crate', team: -1 })); // 上屋頂的矮房子＋木箱（台階）
+      for (let gx = -180; gx <= 180; gx += 32) for (let gz = -184; gz <= 184; gz += 32) { const x = gx + 16 * ((gz / 32) & 1 ? 0.5 : 0), r = Math.hypot(x, gz); if (r > 176 || r < 92 || Math.abs(x) < STW + 44 && gz < 0) continue; const hh = 14 + Math.abs(Math.round(Math.sin(x * 0.7 + gz * 1.3) * 14)); out.push({ t: 'obox', x, z: gz, a: 0, hu: 11, hv: 11, h: hh, look: 'tower' + (Math.abs(Math.round(x + gz)) % 3), team: -1 }); } // 城市的大樓（擋在外面，看起來像在城裡）
+      [[-9, -128], [9, -84], [-8, -40]].forEach(([x, z]) => out.push({ t: 'cyl', x, z, r: 1.4, h: 7, look: 'lamp', team: -1 })); // 街燈
+      for (let i = 0; i < 10; i++) { const a = Math.PI / 2 + (i - 4.5) * 0.28, p = xz(70 + (i % 3) * 18, a); out.push({ t: 'cyl', ...p, r: 6, h: 3 + (i % 3), look: 'tree', team: -1 }); } // 小鴨後院的樹
+      return out; },
+    base: () => 0,
+    tint: (x, z, h) => { if (Math.abs(x) < STW && z < -30) return Math.abs(x) < 0.8 && Math.floor(z / 8) % 2 ? 0xffffff : 0x8a8a9a; /* 柏油路＋中線 */ if (Math.abs(x) < STW + 3 && z < -30) return 0xd8d0c4; /* 人行道 */ return (Math.floor(x / 14) + Math.floor(z / 14)) % 2 ? 0xa9e38f : 0x9cdb84; },
+    sky: [0x3a3f7a, 0xff8a6b, 0xffc98a], fog: 0xf0b8a8, hemi: [0xffe6d6, 0xb89ad8],
+    river: { color: 0x7fd3ff, rough: 0.08 },
+    look: { ...zLook, court: 0xf3e7d2, house0: 0xff9ebb, house1: 0x8fd8ff, house2: 0xffd86b, house3: 0xc9b5ff, crate: 0xc98a3c, lamp: 0x3a3a52, tree: 0x6cbf6a, tower0: 0xb8a8e0, tower1: 0xffc4a8, tower2: 0xa8d0e8 },
+    rough: { ground: 0.85 },
+    ground: (g) => { tiles(g, '#efe3cc', ['#fbf3e4', '#f4e8d2'], 26); },
+    fence: [0xc6b2ff, 0xffd23f, 0xff9ebb, 0x9be7d0],
+    make: { ...zMake,
+      ...Object.fromEntries([0, 1, 2, 3].map((i) => ['house' + i, (p, k) => { const m = k.obox(p, { r: 0.5 }); const roof = new THREE.Mesh(new THREE.BoxGeometry(p.hu * 2.1, 0.8, p.hv * 2.1), k.plain(0x7a3828, 0.8)); roof.position.y = p.h + 0.4; m.add(roof);
+        const win = k.plain(0xfff2a8, 0.4, { emissive: 0xffd27a, emissiveIntensity: 0.5 }); for (let f = 0; f < Math.floor(p.h / 4.5); f++) for (const u of [-6, 0, 6]) { const w = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.4, 0.3), win); w.position.set(u, 2.6 + f * 4.4, p.x > 0 ? -p.hv - 0.1 : -p.hv - 0.1); w.rotation.y = 0; const w2 = w.clone(); w2.position.set(p.x > 0 ? -p.hu - 0.1 : p.hu + 0.1, 2.6 + f * 4.4, u); w2.rotation.y = Math.PI / 2; m.add(w2); } }])), // 房子：窗戶亮黃燈、紅屋頂
+      crate: (p, k) => k.obox(p, { r: 0.3 }),
+      ...Object.fromEntries([0, 1, 2].map((i) => ['tower' + i, (p, k) => { const m = k.obox(p, { r: 0.4 }); const top = new THREE.Mesh(new THREE.BoxGeometry(p.hu * 2.06, 0.7, p.hv * 2.06), k.plain(0x5a5a70, 0.8)); top.position.y = p.h + 0.3; m.add(top); }])),
+      lamp: (p, k) => { k.add(new THREE.CylinderGeometry(0.35, 0.45, p.h, 8), k.plain(0x3a3a52, 0.5), p.x, p.h / 2, p.z); k.add(new THREE.SphereGeometry(1.1, 12, 8), new THREE.MeshBasicMaterial({ color: 0xfff2a8 }), p.x, p.h + 0.6, p.z); },
+      tree: (p, k) => { k.add(new THREE.CylinderGeometry(0.9, 1.2, p.h + 2, 8), k.plain(0x8b5e3c, 0.8), p.x, (p.h + 2) / 2, p.z); const t = k.add(new THREE.SphereGeometry(p.r, 14, 10), k.mat('tree'), p.x, p.h + 4, p.z); t.castShadow = true; },
+    },
+    outside: (k) => { k.floor(0x8fd37a); const r = k.rnd;
+      for (let i = 0; i < 16; i++) { const a = (i / 16) * TAU + r() * 0.1, d = 260 + r() * 60, w = 30 + r() * 20, h = 40 + r() * 60; const m = k.add(new THREE.BoxGeometry(w, h, w), k.plain([0x6f6a9a, 0x8a7aa8, 0x5a5f8a][i % 3], 0.9), Math.cos(a) * d, h / 2, Math.sin(a) * d); void m; } /* 遠遠的城市大樓 */
+      zArches(k, [-Math.PI / 2 - 0.045, -Math.PI / 2 + 0.045], 197, 0x8a8a9a, 0xff5a5a); k.clouds(0xffd9c8); },
+  };
+  // 7f. 第 131 版（Yen「這個地方守完 是要去下個地方守」，照協調者的建議做）：燈塔接力（佔點）。小鴨在中間的台子上，外面三座小山丘上各有一座燈塔。
+  // 一次只亮一座：貓要站在亮的燈塔圈圈裡，撐滿 60 秒（圈裡有殭屍就停住），燈塔就把光打到小鴨的防護罩上充電；時間到換下一座，殭屍也改從那一邊湧過來。三座都輪完，最後魔王出場。
+  const RL_A = [Math.PI / 2, Math.PI / 2 + TAU / 3, Math.PI / 2 + 2 * TAU / 3], RL = { r: 84, hill: 15, hh: 3 };
+  MAPS.zrelay = { ...zBase, spawns: zSp, name: '燈塔接力', lim: { x: 150, z: 150, r: 150 },
+    zb: { n: 1, hole: 132, ha: [0, 1, 2, 3, 4, 5, 6, 7].map((i) => RL_A[i % 3] + (i < 3 ? 0 : i < 6 ? 0.2 : -0.2)), dig: [60, 50], drop: [40, 90], alt: [44, 26], tank: 120, pr: 26,
+      gates: RL_A.map((a) => ({ a, g: a, path: [pol(RL.r + 22, a), pol(RL.r, a), pol(46, a), pol(22, a)], sign: [...pol(RL.r + 30, a), 14] })),
+      cps: RL_A.map((a) => pol(RL.r, a)), cpR: 12, cpT: 60, cpWin: 100,
+      tur: [pol(54, RL_A[0] + 1.05), pol(54, RL_A[1] + 1.05), pol(54, RL_A[2] + 1.05), [0, 0]].slice(0, 3).concat([pol(54, RL_A[0] - 1.05)]) },
+    gen: () => { const out = zPlaza([], 30);
+      RL_A.forEach((a, i) => { out.push({ t: 'oramp', ...xz(38.5, a), a, hu: 9, hv: 6, h0: 10, h1: 0.4, look: 'stone', team: -1 }); // 小鴨台往三座燈塔的斜坡
+        const c = xz(RL.r, a), l = xz(RL.r + 10, a + 0.14); out.push({ t: 'cyl', ...c, r: RL.hill, h: RL.hh, look: 'hill', team: -1 }, { t: 'cyl', ...l, r: 3.2, h: 22, look: 'lighthouse' + i, team: -1 }); // 小山丘＋燈塔
+        [-0.42, 0.42].forEach((d) => out.push({ t: 'obox', ...xz(RL.r - 4, a + d), a: a + d, hu: 4, hv: 1.2, h: 3.4, look: 'rock', team: -1 })); // 山丘旁的石牆（掩護）
+        out.push({ t: 'cyl', ...xz(56, a + 1.05), r: 5, h: 7, look: 'rock', team: -1 }); }); // 燈塔中間的大石頭（上面是砲台）
+      out.push({ t: 'cyl', ...xz(56, RL_A[0] - 1.05 + TAU), r: 5, h: 7, look: 'rock', team: -1 });
+      for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + 0.17, p = xz(128 + (i % 2) * 8, a); out.push({ t: 'cyl', ...p, r: 3 + (i % 3), h: 3 + (i % 4), look: 'rock', team: -1 }); }
+      return out; },
+    base: (x, z) => { let h = 0; for (const a of RL_A) h += bump(x, z, Math.cos(a) * RL.r, Math.sin(a) * RL.r, 26, 1.2); return h; },
+    tint: (x, z, h) => { for (const a of RL_A) { const d = Math.hypot(x - Math.cos(a) * RL.r, z - Math.sin(a) * RL.r); if (d < RL.hill + 1) return 0xd9c9a0; } for (const a of RL_A) { const lat = Math.abs(-Math.sin(a) * x + Math.cos(a) * z), along = Math.cos(a) * x + Math.sin(a) * z; if (lat < 5 && along > 30 && along < RL.r) return 0xe8c99a; } /* 燈塔到小鴨的土路 */ return (Math.floor(x / 14) + Math.floor(z / 14)) % 2 ? 0x9fdc8a : 0x93d47e; },
+    sky: [0x2a2f6a, 0x7a5fc0, 0xffb38a], fog: 0xc8b8e8, hemi: [0xf0e6ff, 0x8a9ad8],
+    river: { color: 0x7fd3ff, rough: 0.08 },
+    look: { ...zLook, court: 0xf3e7d2, hill: 0xd9c9a0, rock: 0xa8a0b8, lighthouse0: 0xff6b8b, lighthouse1: 0x4ecbff, lighthouse2: 0xffd23f },
+    rough: { ground: 0.85 },
+    ground: (g) => { tiles(g, '#efe3cc', ['#fbf3e4', '#f4e8d2'], 26); },
+    fence: [0xc6b2ff, 0xffd23f, 0xff9ebb, 0x9be7d0],
+    make: { ...zMake,
+      hill: (p, k) => { k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r - 0.3, 0.5, 8, 64), k.plain(0xffffff, 0.5), p.x, p.h, p.z); t.rotation.x = Math.PI / 2; },
+      rock: (p, k) => { if (p.t === 'obox') return k.obox(p, { r: 0.8 }); const m = k.add(new THREE.DodecahedronGeometry(p.r * 1.1, 0), k.mat('rock'), p.x, p.h * 0.5, p.z); m.scale.y = p.h / (p.r * 2.2) * 2; m.castShadow = true; },
+      ...Object.fromEntries([0, 1, 2].map((i) => ['lighthouse' + i, (p, k) => { const c = k.mat('lighthouse' + i); for (let s = 0; s < 4; s++) k.add(new THREE.CylinderGeometry(p.r * (1 - s * 0.08) - 0.1, p.r * (1 - (s - 1) * 0.08) - 0.1, p.h / 4, 18), s % 2 ? k.plain(0xffffff, 0.5) : c, p.x, p.h / 8 + s * p.h / 4, p.z);
+        k.add(new THREE.CylinderGeometry(p.r * 0.9, p.r * 0.9, 3, 18), new THREE.MeshBasicMaterial({ color: 0xfff2a8 }), p.x, p.h + 1.5, p.z); k.add(new THREE.ConeGeometry(p.r * 1.1, 3, 18), c, p.x, p.h + 4.5, p.z); }])),
+    },
+    outside: (k) => { k.floor(0x8fd37a); const r = k.rnd;
+      for (let i = 0; i < 20; i++) { const a = (i / 20) * TAU + r() * 0.12, d = 190 + r() * 80, s = 14 + r() * 9; const t = k.add(new THREE.SphereGeometry(s, 14, 10), k.plain(i % 3 ? 0x6cbf6a : 0x8bd07a, 0.85), Math.cos(a) * d, s + 6, Math.sin(a) * d); void t; }
+      const moon = new THREE.Mesh(new THREE.SphereGeometry(24, 24, 16), new THREE.MeshBasicMaterial({ color: 0xfff3c4, fog: false })); moon.position.set(-420, 230, -520); k.root.add(moon);
+      zArches(k, RL_A.flatMap((a) => [a - 0.2, a + 0.2]), 140, 0xa8a0b8, 0xffd23f); k.clouds(0xe8dcff); },
+  };
+  world.ZMAPS = ['zfort', 'zstreet', 'zsnow', 'ztoy'];
 
   world.MAPS = MAPS;
   world.MAP_KEYS = ['park', 'candy', 'ship', 'fair', 'skate', 'round'];
@@ -10309,7 +10379,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function wpNext(z) { const P = gPath(MP.gates[z.br % MP.gates.length]); z.wi = (z.wi || 0) + 1; if (z.wi >= P.length) z.ph = 2; else z.ph = 1; }
   const gPath = (q) => (q.up && Z.brUp > 0 ? q.up : q.path); /* 吊橋升起來：東邊來的殭屍改走繞遠路 */
   function spawnAt(ty, hole) {
-    if (Z.list.filter((q) => q.st !== 'dead').length >= Math.min(POOL - 4, Math.round((dif.max || MAXZ) * crewK() * zDyn()))) return null;
+    if (Z.list.filter((q) => q.st !== 'dead').length >= Math.min(POOL - 4, Math.round((dif.max || MAXZ) * (MP.maxz || 1) * crewK() * zDyn()))) return null;
     const a = holeAng(hole) + (Math.random() - 0.5) * 0.08, r = MP.hole, x = Math.cos(a) * r, z = Math.sin(a) * r;
     let br = nearGate(a); if (!MP.gates && Math.abs((((a / Q) % 1) + 1) % 1 - 0.5) < 0.25) br = Math.random() < 0.5 ? nearGate(a - 0.4) : nearGate(a + 0.4); // 斜角的洞：隨機走左邊或右邊的橋
     const gw = MP.gates && MP.gates[br].mix; if (gw && ty === TI.walk && Math.random() < gw[1] && TI[gw[0]] != null) ty = TI[gw[0]]; /* 第 128 版：每個入口來的殭屍不一樣（看門口的牌子） */
@@ -10317,12 +10387,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function spawnFly(a) { const r = MP.hole - 3 * S, x = Math.cos(a) * r, z = Math.sin(a) * r; return make(TI.balloon, x, z, { y: 24 + Math.random() * 6, st: 'fly' }); }
   function spawnDig() { // 第 108 版（Yen）：不從堡壘裡冒出來，改從護城河外面的草地鑽出來（避開起司塊、乾草），再走橋進城
+    if (MP.gates && MP.bars) { const gi = (Math.random() * MP.gates.length) | 0, P = MP.gates[gi].path, j = (Math.random() * Math.max(1, P.length - 3)) | 0, k = Math.random(), x = P[j][0] + (P[j + 1][0] - P[j][0]) * k + (Math.random() - 0.5) * MP.barW, zz = P[j][1] + (P[j + 1][1] - P[j][1]) * k; const q = make(TI.dig, x, zz, { st: 'under', und: 2.6, ph: 0, br: gi, y: H(x, zz) - 3 }); if (q) gateReset(q); return q; } /* 第 130 版：長街：鑽地鼠從街上冒出來（可能在路障後面！） */
     let x = 0, z = 0, a = 0; for (let k = 0; k < 12; k++) { a = Math.random() * TAU; const r = MP.dig[0] + Math.random() * MP.dig[1]; x = Math.cos(a) * r; z = Math.sin(a) * r; const h = H(x, z); if (h > -2 && h < 2.6) break; }
     const q = make(TI.dig, x, z, { st: 'under', und: 2.6, ph: 0, br: nearGate(a), y: H(x, z) - 3 }); if (q && MP.gates) gateReset(q); return q; }
 
   // ---------- 開始、結束 ----------
   Z.start = (c) => {
-    ctx = c; scene = c.scene; inkTip = 0; MP = { ...ZDEF, ...((SC.world.MAPS[SC.world.key] || {}).zb || {}) }; TUR_P = MP.tur || TUR_D; Z.on = true; Z.stop(true); Z.on = true; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.brUp = 0; Z.brCd = 0; Z.calm = [0, 0]; Z.calmSaid = -1; brSeen = 0; signsFx(true); Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; a.gearC = 0; if (a.gearSp) a.gearSp.visible = false; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
+    ctx = c; scene = c.scene; inkTip = 0; MP = { ...ZDEF, ...((SC.world.MAPS[SC.world.key] || {}).zb || {}) }; TUR_P = MP.tur || TUR_D; Z.on = true; Z.stop(true); Z.on = true; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.brUp = 0; Z.brCd = 0; Z.bar = (MP.bars || []).map(() => 1); Z.barFix = 0; Z.calm = [0, 0]; Z.calmSaid = -1; brSeen = 0; signsFx(true); Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; a.gearC = 0; if (a.gearSp) a.gearSp.visible = false; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
     dif = DIF[c.dif] || DIF.normal;
     if (!duck) { duck = SC.duck.make(); duck.g.scale.setScalar(1); }
     scene.add(duck.g); duck.g.position.set(0, PED, 0); duck.g.rotation.set(0, 0, 0); duck.g.scale.setScalar(S); duck.fortSet((DOME_Y + (COURT - PED)) / S, DOME_S, c.colors[1]); // 小鴨和罩子一起放大 duck.g.visible = true;
@@ -10335,7 +10406,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     hud(true); setCard(null);
   };
   Z.stop = (keep) => {
-    rain.forEach((q) => { if (q.ring) { scene && scene.remove(q.ring); scene && scene.remove(q.d); } }); rain = []; waves.forEach((q) => { if (q.m) scene && scene.remove(q.m); }); waves = []; if (brObj) { brObj.forEach((o) => scene && scene.remove(o)); brObj = null; } signsFx(true); bossEdge(0); if (turObj) { turObj.forEach((o) => { scene && scene.remove(o.g, o.ln); }); turObj = null; } if (altObj) { scene && scene.remove(altObj.grp); altObj = null; } spots.forEach((q) => scene && scene.remove(q.cone, q.pool)); spots.length = 0; if (spotEl) spotEl.classList.remove('on');
+    rain.forEach((q) => { if (q.ring) { scene && scene.remove(q.ring); scene && scene.remove(q.d); } }); rain = []; waves.forEach((q) => { if (q.m) scene && scene.remove(q.m); }); waves = []; if (brObj) { brObj.forEach((o) => scene && scene.remove(o)); brObj = null; } if (barObj) { barObj.forEach((o) => scene && scene.remove(o.g)); barObj = null; } signsFx(true); bossEdge(0); if (turObj) { turObj.forEach((o) => { scene && scene.remove(o.g, o.ln); }); turObj = null; } if (altObj) { scene && scene.remove(altObj.grp); altObj = null; } spots.forEach((q) => scene && scene.remove(q.cone, q.pool)); spots.length = 0; if (spotEl) spotEl.classList.remove('on');
     Z.list.forEach((q) => { freeTarget(q); dropMesh(q); }); Z.list.length = 0; if (alarmEl) alarmEl.classList.remove('on'); if (alarm3) { alarm3.ring.visible = alarm3.bang.visible = false; } Z.puds = []; for (const [, o] of pudObj) scene && scene.remove(o); pudObj.clear(); Z.pows = []; for (const [, o] of powObj) scene && scene.remove(o); powObj.clear(); if (SC.zbHero) SC.zbHero.reset(); if (pawFx) { scene && scene.remove(pawFx.g); pawFx = null; } fxHide(); if (helpEl) helpEl.classList.remove('on'); if (guideEl) guideEl.classList.remove('on'); guideGoal = null; marks.forEach((m) => scene && scene.remove(m.o)); marks.length = 0; ghosts.forEach((q) => scene && scene.remove(q.g)); ghosts.length = 0;
     if (!keep) { Z.on = false; if (duck && duck.g.parent) duck.g.parent.remove(duck.g); holeFx.forEach((g) => (g.visible = false)); hud(false); setCard(null); }
   };
@@ -10387,7 +10458,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (from && !from.remote) { from.kos++; if (from.isPlayer) { Z.pops++; SC.ui.hitMarker(true); if (t.k === 'big') { SC.ui.banner('打倒大胃王了！', 1.8); SC.audio.sfx.koGot(); } } }
     if (t.fly && z.st === 'fly') ctx.burst(z.x, z.y + 7.5 * t.s, z.z, new THREE.Color(BCOL[z.id % BCOL.length]), 14, 18, 0.45);
   }
-  Z.netHit = (from, id, amt) => { if (!auth()) return; if (id <= -TUR_ID) { if (-id - TUR_ID === BR.id) brPress(); else turOn(-id - TUR_ID); return; } if (id < 0) { const pk = Z.pows.find((q) => q.id === -id); if (pk) firePow(pk); return; } const z = Z.list.find((q) => q.id === id); if (!z) return; if (amt >= 1000) { amt -= 1000; freezeZ(z); } damage(z, SC.clamp(amt, 0, 999), from); }; /* 1000 以上＝冰冰槍：先凍住再扣血 */
+  Z.netHit = (from, id, amt) => { if (!auth()) return; if (id <= -TUR_ID) { const k = -id - TUR_ID; if (k === BR.id) brPress(); else if (k >= 20 && k < 23) barRepair(k - 20); else turOn(k); return; } if (id < 0) { const pk = Z.pows.find((q) => q.id === -id); if (pk) firePow(pk); return; } const z = Z.list.find((q) => q.id === id); if (!z) return; if (amt >= 1000) { amt -= 1000; freezeZ(z); } damage(z, SC.clamp(amt, 0, 999), from); }; /* 1000 以上＝冰冰槍：先凍住再扣血 */
   function freezeZ(z) { if (z.st === 'dead' || z.st === 'under') return; const s = TY[z.ty].boss ? 1.5 : 3; z.dz = Math.max(z.dz || 0, s); z.ice = Math.max(z.ice || 0, s); }
   Z.heroHit = (z, amt, a, frz) => { /* 第 116 版：神兵打到殭屍（自己這台算，跟一般子彈一樣先預測打爆） */
     const g = G(); if (!z || z.st === 'dead' || z.st === 'under' || z.predDead || g.state !== 'play') return false; const t = TY[z.ty]; if (t.boss || t.k === 'big') amt *= HERO_BOSS; if (Z.buffOf(a) === 0) amt *= 1.6; if (onInk(z)) amt *= INKZ.dmg; /* 第 122 版（Yen）：神兵打大魔王只有一半威力 */ if (t.cap) amt = Math.min(amt, t.cap); z.flash = 1;
@@ -10595,7 +10666,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const B = MP.btn; if (!B || !a.alive || (a.btnT || 0) > G().time) return; if (Math.hypot(a.pos.x - B.x, a.pos.z - B.z) > B.r || a.pos.y > H(B.x, B.z) + 1.5) return; a.btnT = G().time + 1;
     if (Z.brUp > 0 || Z.brCd > 0) { if (a.isPlayer) SC.ui.banner(Z.brUp > 0 ? '吊橋已經升起來了！' : '按鈕還在充電，等一下', 1.0); return; } if (auth()) brPress(); else ctx.sendHit(a, -(TUR_ID + BR.id), 0, 'W01'); Z.brUp = Z.brUp || 0.01; }
   function gearFit(a) { /* 拿著齒輪走到砲台塔旁邊（或站上塔頂）：裝上去，那座砲台開 45 秒 */
-    if (!a.gearC) return; for (let i = 0; i < 4; i++) { const [x, z] = TUR_P[i]; if (Math.hypot(a.pos.x - x, a.pos.z - z) > TUR_FIT) continue; a.gearC = 0; if (auth()) turOn(i); else ctx.sendHit(a, -(TUR_ID + i), 0, 'W01'); ctx.burst(x, H(x, z) + 2, z, new THREE.Color(0xffd23f), 30, 22, 0.6); if (a.isPlayer) { SC.ui.banner('自動機槍啟動！', 1.6, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } return; } }
+    if (!a.gearC) return; if (MP.bars) for (let b = 0; b < MP.bars.length; b++) { const bz = MP.bars[b]; if (Math.abs(a.pos.x) > MP.barW + 3 || Math.abs(a.pos.z - bz) > 6 || Z.bar[b] > 0.95) continue; a.gearC = 0; if (auth()) barRepair(b); else { ctx.sendHit(a, -(TUR_ID + 20 + b), 0, 'W01'); Z.bar[b] = Math.min(1, Z.bar[b] + BAR.fix); } ctx.burst(0, H(0, bz) + 3, bz, new THREE.Color(0xffd23f), 40, 26, 0.7); if (a.isPlayer) { SC.ui.banner('路障修好了！', 1.6, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } return; } /* 第 130 版：齒輪也可以修路障 */
+    for (let i = 0; i < 4; i++) { const [x, z] = TUR_P[i]; if (Math.hypot(a.pos.x - x, a.pos.z - z) > TUR_FIT) continue; a.gearC = 0; if (auth()) turOn(i); else ctx.sendHit(a, -(TUR_ID + i), 0, 'W01'); ctx.burst(x, H(x, z) + 2, z, new THREE.Color(0xffd23f), 30, 22, 0.6); if (a.isPlayer) { SC.ui.banner('自動機槍啟動！', 1.6, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } return; } }
   function boomGo(z) { // 炸彈鼠自己爆炸：裁判扣防護罩、炸旁邊的殭屍；每台在畫面那邊各自算自己的貓
     z.n++; z.boomed = 1; const domeD = Math.hypot(z.x, z.z) - DOME_R; if (domeD < SPX.boom.blast * 0.6) Z.shield -= 60 * dif.chew;
     blastZombies(z, 60); z.st = 'dead'; z.dieT = 0; z.hp = 0; if (z.tg) z.tg.alive = false;
@@ -10647,6 +10719,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const own = SC.ink.ownerAt(z.x, z.z), sp = t.sp / Math.sqrt(z.k || 1) * WALK_K * (own === 1 ? 0.55 : 1) * (z.hop > 0 ? 0.4 : 1) * (chase ? (z.hunting ? HUNT.sp : 1.35) : 1); z.chase = chase ? 1 : 0;
       if (t.giant || t.pogo) { wp = [0, 0]; z.ph = 2; } /* 第 119 版：超巨大坦克鼠直直開向小鴨，跨過城牆、涉過護城河 */
       const d = steer(z, wp[0], wp[1], sp, dt); z.y = t.giant ? SC.damp(z.y, Math.max(H(z.x, z.z), -1.5), 3, dt) : t.pogo ? Math.max(H(z.x, z.z), -1.5) + Math.abs(Math.sin(z.t * NEWX.pogo.f)) * NEWX.pogo.h * (Math.hypot(z.x, z.z) > DOME_R + 4 ? 1 : 0.2) : H(z.x, z.z); /* 第 122 版：彈簧鼠一路跳過去 */
+      if (MP.bars && !t.giant && !t.pogo && !t.boss) { barCheck(z, t, dt); z.y += (z.pile || 0) * BAR.up * t.s; } /* 第 130 版：路障、老鼠山 */
       if (MP.gates) { if (Math.hypot(z.x, z.z) < MP.pr) z.ph = 2; else if (z.ph === 2 && !t.giant && !t.pogo && !chase && Math.hypot(z.x, z.z) > MP.pr + 8 && (z.reT = (z.reT || 0) + dt) > 1.5) { z.reT = 0; const P = gPath(MP.gates[z.br % MP.gates.length]), e = P[P.length - 1]; if (Math.hypot(e[0] - z.x, e[1] - z.z) > 12) gateReset(z); } else if (z.ph < 2 && !chase && d < 4) wpNext(z); else if (chase && z.ph < 2 && (z.reT = (z.reT || 0) + dt) > 1) { z.reT = 0; gateReset(z); } } else if (z.ph === 0 && (!chase && d < 5 || Math.hypot(z.x, z.z) < 40 * S)) z.ph = 1; else if (z.ph === 1 && (!chase && d < 4 || Math.hypot(z.x, z.z) < 17 * S)) z.ph = 2;
       if (z.ph === 2 && Math.hypot(z.x, z.z) <= DOME_R + 1.0 * t.s * (t.wide || 1)) { z.st = 'eat'; z.vx = z.vz = 0; }
       // 大胃王：附近有貓就跺腳（先亮紅圈 0.9 秒）
@@ -10654,6 +10727,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
     // 互相推開（不要疊在一起）
     for (let i = 0; i < live.length; i++) { const a = live[i]; if (a.st !== 'walk' && a.st !== 'eat') continue; for (let j = i + 1; j < live.length; j++) { const b = live[j]; if (b.st !== 'walk' && b.st !== 'eat') continue; const dx = b.x - a.x, dz = b.z - a.z, R = 1.3 * (TY[a.ty].s + TY[b.ty].s), d2 = dx * dx + dz * dz; if (d2 > R * R || d2 < 1e-6) continue; const d = Math.sqrt(d2), k = ((R - d) / d) * 0.5; const ea = a.st === 'eat', eb = b.st === 'eat'; if (!ea) { a.x -= dx * k * (eb ? 2 : 1); a.z -= dz * k * (eb ? 2 : 1); } if (!eb) { b.x += dx * k * (ea ? 2 : 1); b.z += dz * k * (ea ? 2 : 1); } } }
+    if (MP.bars) barPile();
     for (const z of live) if (z.st === 'eat' && !z.onTop) { const d = Math.hypot(z.x, z.z), want = DOME_R + 1.0 * TY[z.ty].s * (TY[z.ty].wide || 1); if (d < want - 0.3) { z.x *= want / d; z.z *= want / d; } } // 咬防護罩的不會被擠進去
     // 打爆的殭屍留 0.5 秒（讓別台看得到）再移除
     for (let i = Z.list.length - 1; i >= 0; i--) { const z = Z.list[i]; if (z.st === 'dead' && (z.dieT += dt) > 0.5) { freeTarget(z); dropMesh(z); Z.list.splice(i, 1); } }
@@ -10661,6 +10735,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!Z.end) { if (Z.shield <= 0) { Z.shield = 0; Z.end = 2; } else if (now >= LEN + 4 && !Z.list.some((q) => TY[q.ty].k === 'tank' && q.st !== 'dead')) Z.end = 1; else if (now >= LEN + OVER) Z.end = 2; } /* 第 122 版：時間到不算贏，要打倒最後魔王；魔王戰最多 10 分鐘 */
   }
   function pickHoles(E) { const n = E.holes || 0, s = (Math.random() * 8) | 0; if (n >= 8) return [0, 1, 2, 3, 4, 5, 6, 7]; if (n === 4) return [0, 2, 4, 6].map((h) => (h + (s % 2)) % 8); if (n === 2) return [s, (s + 4) % 8]; if (E.k === 'big' || E.k === 'king' || E.k === 'tank') return E.n === 2 ? [s, (s + 4) % 8] : [s]; return []; }
+  const BAR = { hp: 900, lv: [7, 12, 15], up: 2.6, fix: 0.5 }; /* 第 130 版：長街的路障：耐久 900（殭屍咬一下扣 chew），老鼠山：前 7 隻在地上、再 5 隻疊第二層、再 3 隻第三層，再來的就翻過去 */
+  function barCheck(z, t, dt) {
+    if (Math.abs(z.x) > MP.barW + 1.5) { z.bar = -1; return; }
+    for (let b = 0; b < MP.bars.length; b++) { const bz = MP.bars[b]; if (!(Z.bar[b] > 0) || z.over === b) continue;
+      if (z.z > bz - 2.4 && z.z < bz + 2.5) { z.z = bz - 2.4; z.vz = Math.min(0, z.vz); z.bar = b; Z.bar[b] -= t.chew * Math.sqrt(z.k || 1) * dif.chew * dt / BAR.hp; if (Z.bar[b] <= 0) { Z.bar[b] = 0; } return; } }
+    z.bar = -1; z.pile = 0;
+  }
+  function barPile() { /* 老鼠山：擠在路障前的殭屍一層一層疊上去，疊滿就翻過去 */
+    MP.bars.forEach((bz, b) => { const L = Z.list.filter((q) => q.bar === b && q.st === 'walk').sort((p, q) => p.id - q.id); L.forEach((q, i) => { q.pile = i < BAR.lv[0] ? 0 : i < BAR.lv[1] ? 1 : i < BAR.lv[2] ? 2 : 3; if (q.pile === 3) { q.over = b; q.bar = -1; q.pile = 0; q.z = bz + 3; q.hop = 0.5; } }); });
+  }
+  function barRepair(b) { if (!MP.bars || b < 0 || b >= MP.bars.length) return; Z.bar[b] = Math.min(1, Math.max(0, Z.bar[b]) + BAR.fix); Z.barFix = (Z.barFix || 0) + 1; }
   const CALM = { from: 7, len: 12, k: 3.2 }; /* 第 128 版（守城地圖的節奏：慢慢變多 → 大波 → 喘口氣）：大波來完以後 12 秒殭屍出來得很慢，可以去撿神兵、放齒輪 */
   function fire(E) {
     if (E.k === 'horde' || E.k === 'swarm' || E.k === 'final') { const now = G().time; Z.calm = [now + CALM.from, now + CALM.from + CALM.len]; }
@@ -10859,6 +10944,20 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (signObj || !MP.gates) return; signObj = [];
     MP.gates.forEach((q) => { if (!q.mix || !q.sign || !MIX_IC[q.mix[0]]) return; const [e, bg] = MIX_IC[q.mix[0]], sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: emoTex(e, bg), depthTest: true, transparent: true })); sp.scale.set(9, 9, 1); sp.position.set(q.sign[0], H(q.sign[0], q.sign[1]) + q.sign[2], q.sign[1]); scene.add(sp); signObj.push(sp); });
   }
+  let barObj = null; /* 第 130 版：長街的路障：一排木箱＋上面一條耐久條（綠→黃→紅），壞掉變成一堆碎木頭 */
+  function barFx(dt) {
+    if (!MP.bars) { if (barObj) { barObj.forEach((o) => scene.remove(o.g)); barObj = null; } return; }
+    if (!barObj) barObj = MP.bars.map((bz, b) => { const g = new THREE.Group(), W = MP.barW, n = 6, crates = [], wood = new THREE.MeshStandardMaterial({ color: 0xc98a3c, roughness: 0.8 }), dark = new THREE.MeshStandardMaterial({ color: 0x8a5a2a, roughness: 0.8 });
+      for (let i = 0; i < n; i++) { const c = new THREE.Group(), bx = new THREE.Mesh(new THREE.BoxGeometry(2 * W / n - 0.3, 1, 2.6), wood); bx.position.y = 0.5; bx.castShadow = true; c.add(bx); [-0.3, 0.3].forEach((y) => { const st = new THREE.Mesh(new THREE.BoxGeometry(2 * W / n - 0.1, 0.12, 2.7), dark); st.position.y = 0.5 + y; c.add(st); }); c.position.x = -W + (i + 0.5) * 2 * W / n; g.add(c); crates.push(c); }
+      [-1, 1].forEach((sd) => { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 7, 10), dark); p.position.set(sd * (W + 0.3), 3.5, 0); g.add(p); });
+      const back = new THREE.Mesh(new THREE.PlaneGeometry(2 * W, 0.9), new THREE.MeshBasicMaterial({ color: 0x1b1430, transparent: true, opacity: 0.6, depthWrite: false })), bar = new THREE.Mesh(new THREE.PlaneGeometry(2 * W - 0.6, 0.55), new THREE.MeshBasicMaterial({ color: 0x5fe07a, depthWrite: false })); back.position.y = bar.position.y = 8; bar.position.z = 0.05; back.renderOrder = 8; bar.renderOrder = 9; g.add(back, bar);
+      g.position.set(0, H(0, bz), bz); scene.add(g); return { g, crates, bar, hp: 1, shake: 0 }; });
+    const now = performance.now() / 1000;
+    barObj.forEach((o, b) => { const hp = SC.clamp(Z.bar[b], 0, 1), dead = hp <= 0; if (hp < o.hp - 0.004) o.shake = 0.25; if (o.hp > 0 && dead) { const bz = MP.bars[b]; ctx.burst(0, H(0, bz) + 2, bz, new THREE.Color(0xc98a3c), 60, 30, 0.9); const n = ctx.near(0, 2, bz); SC.audio.sfx.bomb(); ctx.shake(0.2 + n * 0.6); if (G().state === 'play') SC.ui.banner('路障被咬壞了！退到下一道！', 1.8, true); } if (dead === false && o.hp <= 0) ctx.burst(0, H(0, MP.bars[b]) + 2, MP.bars[b], new THREE.Color(0xffd23f), 30, 20, 0.6); o.hp = hp;
+      o.shake = Math.max(0, o.shake - dt); const sh = o.shake > 0 ? Math.sin(now * 60) * 0.15 : 0;
+      o.crates.forEach((c, i) => { const h = dead ? 0.35 : 1.2 + hp * 2.4; c.scale.y = h; c.rotation.z = dead ? ((i % 2) - 0.5) * 0.6 : sh; c.position.y = 0; });
+      o.bar.visible = !dead; o.bar.scale.x = Math.max(0.01, hp); o.bar.position.x = -(1 - hp) * (MP.barW - 0.3); o.bar.material.color.setHex(hp > 0.6 ? 0x5fe07a : hp > 0.3 ? 0xffd23f : 0xff4a4a); });
+  }
   function bridgeFx(dt) {
     const B = MP.btn; if (!B) { if (brObj) { brObj.forEach((o) => scene.remove(o)); brObj = null; } return; } const R = MP.ramp, now = performance.now() / 1000, g = G(), up = Z.brUp > 0;
     if (!brObj) { const len = R.x1 - R.x0, plank = new THREE.Group(), wood = new THREE.MeshStandardMaterial({ color: 0xff9a3c, roughness: 0.6 }), b = new THREE.Mesh(new THREE.BoxGeometry(len, 0.9, R.w * 2), wood); b.position.x = len / 2; b.castShadow = b.receiveShadow = true; plank.add(b);
@@ -10958,7 +11057,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   let chewX = 0, chewZ = 0;
   function render(dt, cam) {
-    const g = G(), now = performance.now() / 1000, ended = g.state === 'ended'; ghostTick(dt); rainTick(dt); waveTick(dt); spotTick(dt); if (Z.on) { turretFx(dt); altarFx(dt); bridgeFx(dt); signsFx(); buffTick(); } if (ended || !Z.list.some((q) => TY[q.ty].k === 'tank' && q.st !== 'dead' && q.act === 6)) bossEdge(0);
+    const g = G(), now = performance.now() / 1000, ended = g.state === 'ended'; ghostTick(dt); rainTick(dt); waveTick(dt); spotTick(dt); if (Z.on) { turretFx(dt); altarFx(dt); bridgeFx(dt); barFx(dt); signsFx(); buffTick(); } if (ended || !Z.list.some((q) => TY[q.ty].k === 'tank' && q.st !== 'dead' && q.act === 6)) bossEdge(0);
     let chewing = 0; chewX = chewZ = 0;
     for (const z of Z.list) {
       const m = z.m; if (!m) continue; const t = TY[z.ty];
@@ -11186,20 +11285,20 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 每灘：[編號, x×10, z×10, 剩幾秒×10]；每隻：[編號, 種類 + 橋×16 + 階段×64 + 狀態×256 + 站在罩子上×2048 + 動作×4096, x×10, z×10, y×10, 血量％, 次數×2 + 預告, 瞄準 x, 瞄準 z]
   const ST = ['walk', 'eat', 'fly', 'under', 'dead'], ZN = 9; Z.ZN = ZN;
   Z.pack = () => {
-    const out = [6, Math.round(G().time * 10), Math.round(SC.clamp(Z.shield / SHIELD, 0, 1) * 10000), Z.ev, Z.evPh, Z.end, nextId, Z.evHoles ? Z.evHoles.reduce((m, h) => m | (1 << h), 0) : 0, Z.list.length, Z.puds.length, Z.pows.length, Z.pw.seq, Z.pw.k, Math.round(Z.pw.x), Math.round(Z.pw.z), Math.round(zDyn() * 100) + Math.ceil(Math.max(0, Z.brUp || 0)) * 1000 + Math.ceil(Z.brCd || 0) * 20000, Z.alt.seq, Z.alt.x, Z.alt.z, Math.round(Z.alt.p * 100), Z.alt.k, Math.round(Math.max(0, Z.alt.life) * 10), Z.altDone.seq, Z.altDone.k, ...Z.tur.map((t) => Math.round(t * 10))]; /* 第 5 版：多了這場的強度倍數；第 6 版：祭壇、四座機槍 */ // 第 4 版：多了神兵（數量、最後一次用掉的編號／種類／位置）
+    const out = [7, Math.round(G().time * 10), Math.round(SC.clamp(Z.shield / SHIELD, 0, 1) * 10000), Z.ev, Z.evPh, Z.end, nextId, Z.evHoles ? Z.evHoles.reduce((m, h) => m | (1 << h), 0) : 0, Z.list.length, Z.puds.length, Z.pows.length, Z.pw.seq, Z.pw.k, Math.round(Z.pw.x), Math.round(Z.pw.z), Math.round(zDyn() * 100) + Math.ceil(Math.max(0, Z.brUp || 0)) * 1000 + Math.ceil(Z.brCd || 0) * 20000, Z.alt.seq, Z.alt.x, Z.alt.z, Math.round(Z.alt.p * 100), Z.alt.k, Math.round(Math.max(0, Z.alt.life) * 10), Z.altDone.seq, Z.altDone.k, ...Z.tur.map((t) => Math.round(t * 10)), ...[0, 1, 2].map((b) => Math.round(SC.clamp(Z.bar[b] == null ? 1 : Z.bar[b], 0, 1) * 1000))]; /* 第 7 版：三道路障的耐久 */ /* 第 5 版：多了這場的強度倍數；第 6 版：祭壇、四座機槍 */ // 第 4 版：多了神兵（數量、最後一次用掉的編號／種類／位置）
     for (const q of Z.puds) out.push(q.id, Math.round(q.x * 10), Math.round(q.z * 10), Math.round(q.life * 10));
     for (const q of Z.pows) out.push(q.id, q.k, Math.round(q.x * 10), Math.round(q.z * 10), Math.round(q.life * 10));
     for (const z of Z.list) out.push(z.id, (z.ty & 15) + (z.ty >> 4) * 262144 + z.br * 16 + z.ph * 64 + Math.max(0, ST.indexOf(z.st)) * 256 + (z.onTop ? 2048 : 0) + ((z.act || 0) & 3) * 4096 + (((z.act || 0) >> 2) & 3) * 524288 + (z.dz > 0 ? 16384 : 0) + (z.bub > 0 ? 32768 : 0) + (z.ice > 0 ? 65536 : 0) + (z.hunting ? 131072 : 0), Math.round(z.x * 10), Math.round(z.z * 10), Math.round((z.st === 'under' ? -z.und : z.y) * 10), Math.round(SC.clamp(z.hp / z.max, 0, 1) * 100), (TY[z.ty].k === 'big' ? z.stompN : z.n) * 2 + (z.warn > 0 ? 1 : 0), Math.round(z.ax), Math.round(z.az));
     return out;
   };
-  Z.head = (zs) => (zs[0] >= 6 ? 28 : zs[0] >= 5 ? 16 : 15); /* 表頭有幾個數字 */
+  Z.head = (zs) => (zs[0] >= 7 ? 31 : zs[0] >= 6 ? 28 : zs[0] >= 5 ? 16 : 15); /* 表頭有幾個數字 */
   Z.apply = (zs) => {
-    if (!Z.on || auth() || !Array.isArray(zs) || (zs[0] < 4 || zs[0] > 6) || zs.length < 15 || !zs.every(Number.isFinite)) return;
+    if (!Z.on || auth() || !Array.isArray(zs) || (zs[0] < 4 || zs[0] > 7) || zs.length < 15 || !zs.every(Number.isFinite)) return;
     if (zs[1] < Z.netT && (Z.oldN = (Z.oldN || 0) + 1) < 12) return; Z.oldN = 0; Z.netT = zs[1]; /* 第 115 版：比上一個舊的快照（中繼站晚到、重送的）不要用，不然打爆的殭屍會跑回來；連續 12 個都比較舊＝換了裁判，照新的走 */
     if (zs[6] > nextId) nextId = zs[6] | 0; /* 第 121 版：接手當裁判時從大家用過的號碼後面接著數 */
     Z.shield = SC.clamp(zs[2] / 10000, 0, 1) * SHIELD; /* 第 3 版起：送比例（萬分之幾），兩邊上限不同也不會一邊 50% 一邊 100% */ if (zs[3] >= -1 && zs[3] < EVENTS.length) { Z.ev = zs[3] | 0; Z.evPh = zs[4] | 0; } if (!Z.end && (zs[5] === 1 || zs[5] === 2)) { Z.end = zs[5]; Z.netEnd = G().time; } nextId = Math.max(nextId, zs[6] | 0);
     Z.evHoles = []; for (let h = 0; h < 8; h++) if (zs[7] & (1 << h)) Z.evHoles.push(h);
-    const nAll = zs[8] | 0, nP = SC.clamp(zs[9] | 0, 0, 12), nK = SC.clamp(zs[10] | 0, 0, 10); /* 第 120 版：神兵種類 0～4（之前 0～3 讓別台看到的墨水機甲變成冰冰槍） */ let i = Z.head(zs); if (zs[0] >= 5) { const v = zs[15] | 0; Z.dyn = SC.clamp((v % 1000) / 100, 1, 2); Z.brUp = Math.floor((v % 20000) / 1000); Z.brCd = Math.floor(v / 20000); } if (zs[0] >= 6) { Z.alt = { seq: zs[16], x: zs[17], z: zs[18], p: SC.clamp(zs[19] / 100, 0, 1), k: SC.clamp(zs[20] | 0, 0, 2), life: zs[21] / 10 }; Z.altDone = { seq: zs[22], k: SC.clamp(zs[23] | 0, 0, 2) }; Z.tur = [24, 25, 26, 27].map((j) => Math.max(0, zs[j] / 10)); } const puds = [], pows = [];
+    const nAll = zs[8] | 0, nP = SC.clamp(zs[9] | 0, 0, 12), nK = SC.clamp(zs[10] | 0, 0, 10); /* 第 120 版：神兵種類 0～4（之前 0～3 讓別台看到的墨水機甲變成冰冰槍） */ let i = Z.head(zs); if (zs[0] >= 5) { const v = zs[15] | 0; Z.dyn = SC.clamp((v % 1000) / 100, 1, 2); Z.brUp = Math.floor((v % 20000) / 1000); Z.brCd = Math.floor(v / 20000); } if (zs[0] >= 6) { Z.alt = { seq: zs[16], x: zs[17], z: zs[18], p: SC.clamp(zs[19] / 100, 0, 1), k: SC.clamp(zs[20] | 0, 0, 2), life: zs[21] / 10 }; Z.altDone = { seq: zs[22], k: SC.clamp(zs[23] | 0, 0, 2) }; Z.tur = [24, 25, 26, 27].map((j) => Math.max(0, zs[j] / 10)); } if (zs[0] >= 7 && MP.bars) Z.bar = MP.bars.map((_, b) => SC.clamp(zs[28 + b] / 1000, 0, 1)); const puds = [], pows = [];
     if (zs[11] !== Z.pw.seq) Z.pw = { seq: zs[11], k: SC.clamp(zs[12] | 0, 0, 8), x: zs[13], z: zs[14] };
     for (let k = 0; k < nP && i + 3 < zs.length; k++, i += 4) puds.push({ id: zs[i], x: zs[i + 1] / 10, z: zs[i + 2] / 10, life: zs[i + 3] / 10 });
     for (let k = 0; k < nK && i + 4 < zs.length; k++, i += 5) { const old = Z.pows.find((q) => q.id === zs[i]); pows.push({ id: zs[i], k: SC.clamp(zs[i + 1] | 0, 0, 8), x: zs[i + 2] / 10, z: zs[i + 3] / 10, life: zs[i + 4] / 10, claimed: old && old.claimed && G().time - old.claimed < 2 ? old.claimed : 0 }); }
@@ -11277,10 +11376,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 第 125 版（Yen「讓使用者在進行遊戲的時候不用進行思考就知道下一步要怎麼做」）：畫面上永遠只有一個「下一步」指標。
      順序：小鴨被咬（大紅箭頭，原本的）＞ 祭壇（站上去集氣）＞ 齒輪（開機槍）＞ 神兵（手上沒有時）＞ 最後魔王。
      東西在畫面裡：頭上一個會跳的圖示泡泡＋往下的箭頭；不在畫面裡：泡泡貼在畫面邊上，箭頭指過去。 */
-  const GUIDE_TXT = { alt: '站上去', gear: '撿齒輪', pow: '撿神兵', tank: '打魔王', tur: '放上砲台' };
+  const GUIDE_TXT = { bar: '修路障', alt: '站上去', gear: '撿齒輪', pow: '撿神兵', tank: '打魔王', tur: '放上砲台' };
   let guideEl = null, guideAt = 0, guideGoal = null; const gv = new V3();
   function guidePick(g, p) {
     if (!p || !p.alive || p.zbHold) return null; const px = p.pos.x, pz = p.pos.z, A = Z.alt;
+    if (p.gearC && MP.bars) { let b = -1, lo = 0.7; Z.bar.forEach((h, i) => { if (h < lo) { lo = h; b = i; } }); if (b >= 0) { const bz = MP.bars[b]; return { k: 'bar', ic: '⚙️', x: 0, y: H(0, bz) + 6, z: bz + 3, id: 'b' + b }; } } /* 第 130 版：路障壞了 → 拿齒輪去修 */
     if (p.gearC) { let b = 0, bd = 1e9; TUR_P.forEach(([x, z], i) => { const d = Math.hypot(x - px, z - pz) + (Z.tur[i] > 0 ? 40 : 0); if (d < bd) { bd = d; b = i; } }); const [x, z] = TUR_P[b]; return { k: 'tur', ic: '⚙️', x, y: H(x, z) + 6, z, id: 't' + b }; } /* 第 128 版：拿著齒輪 → 指向砲台 */
     if (A.life > 0.6 && Math.hypot(px - A.x, pz - A.z) > ALT.R * 0.75) return { k: 'alt', ic: BUFF_IC[A.k] || '⭐', x: A.x, y: H(A.x, A.z) + 4, z: A.z };
     const hasHero = SC.zbHero && SC.zbHero.has(p), turFull = Z.tur.every((t) => t > TUR.max - TUR.T); let best = null, bd = 1e9;
@@ -11337,7 +11437,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   // 電腦隊友要打的殭屍、沒事時站哪裡守
   Z.enemies = () => Z.list.filter((z) => (z.st === 'walk' || z.st === 'eat' || z.st === 'fly') && !z.predDead && z.tg).map((z) => z.tg);
-  Z.guardPt = (a) => { if (a.gearC) { let b = 0, bd = 1e9; TUR_P.forEach(([x, z], i) => { const d = Math.hypot(x - a.pos.x, z - a.pos.z) + (Z.tur[i] > 0 ? 40 : 0); if (d < bd) { bd = d; b = i; } }); const [x, z] = TUR_P[b], d = Math.hypot(x, z) || 1; return new V3(x + (x / d) * 5, H(x + (x / d) * 5, z + (z / d) * 5), z + (z / d) * 5); } /* 第 128 版：拿著齒輪的電腦隊友走去砲台 */ const ci = a.cpu ? G().actors.filter((c) => c.cpu && c.alive && c.team === 0).indexOf(a) : -1, altOn = Z.alt.life > 2; if (altOn && (ci === 0 || ci === 1 && !(Z.chewN > 0))) { const o = ci ? 2.2 : -2.2; return new V3(Z.alt.x + o, H(Z.alt.x, Z.alt.z), Z.alt.z + o); } /* 第 124 版：第一隻電腦隊友去站祭壇；第 126 版（Yen 選 B）：小鴨沒被咬的時候，第二隻也去幫忙集氣 */ if (ci === (altOn && !(Z.chewN > 0) ? 2 : 1)) { let best = null, bd = 90; for (const q of Z.pows) if (q.k === GEAR && !q.claimed) { const d = Math.hypot(q.x - a.pos.x, q.z - a.pos.z); if (d < bd) { bd = d; best = q; } } if (best) return new V3(best.x, H(best.x, best.z), best.z); } /* 第二隻去撿齒輪 */ return gpOld(a); };
+  Z.guardPt = (a) => { if (MP.bars) { if (a.gearC) { let b = -1, lo = 0.8; Z.bar.forEach((h, i) => { if (h < lo) { lo = h; b = i; } }); if (b >= 0) return new V3((Math.random() - 0.5) * 8, H(0, MP.bars[b] + 3), MP.bars[b] + 3); }
+      if (!a.gearC && !(Z.alt.life > 2 && a.cpu && G().actors.filter((c) => c.cpu && c.alive && c.team === 0).indexOf(a) === 0)) { let bz = null; for (let b = 0; b < MP.bars.length; b++) if (Z.bar[b] > 0) { bz = MP.bars[b]; break; } if (bz != null) { const s = ((a.slot | 0) % 3) - 1; return new V3(s * 9 + (Math.random() - 0.5) * 3, H(s * 9, bz + 12), bz + 12 + Math.random() * 6); } } } /* 第 130 版：長街：電腦隊友守在最前面那道還沒壞的路障後面 */
+    if (a.gearC) { let b = 0, bd = 1e9; TUR_P.forEach(([x, z], i) => { const d = Math.hypot(x - a.pos.x, z - a.pos.z) + (Z.tur[i] > 0 ? 40 : 0); if (d < bd) { bd = d; b = i; } }); const [x, z] = TUR_P[b], d = Math.hypot(x, z) || 1; return new V3(x + (x / d) * 5, H(x + (x / d) * 5, z + (z / d) * 5), z + (z / d) * 5); } /* 第 128 版：拿著齒輪的電腦隊友走去砲台 */ const ci = a.cpu ? G().actors.filter((c) => c.cpu && c.alive && c.team === 0).indexOf(a) : -1, altOn = Z.alt.life > 2; if (altOn && (ci === 0 || ci === 1 && !(Z.chewN > 0))) { const o = ci ? 2.2 : -2.2; return new V3(Z.alt.x + o, H(Z.alt.x, Z.alt.z), Z.alt.z + o); } /* 第 124 版：第一隻電腦隊友去站祭壇；第 126 版（Yen 選 B）：小鴨沒被咬的時候，第二隻也去幫忙集氣 */ if (ci === (altOn && !(Z.chewN > 0) ? 2 : 1)) { let best = null, bd = 90; for (const q of Z.pows) if (q.k === GEAR && !q.claimed) { const d = Math.hypot(q.x - a.pos.x, q.z - a.pos.z); if (d < bd) { bd = d; best = q; } } if (best) return new V3(best.x, H(best.x, best.z), best.z); } /* 第二隻去撿齒輪 */ return gpOld(a); };
   const gpOld = (a) => { const slot = (a.slot | 0) % (MP.gates ? MP.gates.length : 4), busy = [0, 0, 0, 0]; Z.list.forEach((z) => { if (z.st === 'walk' || z.st === 'eat') busy[z.br]++; });
     let b = slot; const top = busy.indexOf(Math.max(...busy)); if (busy[top] > busy[slot] + 3) b = top; const ga = gateAng(b) + (Math.random() - 0.5) * 0.5, r = MP.gates ? MP.pr - 8 + Math.random() * 5 : (12 + Math.random() * 6) * S; return { x: Math.cos(ga) * r, z: Math.sin(ga) * r }; };
   function padTick(a) { /* 第 127 版：玩具房的彈跳床：踩上去就彈到旁邊的大積木塔頂 */
@@ -11357,6 +11459,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   SC.i18n.add([['殭屍踩到我們的墨水會變慢、更好打！', 'Zombies on our ink get slow and easy to hit!', 'ゾンビはぼくらのインクの上だとおそくなって、たおしやすい！', '좀비가 우리 잉크를 밟으면 느려지고 잡기 쉬워!'], ['神兵快沒電？潛進自己的墨水就會充電！', 'Weapon running low? Dive in your ink to recharge!', 'ぶきのでんきがない？じぶんのインクにもぐるとじゅうでん！', '무기 에너지가 없어? 우리 잉크에 잠수하면 충전돼!']]);
   SC.i18n.add([['魔王跳過來了！快離開紅圈！', 'The boss is jumping here! Leave the red ring!', 'まおうがとんでくる！あかいわからでて！', '마왕이 뛰어온다! 빨간 원에서 나가!'], ['震波來了！圈圈過來就跳！', 'Shock waves! Jump when the ring comes!', 'しょうげきは！わがきたらジャンプ！', '충격파다! 원이 오면 점프!'], ['魔王叫小弟了！每個洞都有殭屍！', 'The boss called friends! Zombies from every hole!', 'まおうがなかまをよんだ！ぜんぶのあなからゾンビ！', '마왕이 부하를 불렀어! 모든 구멍에서 좀비가!']]);
   SC.i18n.add([['吊橋已經升起來了！', 'The drawbridge is already up!', 'はねばしはもうあがってるよ！', '도개교가 벌써 올라갔어!'], ['按鈕還在充電，等一下', 'The button is recharging, wait a bit', 'ボタンはじゅうでんちゅう、ちょっとまってね', '버튼 충전 중, 조금만 기다려'], ['吊橋升起來了！殭屍要繞遠路！', 'Drawbridge up! Zombies must go the long way!', 'はねばしがあがった！ゾンビはとおまわり！', '도개교가 올라갔어! 좀비가 멀리 돌아가야 해!'], ['吊橋放下來了', 'The drawbridge is down', 'はねばしがおりた', '도개교가 내려왔어'], ['喘口氣！快去撿神兵、放齒輪！', 'Breather! Grab weapons and place gears!', 'ひとやすみ！ぶきをひろって、ギアをつけよう！', '한숨 돌려! 무기 줍고 톱니 끼우자!'], ['蛋糕島', 'Cake Island', 'ケーキじま', '케이크 섬'], ['冰屋村', 'Igloo Village', 'かまくらむら', '이글루 마을'], ['吊橋玩具房', 'Drawbridge Toy Room', 'はねばしのおもちゃべや', '도개교 장난감 방']]);
+  SC.i18n.add([['路障修好了！', 'Barricade fixed!', 'バリケードなおった！', '바리케이드 고쳤어!'], ['路障被咬壞了！退到下一道！', 'Barricade broken! Fall back to the next one!', 'バリケードがこわれた！つぎまでさがって！', '바리케이드가 부서졌어! 다음으로 물러나!'], ['修路障', 'Fix barricade', 'バリケードをなおす', '바리케이드 고치기'], ['殭屍大街', 'Zombie Street', 'ゾンビどおり', '좀비 거리']]);
   SC.i18n.add([['放上砲台', 'Put on turret', 'ほうだいにつける', '포탑에 끼워'], ['拿到齒輪了！拿去放在砲台上', 'Got a gear! Take it to a turret', 'ギアをゲット！ほうだいにもっていこう', '톱니 획득! 포탑에 가져가'], ['撿齒輪 ⚙️，拿去放在砲台上，砲台就會自動射擊！', 'Grab a gear ⚙️ and take it to a turret to switch it on!', 'ギア⚙️をひろって、ほうだいにつけるとじどうでうつよ！', '톱니⚙️를 주워 포탑에 끼우면 자동으로 쏴!'], ['丟掉', 'Drop', 'すてる', '버리기']]);
   SC.i18n.add([['站上去', 'Stand here', 'のってね', '올라서'], ['撿齒輪', 'Grab gear', 'ギアをひろう', '톱니 줍기'], ['撿神兵', 'Grab weapon', 'ぶきをひろう', '무기 줍기'], ['打魔王', 'Hit the boss', 'ボスをたおせ', '보스를 때려'], ['殭屍地圖', 'Zombie map', 'ゾンビマップ', '좀비 맵'], ['糖果群島', 'Candy Islands', 'キャンディ諸島', '사탕 군도'], ['雪山梯田', 'Snowy Terraces', 'ゆきやまの段々畑', '눈산 계단밭'], ['玩具房', 'Toy Room', 'おもちゃ部屋', '장난감 방'], ['草莓牛奶海', 'Strawberry Milk Sea', 'いちごミルクの海', '딸기우유 바다'], ['冰河', 'Icy River', 'こおりの川', '얼음 강'], ['浴缸泡泡水', 'Bubble Bath', 'あわあわおふろ', '거품 목욕물']]); /* 第 125 版 */
   SC.i18n.add([
@@ -13751,7 +13854,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const ZMAP_PICKS = [ /* 第 125 版：殭屍保衛戰的四張地圖 */
     ['zrand', '隨機', MAP_PICKS[0][2]],
     ['zfort', '小鴨堡壘', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#9cdb84" ${MS}/><path d="M14 33V17h6v5h6v-5h12v5h6v-5h6v16z" fill="#a64b32" ${MS}/><path d="M27 33v-7a5 5 0 0 1 10 0v7z" fill="#1b1430"/><circle cx="32" cy="10" r="6" fill="#ffd23f" ${MS}/><path d="M37 10l5 1-5 2z" fill="#ff9a3c"/>`)],
-    ['zcandy', '蛋糕島', MAP_SVG(`<path d="M2 36q8-4 15 0t15 0 15 0 15 0v6H2z" fill="#ff9ec8" ${MS}/><rect x="12" y="24" width="40" height="11" rx="3" fill="#f7c8a0" ${MS}/><rect x="20" y="13" width="24" height="11" rx="3" fill="#fff3f8" ${MS}/><path d="M12 27q5 3 10 0t10 0 10 0 10 0" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="32" cy="9" r="3.4" fill="#ffd23f" ${MS}/><circle cx="24" cy="22" r="1.8" fill="#ff3b5c"/><circle cx="40" cy="22" r="1.8" fill="#7fe0a6"/>`)],
+    ['zstreet', '殭屍大街', MAP_SVG(`<rect x="3" y="35" width="58" height="6" rx="3" fill="#8a8a9a" ${MS}/><rect x="4" y="12" width="12" height="23" rx="2" fill="#ff9ebb" ${MS}/><rect x="48" y="8" width="12" height="27" rx="2" fill="#8fd8ff" ${MS}/><rect x="19" y="27" width="26" height="8" rx="1.5" fill="#c98a3c" ${MS}/><path d="M25 27v8M32 27v8M39 27v8" stroke="#8a5a2a" stroke-width="2"/><circle cx="32" cy="18" r="4.5" fill="#a8e6a1" ${MS}/><circle cx="26" cy="21" r="3.5" fill="#a8e6a1" ${MS}/><circle cx="38" cy="21" r="3.5" fill="#a8e6a1" ${MS}/>`)],
     ['zsnow', '冰屋村', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#cfe2f3" ${MS}/><path d="M14 34a18 18 0 0 1 36 0z" fill="#fff" ${MS}/><path d="M26 34v-6a6 6 0 0 1 12 0v6z" fill="#5a6a8a" ${MS}/><path d="M17 26h30M22 19h20" stroke="#9fc4e8" stroke-width="2"/><rect x="3" y="27" width="8" height="7" rx="1.5" fill="#b9dcff" ${MS}/><rect x="53" y="27" width="8" height="7" rx="1.5" fill="#b9dcff" ${MS}/>`)],
     ['ztoy', '吊橋玩具房', MAP_SVG(`<rect x="3" y="35" width="58" height="6" rx="3" fill="#9be7ff" ${MS}/><rect x="6" y="18" width="26" height="17" rx="2" fill="#ffb86b" ${MS}/><path d="M32 18l9-12 4 3-9 12z" fill="#ff9a3c" ${MS}/><path d="M32 19L52 10" stroke="#5a5a70" stroke-width="1.6"/><circle cx="18" cy="14" r="4" fill="#ff2a3a" ${MS}/><rect x="48" y="23" width="11" height="12" rx="2" fill="#4ecbff" ${MS}/>`)],
   ];
