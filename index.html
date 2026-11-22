@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='21626d2021b1';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='507c4678a7ff';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -6649,8 +6649,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   function attach(r, code, qi, ranked, qrule, rn) {
     N.rn = rn || ''; N.rj = null; N.rjFail = false; chatOut = []; chatSeen = {}; N.chatLog = [];
-    room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); N.qrule = qrule === 'knockout' || ranked === 'knockout' ? 'knockout' : 'turf'; N.rmode = 'all'; N.rsize = 6; N.ready = false; N.rkDone = false; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
-    if (qi) { N.rule = N.qrule; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; } N.vc = false;
+    room = r; N.code = code; N.quick = qi; N.ranked = !!(qi && ranked); N.qrule = ranked ? (ranked === 'knockout' ? 'knockout' : 'turf') : ['knockout', 'zombie', 'cpu'].includes(qrule) ? qrule : 'turf'; N.rmode = 'all'; N.rsize = 6; N.ready = false; N.rkDone = false; qT = null; N.qs = null; N.state = 'joining'; joinAt = clock; N.msg = ''; N.match = null; N.list = []; seen = new Map(); myPeer = null; done = new Set();
+    if (qi) { N.rule = N.qrule === 'knockout' ? 'knockout' : 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.asg = {}; } N.vc = false; N.zb = false;
+    if (qi && !N.ranked && (N.qrule === 'zombie' || N.qrule === 'cpu')) { N.vc = true; N.zb = N.qrule === 'zombie'; N.zmap = 'zrand'; } /* Yen 11-22 10:43：殭屍保衛戰、一起打電腦也能跟陌生人配對 */
     changed();
   }
   // 隨機配對（Yen 2026-11-20）：依序看 sc-q1、sc-q2…，找第一間還沒滿 4 人、也沒在打的房間進去；都滿了就再往後找。
@@ -6660,16 +6661,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 積分賽（Yen 2026-11-20）：跟隨機配對一樣，只是房間在 sc-r1、sc-r2…（Yen 21:35 合併：每場開打時隨機塗地戰或擊倒戰；sc-rk 舊的擊倒池不再從選單進），打完會算牌位積分（09y_ranked.js）
   // Yen 22:00：積分賽分 1 對 1（sc-rs…，2 人）和 2 對 2（sc-r…，4 人）；人到齊而且每個人都按「準備」才開打。ranked：'1v1'｜'2v2'
   // Yen 2026-11-21：一般連線的隨機配對也分塗地（sc-q…）和擊倒（sc-qk…）兩種。rule：'turf'｜'knockout'（積分賽不用）
+  const QPRE = { turf: ['sc-q', 'Q'], knockout: ['sc-qk', 'QK'], zombie: ['sc-qz', 'QZ'], cpu: ['sc-qc', 'QC'] }; /* 一般配對的房間：塗地 sc-q、擊倒 sc-qk、殭屍 sc-qz、一起打電腦 sc-qc */
   N.quickJoin = async (from, ranked, rule) => {
     if (!api || N.busy || room) return;
     N.busy = true; N.msg = '正在找房間…'; changed();
     for (let i = from || 1; i <= QROOMS; i++) {
-      let r = null; try { r = await api.join((ranked ? 'sc-ra' : rule === 'knockout' ? 'sc-qk' : 'sc-q') + i); } catch (e) { r = null; }
+      const qp = QPRE[rule] || QPRE.turf; let r = null; try { r = await api.join((ranked ? 'sc-ra' : qp[0]) + i); } catch (e) { r = null; }
       if (!r) continue;
       await wait(1500);
       const ps = (r.peers ? r.peers() : []).filter((p) => !(p.isMe && p.sameTab) && p.presence && p.presence.v === 1 && typeof p.presence.j === 'number').sort((a, b) => a.presence.j - b.presence.j);
       const h = ps.length ? validH(ps[0].presence.h) : null;
-      if (ps.length < (ranked ? 6 : 4) && !(h && h.st === 'play')) { N.busy = false; return attach(r, (ranked ? 'R' : rule === 'knockout' ? 'QK' : 'Q') + i, i, ranked, rule, (ranked ? 'sc-ra' : rule === 'knockout' ? 'sc-qk' : 'sc-q') + i); }
+      if (ps.length < (ranked || rule === 'zombie' ? 6 : 4) && !(h && h.st === 'play')) { N.busy = false; return attach(r, (ranked ? 'R' : qp[1]) + i, i, ranked, rule, (ranked ? 'sc-ra' : qp[0]) + i); }
       try { r.leave().catch(() => {}); } catch (e) {}
     }
     N.busy = false; N.msg = '找不到空房間，等一下再試一次'; changed();
@@ -6731,7 +6733,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.setTri = (on) => { if (!N.isHost) return; N.tri = !!on; send(hostPatch()); sig = ''; }; // 3 人時：三方對戰或 2 對 1
   // tri＝每人一隊（3～6 人；Yen 2026-11-19 先要三方、再要四方以上）。兩隊模式最多 4 人
   N.rankOk = (n) => n >= 2 && n <= 6 && n !== 5; // 積分賽：2＝1對1、3＝三方、4＝2對2、6＝3對3
-  N.zbOn = () => !!(N.vc && N.zb && !N.quick); N.minStart = () => (N.zbOn() ? 1 : 2);
+  N.zbOn = () => !!(N.vc && N.zb && (!N.quick || N.qrule === 'zombie')); N.minStart = () => (N.zbOn() ? 1 : 2);
   N.triOn = () => (N.ranked ? N.list.length === 3 : !N.vc && N.list.length >= 3 && (N.tri != null ? N.tri : N.list.length !== 4)); // 沒選過：3 人三方、4 人 2 對 2、5～6 人大亂鬥
   N.nTeams = () => (N.triOn() ? Math.min(6, N.list.length) : 2);
   N.cap = () => (N.ranked || N.triOn() || N.zbOn() ? 6 : 4); /* 第 120 版：殭屍保衛戰最多 6 人 */
@@ -6831,15 +6833,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       chatSeen[r.peer] = top;
     });
     if (chatOut.length && clock - chatPrune > 1) { chatPrune = clock; const n0 = chatOut.length; chatOut = chatOut.filter((c) => clock - c.at < CHAT_KEEP); if (chatOut.length !== n0) chatSend(); }
-    if (N.quick) { N.rule = N.qrule || 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.qs = N.isHost ? (qT == null ? null : Math.ceil(qT)) : host && Number.isInteger(host.q.qs) && host.q.qs >= 0 && host.q.qs <= 30 ? host.q.qs : null; }
+    if (N.quick && !N.ranked && (N.qrule === 'zombie' || N.qrule === 'cpu')) { N.vc = true; N.zb = N.qrule === 'zombie'; }
+    if (N.quick) { N.rule = N.qrule === 'knockout' ? 'knockout' : 'turf'; N.map = 'random'; N.mix = 'rand'; N.tri = false; N.qs = N.isHost ? (qT == null ? null : Math.ceil(qT)) : host && Number.isInteger(host.q.qs) && host.q.qs >= 0 && host.q.qs <= 30 ? host.q.qs : null; }
     N.live = h && h.st === 'play' ? h.id : null;
     if (N.quick && N.state === 'lobby' && !N.live && (!m || m.over)) {
       const i = list.findIndex((r) => r.isMe);
-      if (i >= (N.ranked ? N.rsize : 4) && !N.rj) { const q = N.quick, rk = N.ranked, qr = N.qrule; N.leave(); N.quickJoin(q + 1, rk, qr); return; } // 擠進來超過人數：換下一間
+      if (i >= (N.ranked ? N.rsize : N.cap()) && !N.rj) { const q = N.quick, rk = N.ranked, qr = N.qrule; N.leave(); N.quickJoin(q + 1, rk, qr); return; } // 擠進來超過人數：換下一間
       if (N.isHost) { // 房主倒數自動開打：2 人等 15 秒，4 人到齊 4 秒
         if (N.ranked && N.rkDone) qT = null; // 積分賽一間房只打一場（Yen 23:16）：打完不再自動開下一場
         else if (N.ranked) { const all = N.rankOk(list.length) && list.every((r) => r.q.rd === 1); if (!all) qT = null; else { if (qT == null) qT = 10; qT -= dt; } } // 積分賽：人到齊、大家都準備好，10 秒後開打（Yen 11-22：這 10 秒用來選武器） // Yen 11-21：大家都按「即刻開戰」就照現有人數開打（5 人要等第 6 人）
-        else if (list.length < 2) qT = null; else { if (qT == null) qT = 15; if (list.length >= 4) qT = Math.min(qT, 4); qT -= dt; }
+        else if (list.length < 2 && N.qrule !== 'zombie') qT = null; else { if (qT == null) qT = list.length < 2 ? 25 : 15; if (list.length >= 2 && qT > 15) qT = 15; if (list.length >= N.cap()) qT = Math.min(qT, 4); qT -= dt; } /* 殭屍配對：一個人等 25 秒沒人來也開打（電腦隊友補上） */
         const qs = qT == null ? null : Math.max(0, Math.ceil(qT)); if (qs !== qSent) { qSent = qs; send({ qs }); }
         if (qT != null && qT <= 0) { qT = null; qSent = null; send({ qs: null }); N.start(); }
       }
@@ -14464,7 +14467,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       $('net-out').hidden = inRoom; $('net-in').hidden = !inRoom;
       { const rk = !!sel.rk, lock = rk && SC.account && SC.account.needed && !SC.account.user, q = $('net-quick'); // 積分賽：只有「開始配對」，沒有開房間和房號
         $('net-create').parentNode.hidden = rk; $('net-nick').parentNode.hidden = rk; $('net-create').hidden = !rk; $('net-hub').hidden = rk; els['m-title'].classList.toggle('net-hubon', !rk && !inRoom); els['m-title'].classList.toggle('net-first', !rk); if (!rk && SC.account && SC.account.netStrip) SC.account.netStrip(); /* Yen 11-22：連線對戰先選玩法，再選「和大家玩」或「和好友玩」 */
-        { const nm = sel.nm || 'turf', solo = nm === 'zombie' || nm === 'cpu'; $('pick-nm').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === nm)); $('net-go-pub').hidden = solo; $('net-go-fr').classList.toggle('wide', solo); ['net-go-pub', 'net-go-fr'].forEach((id) => ($(id).disabled = n.state !== 'idle' || !!n.busy)); $('net-go-pub').classList.toggle('nudge', !inRoom && !n.busy && !rk); $('net-go-fr').classList.toggle('nudge', solo && !inRoom && !n.busy && !rk); }
+        { const nm = sel.nm || 'turf', solo = nm === 'zombie' || nm === 'cpu'; $('pick-nm').querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === nm)); $('net-go-pub').hidden = false; ['net-go-pub', 'net-go-fr'].forEach((id) => ($(id).disabled = n.state !== 'idle' || !!n.busy)); $('net-go-pub').classList.toggle('nudge', !inRoom && !n.busy && !rk);  }
         q.classList.toggle('rk', rk); q.parentNode.hidden = true; q.querySelector('b').textContent = lock ? '登入後開始' : rk ? '開始配對' : '隨機配對';
         { const g = $('rk-go-btn'); g.querySelector('b').textContent = lock ? '登入後開始' : !inRoom ? '開始配對' : n.rkDone ? '開始配對' : n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; g.classList.toggle('wait', inRoom && n.ready && !n.rkDone); g.disabled = !inRoom && n.state !== 'idle' || !!n.busy || n.state === 'joining'; } $('net-quick2').hidden = true; $('net-quick2').querySelector('b').textContent = '擊倒戰配對'; els['m-title'].querySelector('#net-opts h3').textContent = rk ? '積分賽' : '連線房間'; }
       $('net-msg').textContent = n.state === 'check' ? '正在檢查能不能連線…' : n.state === 'none' ? window.SC_PUBLIC ? '這台裝置現在不能連線。' : '這個畫面現在不能連線。要用一般瀏覽器（不是 LINE、Messenger 裡面開的）登入 Claude，帳號要是房主在分享選單裡邀請的那一個，登入後把頁面重新整理一次。' : n.msg || (window.SC_PUBLIC && SC.relay.stats && n.code ? '中繼站：' + (SC.relay.stats.up.join('、') || '重新連線中') : '');
@@ -14475,7 +14478,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (!inRoom) { $('zmap-opt').hidden = true; return; }
       if (pendNm && (n.state === 'idle' && !n.busy || Date.now() - pendNmAt > 10000)) pendNm = null; /* 第 140.2 版：剛進房時還沒確認自己是房主，不要先把要設的玩法丟掉 */
       if (pendNm && n.state === 'lobby' && n.isHost && !n.quick) { const v = pendNm; pendNm = null; setTimeout(() => { const b = v === 'cpu' ? $('pick-vc').querySelector('[data-v="1"]') : $('pick-rule').querySelector(`[data-v="${v}"]`); if (b && SC.net.isHost && SC.net.state === 'lobby') b.click(); }, 0); } /* 按「和好友玩」開的房間：進房後幫房主把玩法設好 */
-      $('net-ready').hidden = true; /* 積分賽的「即刻開戰」改用上面的大按鈕（第 125.1 版：原本這裡用行尾註解，把後面的房號和選項都吃掉了） */ $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? (n.qrule === 'knockout' ? '擊倒戰配對' : '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
+      $('net-ready').hidden = true; /* 積分賽的「即刻開戰」改用上面的大按鈕（第 125.1 版：原本這裡用行尾註解，把後面的房號和選項都吃掉了） */ $('net-ready').textContent = n.ready ? '✔ 等大家按' : '⚡ 即刻開戰'; $('net-ready').classList.toggle('primary', !n.ready && n.ranked); $('net-room').textContent = n.ranked ? '積分賽' : n.quick ? ({ knockout: '擊倒戰配對', zombie: '殭屍保衛戰配對', cpu: '一起打電腦配對' }[n.qrule] || '塗地戰配對') : n.code; ['pick-mix', 'pick-rule'].forEach((id) => ($(id).hidden = !!n.quick)); // 配對房固定塗地、隨機分隊
       const ul = $('net-list'); ul.textContent = '';
       const tri = n.triOn(), vc = !!n.vc, zb = n.zbOn(), rand = n.mix === 'rand' && !vc, L = n.lineup(false);
       n.list.forEach((r, i) => {
@@ -14497,8 +14500,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         b2.querySelector('b').textContent = k === 3 ? '2 對 1' : '兩隊對戰'; } // 3 人以上：每人一隊或兩隊
       $('pick-teams').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (n.triOn() ? '3' : '2')); b.disabled = !n.isHost; });
       $('pick-rule').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === (zb ? 'zombie' : n.rule)); b.disabled = !n.isHost; });
-      mapSync(); $('zmap-opt').hidden = !zb; if (zb && n.zmap !== zPrevSeen) { zPrevSeen = n.zmap; setTimeout(() => zPreview(n.zmap), 0); } if (!zb) zPrevSeen = null; if (zb) $('pick-zmap').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.zmap); b.disabled = !n.isHost; }); if (zb) { $('pick-rule').hidden = false; $('map-opt').hidden = true; $('pick-mix').hidden = true; $('pick-teams').hidden = true; } // 殭屍保衛戰（Yen 22:00：放在規則這排，跟塗地戰、擊倒戰並排）：固定小鴨堡壘
-      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.list.length === 5 ? '5 個人要等第 6 個人加入，才能 3 對 3 開打' : n.qs != null ? `${n.qs} 秒後開打` : `${RK_FMT[n.list.length] || ''}：大家都按「即刻開戰」就開打`) : n.quick && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : zb && n.isHost && n.list.length < 4 ? '一個人也能開打，空位由電腦隊友補上' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
+      mapSync(); $('zmap-opt').hidden = !zb || !!n.quick; if (zb && n.zmap !== zPrevSeen) { zPrevSeen = n.zmap; setTimeout(() => zPreview(n.zmap), 0); } if (!zb) zPrevSeen = null; if (zb) $('pick-zmap').querySelectorAll('.pick').forEach((b) => { b.classList.toggle('on', b.dataset.v === n.zmap); b.disabled = !n.isHost; }); if (zb) { $('pick-rule').hidden = false; $('map-opt').hidden = true; $('pick-mix').hidden = true; $('pick-teams').hidden = true; } // 殭屍保衛戰（Yen 22:00：放在規則這排，跟塗地戰、擊倒戰並排）：固定小鴨堡壘
+      $('net-msg2').textContent = !n.online ? '連線中斷，正在重新連線…' : n.state === 'joining' || !me ? '正在進房間…' : n.ranked && !n.live ? (n.list.length < 2 ? '正在等其他玩家加入…' : n.list.length === 5 ? '5 個人要等第 6 個人加入，才能 3 對 3 開打' : n.qs != null ? `${n.qs} 秒後開打` : `${RK_FMT[n.list.length] || ''}：大家都按「即刻開戰」就開打`) : n.quick && !n.live ? (n.list.length < 2 && n.qs == null ? '正在等其他玩家加入…' : n.qs != null ? `${n.qs} 秒後開打` : '馬上開打') : waiting ? '這個房間正在對戰，等這一場結束' : n.live ? '等房主回到房間。等太久的話，可以離開房間另外開一間' : zb && n.isHost && n.list.length < 4 ? '一個人也能開打，空位由電腦隊友補上' : n.list.length < 2 ? '把房號告訴朋友，等他們加入' : n.isHost ? (n.list.length > n.cap() ? `一場最多 ${n.cap()} 人，後面的人等下一場。` : '') + '人到齊就按「開始對戰」' : '等房主按開始';
       if (n.ranked) { $('rk-go-msg').textContent = $('net-msg2').textContent; const cd = n.qs != null && !n.live && n.state === 'lobby' && !els['m-title'].hidden; $('rk-wpn').hidden = !cd; if (cd) { $('rk-wpn-n').textContent = n.qs; if (ui.wpnSync) ui.wpnSync(); } } // Yen 11-22：配到人、大家按即刻開戰後倒數 10 秒，這時候選武器
     };
     const modeSync = () => { SC.net.ink = sel.ink; // 第 69 版：連線時房主挑的顏色大家一起用
@@ -14584,7 +14587,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     function myNick() { const acc = SC.account && SC.account.user && SC.account.name ? SC.net.clean(SC.account.name()) : ''; return (sel.rk ? acc || nick : nick || acc) || ''; } // Yen 11-22：積分賽用帳號名字（積分賽沒有暱稱欄，以前都變成「玩家N」）
     const quick = (rule) => { if (sel.rk && SC.account && SC.account.needed && !SC.account.user) return SC.account.open(); if (rule === 'all') lastRk = rule; SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); SC.net.quickJoin(1, sel.rk ? rule : false, sel.rk ? null : rule); }; // 積分賽要先登入（公開版）
     $('pick-nm').addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; click(); sel.nm = b.dataset.v; save(); netSync(); });
-    on('net-go-pub', () => quick(sel.nm === 'knockout' ? 'knockout' : 'turf'));
+    on('net-go-pub', () => quick(['knockout', 'zombie', 'cpu'].includes(sel.nm) ? sel.nm : 'turf'));
     ui.netCreate = () => { SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); pendNm = sel.nm && sel.nm !== 'turf' ? sel.nm : null; pendNmAt = Date.now(); SC.net.create(); };
     on('net-go-fr', () => ui.netCreate());
     $('pick-rule').querySelectorAll('.pick').forEach((b) => { const ic = $('pick-nm').querySelector(`.pick[data-v="${b.dataset.v}"] svg`); if (ic && !b.querySelector('svg')) { const c = ic.cloneNode(true); c.classList.add('rule-ic'); b.prepend(c); } }); /* 第 140.2 版：房間裡的規則鈕也有跟「選玩法」一樣的圖示，不用看字 */
@@ -15574,6 +15577,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const useFb = on && !!CONFIG.firebase;
 
   if (SC.i18n && SC.i18n.add) SC.i18n.add([
+    ['殭屍保衛戰配對', 'Zombie Defense match', 'ゾンビ防衛戦マッチ', '좀비 방어전 매칭'], ['一起打電腦配對', 'Team vs CPU match', 'みんなでCPUたいせんマッチ', '함께 CPU 대전 매칭'],
     ['先選玩法，再按「和大家玩」馬上配對，或按「和好友玩」開房間邀朋友。有房號的話在下面輸入就能加入。', 'Pick a game, then tap "Play with everyone" for a quick match or "Play with friends" to open a room and invite friends. Have a room number? Enter it below.', 'あそびかたをえらんで、「みんなとあそぶ」ですぐマッチ、「ともだちとあそぶ」でルームを作ってさそおう。ルーム番号があれば下で入力してね。', '게임을 고르고 「모두와 놀기」로 바로 매칭하거나 「친구와 놀기」로 방을 만들어 친구를 초대해요. 방 번호가 있으면 아래에 입력해요.'],
     ['選玩法', 'Pick a game', 'あそびかたをえらぶ', '게임 고르기'], ['朋友同一隊', 'Team up with friends', 'ともだちと同じチーム', '친구와 같은 팀'],
     ['和大家玩', 'Play with everyone', 'みんなとあそぶ', '모두와 놀기'], ['馬上配對', 'Quick match', 'すぐマッチ', '바로 매칭'], ['和好友玩', 'Play with friends', 'ともだちとあそぶ', '친구와 놀기'], ['開房間邀朋友', 'Open a room, invite friends', 'ルームを作ってさそう', '방 만들고 초대'],
