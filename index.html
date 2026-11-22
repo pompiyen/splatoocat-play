@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='e7c4466a2c37';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='f3d642f55c28';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1163,6 +1163,7 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .nf-lock { background: rgba(255, 255, 255, .1); color: var(--dim); border: 2px dashed rgba(255, 255, 255, .3); border-radius: 14px; padding: 8px; font-weight: 800; font-size: 13px; cursor: pointer; }
 /* 積分賽打完：「再配對一場」做成大按鈕 */
 #m-results .btn.rk-again { font-size: 26px; padding: 16px 28px; background: linear-gradient(#ffe680, var(--sun) 55%, #ffb800); color: var(--navy); border: 4px solid var(--navy); box-shadow: 0 7px 0 var(--navy); animation: rkGo 1.2s ease-in-out infinite; }
+.ch-kind,.ch-tabs{margin:8px 0}.ch-kind{grid-template-columns:1fr 1fr}.ch-kind button[data-ck="bug"].on,.ch-tabs button[data-cf="bug"].on{background:#2b7de9;border-color:#2b7de9;color:#fff}.ch-list li.bug{border-color:#9cc4ff;background:#f2f7ff}.ac-row .bugb{background:#2b7de9;color:#fff}
 
 </style>
 <div id="app">
@@ -15601,6 +15602,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     //   → Store API 幫這個玩家建一張商品訂單，拿到付款 token → 開 Pay Station 付款頁。
     // 要先在 Xsolla 後台：建好商品（SKU）、Login 專案啟用 Google/Facebook 社群登入、測試模式下把自己加進公司使用者。
     // 綠界審核要求：販售網頁要標示和綠界賣家資料相同的 E-mail 或電話。填了就在標題畫面右下角顯示一行聯絡方式。
+    devs: { kiKG0MkGFcaYDZEMZfE9wECarJF3: '系統開發者1' }, // Yen 11-22 10:55：小威（Weiting）能看、能回 Debug 留言，回覆顯示「系統開發者1」（Firestore 規則 isDev() 也要同一個 uid）
     contact: 'pompiyen@gmail.com', // Yen 2026-11-20 指定（綠界審核用，之後可以換成專用信箱）
     xsolla: null, // 例：{ projectId: 123456, loginId: 'xxxxxxxx-xxxx-…', sandbox: true, items: [{ sku: 'donate_100', name: '贊助 NT$100' }] }
   };
@@ -15613,6 +15615,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const useFb = on && !!CONFIG.firebase;
 
   if (SC.i18n && SC.i18n.add) SC.i18n.add([
+    ['💌 愛心留言', '💌 Heart message', '💌 ハートメッセージ', '💌 하트 메시지'], ['🐞 Debug 留言', '🐞 Bug report', '🐞 バグ報告', '🐞 버그 신고'], ['🐞 送出 Debug 留言', '🐞 Send bug report', '🐞 バグ報告を送る', '🐞 버그 신고 보내기'],
+    ['遇到什麼問題？在哪個畫面、做了什麼？', 'What went wrong? Which screen, and what did you do?', 'どんな問題？どの画面で何をしたとき？', '어떤 문제가 있었나요? 어느 화면에서 무엇을 했나요?'], ['Debug 留言送出了！謝謝你幫忙找問題！', 'Bug report sent! Thanks for helping!', 'バグ報告を送ったよ！ありがとう！', '버그 신고를 보냈어요! 고마워요!'],
+    ['📬 收到的留言', '📬 Messages', '📬 とどいたメッセージ', '📬 받은 메시지'], ['🐞 Debug 留言（開發者）', '🐞 Bug reports (developer)', '🐞 バグ報告（開発者）', '🐞 버그 신고 (개발자)'], ['全部', 'All', 'ぜんぶ', '전체'], ['💌 愛心', '💌 Hearts', '💌 ハート', '💌 하트'], ['🐞 Debug', '🐞 Bugs', '🐞 バグ', '🐞 버그'],
+    ['💬 系統開發者1 回覆', '💬 Reply from Developer 1', '💬 開発者1からの返事', '💬 개발자1의 답장'], ['你的回覆會顯示為「', 'Your replies show as "', 'あなたの返事の名前：「', '답장 이름: "'],
     ['請大人幫忙', 'Ask a grown-up', 'おとなの人にたのんでね', '어른에게 부탁해요'], ['🔒 大人登入後可以加好友', '🔒 A grown-up can sign in to add friends', '🔒 おとなの人がログインするとフレンドを追加できるよ', '🔒 어른이 로그인하면 친구를 추가할 수 있어요'],
     ['殭屍保衛戰配對', 'Zombie Defense match', 'ゾンビ防衛戦マッチ', '좀비 방어전 매칭'], ['一起打電腦配對', 'Team vs CPU match', 'みんなでCPUたいせんマッチ', '함께 CPU 대전 매칭'],
     ['先選玩法，再按「和大家玩」馬上配對，或按「和好友玩」開房間邀朋友。有房號的話在下面輸入就能加入。', 'Pick a game, then tap "Play with everyone" for a quick match or "Play with friends" to open a room and invite friends. Have a room number? Enter it below.', 'あそびかたをえらんで、「みんなとあそぶ」ですぐマッチ、「ともだちとあそぶ」でルームを作ってさそおう。ルーム番号があれば下で入力してね。', '게임을 고르고 「모두와 놀기」로 바로 매칭하거나 「친구와 놀기」로 방을 만들어 친구를 초대해요. 방 번호가 있으면 아래에 입력해요.'],
@@ -16100,7 +16106,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 按愛心先寫一句打氣的話；可以只送愛心，也可以一起贊助（標明信用卡或 PayPal）。
   // 留言存在 Firestore cheers/，只有作者（CONFIG.contact 那個已驗證信箱登入）讀得到，不公開；要登入才能送，30 秒一則（規則擋洗版）。
   const CHEER_MAX = 120, lang = () => (SC.i18n && SC.i18n.lang) || 'zh';
-  const cheer = { text: '', busy: false, msg: '', ok: false, more: false, give: false, inbox: null, inboxErr: '', sentAt: 0, seenAt: 0 };
+  const cheer = { text: '', busy: false, msg: '', ok: false, more: false, give: false, inbox: null, inboxErr: '', sentAt: 0, seenAt: 0, kind: '', filter: 'all' };
+  const devName = () => (account.user && CONFIG.devs && CONFIG.devs[account.user.uid]) || ''; // 系統開發者：只看得到、回得了 Debug 留言
+  const repBy = (c) => (c.rb && c.rb !== 'admin' ? '💬 ' + ((CONFIG.devs && Object.values(CONFIG.devs)[0]) || '系統開發者') + ' 回覆' : '💬 作者回覆');
+  const KTAG = (c) => (c.k === 'bug' ? '🐞 Debug' : PAYTAG[c.pay] || PAYTAG['']);
   const isAdmin = () => !!(account.user && CONFIG.contact && account.user.email && account.user.email.toLowerCase() === CONFIG.contact.toLowerCase());
   cheer.send = async (pay) => {
     const u = account.user, m = cheer.text.trim().slice(0, CHEER_MAX); if (!u || !m || cheer.busy) return false;
@@ -16108,20 +16117,20 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     cheer.busy = true; cheer.msg = ''; paint();
     try {
       const { db, F } = await load(), b = F.writeBatch(db), at = F.serverTimestamp();
-      b.set(F.doc(db, 'cheers', u.uid + '_' + Date.now().toString(36)), { uid: u.uid, n: account.name().slice(0, 16), m, pay: pay || '', lang: lang(), at });
+      const bug = !pay && cheer.kind === 'bug'; b.set(F.doc(db, 'cheers', u.uid + '_' + Date.now().toString(36)), { uid: u.uid, n: account.name().slice(0, 16), m, pay: pay || '', lang: lang(), at, ...(bug ? { k: 'bug' } : {}) });
       b.set(F.doc(db, 'cheerLast', u.uid), { at });
-      await b.commit(); cheer.sentAt = Date.now(); cheer.text = ''; cheer.ok = true; cheer.msg = pay ? '留言送出了！付款頁已經在新分頁打開，謝謝你的贊助！' : '愛心送出了！謝謝你的鼓勵！'; setTimeout(() => cheer.loadMine(), 800);
+      await b.commit(); cheer.sentAt = Date.now(); cheer.text = ''; cheer.ok = true; cheer.msg = pay ? '留言送出了！付款頁已經在新分頁打開，謝謝你的贊助！' : bug ? 'Debug 留言送出了！謝謝你幫忙找問題！' : '愛心送出了！謝謝你的鼓勵！'; setTimeout(() => cheer.loadMine(), 800);
       if (SC.audio && SC.audio.sfx && SC.audio.sfx.ding) SC.audio.sfx.ding();
     } catch (e) { cheer.ok = false; cheer.msg = (e && e.code) === 'permission-denied' ? '剛剛送過了，等 30 秒再送一次。' : '沒送出去，檢查網路後再試一次。'; }
     cheer.busy = false; paint(); return cheer.ok;
   };
   cheer.load = async () => {
-    cheer.inboxErr = ''; try { const { db, F } = await load(); const snap = await F.getDocs(F.query(F.collection(db, 'cheers'), F.orderBy('at', 'desc'), F.limit(300))); cheer.inbox = snap.docs.map(rowOf); }
+    cheer.inboxErr = ''; try { const { db, F } = await load(); const snap = await F.getDocs(isAdmin() ? F.query(F.collection(db, 'cheers'), F.orderBy('at', 'desc'), F.limit(300)) : F.query(F.collection(db, 'cheers'), F.where('k', '==', 'bug'), F.limit(300))); cheer.inbox = snap.docs.map(rowOf).sort((a, b) => b.t - a.t); }
     catch (e) { cheer.inbox = []; cheer.inboxErr = '讀不到留言（' + ((e && e.code) || '網路') + '）'; }
     paint();
   };
   const tsOf = (x) => (x && x.toMillis ? x.toMillis() : 0);
-  const rowOf = (d) => { const x = d.data(); return { id: d.id, uid: x.uid || '', n: x.n || '', m: x.m || '', pay: x.pay || '', lang: x.lang || '', t: tsOf(x.at), r: x.r || '', rt: tsOf(x.ra) }; };
+  const rowOf = (d) => { const x = d.data(); return { id: d.id, uid: x.uid || '', n: x.n || '', m: x.m || '', pay: x.pay || '', lang: x.lang || '', t: tsOf(x.at), r: x.r || '', rt: tsOf(x.ra), k: x.k === 'bug' ? 'bug' : '', rb: x.rb || '' }; };
   // 自己的留言紀錄（Yen 11-21 19:56）：只查自己的 uid，規則也只讓本人讀自己的；作者的回覆存在同一筆的 r/ra
   const SEEN = 'sc-cheer-seen'; const seen = () => { try { return +localStorage.getItem(SEEN) || 0; } catch (e) { return 0; } };
   cheer.mine = null; cheer.mineErr = '';
@@ -16134,8 +16143,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   cheer.newReply = () => !!(cheer.mine && cheer.mine.some((c) => c.r && c.rt > seen()));
   // 作者回覆：只有作者帳號能在留言上加 r（回覆內容）和 ra（時間），規則擋其他欄位
   cheer.reply = async (id, txt) => {
-    const r = String(txt || '').trim().slice(0, 400); if (!isAdmin() || !r) return;
-    try { const { db, F } = await load(); await F.updateDoc(F.doc(db, 'cheers', id), { r, ra: F.serverTimestamp() }); const c = (cheer.inbox || []).find((x) => x.id === id); if (c) { c.r = r; c.rt = Date.now(); c.edit = false; } cheer.inboxErr = ''; }
+    const r = String(txt || '').trim().slice(0, 400); if (!(isAdmin() || devName()) || !r) return; const rb = isAdmin() ? 'admin' : 'dev1';
+    try { const { db, F } = await load(); await F.updateDoc(F.doc(db, 'cheers', id), { r, ra: F.serverTimestamp(), rb }); const c = (cheer.inbox || []).find((x) => x.id === id); if (c) { c.r = r; c.rt = Date.now(); c.edit = false; c.rb = rb; } cheer.inboxErr = ''; }
     catch (e) { cheer.inboxErr = '回覆沒送出去（' + ((e && e.code) || '網路') + '）'; }
     paint();
   };
@@ -16215,16 +16224,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         }
       }
     } else if (view === 'inbox') {
-      h += `<h2>📬 收到的愛心留言</h2>`;
-      if (!isAdmin()) h += `<p>只有作者看得到。</p>`;
+      const dev = !isAdmin() && !!devName();
+      h += dev ? `<h2>🐞 Debug 留言</h2>` : `<h2>📬 收到的留言</h2>`;
+      if (dev) h += `<p class="ac-sub">你的回覆會顯示為「<b>${esc(devName())}</b>」</p>`;
+      if (!isAdmin() && !dev) h += `<p>只有作者看得到。</p>`;
       else if (!cheer.inbox) h += `<p>讀取中…</p>`;
       else {
         if (cheer.inboxErr) h += `<p class="ac-err">${esc(cheer.inboxErr)}</p>`;
-        const pays = cheer.inbox.filter((c) => c.pay).length;
-        h += `<p class="ac-sub">共 ${cheer.inbox.length} 則・按了贊助按鈕的 ${pays} 則</p>`;
-        h += cheer.inbox.length ? `<ul class="ch-list">${cheer.inbox.map((c) => `<li class="${c.pay ? 'paid' : ''}"><div><b translate="no">${esc(c.n || '?')}</b><small>${esc(PAYTAG[c.pay] || PAYTAG[''])}・${c.t ? new Date(c.t).toLocaleString() : ''}${c.lang && c.lang !== 'zh' ? '・' + esc(c.lang) : ''}</small></div><p translate="no">${esc(c.m)}</p>`
-          + (c.r && !c.edit ? `<p class="ch-rep"><b>💬 作者回覆</b><span translate="no">${esc(c.r)}</span></p><button type="button" class="ch-rb" data-rp="${esc(c.id)}">✏️ 改回覆</button>` : c.edit ? `<div class="ch-rf"><textarea maxlength="400" data-rt="${esc(c.id)}" placeholder="回覆給 ${esc(c.n || '?')}">${esc(c.r || '')}</textarea><button type="button" data-rs="${esc(c.id)}">送出回覆</button></div>` : `<button type="button" class="ch-rb" data-rp="${esc(c.id)}">💬 回覆</button>`) + `</li>`).join('')}</ul>` : `<p class="ac-note">還沒有留言。</p>`;
-        h += `<p class="ac-note">標「愛心贊助」的留言只代表對方按了贊助按鈕，有沒有真的付款請到 PayPal 的交易明細核對。</p>`;
+        const pays = cheer.inbox.filter((c) => c.pay).length, bugs = cheer.inbox.filter((c) => c.k === 'bug').length, fl = dev ? 'bug' : cheer.filter, rows = cheer.inbox.filter((c) => fl === 'all' || (fl === 'bug' ? c.k === 'bug' : c.k !== 'bug'));
+        if (!dev) h += `<div class="fl-tabs ch-tabs">${[['all', '全部', cheer.inbox.length], ['heart', '💌 愛心', cheer.inbox.length - bugs], ['bug', '🐞 Debug', bugs]].map(([v, l, n]) => `<button type="button" data-cf="${v}" class="${fl === v ? 'on' : ''}"><span>${l}</span> <em>${n}</em></button>`).join('')}</div>`;
+        h += `<p class="ac-sub">共 ${rows.length} 則${dev ? '' : `・按了贊助按鈕的 ${pays} 則`}</p>`;
+        h += rows.length ? `<ul class="ch-list">${rows.map((c) => `<li class="${c.pay ? 'paid' : ''}${c.k === 'bug' ? ' bug' : ''}"><div><b translate="no">${esc(c.n || '?')}</b><small>${esc(KTAG(c))}・${c.t ? new Date(c.t).toLocaleString() : ''}${c.lang && c.lang !== 'zh' ? '・' + esc(c.lang) : ''}</small></div><p translate="no">${esc(c.m)}</p>`
+          + (c.r && !c.edit ? `<p class="ch-rep"><b>${esc(repBy(c))}</b><span translate="no">${esc(c.r)}</span></p><button type="button" class="ch-rb" data-rp="${esc(c.id)}">✏️ 改回覆</button>` : c.edit ? `<div class="ch-rf"><textarea maxlength="400" data-rt="${esc(c.id)}" placeholder="回覆給 ${esc(c.n || '?')}">${esc(c.r || '')}</textarea><button type="button" data-rs="${esc(c.id)}">送出回覆</button></div>` : `<button type="button" class="ch-rb" data-rp="${esc(c.id)}">💬 回覆</button>`) + `</li>`).join('')}</ul>` : `<p class="ac-note">還沒有留言。</p>`;
+        if (!dev) h += `<p class="ac-note">標「愛心贊助」的留言只代表對方按了贊助按鈕，有沒有真的付款請到 PayPal 的交易明細核對。</p>`;
       }
       h += `<div class="ac-row"><button type="button" data-ch="back">← 回愛心</button></div>`;
     } else if (view === 'mine') {
@@ -16232,7 +16244,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (!cheer.mine) h += `<p>讀取中…</p>`;
       else {
         if (cheer.mineErr) h += `<p class="ac-err">${esc(cheer.mineErr)}</p>`;
-        h += cheer.mine.length ? `<ul class="ch-list">${cheer.mine.map((c) => `<li class="${c.pay ? 'paid' : ''}"><div><b>${esc(PAYTAG[c.pay] || PAYTAG[''])}</b><small>${c.t ? new Date(c.t).toLocaleString() : ''}</small></div><p translate="no">${esc(c.m)}</p>${c.r ? `<p class="ch-rep${c.rt > cheer.seenAt ? ' new' : ''}"><b>💬 作者回覆</b><span translate="no">${esc(c.r)}</span></p>` : ''}</li>`).join('')}</ul>` : `<p class="ac-note">還沒有送過留言。</p>`;
+        h += cheer.mine.length ? `<ul class="ch-list">${cheer.mine.map((c) => `<li class="${c.pay ? 'paid' : ''}${c.k === 'bug' ? ' bug' : ''}"><div><b>${esc(KTAG(c))}</b><small>${c.t ? new Date(c.t).toLocaleString() : ''}</small></div><p translate="no">${esc(c.m)}</p>${c.r ? `<p class="ch-rep${c.rt > cheer.seenAt ? ' new' : ''}"><b>${esc(repBy(c))}</b><span translate="no">${esc(c.r)}</span></p>` : ''}</li>`).join('')}</ul>` : `<p class="ac-note">還沒有送過留言。</p>`;
         if (cheer.mine.some((c) => c.pay)) h += `<p class="ac-note">你按了贊助按鈕的留言會標上付款方式；實際有沒有付款、付多少，網站看不到。</p>`;
       }
       h += `<div class="ac-row"><button type="button" data-ch="back">← 回愛心</button></div>`;
@@ -16248,9 +16260,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       // Yen 11-21 19:09：精簡。「留言」免費；「愛心贊助留言」展開後直接選信用卡／PayPal／Apple Pay（都在 PayPal 付款頁）；最下面 ATM、超商（限台灣，綠界）
       h += `<h2>${I_HEART}送一顆愛心</h2>`;
       if (useFb) {
-        h += `<textarea id="ch-in" class="ch-in" maxlength="${CHEER_MAX}" placeholder="寫一句打氣的話" aria-label="愛心留言">${esc(cheer.text)}</textarea>`;
+        const bug = cheer.kind === 'bug';
+        h += `<div class="fl-tabs ch-kind"><button type="button" data-ck="" class="${bug ? '' : 'on'}">💌 愛心留言</button><button type="button" data-ck="bug" class="${bug ? 'on' : ''}">🐞 Debug 留言</button></div>`; // Yen 11-22：留言分成愛心留言和 Debug 留言（回報問題）
+        h += `<textarea id="ch-in" class="ch-in" maxlength="${CHEER_MAX}" placeholder="${bug ? '遇到什麼問題？在哪個畫面、做了什麼？' : '寫一句打氣的話'}" aria-label="${bug ? 'Debug 留言' : '愛心留言'}">${esc(cheer.text)}</textarea>`;
         if (!u2) h += `<div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}登入後留言</button>` : ''}</div>`;
-        else h += `<div class="ac-row"><button type="button" class="d" data-ch="free"${cheer.busy ? ' disabled' : ''}>💌 留言</button></div>`;
+        else h += `<div class="ac-row"><button type="button" class="d${bug ? ' bugb' : ''}" data-ch="free"${cheer.busy ? ' disabled' : ''}>${bug ? '🐞 送出 Debug 留言' : '💌 留言'}</button></div>`;
         if (cheer.msg) h += `<p class="${cheer.ok ? 'fr-ok' : 'ac-err'}">${esc(cheer.msg)}</p>`;
       }
       if (CONFIG.paypal) {
@@ -16258,7 +16272,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }
       if (zh && CONFIG.donate.length) h += `<button type="button" class="ac-more" data-ch="more" aria-expanded="${cheer.more}">ATM、超商贊助（限台灣）<span>${cheer.more ? '▴' : '▾'}</span></button>` + (cheer.more ? tiers + (CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : '') : '');
       if (useFb && u2) h += `<div class="ac-row"><button type="button" class="ch-mine" data-ch="mine">📜 我的留言紀錄${cheer.mine && cheer.mine.length ? ` (${cheer.mine.length})` : ''}${cheer.newReply() ? `<i class="ch-new">有新回覆</i>` : ''}</button></div>`;
-      if (isAdmin()) h += `<div class="ac-row"><button type="button" data-ch="inbox">📬 收到的愛心留言</button></div>`;
+      if (isAdmin()) h += `<div class="ac-row"><button type="button" data-ch="inbox">📬 收到的留言</button></div>`;
+      else if (devName()) h += `<div class="ac-row"><button type="button" data-ch="inbox">🐞 Debug 留言（開發者）</button></div>`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
         if (err) h += `<p class="ac-err">${esc(err)}</p>`;
@@ -16280,6 +16295,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     wrap.querySelectorAll('[data-qy],[data-qn]').forEach((b) => (b.onclick = () => asks.respond(b.dataset.qy || b.dataset.qn, !!b.dataset.qy)));
     wrap.querySelectorAll('[data-inv]').forEach((b) => (b.onclick = () => { const f = fr.list.find((x) => x.uid === b.dataset.inv); goFriend(f, (t) => { if (t.startsWith('開好')) { close(); return; } fr.ok = t === '已邀請！'; fr.msg = t; if (view === 'friends') paint(); }); }));
     wrap.querySelectorAll('[data-cp]').forEach((b) => (b.onclick = () => { try { navigator.clipboard.writeText(fr.code); b.textContent = '✔'; } catch (e) {} }));
+    wrap.querySelectorAll('[data-ck]').forEach((b) => (b.onclick = () => { cheer.kind = b.dataset.ck; paint(); }));
+    wrap.querySelectorAll('[data-cf]').forEach((b) => (b.onclick = () => { cheer.filter = b.dataset.cf; paint(); }));
     const cin = wrap.querySelector('#ch-in'); if (cin) { cin.addEventListener('input', () => { cheer.text = cin.value; }); cin.addEventListener('keydown', (e) => e.stopPropagation()); }
     wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'give') { cheer.give = !cheer.give; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'mine') { view = 'mine'; cheer.seenAt = seen(); try { localStorage.setItem(SEEN, String(Date.now())); } catch (e) {} paint(); cheer.loadMine(); } else if (c === 'back') { view = 'donate'; paint(); } }));
     wrap.querySelectorAll('[data-rp]').forEach((b) => (b.onclick = () => { const c = (cheer.inbox || []).find((x) => x.id === b.dataset.rp); if (c) { c.edit = true; paint(); const t = wrap.querySelector(`[data-rt="${c.id}"]`); if (t) t.focus(); } }));
