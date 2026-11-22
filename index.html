@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='1ed329894c1c';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='b98b95cda5b2';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -14942,7 +14942,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 (() => {
   const C = SC.CFG, V3 = THREE.Vector3, TAU = Math.PI * 2, Q = Math.PI / 2;
   const S = 2, LEN = 300, OVER = 600, SHIELD = 2000, MAXZ = 58, POOL = 96, DOME_R = 8 * S, DOME_Y = 1.6 * S, DOME_S = 8 / 4.1, COURT = 5 * S, PED = 5.6 * S, WALK_K = 1.3; let DX = 0, DZ = 0, CY = COURT; /* 第 135 版：小鴨（防護罩中心）可以移動（護送花車）：DX/DZ 是現在的中心，CY 是台子高度 */ // 場地大了：殭屍走快 1.3 倍（不然走到城門要兩倍久） // 第 110 版（Yen 22:19）：場地、堡壘放大兩倍（S），防護罩血量兩倍
-  const Z = (SC.zb = { on: false, LEN, OVER, SHIELD, list: [], targets: [], shield: SHIELD, ev: -1, evPh: 0, end: 0, pops: 0, gone: new Map(), netT: -1e9 });
+  const Z = (SC.zb = { on: false, aiK: 1, LEN, OVER, SHIELD, list: [], targets: [], shield: SHIELD, ev: -1, evPh: 0, end: 0, pops: 0, gone: new Map(), netT: -1e9 });
   // 殭屍鼠種類。hp 是普通強度的血量；sp 速度；chew 每秒咬掉防護罩多少；bite 咬貓一口多少；s 模型大小；cap 一下最多扣多少（大胃王不會被絕招一下打爆）
   const TY = [
     { k: 'walk', hp: 90, sp: 7.5, chew: 5, bite: 18, s: 1, body: 0xa8e6a1, belly: 0xe4f7d9 },
@@ -15037,6 +15037,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const zDyn = () => Z.dyn || 1; /* 第 122 版（Yen「殭屍量隨著這場玩家強度變強，動態增加量」）：裁判每 10 秒看一次，守得很輕鬆就多 0.1 倍殭屍（每次多 0.05 倍，最多 1.5 倍，簡單 1.25 倍），被咬很多就少 0.1（最少 1 倍） */
   const SHCAP = 0.015; let chewAcc = 0;
   const DYN = { from: 45, every: 10, easyLoss: 0.01, hardLoss: 0.04, kills: 8, step: 0.05, down: 0.2, max: 1.2, maxEasy: 1.15, maxHard: 1.2 }; /* 第 142 版（報告）：動態難度最多 ×1.2（簡單 ×1.15） */ let dynT = 0, dynS = 0, dynKl = 0;
+  /* 第 143 版（Yen）：電腦隊友的身手跟著真人走。每 10 秒看這段時間真人打倒殭屍數的中位數和電腦的平均，電腦打太多就收一點、太少就加強（只有裁判算，電腦歸裁判管） */
+  const AIK = { from: 40, every: 10, lo: 0.55, hi: 1.6, ema: 0.45, pad: 0.8, pow: 0.5, up: 0.15, down: 0.1 }; /* 開場大家還在走位，40 秒後才開始看；往下調慢一點 */ let aiKT = 0, aiKH = -1, aiKC = -1;
+  function aiKTick(now, g) {
+    if (now < AIK.from || now > LEN || now < aiKT) return; aiKT = now + AIK.every;
+    const team = g.actors.filter((a) => a.team === 0 && !a.gone && !a.isTarget), dk = (a) => { const k = a.kos | 0, d = Math.max(0, k - (a.zbK0 == null ? k : a.zbK0)); a.zbK0 = k; return d; };
+    const hum = team.filter((a) => !a.ai).map(dk).sort((x, y) => x - y), cpu = team.filter((a) => a.ai).map(dk); if (!hum.length || !cpu.length) return;
+    const m = hum.length, med = m % 2 ? hum[(m - 1) / 2] : (hum[m / 2 - 1] + hum[m / 2]) / 2, avg = cpu.reduce((n, v) => n + v, 0) / cpu.length;
+    if (aiKH < 0) { aiKH = med; aiKC = avg; return; } aiKH += (med - aiKH) * AIK.ema; aiKC += (avg - aiKC) * AIK.ema;
+    const r = Math.pow((aiKH + AIK.pad) / (aiKC + AIK.pad), AIK.pow); Z.aiK = Math.round(SC.clamp(Z.aiK * SC.clamp(r, 1 - AIK.down, 1 + AIK.up), AIK.lo, AIK.hi) * 100) / 100;
+  }
   function dynTick(now) { if (now < DYN.from || now > LEN) return; if (now < dynT) return; if (!dynT) { dynT = now + DYN.every; dynS = Z.shield; dynKl = Z.killed; return; } const loss = (dynS - Z.shield) / SHIELD, kl = Z.killed - dynKl, mx = dif === DIF.easy ? DYN.maxEasy : dif === DIF.normal ? DYN.max : DYN.maxHard; /* 第 126 版：困難以上最多 ×1.3（不然 190 秒殭屍潮一來就整個崩掉） */ if (loss < DYN.easyLoss && kl >= DYN.kills * crewK() * zDyn()) Z.dyn = Math.min(mx, zDyn() + DYN.step); else if (loss > DYN.hardLoss) Z.dyn = Math.max(1, zDyn() - DYN.down); Z.dyn = Math.round(Z.dyn * 100) / 100; dynT = now + DYN.every; dynS = Z.shield; dynKl = Z.killed; }
   const crewK = () => { const g = G(); let n = 0; if (g && g.actors) for (const a of g.actors) if (a.team === 0 && !a.isTarget && !a.gone && a.cat) n++; return Math.max(4, Math.min(6, n)) / 4; };
   let ctx = null, scene = null, duck = null, nextId = 1, spawnT = 0, dif = DIF.normal, authWas = false, chewSfxAt = 0, quackAt = 0, endT = 0, endFx = null, holeFx = [], marks = [], seenAt = 0, lastBite = false;
@@ -15221,7 +15231,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // ---------- 開始、結束 ----------
   Z.start = (c) => {
-    ctx = c; scene = c.scene; inkTip = 0; MP = { ...ZDEF, ...((SC.world.MAPS[SC.world.key] || {}).zb || {}) }; TUR_P = MP.tur || TUR_D; escKey = ''; Z.hT = null; escUp(); Z.on = true; Z.stop(true); Z.on = true; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.brUp = 0; Z.brCd = 0; Z.bar = (MP.bars || []).map(() => 1); Z.barFix = 0; Z.cp = { i: -1, p: 0, done: 0, fail: 0, block: 0 }; cpSeen = { i: -1, done: 0, fail: 0 }; Z.calm = [0, 0]; Z.calmSaid = -1; brSeen = 0; signsFx(true); Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; a.gearC = 0; if (a.gearSp) a.gearSp.visible = false; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
+    ctx = c; scene = c.scene; inkTip = 0; MP = { ...ZDEF, ...((SC.world.MAPS[SC.world.key] || {}).zb || {}) }; TUR_P = MP.tur || TUR_D; escKey = ''; Z.hT = null; escUp(); Z.on = true; Z.stop(true); Z.on = true; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.aiK = 1; aiKT = 0; aiKH = aiKC = -1; for (const a of (G().actors || [])) a.zbK0 = null; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.brUp = 0; Z.brCd = 0; Z.bar = (MP.bars || []).map(() => 1); Z.barFix = 0; Z.cp = { i: -1, p: 0, done: 0, fail: 0, block: 0 }; cpSeen = { i: -1, done: 0, fail: 0 }; Z.calm = [0, 0]; Z.calmSaid = -1; brSeen = 0; signsFx(true); Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; a.gearC = 0; if (a.gearSp) a.gearSp.visible = false; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
     dif = DIF[c.dif] || DIF.normal;
     if (!duck) { duck = SC.duck.make(); duck.g.scale.setScalar(1); }
     scene.add(duck.g); duck.g.position.set(DX, PED - COURT + CY, DZ); duck.g.rotation.set(0, 0, 0); duck.g.scale.setScalar(S); duck.fortSet((DOME_Y + (COURT - PED)) / S, DOME_S, c.colors[1]); // 小鴨和罩子一起放大 duck.g.visible = true;
@@ -15264,7 +15274,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const g = G(); if (!z || z.st === 'dead' || z.st === 'under' || g.state !== 'play') return false;
     z.flash = 1; if (!from) return false;
     if (from.remote) return true; // 別台的子彈：只閃一下，扣血由開槍那台通知
-    if (from.ai && g.aiD) amt *= 0.75 / (g.aiD().dmg || 1); // 電腦隊友打殭屍不要太弱（對戰時電腦的傷害有打折）
+    if (from.ai && g.aiD) amt *= 0.75 * (g.aiD().zd || 1) / (g.aiD().dmg || 1); // 電腦隊友打殭屍不要太弱（對戰時電腦的傷害有打折）
     if (Z.buffOf(from) === 0) amt *= 1.6; /* 第 124 版：祭壇加成「攻擊變強」 */ if (onInk(z)) amt *= INKZ.dmg;
     const t = TY[z.ty]; if (t.cap) amt = Math.min(amt, t.cap); if (cause === 'special' && !t.cap) amt = 999;
     if ((t.lid && lidOn(z) || t.k === 'armor') && cause !== 'bomb' && cause !== 'special' && cause !== 'W02' && from.pos) { // 鍋蓋鼠：從正前方打只剩三成（電腦隊友四成半；叮！冒火花）；繞到旁邊、後面打，或墨水彈、滾刷都不會被擋
@@ -15549,7 +15559,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     for (let i = Z.pows.length - 1; i >= 0; i--) if ((Z.pows[i].life -= dt) <= 0) Z.pows.splice(i, 1);
     if ((powT -= dt) <= 0 && (now < LEN - 8 || now > LEN + 2)) { powT = POW.gap + Math.random() * POW.gapR; for (let b = 0; b < POW.batch; b++) dropPow(); }
     turretSim(dt); altarSim(dt, now, g);
-    dynTick(now);
+    dynTick(now); aiKTick(now, g);
     // 事件
     const ni = Z.ev + 1, E = EVENTS[ni];
     if (E && Z.evPh === 0 && now >= E.t - WARN) { Z.ev = ni; Z.evPh = 1; Z.evHoles = pickHoles(E); }
@@ -16816,7 +16826,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   G.watched = watched;
   G.specNext = (d = 1) => { if (!G.spec) return; const n = G.actors.length; for (let k = 1; k <= n; k++) { const i = (((G.watchI || 0) + d * k) % n + n) % n; if (!G.actors[i].gone) { G.watchI = i; break; } } cam.fp = null; SC.ui.onWatch && SC.ui.onWatch(); };
   const netOn = () => G.mode === 'net';
-  let ZB_AI = null; const aiD = () => G.rule === 'zombie' ? ZB_AI || (ZB_AI = { ...SC.DIFFICULTY.hard, engage: 46, fireDuty: 0.55, react: 0.9, tough: 1 }) : SC.DIFFICULTY[G.demo ? 'hard' : G.opts.difficulty] || SC.DIFFICULTY.normal; G.aiD = aiD; // 殭屍保衛戰：電腦隊友固定用「認真」的身手，殭屍強度另外照房主選的 // 展示畫面用最強的電腦，看起來比較熱鬧
+  let ZB_AI = null, ZB_K = 0; const zbAi = () => { const k = (SC.zb && SC.zb.aiK) || 1; if (!ZB_AI || ZB_K !== k) { ZB_K = k; const H = SC.DIFFICULTY.hard; ZB_AI = { ...H, engage: 46 * SC.clamp(k, 0.75, 1.2), fireDuty: Math.min(0.85, 0.55 * k), react: 0.9 / k, aimErr: H.aimErr / k, speed: H.speed * SC.clamp(Math.sqrt(k), 0.85, 1.12), tough: 1, zd: SC.clamp(k, 0.7, 1.35) }; } return ZB_AI; }; /* 第 143 版（Yen）：殭屍模式電腦隊友的強度跟著 SC.zb.aiK（照真人打倒殭屍數動態調） */ const aiD = () => G.rule === 'zombie' ? zbAi() : SC.DIFFICULTY[G.demo ? 'hard' : G.opts.difficulty] || SC.DIFFICULTY.normal; G.aiD = aiD; // 殭屍保衛戰：電腦隊友固定用「認真」的身手，殭屍強度另外照房主選的 // 展示畫面用最強的電腦，看起來比較熱鬧
   G.player = player;
   let BS = SC.boss; // 目前這關的魔王（1 喵抓抓大王、2 胖嘟嘟魔王、3 氣球小豬船長、4 鑽地兔工頭、5 狐狸大王機甲；6～15 見 07k～07t）
   SC.bossList = () => [SC.boss, SC.boss2, SC.boss3, SC.boss4, SC.boss5, SC.boss6, SC.boss7, SC.boss8, SC.boss9, SC.boss10, SC.boss11, SC.boss12, SC.boss13, SC.boss14, SC.boss15]; // 三個世界，一個世界五關
