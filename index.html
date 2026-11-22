@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='73c1ab02d72f';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="漆貓"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;</script><script>window.SC_BUILD='af4516c9029a';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>漆貓大作戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -20517,7 +20517,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     bombPow: -1, isTouch: false, locked: false, sens: 1, catToggle: false, active: false,
   });
   const keys = {};
-  let canvas, layer, stickEl, nubEl, edgeTurn = 0, mouseFire = false, keyCat = false, slots = ['W01', 'W02'];
+  let canvas, layer, stickEl, nubEl, edgeTurn = 0, edgeArm = false, mouseFire = false, keyCat = false, slots = ['W01', 'W02'];
   const ptr = new Map(); // pointerId → { role, x, y, sx, sy }
   I.lookHeld = () => { for (const q of ptr.values()) if (q.role !== 'stick' && !(q.role === 'cat' && q.drag)) return true; return false; }; // 第 88 版：有手指在瞄準（右邊拖曳或按著射擊鈕）時，輔助瞄準才會跟著對手走
   const held = { fire: false, cat: false };
@@ -20544,7 +20544,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   I.release = () => { // 暫停或失焦時放開所有按鍵
     Object.keys(keys).forEach((k) => (keys[k] = false)); mouseFire = false; bombAt = -1; keyCat = false; held.fire = held.cat = false; catLatched = false; fireGesture = null;
-    ptr.clear(); I.moveX = I.moveZ = 0; if (stickEl) stickEl.classList.remove('on');
+    ptr.clear(); I.moveX = I.moveZ = 0; edgeTurn = 0; edgeArm = false; /* 第 141.4 版：開打、暫停回來時先不靠邊轉，滑鼠回到中間才開始 */ if (stickEl) stickEl.classList.remove('on');
     if (layer) layer.querySelectorAll('.t-btn.active').forEach((b) => b.classList.remove('active'));
   };
 
@@ -20604,7 +20604,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const k = I.sens * I.zoom; // 狙擊鏡放大時轉得比較慢，才瞄得準
       if (I.locked) { I.lookX += e.movementX * 0.0023 * k; I.lookY += e.movementY * 0.0023 * k; return; }
       I.lookX += (e.movementX || 0) * 0.004 * k; I.lookY += (e.movementY || 0) * 0.004 * k;
-      const fx = e.clientX / window.innerWidth; edgeTurn = fx < 0.06 ? -1 : fx > 0.94 ? 1 : 0;
+      const fx = e.clientX / window.innerWidth; if (fx > 0.15 && fx < 0.85) edgeArm = true; edgeTurn = !edgeArm ? 0 : fx < 0.06 ? -1 : fx > 0.94 ? 1 : 0; /* 第 141.4 版（Yen「一開戰時會一直旋轉」）：開戰鈕在右下角，點完游標還停在邊邊，鏡頭就一直轉；要先移到中間，靠邊轉向才算數 */
     });
     canvas.addEventListener('wheel', (e) => { if (I.active) { if (I.bombSlot) setBombSlot(false); else I.swap = e.deltaY > 0 ? 1 : -1; e.preventDefault(); } }, { passive: false });
     document.addEventListener('pointerlockchange', () => {
@@ -29976,7 +29976,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const guideOk = !standalone && coarse && (!fsOk || ios); // iPhone、iPad：顯示加入主畫面圖解
     let fsWant = false, fsTry = 0;
-    const fsSync = () => { $('btn-full2').textContent = fsOn() ? '離開全螢幕' : '全螢幕'; $('btn-full').classList.toggle('on', fsOn()); };
+    const fsSync = () => { $('btn-full2').textContent = fsOn() ? '離開全螢幕' : '全螢幕'; $('btn-full').classList.toggle('on', fsOn()); try { const kb = navigator.keyboard; if (kb && kb.lock) { if (fsOn()) kb.lock(['Escape']).catch(() => {}); else kb.unlock(); } } catch (e) {} }; /* 第 141.4 版（Yen「按 escape 暫停時不要退出全螢幕」）：全螢幕時把 Esc 留給遊戲（Chrome、Edge 的鍵盤鎖定），按一下只暫停；要離開全螢幕用全螢幕鈕，或按住 Esc 兩秒。Safari、Firefox 沒有鍵盤鎖定，Esc 還是會退出，下一次點畫面或按鍵就自動回到全螢幕 */
     const fsEnter = (loud) => {
       if (fsOn() || Date.now() - fsTry < 900) return; fsTry = Date.now();
       try {
