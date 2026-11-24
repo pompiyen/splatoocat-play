@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v285';</script><script>window.SC_BUILD='a4bd6fcba6ea';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v286';</script><script>window.SC_BUILD='5e72383c8422';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1668,6 +1668,10 @@ html:is([data-lang="en"], [data-lang="es"], [data-lang="pt"], [data-lang="fr"], 
   background: radial-gradient(circle at 34% 28%, #fff9c8 0 10%, #ffe066 26%, #ffc21f 55%, #e89a00 82%, #c27400 100%);
   box-shadow: inset 0 0 0 0.075em #b36b00, inset 0 0 0 0.15em #ffe58a, inset 0 -0.1em 0.12em rgba(150, 80, 0, 0.45), 0 0.06em 0 rgba(90, 50, 0, 0.35); }
 .sc-coin::after { content: ''; position: absolute; inset: 24%; background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cg fill='%23a85f00'%3E%3Cellipse cx='10' cy='13.2' rx='4.6' ry='3.9'/%3E%3Ccircle cx='3.6' cy='8.4' r='1.9'/%3E%3Ccircle cx='7.4' cy='4.6' r='2'/%3E%3Ccircle cx='12.6' cy='4.6' r='2'/%3E%3Ccircle cx='16.4' cy='8.4' r='1.9'/%3E%3C/g%3E%3C/svg%3E"); }
+/* 電腦對戰 3 對 3（Yen 11-24）：人數變三個按鈕後和「規則」各佔一整行，不再擠在同一行互相蓋住；三個頭的大小跟 2 對 2 一樣 */
+#versus-opts { flex-wrap: wrap; } #versus-opts > .opt.slim { flex-basis: 100%; }
+.ros-pick[data-v="3v3"] .head { width: 22px; height: 20px; } .ros-pick[data-v="3v3"] .two .head + .head { margin-left: -8px; }
+@media (max-width: 560px), (max-height: 520px) { .ros-pick[data-v="3v3"] .head { width: 18px; height: 17px; } }
 /* 第 284 版：釣魚池 */
 .tw-fish { pointer-events: auto; position: absolute; left: 50%; bottom: calc(92px + var(--sab)); transform: translateX(-50%); width: min(420px, calc(100vw - 32px)); box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; align-items: stretch; background: var(--navy); color: #fff; border: 3px solid #fff; border-radius: 18px 22px 16px 22px; padding: 10px 14px 12px; box-shadow: var(--pop); animation: twPop .25s ease-out; text-align: center; }
 .tw-fish[hidden] { display: none; }
@@ -1960,6 +1964,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     ['人數', 'Players', '人数', '인원'],
     ['1 對 1', '1 vs 1', '1対1', '1 대 1'],
     ['2 對 2', '2 vs 2', '2対2', '2 대 2'],
+    ['3 對 3', '3 vs 3', '3対3', '3 대 3'],
     ['2 對 1', '2 vs 1', '2対1', '2 대 1'],
     ['對手強度', 'CPU Strength', '相手の強さ', '상대 강함'],
     ['輕鬆', 'Easy', 'かんたん', '쉬움'],
@@ -2342,8 +2347,8 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   ]);
   pat(/^(.+)擊破！(\d+) 秒後會再出現$/, ['$1 broken! Back in $2 s', '$1をこわした！$2秒後にまた出るよ', '$1 부쉈다! $2초 뒤 다시 나와요']);
   pat(/^(擊倒|塗地) (.+ 比 .+)$/, (m, li) => [['KOs ', 'たおした ', '쓰러뜨림 '], ['Paint ', 'ぬった ', '칠하기 ']][m[1] === '擊倒' ? 0 : 1][li] + m[2].split(' 比 ').join([' vs ', ' 対 ', ' 대 '][li]));
-  pat(/^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
-  pat(/^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
+  pat(/^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
+  pat(/^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, ['$1 $2 $3', '$1の$2$3', '$1 $2 $3']);
   pat(/^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, ['Up to $1 players per match; the others wait for the next one. $2', '1試合は$1人まで。ほかの人は次の試合を待ってね。$2', '한 판에 최대 $1명, 나머지는 다음 판을 기다려요. $2']);
   pat(/^電腦 ×(\d+)$/, ['CPU ×$1', 'CPU ×$1', '컴퓨터 ×$1']);
   pat(/^房號 (\d+)$/, ['Room $1', 'ルーム $1', '방 번호 $1']);
@@ -4734,8 +4739,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 ist zurück!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 zerstört! Wieder da in $2 s");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'K.-o. ' : 'Farbe ') + m[2].split(' 比 ').join(' gegen '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Bis zu $1 Spieler pro Match; die anderen warten auf das nächste. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "CPU ×$1");
   I.patL(L, /^房號 (\d+)$/, "Raum $1");
@@ -6297,8 +6302,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "¡$1 volvió!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "¡$1 roto! Vuelve en $2 s");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'Eliminaciones ' : 'Pintura ') + m[2].split(' 比 ').join(' vs '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Hasta $1 jugadores por partida; los demás esperan a la siguiente. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "CPU ×$1");
   I.patL(L, /^房號 (\d+)$/, "Sala $1");
@@ -7859,8 +7864,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 est de retour !");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 cassé ! De retour dans $2 s");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'K.-O. ' : 'Peinture ') + m[2].split(' 比 ').join(' contre '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Jusqu'à $1 joueurs par match ; les autres attendent le suivant. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "Ordi ×$1");
   I.patL(L, /^房號 (\d+)$/, "Salon $1");
@@ -9429,8 +9434,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 kembali!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 rusak! Muncul lagi dalam $2 dtk");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'KO ' : 'Cat ') + m[2].split(' 比 ').join(' lawan '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Maks. $1 pemain per pertandingan; yang lain menunggu berikutnya. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "Komputer ×$1");
   I.patL(L, /^房號 (\d+)$/, "Ruang $1");
@@ -10990,8 +10995,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 è tornato!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 rotto! Di nuovo qui tra $2 s");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'K.O. ' : 'Pittura ') + m[2].split(' 比 ').join(' contro '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Fino a $1 giocatori per partita; gli altri aspettano la prossima. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "CPU ×$1");
   I.patL(L, /^房號 (\d+)$/, "Stanza $1");
@@ -12550,8 +12555,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 voltou!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 quebrado! Volta em $2 s");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'Nocautes ' : 'Pintura ') + m[2].split(' 比 ').join(' vs '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Até $1 jogadores por partida; os outros esperam a próxima. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "CPU ×$1");
   I.patL(L, /^房號 (\d+)$/, "Sala $1");
@@ -14112,8 +14117,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 снова здесь!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 сломан! Вернётся через $2 с");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'Нокауты ' : 'Покраска ') + m[2].split(' 比 ').join(' : '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "До $1 игроков в матче; остальные ждут следующего. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "Компьютер ×$1");
   I.patL(L, /^房號 (\d+)$/, "Комната $1");
@@ -15674,8 +15679,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 กลับมาแล้ว!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 พังแล้ว! กลับมาใน $2 วิ");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'น็อก ' : 'ทาสี ') + m[2].split(' 比 ').join(' : '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "แมตช์ละไม่เกิน $1 คน คนที่เหลือรอแมตช์ถัดไป $2");
   I.patL(L, /^電腦 ×(\d+)$/, "คอม ×$1");
   I.patL(L, /^房號 (\d+)$/, "ห้อง $1");
@@ -17236,8 +17241,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 geri döndü!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 kırıldı! $2 sn sonra geri gelir");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'Nakavt ' : 'Boya ') + m[2].split(' 比 ').join(' - '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Maç başına en fazla $1 oyuncu; diğerleri sonrakini bekler. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "Bilgisayar ×$1");
   I.patL(L, /^房號 (\d+)$/, "Oda $1");
@@ -18798,8 +18803,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.patL(L, /^(.+)回來了！$/, "$1 đã quay lại!");
   I.patL(L, /^(.+)擊破！(\d+) 秒後會再出現$/, "$1 bị phá! Quay lại sau $2 giây");
   I.patL(L, /^(擊倒|塗地) (.+ 比 .+)$/, (m) => (m[1] === '擊倒' ? 'Hạ gục ' : 'Sơn ') + m[2].split(' 比 ').join(' - '));
-  I.patL(L, /^(1 對 1|2 對 2) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
-  I.patL(L, /^(1 對 1|2 對 2) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。)(.*)$/, "$1 · $2 $3");
+  I.patL(L, /^(1 對 1|2 對 2|3 對 3) (塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。)(.*)$/, "$1 · $2 $3");
   I.patL(L, /^一場最多 (\d+) 人，後面的人等下一場。(.*)$/, "Tối đa $1 người mỗi trận; những người khác chờ trận sau. $2");
   I.patL(L, /^電腦 ×(\d+)$/, "Máy ×$1");
   I.patL(L, /^房號 (\d+)$/, "Phòng $1");
@@ -31202,7 +31207,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
   };
 
-  // opts: { kind, weapon, difficulty, mode: 'versus'｜'sandbox'｜'boss'｜'net', roster: '1v1'｜'2v2', demo, net: SC.net.match }
+  // opts: { kind, weapon, difficulty, mode: 'versus'｜'sandbox'｜'boss'｜'net', roster: '1v1'｜'2v2'｜'3v3', demo, net: SC.net.match }
   const CPU_W = ['W01', 'W02', 'W04', 'W05', 'W01', 'W06', 'W07'];
   /* 第 148.2 版（Yen「殭屍噴墨顏色與我方太相近，請選用雙方對比明顯色」）：殭屍墨水從幾個顏色裡挑跟我方「色相差最多、亮度也差最多」的
      （色盲也分得出亮暗）；青翠森林地面是綠的，不挑綠色系。例：我方藍 → 殭屍萊姆綠（森林：橘）；我方粉 → 殭屍薄荷青（森林：深靛藍）；我方黃 → 殭屍紫。 */
@@ -31217,7 +31222,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     G.forfeit = null; G.tieSet = null; G.tAdj = 0;
     if (I.setBombSlot) I.setBombSlot(false); I.scope = false; G.scopeOut = -9; // 第 98 版：每一場開始都回到第一把武器、狙擊鏡關著
     if (opts.weapon && !opts.loadout) G.opts.loadout = null; Object.assign(G.opts, opts); G.opts.tut = !!opts.tut; G.opts.dg = !!opts.dg; G.opts.adv = opts.adv || null; /* 冒險模式：每一場都重設，不然打過世界三迷宮後 1-1 魔王會先進迷宮房間（Yen 11-24） */ G.demo = !!opts.demo; if (!G.opts.tut && SC.tut && SC.tut.active) SC.tut.stop(); G.mode = G.demo ? 'versus' : G.opts.mode || 'versus'; slowT = 0; cam.fin = null; G.cine = false; vic = null; judged = false; hugEnd();
-    const net = netOn() ? G.opts.net : null, boss = G.mode === 'boss', solo = boss || G.mode === 'sandbox', duo = G.demo ? !SC.perf || SC.perf.demoActors() : G.opts.roster !== '1v1'; if (G.demo && SC.perf) SC.perf.onStart(); /* 平板手機報告 T3：簡化／靜止背景只跑 1v1（09q_perf.js） */
+    const net = netOn() ? G.opts.net : null, boss = G.mode === 'boss', solo = boss || G.mode === 'sandbox', duo = G.demo ? !SC.perf || SC.perf.demoActors() : G.opts.roster !== '1v1', trio = !G.demo && !net && G.mode === 'versus' && G.opts.roster === '3v3'; if (G.demo && SC.perf) SC.perf.onStart(); /* 平板手機報告 T3：簡化／靜止背景只跑 1v1（09q_perf.js） */
     const all = SC.bossList(); BS = (boss && G.opts.dg && SC.dg && SC.dg.mod) || (boss && all[(+G.opts.stage || 1) - 1]) || SC.boss; let off = false; all.forEach((m) => { if (m && m !== BS && m.setActive(false, scene)) off = true; }); if (SC.dg && SC.dg.mod && SC.dg.mod !== BS && SC.dg.mod.setActive(false, scene)) off = true; /* 世界三地城的房間（09wd_dungeon.js）也是一個「魔王」模組 */
     // 對戰場地（Yen 2026-11-17 加到五張）：試玩靶場固定遊樂園，連線用房主選的，其他用選單選的（random＝隨機）
     // 三方對戰（連線 3 人，Yen 2026-11-19）固定用圓形場地的三個出生台版本
@@ -31249,6 +31254,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     G.actors = net ? net.players.map((q, i) => { const a = makeActor(i, q.team, q.kind, q.isMe); a.idx = q.idx; a.slot = q.slot; if (!q.isMe) { a.remote = true; a.ai = null; a.name = q.nick; } return a; }).concat(net.cpus.map((q, k) => { const a = makeActor(net.players.length + k, q.team, q.kind, false); a.idx = q.idx; a.slot = q.slot; a.cpu = true; a.remote = true; a.ai = null; if (k) a.name += k + 1; return a; }))
       : solo ? [makeActor(0, 0, G.opts.kind, true)]
       : cq ? Array.from({ length: SC.cq.TEAM * 2 }, (_, i) => makeActor(i, i < SC.cq.TEAM ? 0 : 1, i < SC.cq.TEAM ? G.opts.kind : other, i === 0))
+      : trio ? Array.from({ length: 6 }, (_, i) => makeActor(i, i < 3 ? 0 : 1, i < 3 ? G.opts.kind : other, i === 0)) /* 電腦對戰 3 對 3（Yen 11-24「電腦對戰加入 3對3」）：自己加兩隻電腦隊友，對面三隻電腦 */
       : duo ? [makeActor(0, 0, G.opts.kind, !G.demo), makeActor(1, 0, G.opts.kind, false), makeActor(2, 1, other, false), makeActor(3, 1, other, false)] // 同一種貓固定同一隊（Yen 11/14）
         : [makeActor(0, 0, G.opts.kind, true), makeActor(2, 1, other, false)];
     if (!net) G.actors.forEach((a, i) => { const nSame = G.actors.slice(0, i).filter((b) => b.kind === a.kind).length; if (nSame) a.name += nSame + 1; }); // 同隊兩隻一樣的貓，名字加個 2 分得出來
@@ -31265,7 +31271,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (SC.supply) SC.supply.setup(G.armorOn, net && net.id ? net.id : opts.armorSeed || String(Math.random()), G.teams); /* 第 197 版：地圖中間的神秘補給箱 */
     SC.cq.setup(scene, cq); if (SC.gear) SC.gear.setup(G.armorOn, G.teams); /* 大威：原始武器架 */
     G.actors.forEach((a, i) => {
-      if (!net) a.slot = cq ? i % SC.cq.TEAM : i % 2; a.cat.setTeamColor(colors[a.team]); a.weapon = a.isPlayer ? loadout()[0] : !G.demo && G.mode === 'versus' && G.rule !== 'zombie' ? CPU_W[(i * 7 + ((Math.random() * 4) | 0)) % CPU_W.length] : 'W01'; /* 第 141 版（試玩報告）：電腦對戰的電腦隨機拿漆彈槍、滾刷、散彈、墨刀 */ a.cat.setWeapon(a.weapon); spawn(a); a.protectUntil = 0;
+      if (!net) a.slot = cq ? i % SC.cq.TEAM : trio ? i % 3 : i % 2; a.cat.setTeamColor(colors[a.team]); a.weapon = a.isPlayer ? loadout()[0] : !G.demo && G.mode === 'versus' && G.rule !== 'zombie' ? CPU_W[(i * 7 + ((Math.random() * 4) | 0)) % CPU_W.length] : 'W01'; /* 第 141 版（試玩報告）：電腦對戰的電腦隨機拿漆彈槍、滾刷、散彈、墨刀 */ a.cat.setWeapon(a.weapon); spawn(a); a.protectUntil = 0;
       const css = '#' + colors[a.team].getHexString();
       const rkFoe = G.mode === 'net' && !!(SC.net && SC.net.ranked) && !a.isPlayer && a.team !== 0; // Yen 11-21 23:14：積分賽也看得到對手名字
       const ally = !a.isPlayer && a.team === 0; a.cat.setTag(ally || rkFoe ? a.name : '', css, (ally || rkFoe) && !G.demo); // 第 69 版（Yen）：頭上只顯示隊友的名字，敵人不顯示（積分賽例外）
@@ -35507,7 +35513,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           <div class="opt-duo" id="versus-opts">
             <div class="opt slim"><h3>人數</h3><div class="row" id="pick-roster">
               <button type="button" class="pick ros-pick" data-v="1v1" aria-label="1 對 1"><span class="vs">${HEAD('a')}<i>VS</i>${HEAD('b')}</span><b>1 對 1</b></button>
-              <button type="button" class="pick ros-pick" data-v="2v2" aria-label="2 對 2"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i><span class="two">${HEAD('b')}${HEAD('b')}</span></span><b>2 對 2</b></button></div></div>
+              <button type="button" class="pick ros-pick" data-v="2v2" aria-label="2 對 2"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}</span><i>VS</i><span class="two">${HEAD('b')}${HEAD('b')}</span></span><b>2 對 2</b></button>
+              <button type="button" class="pick ros-pick" data-v="3v3" aria-label="3 對 3"><span class="vs"><span class="two">${HEAD('a')}${HEAD('a')}${HEAD('a')}</span><i>VS</i><span class="two">${HEAD('b')}${HEAD('b')}${HEAD('b')}</span></span><b>3 對 3</b></button></div></div>
             <div class="opt slim" id="vrule-opt"><h3>規則</h3><div class="row" id="pick-vrule">
               <button type="button" class="pick ros-pick rule-pick" data-v="turf" aria-label="塗地戰"><svg class="rico" viewBox="0 0 48 40" aria-hidden="true"><path d="M8 30c-3-7 2-15 9-15 1-6 9-9 14-5 6-2 12 3 11 9 4 3 3 10-2 12-3 5-11 6-15 3-5 3-13 2-17-4z" fill="var(--ca,#ff3d8b)" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><circle cx="40" cy="8" r="3.5" fill="var(--ca,#ff3d8b)" stroke="#1b1430" stroke-width="2"/><circle cx="6" cy="12" r="2.6" fill="var(--ca,#ff3d8b)" stroke="#1b1430" stroke-width="2"/></svg><b>塗地戰</b></button>
               <button type="button" class="pick ros-pick rule-pick" data-v="knockout" aria-label="擊倒戰"><svg class="rico" viewBox="0 0 48 40" aria-hidden="true"><path d="M24 2l5 9 10-4-2 10 10 3-8 7 6 8-10 0-1 10-8-6-8 6-1-10-10 0 6-8-8-7 10-3-2-10 10 4z" fill="#ffd23f" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><text x="24" y="26" text-anchor="middle" font-size="12" font-weight="900" font-family="sans-serif" fill="#1b1430">KO</text></svg><b>擊倒戰</b></button>
@@ -35629,7 +35636,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
     const MAP_LEDE = { random: '場地每次隨機挑一張。', park: '場地：貓咪遊樂園，好多層的高台、斜坡和城牆步道，爬到最高的貓窩上面看全場！', candy: '場地：甜點廚房，小心巧克力河！', ship: '場地：海盜船，兩艘大船隔著大海。爬上船長室、跳下貨艙，走跳板、碼頭或踩礁石過去，小心別掉進海裡！', fair: '場地：歡樂遊樂場，高樓、城堡和鬼屋圍成的街區，三層樓可以走進去。爬樓梯、跳斷橋、搶制高點！', skate: '場地：滑板場，橢圓形的大滑板場，外圈一整圈都是可以滑上去的碗邊，還有大碗池和 U 型滑道。', forest: '場地：青翠森林，綠油油的起伏草丘，中間一棵大樹，有樹樁高台、圓木斜坡、石頭和大蘑菇可以躲。', hall: '場地：血廊，紅牆圍成的四方形通道，中間進不去。紅磚牆錯開當掩體，四個角落有上坡可以狙擊，牆壁也能塗、能爬！', round: '場地：貓咪時鐘廣場，大大的圓形場地。中間是鐘塔，外面一圈噴泉水池，有橋和踏腳石，還有高台、瞭望台和樹籬。' };
     const modeKey = () => (sel.mode === 'net' && sel.rk ? 'ranked' : sel.mode);
-    const LEDE = { versus: () => `${sel.vrule === 'conquest' ? '6 對 6' : sel.roster === '1v1' ? '1 對 1' : '2 對 2'} ${sel.vrule === 'conquest' ? '佔領戰：佔住 A、B、C 據點，佔領進度先到 100% 的隊伍獲勝' : sel.vrule === 'knockout' ? '擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。' : '塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。'}${sel.vrule === 'conquest' ? '' : MAP_LEDE[sel.map] || ''}`,
+    const LEDE = { versus: () => `${sel.vrule === 'conquest' ? '6 對 6' : sel.roster === '1v1' ? '1 對 1' : sel.roster === '3v3' ? '3 對 3' : '2 對 2'} ${sel.vrule === 'conquest' ? '佔領戰：佔住 A、B、C 據點，佔領進度先到 100% 的隊伍獲勝' : sel.vrule === 'knockout' ? '擊倒對戰。三分鐘內，擊倒對手比較多的隊伍獲勝（倒下 5 秒後會再出來）。' : '塗地對戰。三分鐘內，把場地塗成你們隊的顏色，塗得多的隊伍獲勝。'}${sel.vrule === 'conquest' ? '' : MAP_LEDE[sel.map] || ''}`,
       ranked: () => '積分賽：按「開始配對」進配對房，大家都按「即刻開戰」就照現有人數開打：2 人 1 對 1、3 人三方對戰、4 人 2 對 2、6 人 3 對 3（5 人要等第 6 人）。每場都是複合賽：塗地 1% 算 1 分、擊倒一次算 3 分，總分高的隊伍贏，打完一場就結束。贏了、塗地（自己塗到全場 4% 加 1 分）、擊倒對手、拿 MVP 都能加分，分數夠了就升牌位（毛線球 → 小魚乾 → 鈴鐺 → 肉球 → 皇冠 → 彩虹）。' + (SC.account && SC.account.needed ? '要先登入才能玩。' : ''),
       sandbox: () => '跟著左上角的圖示一步一步學：射擊、走路、墨貓游泳、跳高、丟墨水彈。打破氣球或游到黃色圈圈就過關，五步做完回主選單。',
       boss: () => ({ 2: '魔王關卡 2：胖嘟嘟魔王。躲開地上的紅色預告，魔王累到冒星星的時候用力打。身上沾滿墨水就會爆開，打完三個回合就過關。',
@@ -35889,7 +35896,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 大威 2026-11-23：音量、靜音另外存在這台裝置（sc-audio，不跟雲端存檔走）。以前靜音沒存、登入同步時雲端的舊音量會蓋回來，聲音就自己打開
     const audLoad = () => { try { const s = JSON.parse(localStorage.getItem('sc-audio') || 'null'); if (!s) return; volSet(1, s.vm); volSet(0, s.vs); ui.setMute(!!s.m, true); } catch (e) {} };
     audLoad(); addEventListener('storage', (e) => { if (e.key === 'sc-audio') audLoad(); }); // 同時開兩個分頁：改一邊，另一邊跟著
-    try { const s = JSON.parse(localStorage.getItem('splatoocat-web') || '{}'); if (s.sens) sensSet(s.sens); if (s.catToggle) { SC.input.catToggle = true; $('btn-cat-mode').textContent = '墨貓鈕：點一下切換'; } if (s.nick) { nick = SC.net.clean(s.nick); $('net-nick').value = nick; } if (s.kind) Object.assign(sel, { kind: s.kind, difficulty: s.difficulty || 'easy', mode: ['sandbox', 'boss'].includes(s.mode) ? s.mode : 'versus', roster: s.roster === '1v1' ? '1v1' : '2v2', vrule: ['knockout', 'conquest'].includes(s.vrule) ? s.vrule : 'turf', ink: SC.inkPair(s.ink) ? s.ink : 'random', stage: SC.bossList()[(+s.stage || 0) - 1] ? String(+s.stage) : '2', map: s.map === 'random' || (SC.world.MAPS && SC.world.MAPS[s.map]) ? s.map : 'random' }); if (['turf', 'knockout', 'conquest', 'zombie', 'cpu'].includes(s.nm)) sel.nm = s.nm; if (Array.isArray(s.loadout)) { const l = s.loadout.filter((w, i, a) => /^W0[1-5]$/.test(w) && a.indexOf(w) === i).slice(0, 2); if (l.length === 2) sel.loadout = l; } } catch (e) {}
+    try { const s = JSON.parse(localStorage.getItem('splatoocat-web') || '{}'); if (s.sens) sensSet(s.sens); if (s.catToggle) { SC.input.catToggle = true; $('btn-cat-mode').textContent = '墨貓鈕：點一下切換'; } if (s.nick) { nick = SC.net.clean(s.nick); $('net-nick').value = nick; } if (s.kind) Object.assign(sel, { kind: s.kind, difficulty: s.difficulty || 'easy', mode: ['sandbox', 'boss'].includes(s.mode) ? s.mode : 'versus', roster: s.roster === '1v1' || s.roster === '3v3' ? s.roster : '2v2', vrule: ['knockout', 'conquest'].includes(s.vrule) ? s.vrule : 'turf', ink: SC.inkPair(s.ink) ? s.ink : 'random', stage: SC.bossList()[(+s.stage || 0) - 1] ? String(+s.stage) : '2', map: s.map === 'random' || (SC.world.MAPS && SC.world.MAPS[s.map]) ? s.map : 'random' }); if (['turf', 'knockout', 'conquest', 'zombie', 'cpu'].includes(s.nm)) sel.nm = s.nm; if (Array.isArray(s.loadout)) { const l = s.loadout.filter((w, i, a) => /^W0[1-5]$/.test(w) && a.indexOf(w) === i).slice(0, 2); if (l.length === 2) sel.loadout = l; } } catch (e) {}
     wpnSync();
     ['pick-kind', 'pick-difficulty', 'pick-mode', 'pick-roster', 'pick-ink', 'pick-stage'].forEach((id) => { const key = id.slice(5); $(id).querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.v === sel[key])); }); renderStages();
     modeSync(); $('btn-start').addEventListener('click', save);
@@ -43103,6 +43110,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-24", "", "電腦對戰可以選 3 對 3 了：你和兩隻電腦隊友一起對上三隻電腦，塗地戰、擊倒戰都能玩",
+      { en: "vs Computer now has 3 vs 3: you and two CPU teammates take on three CPUs, in Paint Battle or Knockout", ja: "CPUと対戦で3対3が選べるようになりました：CPUの仲間2匹といっしょに、CPU3匹と対戦。ぬりぬりバトルでも、たおしあいバトルでも遊べます", ko: "컴퓨터 대전에서 3 대 3을 고를 수 있어요: 컴퓨터 팀원 둘과 함께 컴퓨터 셋과 대결해요", es: "Contra la CPU ahora tiene 3 vs 3: tú y dos compañeros CPU contra tres CPU", pt: "Contra o computador agora tem 3 vs 3: você e dois colegas CPU contra três CPUs", fr: "Contre l'ordi propose maintenant le 3 vs 3 : toi et deux coéquipiers IA contre trois IA", de: "Gegen Computer gibt es jetzt 3 vs 3: du und zwei CPU-Teamkameraden gegen drei CPUs", it: "Contro il computer ora c'è il 3 vs 3: tu e due compagni CPU contro tre CPU", ru: "В бою с компьютером теперь есть 3 на 3: ты и два союзника-бота против трёх ботов", tr: "Bilgisayara karşı artık 3'e 3 var: sen ve iki bilgisayar takım arkadaşın, üç bilgisayara karşı", id: "Lawan Komputer sekarang ada 3 lawan 3: kamu dan dua rekan CPU melawan tiga CPU", vi: "Đấu với máy giờ có 3 đấu 3: bạn và hai đồng đội máy đấu với ba máy", th: "โหมดสู้กับคอมมี 3 ต่อ 3 แล้ว: คุณกับเพื่อนร่วมทีม CPU สองตัวสู้กับ CPU สามตัว" }],
     ["2026-11-24", "", "中文名稱改為「貓咪大漆戰」",
       { en: "The Chinese name is now 貓咪大漆戰 (the English name stays SpalaCat)", ja: "中国語の名前が「貓咪大漆戰」になりました（英語名はSpalaCatのまま）", ko: "중국어 이름이 「貓咪大漆戰」(으)로 바뀌었어요 (영어 이름은 SpalaCat 그대로)", es: "El nombre chino ahora es 貓咪大漆戰 (el nombre en inglés sigue siendo SpalaCat)", pt: "O nome chinês agora é 貓咪大漆戰 (o nome em inglês continua SpalaCat)", fr: "Le nom chinois devient 貓咪大漆戰 (le nom anglais reste SpalaCat)", de: "Der chinesische Name ist jetzt 貓咪大漆戰 (der englische Name bleibt SpalaCat)", it: "Il nome cinese ora è 貓咪大漆戰 (il nome inglese resta SpalaCat)", ru: "Китайское название теперь 貓咪大漆戰 (английское остаётся SpalaCat)", tr: "Çince adı artık 貓咪大漆戰 (İngilizce adı SpalaCat olarak kalıyor)", id: "Nama Mandarin sekarang 貓咪大漆戰 (nama Inggris tetap SpalaCat)", vi: "Tên tiếng Trung giờ là 貓咪大漆戰 (tên tiếng Anh vẫn là SpalaCat)", th: "ชื่อภาษาจีนเปลี่ยนเป็น 貓咪大漆戰 (ชื่อภาษาอังกฤษยังคงเป็น SpalaCat)" }],
     ["2026-11-24", "", "釣魚池開放了！走到池邊甩竿，魚咬鉤時按空白鍵拉竿（稀有魚比較多、代幣 ×1.5），不按也會自己釣上來；釣到的魚自動賣成代幣，每天最多 500",
