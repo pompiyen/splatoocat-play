@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v290';</script><script>window.SC_BUILD='a01649104cfd';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v291';</script><script>window.SC_BUILD='872a58271c42';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -2455,13 +2455,23 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
   const aOrig = new WeakMap(); // 元素 → {屬性: [原文, 寫進去的字]}
   // translate="no"：玩家自己打的名字（排行榜）不翻
   const skip = (el) => el && (el.nodeName === 'SCRIPT' || el.nodeName === 'TITLE' || el.nodeName === 'STYLE' || el.nodeName === 'TEXTAREA' || el.nodeName === 'INPUT' || el.nodeName === 'OPTION' || (el.closest && !!el.closest('[translate="no"]')));
+  // 第 288 版保險：有程式在 MutationObserver 裡把中文寫回去時（翻譯 → 觸發它 → 寫回中文 → 再翻譯…），
+  // 這個循環全在 microtask 裡跑，瀏覽器沒機會畫畫面，整頁卡死（換英文就當機）。同一個節點在同一輪事件裡被翻超過 8 次就先放著，下一輪再翻，記在 hot 給測試看。
+  let ep = 0, epOn = false; const hits = new WeakMap(), hot = [];
+  const tooHot = (n, what) => {
+    if (!epOn) { epOn = true; setTimeout(() => { ep++; epOn = false; }, 0); }
+    const h = hits.get(n); if (!h || h[0] !== ep) { hits.set(n, [ep, 1]); return false; }
+    if (++h[1] < 8) return false;
+    if (h[1] === 8 && hot.length < 50) { hot.push(what); try { console.warn('i18n 循環：' + what); } catch (e) {} }
+    return true;
+  };
   const doText = (n) => {
     const v = n.nodeValue; if (!v) return;
     if (wrote.get(n) === v) return; // 自己剛寫的
     const src = !D.has(v) && rev.has(v) ? rev.get(v) : v; // 已經是翻好的字：記住中文原文
     if (!CJK.test(src) && !orig.has(n)) return;
     if (skip(n.parentNode)) return;
-    orig.set(n, src); const t = tr(src); wrote.set(n, t); if (t !== v) n.nodeValue = t;
+    orig.set(n, src); const t = tr(src); if (t !== v && tooHot(n, src)) return; wrote.set(n, t); if (t !== v) n.nodeValue = t;
   };
   const doAttr = (el, a) => {
     const v = el.getAttribute(a); if (v == null) return;
@@ -2469,7 +2479,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
     const src = !D.has(v) && rev.has(v) ? rev.get(v) : v;
     if (!CJK.test(src)) return;
     if (!o) aOrig.set(el, (o = {}));
-    const t = tr(src); o[a] = [src, t]; if (t !== v) el.setAttribute(a, t);
+    const t = tr(src); if (t !== v && tooHot(el, a + '=' + src)) return; o[a] = [src, t]; if (t !== v) el.setAttribute(a, t);
   };
   const walk = (root) => {
     if (root.nodeType === 3) return doText(root);
@@ -2508,7 +2518,7 @@ SC.angDiff = (a, b) => { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= 
 
   let soonT = 0; const soon = () => { if (soonT) return; soonT = 1; Promise.resolve().then(() => { soonT = 0; try { redo(); } catch (e) {} }); }; // 新語言的字載入時，畫面上已經用英文頂著的字重翻
   const i18n = {
-    LANGS, LABEL, miss, missL, tr, pickLang, _D: D, _P: P, _X: X, _XP: XP, add: (rows) => { add(rows); cache.clear(); }, pat: (re, out) => { pat(re, out); cache.clear(); },
+    LANGS, LABEL, miss, missL, tr, pickLang, hot, _D: D, _P: P, _X: X, _XP: XP, add: (rows) => { add(rows); cache.clear(); }, pat: (re, out) => { pat(re, out); cache.clear(); },
     addL: (l, rows) => { addL(l, rows); rows.forEach((r) => missL.delete(r[0])); cache.clear(); if (l === lang) soon(); }, patL: (l, re, out) => { patL(l, re, out); cache.clear(); if (l === lang) soon(); }, setHans: (pairs) => { S2T = new Map(); for (let i = 0; i + 1 < pairs.length; i += 2) S2T.set(pairs[i], pairs[i + 1]); cache.clear(); },
     get lang() { return lang; },
     set(l) {
@@ -37097,7 +37107,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 @media (max-height:460px){.pfs-q{margin-bottom:6px;display:grid;grid-template-columns:auto 1fr;gap:0 10px;align-items:center}.pfs-q>div{margin:0}.pfs-q small{grid-column:1/-1;margin-top:3px}#pf-card .pfs .pfs-qb button{padding:6px 2px;min-height:36px}}`;
   document.head.appendChild(css);
   const LBL = { auto: '自動', high: '高', mid: '中', low: '省電' }, BGL = { full: '動態背景', lite: '簡化背景', still: '靜止背景' };
-  const paintRow = (row) => { row.querySelectorAll('[data-q]').forEach((b) => b.classList.toggle('on', b.dataset.q === P.q)); const sm = row.querySelector('small'); const t = P.q === 'auto' ? '自動判斷：' : '首頁：'; const span = sm.querySelectorAll('span'); if (span[0].textContent !== t) span[0].textContent = t; if (span[1].textContent !== BGL[auto]) span[1].textContent = BGL[auto]; };
+  const paintRow = (row) => { row.querySelectorAll('[data-q]').forEach((b) => b.classList.toggle('on', b.dataset.q === P.q)); const sm = row.querySelector('small'); const t = P.q === 'auto' ? '自動判斷：' : '首頁：'; const span = sm.querySelectorAll('span'), tw = (e, z) => { const y = SC.tr ? SC.tr(z) : z; if (e.textContent !== y && e.textContent !== z) e.textContent = z; }; tw(span[0], t); tw(span[1], BGL[auto]); }; // 第 288 版：比對時也認翻好的字。以前只比中文，英文畫面上永遠「不一樣」→ 寫回中文 → 翻譯又改成英文 → 又觸發這裡，無限循環，設定卡片一換語言整頁卡死
   const addRow = () => {
     const box = document.querySelector('#pf-card:not([hidden]) .pfs'), b = box && box.querySelector('.pfs-b'); if (!b) return; let row = box.querySelector('.pfs-q'); if (row) return paintRow(row);
     row = document.createElement('div'); row.className = 'pfs-q';
@@ -43895,6 +43905,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-24", "", "修好在首頁 ⚙️ 設定卡片換成英文（或其他非中文語言）時整頁卡死的問題",
+      {"en": "Fixed the whole page freezing when you switched to English (or any language other than Chinese) from the ⚙️ settings card on the home screen", "ja": "ホーム画面の ⚙️ 設定カードで英語など中国語以外に切りかえると、画面全体が固まってしまう問題を直しました", "ko": "홈 화면 ⚙️ 설정 카드에서 영어 등 중국어가 아닌 언어로 바꾸면 화면 전체가 멈추던 문제를 고쳤어요", "es": "Arreglado: la página entera se congelaba al cambiar a inglés (o a cualquier idioma que no fuera chino) desde la tarjeta de ajustes ⚙️ de la pantalla de inicio", "pt": "Corrigido: a página inteira travava ao mudar para inglês (ou qualquer idioma que não fosse chinês) no cartão de configurações ⚙️ da tela inicial", "fr": "Corrigé : la page entière se figeait quand on passait à l'anglais (ou à toute autre langue que le chinois) depuis la carte de réglages ⚙️ de l'écran d'accueil", "de": "Behoben: Die ganze Seite fror ein, wenn man auf der Startseite in der ⚙️-Einstellungskarte auf Englisch (oder eine andere Sprache als Chinesisch) umgestellt hat", "it": "Risolto: l'intera pagina si bloccava passando all'inglese (o a qualsiasi lingua diversa dal cinese) dalla scheda impostazioni ⚙️ della schermata iniziale", "ru": "Исправлено: вся страница зависала при переключении на английский (или любой язык, кроме китайского) в карточке настроек ⚙️ на главном экране", "tr": "Düzeltildi: Ana ekrandaki ⚙️ ayarlar kartından İngilizceye (veya Çince dışındaki herhangi bir dile) geçince tüm sayfa donuyordu", "id": "Diperbaiki: seluruh halaman macet saat beralih ke bahasa Inggris (atau bahasa apa pun selain Mandarin) dari kartu pengaturan ⚙️ di layar beranda", "vi": "Đã sửa: cả trang bị đứng khi chuyển sang tiếng Anh (hoặc bất kỳ ngôn ngữ nào ngoài tiếng Trung) từ thẻ cài đặt ⚙️ ở màn hình chính", "th": "แก้แล้ว: ทั้งหน้าค้างเมื่อเปลี่ยนเป็นภาษาอังกฤษ (หรือภาษาอื่นที่ไม่ใช่ภาษาจีน) จากการ์ดตั้งค่า ⚙️ ที่หน้าแรก"}],
     ["2026-11-24", "", "墨貓換成新造型「墨滴貓」：一滴墨水的身體、兩側圓貓耳、三條毛茸茸的貓尾巴；貼紙本裡多一頂「小魷魚帽」可以戴",
       { en: "The ink cat has a new look, the Ink Drop Cat: a drop-shaped body, round cat ears and three fluffy tails. The sticker book now has a Little Squid Hat you can wear", ja: "インクネコが新しい姿「しずくネコ」に：しずく形の体、丸いネコ耳、ふわふわのしっぽ3本。シールブックで「ちびイカぼうし」をかぶれるよ", ko: "잉크 고양이가 새 모습 '물방울 고양이'로 바뀌었어요: 물방울 몸, 동그란 고양이 귀, 복슬복슬 꼬리 세 개. 스티커북에서 '꼬마 오징어 모자'를 쓸 수 있어요", es: "El gato de tinta tiene nuevo aspecto, el Gato Gota: cuerpo de gota, orejas redondas y tres colas peludas. En el álbum de pegatinas hay un Gorro de calamar para ponerte", pt: "O gato de tinta ganhou novo visual, o Gato Gota: corpo de gota, orelhas redondas e três caudas fofas. O álbum de figurinhas tem um Chapéu de lula para usar", fr: "Le chat d’encre a un nouveau look, le Chat Goutte : corps en goutte, oreilles rondes et trois queues touffues. L’album d’autocollants propose un Bonnet calmar à porter", de: "Die Tintenkatze sieht neu aus, die Tropfenkatze: Tropfenkörper, runde Ohren und drei flauschige Schwänze. Im Stickerbuch gibt es eine Tintenfischmütze zum Aufsetzen", it: "Il gatto d’inchiostro ha un nuovo aspetto, il Gatto Goccia: corpo a goccia, orecchie tonde e tre code soffici. Nell’album adesivi c’è un Cappello calamaro da indossare", ru: "Чернильный кот теперь выглядит по-новому — Кот-капелька: тело-капля, круглые ушки и три пушистых хвоста. В альбоме наклеек есть Шапка-кальмар", tr: "Mürekkep kedinin yeni görünümü Damla Kedi: damla gövde, yuvarlak kulaklar ve üç kabarık kuyruk. Çıkartma albümünde takabileceğin bir Kalamar şapka var", id: "Kucing tinta punya tampilan baru, Kucing Tetes: tubuh tetesan, telinga bulat, dan tiga ekor berbulu. Di buku stiker ada Topi cumi kecil yang bisa dipakai", vi: "Mèo mực có diện mạo mới, Mèo Giọt Mực: thân hình giọt nước, tai mèo tròn và ba chiếc đuôi xù. Sổ nhãn dán có thêm Mũ mực nhỏ để đội", th: "แมวหมึกมีโฉมใหม่ แมวหยดหมึก: ตัวเป็นหยดหมึก หูแมวกลม และหางฟูสามหาง ในสมุดสติกเกอร์มีหมวกปลาหมึกน้อยให้สวม" }],
     ["2026-11-24", "", "喵喵服飾店開幕！在小鎮用代幣買帽子、圍巾、披風和翅膀等 12 件服裝（150～1200 代幣），買了點一下就能穿上或脫下",
