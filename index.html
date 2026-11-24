@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v289';</script><script>window.SC_BUILD='5df1d6a32ad9';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v290';</script><script>window.SC_BUILD='a01649104cfd';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -834,6 +834,10 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .stk-arr { font: 900 22px/1 var(--f-body); color: #fff; }
 .stk-how-row small { flex: 1; font-size: 12px; opacity: .8; line-height: 1.35; }
 .stk.worn { background: rgba(255, 210, 63, .28); box-shadow: 0 0 0 4px var(--sun); }
+.stk-hat { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; } /* 小魷魚帽（Yen 2026-11-24） */
+.stk-hatb { font: inherit; font-weight: 900; font-size: 15px; color: var(--navy); background: #bfe9ff; border: 3px solid var(--navy); border-radius: 16px; padding: 6px 14px; box-shadow: 0 3px 0 var(--navy); cursor: pointer; }
+.stk-hatb.worn { background: var(--sun); box-shadow: 0 0 0 4px #3ccf6e, 0 3px 0 var(--navy); }
+.stk-hat small { flex: 1; font-size: 12px; opacity: .8; }
 .stk.worn::after { content: ''; position: absolute; left: -4px; top: -4px; width: 26px; height: 26px; border-radius: 50%; background: #3ccf6e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12l5 5 9-10' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/80% no-repeat; border: 2px solid #fff; }
 .h-face { position: relative; }
 .h-stk { position: absolute; right: -10px; bottom: -8px; width: 26px; height: 26px; pointer-events: none; } .h-stk svg { width: 100%; height: 100%; display: block; }
@@ -22728,32 +22732,35 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       for (let k = 0; k < pos.count; k++) { const v = new THREE.Vector3().fromBufferAttribute(pos, k); if (seen.some((q) => q.distanceToSquared(v) < 1e-4)) continue; seen.push(v); const b = new THREE.Mesh(bg, bm); b.position.copy(v).multiplyScalar(1.08); handBomb.add(b); } }
     handBomb.position.set(0, 0, 0.55); handBomb.visible = false; hand.add(handBomb);
 
-    // 墨貓形態（Yen 2026-11-17）：往上尖尖的身體、頂端兩片三角形的貓耳朵（裡面粉紅色），
-    // 下半部是大圓眼睛和貓咪的鼻子、ω 嘴、鬍鬚，底下三條長長的尾巴（Yen：三條尾巴、不要有手），尾端是扁扁的槳。
+    // 墨貓形態「墨滴貓」（Yen 2026-11-24 選的新造型；取代 11-17 的舊造型）：整隻是一滴墨水，頭頂尖尖、尖端再掛一顆小墨滴，
+    // 兩側是圓圓的貓耳朵（裡面粉紅色），大眼睛、貓鼻子、ω 嘴、鬍鬚，前面兩隻小貓掌，後面三條毛茸茸的貓尾巴（尾巴尖是白色）。
     // 移動時整隻往前傾、尖頭朝前，尾巴拖在後面；往上跳時尖頭朝上。
     const blob = new THREE.Group(); blob.visible = false; root.add(blob);
     const inkBody = new THREE.Group(); blob.add(inkBody); // 旋轉中心在身體底部
     const mEyeW = new THREE.MeshBasicMaterial({ color: 0xffffff }), mEyeD = std(0x1b1420, 0.15), mBelly = std(0xffffff, 0.3, { transparent: true, opacity: 0.35, depthWrite: false });
-    const prof = []; // 身體側面輪廓（由下往上）：底部圓、中間最胖、往上收成尖頭
-    for (let k = 0; k <= 16; k++) { const t = k / 16, y = t * 2.9, r = t < 0.25 ? 0.62 + Math.sin((t / 0.25) * Math.PI / 2) * 0.46 : 1.08 * Math.pow(Math.cos(((t - 0.25) / 0.75) * Math.PI / 2), 0.85) + 0.04; prof.push(new THREE.Vector2(Math.max(0.001, r), y)); }
-    const mantle = mesh(new THREE.LatheGeometry(prof, 26), mTeamGloss, 0, 0.12, 0, 1, 1, 0.86); inkBody.add(mantle);
-    inkBody.add(mesh(S(0.62, 18, 12), mTeamGloss, 0, 0.25, 0, 1.0, 0.55, 0.88)); // 屁股（身體底部收圓）
-    inkBody.add(mesh(S(0.5, 16, 12), mBelly, 0, 1.25, 0.52, 1.25, 1.5, 0.45)); // 肚子上一塊淡淡的亮色
+    const prof = []; // 身體側面輪廓（由下往上）：下半部圓滾滾，往上收成一滴墨水的尖頭
+    for (let k = 0; k <= 24; k++) { const t = k / 24, y = t * 2.75, r = t < 0.42 ? Math.sqrt(Math.max(0, 1 - Math.pow(1 - t / 0.42, 2))) * 1.08 : 1.08 * Math.pow(Math.max(0, 1 - (t - 0.42) / 0.58), 1.3); prof.push(new THREE.Vector2(Math.max(k === 24 ? 0.001 : 0.05, r), y)); }
+    const mantle = mesh(new THREE.LatheGeometry(prof, 30), mTeamGloss, 0, 0.05, 0, 1, 1, 0.9); inkBody.add(mantle);
+    inkBody.add(mesh(S(0.5, 16, 12), mBelly, 0, 0.8, 0.64, 1.2, 1.0, 0.4)); // 肚子上一塊淡淡的亮色
+    inkBody.add(mesh(S(0.19, 12, 10), mTeamGloss, 0, 2.86, 0, 1, 1.25, 1)); // 頭頂的小墨滴（蓋住尖端）
     [-1, 1].forEach((s) => {
-      const fin = mesh(new THREE.ConeGeometry(0.7, 1.25, 3), mTeamGloss, s * 0.62, 2.55, 0, 1, 1, 0.32); fin.rotation.z = -s * 1.05; inkBody.add(fin); // 貓耳朵
-      const inner = mesh(new THREE.ConeGeometry(0.36, 0.7, 3), mPink, s * 0.68, 2.55, 0.12, 1, 1, 0.3); inner.rotation.z = -s * 1.05; inkBody.add(inner);
-      inkBody.add(mesh(S(0.36, 16, 12), mEyeW, s * 0.42, 1.0, 0.78, 1, 1.2, 0.55)); // 大眼睛
-      inkBody.add(mesh(S(0.2, 12, 10), mEyeD, s * 0.42, 0.98, 0.95, 1, 1.25, 0.5));
-      inkBody.add(mesh(S(0.07, 6, 4), mEyeW, s * 0.42 + 0.08, 1.1, 1.04));
-      for (let k = 0; k < 2; k++) { const w = mesh(new THREE.CapsuleGeometry(0.025, 0.55, 2, 4), mEyeD, s * 0.62, 0.62 - k * 0.14, 0.82); w.rotation.z = Math.PI / 2 + s * (0.12 - k * 0.24); inkBody.add(w); } // 鬍鬚
+      const ear = new THREE.Group(); ear.position.set(s * 0.78, 1.55, 0); ear.rotation.z = -s * 0.55; inkBody.add(ear); // 兩側的圓貓耳
+      ear.add(mesh(new THREE.ConeGeometry(0.42, 0.75, 20), mTeamGloss, 0, 0.3, 0, 1, 1, 0.55));
+      ear.add(mesh(new THREE.ConeGeometry(0.24, 0.45, 16), mPink, 0, 0.25, 0.12, 1, 1, 0.4));
+      inkBody.add(mesh(S(0.22, 12, 10), mTeamGloss, s * 0.55, 0.04, 0.58, 1, 0.6, 1.1)); // 小貓掌
+      inkBody.add(mesh(S(0.08, 8, 6), mPink, s * 0.55, 0.02, 0.81));
+      inkBody.add(mesh(S(0.36, 16, 12), mEyeW, s * 0.42, 0.95, 0.86, 1, 1.2, 0.55)); // 大眼睛
+      inkBody.add(mesh(S(0.2, 12, 10), mEyeD, s * 0.42, 0.93, 1.03, 1, 1.25, 0.5));
+      inkBody.add(mesh(S(0.07, 6, 4), mEyeW, s * 0.42 + 0.08, 1.05, 1.12));
+      for (let k = 0; k < 2; k++) { const w = mesh(new THREE.CapsuleGeometry(0.025, 0.55, 2, 4), mEyeD, s * 0.62, 0.57 - k * 0.14, 0.9); w.rotation.z = Math.PI / 2 + s * (0.12 - k * 0.24); inkBody.add(w); } // 鬍鬚
     });
-    inkBody.add(mesh(S(0.08, 8, 6), mPink, 0, 0.72, 1.0)); // 鼻子
-    [-1, 1].forEach((s) => { const m = mesh(new THREE.TorusGeometry(0.09, 0.025, 6, 10, Math.PI), mEyeD, s * 0.09, 0.62, 0.97); m.rotation.z = Math.PI; inkBody.add(m); }); // ω 嘴
+    inkBody.add(mesh(S(0.08, 8, 6), mPink, 0, 0.67, 1.08)); // 鼻子
+    [-1, 1].forEach((s) => { const m = mesh(new THREE.TorusGeometry(0.09, 0.025, 6, 10, Math.PI), mEyeD, s * 0.09, 0.57, 1.05); m.rotation.z = Math.PI; inkBody.add(m); }); // ω 嘴
     const tents = [];
-    for (let i = 0; i < 3; i++) { // 三條尾巴：從身體底部長出來，往下再往後拖，尾端是扁扁的槳
-      const a = (i - 1) * 0.5, g = new THREE.Group(); g.position.set(Math.sin(a) * 0.42, 0.15, -Math.cos(a) * 0.12); inkBody.add(g);
-      for (let k = 0; k < 14; k++) { const t = k / 13; g.add(mesh(S(0.24 - t * 0.12, 10, 8), mTeamGloss, 0, -0.1 - Math.sin(t * 1.4) * 0.55, -t * 1.9)); }
-      const pad = mesh(S(0.3, 12, 8), mTeamGloss, 0, -0.1 - Math.sin(1.4) * 0.55, -2.05, 1.2, 0.4, 1.7); g.add(pad);
+    for (let i = 0; i < 3; i++) { // 三條毛茸茸的貓尾巴：從身體後面長出來往後拖，尾巴尖往上翹、是白色的
+      const a = (i - 1) * 0.5, g = new THREE.Group(); g.position.set(Math.sin(a) * 0.45, 0.35, -0.75); inkBody.add(g);
+      for (let k = 0; k < 12; k++) { const t = k / 11; g.add(mesh(S(0.2 + Math.sin(t * Math.PI) * 0.1, 10, 8), mTeamGloss, 0, -Math.sin(t * 1.4) * 0.5 + Math.pow(t, 3) * 0.75, -t * 1.8)); }
+      g.add(mesh(S(0.26, 12, 8), mWhite, 0, -Math.sin(1.4) * 0.5 + 0.8, -1.9));
       tents.push({ g, a, i });
     }
     // 潛在墨水裡：看不到身體，只留下一串會消失的墨水小泡泡（放在世界座標，遊戲另外加進場景）
@@ -23085,6 +23092,26 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const r = o.geometry.boundingSphere.radius * Math.max(_s.x, _s.y, _s.z); if (r < 0.45) o.castShadow = false; if (r < 0.2) details.push(o); });
     let far = false;
     cat.lod = (d) => { const f = d > 55; if (f === far) return; far = f; details.forEach((o) => o.layers.set(f ? 1 : 0)); };
+    // 小魷魚帽（Yen 2026-11-24 選的；小朋友專屬的帽子，在貼紙本裡戴上／拿下）：藍色小魷魚趴在頭上，頂端兩片小鰭、圓眼睛、腮紅，
+    // 六隻短短的腳垂在頭的兩側和後面。戴帽子時先把這隻貓原本頭上的皇冠／鴨舌帽收起來。
+    let hatG = null;
+    cat.setHat = (on) => {
+      if (on && !hatG) {
+        const mSea = std(0x63c8ff, 0.3); hatG = noShadow(new THREE.Group()); hatG.position.set(0, 1.05, -0.05); hatG.rotation.x = -0.15; head.add(hatG);
+        hatG.add(mesh(S(0.95, 22, 16), mSea, 0, 0.45, 0, 1, 0.85, 1));
+        hatG.add(mesh(new THREE.ConeGeometry(0.82, 1.7, 22), mSea, 0, 1.55, 0));
+        [-1, 1].forEach((s) => {
+          const f = mesh(new THREE.ConeGeometry(0.6, 1.0, 3), mSea, s * 0.55, 2.15, 0, 1, 1, 0.28); f.rotation.z = -s * 1.2; hatG.add(f);
+          hatG.add(mesh(S(0.17, 12, 10), mEyeW, s * 0.3, 0.5, 0.82)); hatG.add(mesh(S(0.09, 8, 6), mEyeD, s * 0.3, 0.5, 0.93));
+          hatG.add(mesh(S(0.12, 8, 6), mPink, s * 0.55, 0.3, 0.78, 1, 0.6, 0.5));
+        });
+        [[-1.05, -0.2], [-0.75, -0.75], [1.05, -0.2], [0.75, -0.75], [-0.3, -1.0], [0.3, -1.0]].forEach(([x, z]) => { for (let k = 0; k < 6; k++) hatG.add(mesh(S(0.17 - k * 0.017, 8, 6), mSea, x * (1 + k * 0.03), 0.05 - k * 0.2, z + Math.sin(k * 0.7) * 0.08)); });
+        hatG.traverse((o) => { o.castShadow = false; });
+      }
+      if (hatG) hatG.visible = !!on;
+      if (crown) crown.visible = !on; if (cap) cap.visible = !on;
+    };
+
     return cat;
   };
 
@@ -35780,8 +35807,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 介面：HUD、主選單、暫停、結算、操作說明。全部是 DOM，蓋在 3D 畫面上。
 (() => {
   // 魔王關的命：三顆愛心（Yen 2026-11-19：原本太小看不到，改大並在被擊倒時顯示一顆愛心碎掉）
-  // Yen 2026-11-19 晚上：命的圖示改成墨貓樣式加兩個小貓耳 → 用遊戲裡自己的「墨貓」畫成小圖示，顏色跟自己的墨水色
-  const HEART_SVG = '<svg viewBox="0 0 32 30" aria-hidden="true"><path d="M6 12.6L3.4.9l10.4 5.4z" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><path d="M26 12.6L28.6.9 18.2 6.3z" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><path d="M7 9l-1.1-5 4.4 2.4z" fill="#ffb3cf"/><path d="M25 9l1.1-5-4.4 2.4z" fill="#ffb3cf"/><path d="M8.6 18v6.2a2.4 2.4 0 0 0 4.8 0V18M13.6 18v8.4a2.4 2.4 0 0 0 4.8 0V18M18.6 18v6.2a2.4 2.4 0 0 0 4.8 0V18" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><path d="M16 2.6C22.6 4.6 27.2 10.6 27.2 15.4c0 3-2 4.6-4.8 4.6H9.6c-2.8 0-4.8-1.6-4.8-4.6C4.8 10.6 9.4 4.6 16 2.6z" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><path d="M10.2 9.4q2.4-3.4 5.2-4.2" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".7"/><ellipse cx="11.6" cy="14" rx="3.3" ry="3.6" fill="#fff" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><ellipse cx="20.4" cy="14" rx="3.3" ry="3.6" fill="#fff" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><circle cx="12.2" cy="14.6" r="1.8" fill="#1b1430"/><circle cx="19.8" cy="14.6" r="1.8" fill="#1b1430"/><circle cx="12.8" cy="13.8" r=".6" fill="#fff"/><circle cx="20.4" cy="13.8" r=".6" fill="#fff"/></svg>';
+  // 命的圖示：遊戲裡自己的「墨滴貓」畫成小圖示（Yen 2026-11-24 換新造型），顏色跟自己的墨水色
+  const HEART_SVG = '<svg viewBox="0 0 32 30" aria-hidden="true"><path d="M7.4 14L3 6.6l8 2.6z" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><path d="M24.6 14L29 6.6l-8 2.6z" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><path d="M7 11.6L5.2 8.4l3.4 1.1z" fill="#ffb3cf"/><path d="M25 11.6l1.8-3.2-3.4 1.1z" fill="#ffb3cf"/><path d="M16 1.6C19.6 6 26 10.6 26 17.6a10 10 0 0 1-20 0C6 10.6 12.4 6 16 1.6z" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><ellipse cx="11.4" cy="27.4" rx="2.6" ry="1.6" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><ellipse cx="20.6" cy="27.4" rx="2.6" ry="1.6" fill="var(--a,#ff2f86)" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><path d="M11 10.4q2-3.2 4.4-4.4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".7"/><ellipse cx="12" cy="17.2" rx="3.1" ry="3.4" fill="#fff" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><ellipse cx="20" cy="17.2" rx="3.1" ry="3.4" fill="#fff" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><circle cx="12.5" cy="17.8" r="1.7" fill="#1b1430"/><circle cx="19.5" cy="17.8" r="1.7" fill="#1b1430"/><circle cx="13.1" cy="17" r=".6" fill="#fff"/><circle cx="20.1" cy="17" r=".6" fill="#fff"/><path d="M14.6 22.2q1.4 1.2 1.4 0q0 1.2 1.4 0" fill="none" stroke="#1b1430" stroke-width="1.2" stroke-linecap="round"/></svg>';
   const LIVES_HTML = ('<i>' + HEART_SVG + '</i>').repeat(3);
   const C = SC.CFG, ui = (SC.ui = {}), $ = (id) => document.getElementById(id);
   const G = () => SC.game;
@@ -37137,7 +37164,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const img = new Image(); img.onload = () => { const x = c.getContext('2d'); x.clearRect(0, 0, 256, 256); x.drawImage(img, 8, 8, 240, 240); t.needsUpdate = true; };
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(S.svg(st).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" ')); return t;
   }
+  // 小魷魚帽（Yen 2026-11-24）：貼紙本最上面一顆按鈕，戴上／拿下。只存在這台裝置（sc-hat）。
+  const HAT = 'sc-hat';
+  S.hat = () => { try { return localStorage.getItem(HAT) === 'squid'; } catch (e) { return false; } };
+  S.setHat = (on) => { try { if (on) localStorage.setItem(HAT, 'squid'); else localStorage.removeItem(HAT); } catch (e) { /* 私密模式：這一次記不住 */ } const p = SC.game && SC.game.player && SC.game.player(); if (p && p.cat) S.dress(p.cat); };
   S.dress = (cat) => { // 把貼的那張貼紙放到這隻貓背上的墨水罐後面（沒貼就拿掉）
+    if (cat && cat.setHat) cat.setHat(S.hat());
     if (!cat || !cat.tank) return; if (cat.stk) { cat.tank.remove(cat.stk); cat.stk = null; }
     const st = S.worn(); if (!st) return;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(0.95, 0.95), new THREE.MeshBasicMaterial({ map: tex(st), transparent: true, alphaTest: 0.05 }));
@@ -37157,9 +37189,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function book() {
     if (box) return box;
     box = document.createElement('div'); box.className = 'menu dim'; box.id = 'm-stk'; box.hidden = true;
-    box.innerHTML = `<div class="card stk-card"><div class="stk-head"><span class="stk-book" aria-hidden="true">📒</span><b id="stk-n"></b><button type="button" class="btn icon" id="stk-x" aria-label="關閉">✕</button></div><div class="stk-how"><div class="stk-how-row"><span class="stk-how-ic">${HOW_GET}</span><b class="stk-arr">➜</b><span class="stk-how-ic stk-how-one">${S.svg(LIST[0])}<i>+1</i></span><small>打完一場（對戰、魔王關、教學）就送一張貼紙</small></div><div class="stk-how-row"><span class="stk-how-ic stk-tap">${S.svg(LIST[17])}${TAP}</span><b class="stk-arr">➜</b><span class="stk-how-ic">${HOW_USE}</span><small>點一張貼紙，貼到你的貓咪背上；再點一次拿下來</small></div></div><div class="stk-grid" id="stk-grid"></div></div>`;
+    box.innerHTML = `<div class="card stk-card"><div class="stk-head"><span class="stk-book" aria-hidden="true">📒</span><b id="stk-n"></b><button type="button" class="btn icon" id="stk-x" aria-label="關閉">✕</button></div><div class="stk-how"><div class="stk-how-row"><span class="stk-how-ic">${HOW_GET}</span><b class="stk-arr">➜</b><span class="stk-how-ic stk-how-one">${S.svg(LIST[0])}<i>+1</i></span><small>打完一場（對戰、魔王關、教學）就送一張貼紙</small></div><div class="stk-how-row"><span class="stk-how-ic stk-tap">${S.svg(LIST[17])}${TAP}</span><b class="stk-arr">➜</b><span class="stk-how-ic">${HOW_USE}</span><small>點一張貼紙，貼到你的貓咪背上；再點一次拿下來</small></div></div><div class="stk-hat"><button type="button" class="stk-hatb" id="stk-hat"><span aria-hidden="true">🦑</span> 小魷魚帽</button><small>點一下戴上，再點一次拿下來</small></div><div class="stk-grid" id="stk-grid"></div></div>`;
     document.getElementById('ui').appendChild(box);
     box.querySelector('#stk-x').addEventListener('click', () => { box.hidden = true; SC.audio.sfx.ui(); });
+    box.querySelector('#stk-hat').addEventListener('click', (e) => { const on = !S.hat(); S.setHat(on); e.currentTarget.classList.toggle('worn', on); SC.audio.sfx.ui(); });
     box.addEventListener('click', (e) => { if (e.target === box) box.hidden = true; });
     box.querySelector('#stk-grid').addEventListener('click', (e) => { const b = e.target.closest('.stk'); if (!b || b.classList.contains('ghost')) return; b.classList.remove('wig'); void b.offsetWidth; b.classList.add('wig'); const st = LIST.find((s) => s.id === b.dataset.id); if (st && st.face) SC.audio.sfx.meow(st.face); else SC.audio.sfx.pop(); const on = !b.classList.contains('worn'); S.wear(on ? b.dataset.id : null); box.querySelectorAll('.stk.worn').forEach((x) => x.classList.remove('worn')); if (on) b.classList.add('worn'); });
     return box;
@@ -37167,8 +37200,24 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   S.open = () => {
     const b = book(), o = load(); b.querySelector('#stk-n').textContent = Object.keys(o).filter((k) => LIST.some((s) => s.id === k)).length + ' / ' + LIST.length;
     const w = S.worn(); b.querySelector('#stk-grid').innerHTML = LIST.map((s) => `<button type="button" class="stk${o[s.id] ? '' : ' ghost'}${w && w.id === s.id ? ' worn' : ''}" data-id="${s.id}" aria-label="${o[s.id] ? '貼紙' : '還沒有'}">${S.svg(s, !o[s.id])}${o[s.id] > 1 ? `<i>×${o[s.id]}</i>` : ''}</button>`).join('');
+    b.querySelector('#stk-hat').classList.toggle('worn', S.hat());
     b.hidden = false; SC.audio.sfx.ui();
   };
+  // 小魷魚帽按鈕的翻譯（15 種語言；簡體中文自動轉）
+  if (SC.i18n && SC.i18n.add) {
+    SC.i18n.add([['小魷魚帽', 'Little Squid Hat', 'ちびイカぼうし', '꼬마 오징어 모자'], ['點一下戴上，再點一次拿下來', 'Tap to put it on, tap again to take it off', 'タップでかぶる、もう一度タップでぬぐ', '눌러서 쓰고, 다시 누르면 벗어요']]);
+    SC.i18n.addL('es', [['小魷魚帽', 'Gorro de calamar'], ['點一下戴上，再點一次拿下來', 'Toca para ponértelo; toca otra vez para quitártelo']]);
+    SC.i18n.addL('pt', [['小魷魚帽', 'Chapéu de lula'], ['點一下戴上，再點一次拿下來', 'Toque para colocar; toque de novo para tirar']]);
+    SC.i18n.addL('fr', [['小魷魚帽', 'Bonnet calmar'], ['點一下戴上，再點一次拿下來', 'Touche pour le mettre, touche encore pour l’enlever']]);
+    SC.i18n.addL('de', [['小魷魚帽', 'Tintenfischmütze'], ['點一下戴上，再點一次拿下來', 'Tippen zum Aufsetzen, nochmal tippen zum Absetzen']]);
+    SC.i18n.addL('it', [['小魷魚帽', 'Cappello calamaro'], ['點一下戴上，再點一次拿下來', 'Tocca per indossarlo, tocca di nuovo per toglierlo']]);
+    SC.i18n.addL('ru', [['小魷魚帽', 'Шапка-кальмар'], ['點一下戴上，再點一次拿下來', 'Нажми, чтобы надеть, нажми ещё раз, чтобы снять']]);
+    SC.i18n.addL('tr', [['小魷魚帽', 'Kalamar şapka'], ['點一下戴上，再點一次拿下來', 'Takmak için dokun, çıkarmak için tekrar dokun']]);
+    SC.i18n.addL('id', [['小魷魚帽', 'Topi cumi kecil'], ['點一下戴上，再點一次拿下來', 'Ketuk untuk memakai, ketuk lagi untuk melepas']]);
+    SC.i18n.addL('vi', [['小魷魚帽', 'Mũ mực nhỏ'], ['點一下戴上，再點一次拿下來', 'Chạm để đội, chạm lần nữa để bỏ ra']]);
+    SC.i18n.addL('th', [['小魷魚帽', 'หมวกปลาหมึกน้อย'], ['點一下戴上，再點一次拿下來', 'แตะเพื่อสวม แตะอีกครั้งเพื่อถอด']]);
+  }
+
 })();
 
 // 結算第一面「我們隊」的成績卡＋對戰中按住 Tab 的即時計分板（大威 2026-11-23）。殭屍保衛戰、魔王關不用（照原本）。
@@ -43846,6 +43895,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-24", "", "墨貓換成新造型「墨滴貓」：一滴墨水的身體、兩側圓貓耳、三條毛茸茸的貓尾巴；貼紙本裡多一頂「小魷魚帽」可以戴",
+      { en: "The ink cat has a new look, the Ink Drop Cat: a drop-shaped body, round cat ears and three fluffy tails. The sticker book now has a Little Squid Hat you can wear", ja: "インクネコが新しい姿「しずくネコ」に：しずく形の体、丸いネコ耳、ふわふわのしっぽ3本。シールブックで「ちびイカぼうし」をかぶれるよ", ko: "잉크 고양이가 새 모습 '물방울 고양이'로 바뀌었어요: 물방울 몸, 동그란 고양이 귀, 복슬복슬 꼬리 세 개. 스티커북에서 '꼬마 오징어 모자'를 쓸 수 있어요", es: "El gato de tinta tiene nuevo aspecto, el Gato Gota: cuerpo de gota, orejas redondas y tres colas peludas. En el álbum de pegatinas hay un Gorro de calamar para ponerte", pt: "O gato de tinta ganhou novo visual, o Gato Gota: corpo de gota, orelhas redondas e três caudas fofas. O álbum de figurinhas tem um Chapéu de lula para usar", fr: "Le chat d’encre a un nouveau look, le Chat Goutte : corps en goutte, oreilles rondes et trois queues touffues. L’album d’autocollants propose un Bonnet calmar à porter", de: "Die Tintenkatze sieht neu aus, die Tropfenkatze: Tropfenkörper, runde Ohren und drei flauschige Schwänze. Im Stickerbuch gibt es eine Tintenfischmütze zum Aufsetzen", it: "Il gatto d’inchiostro ha un nuovo aspetto, il Gatto Goccia: corpo a goccia, orecchie tonde e tre code soffici. Nell’album adesivi c’è un Cappello calamaro da indossare", ru: "Чернильный кот теперь выглядит по-новому — Кот-капелька: тело-капля, круглые ушки и три пушистых хвоста. В альбоме наклеек есть Шапка-кальмар", tr: "Mürekkep kedinin yeni görünümü Damla Kedi: damla gövde, yuvarlak kulaklar ve üç kabarık kuyruk. Çıkartma albümünde takabileceğin bir Kalamar şapka var", id: "Kucing tinta punya tampilan baru, Kucing Tetes: tubuh tetesan, telinga bulat, dan tiga ekor berbulu. Di buku stiker ada Topi cumi kecil yang bisa dipakai", vi: "Mèo mực có diện mạo mới, Mèo Giọt Mực: thân hình giọt nước, tai mèo tròn và ba chiếc đuôi xù. Sổ nhãn dán có thêm Mũ mực nhỏ để đội", th: "แมวหมึกมีโฉมใหม่ แมวหยดหมึก: ตัวเป็นหยดหมึก หูแมวกลม และหางฟูสามหาง ในสมุดสติกเกอร์มีหมวกปลาหมึกน้อยให้สวม" }],
     ["2026-11-24", "", "喵喵服飾店開幕！在小鎮用代幣買帽子、圍巾、披風和翅膀等 12 件服裝（150～1200 代幣），買了點一下就能穿上或脫下",
       { en: "The Meow Boutique is open! Spend coins in town on 12 outfits like hats, scarves, capes and wings (150–1200 coins); tap an owned item to put it on or take it off", ja: "ニャンニャン洋服店がオープン！町でコインを使って帽子・マフラー・マント・羽など12種類の服を買おう（150～1200コイン）。持っている服はタップで着たり脱いだり", ko: "야옹 옷가게 오픈! 마을에서 코인으로 모자, 목도리, 망토, 날개 등 옷 12종을 살 수 있어요(150~1200 코인). 산 옷은 눌러서 입고 벗어요", es: "¡Abre la Boutique Miau! Gasta monedas en el pueblo en 12 prendas como sombreros, bufandas, capas y alas (150–1200 monedas); toca una prenda tuya para ponértela o quitártela", pt: "A Butique Miau abriu! Gaste moedas na vila em 12 roupas como chapéus, cachecóis, capas e asas (150–1200 moedas); toque numa peça sua para vestir ou tirar", fr: "La Boutique Miaou ouvre ! Dépense tes pièces au village pour 12 tenues : chapeaux, écharpes, capes, ailes (150–1200 pièces) ; touche un article acheté pour le mettre ou l'enlever", de: "Die Miau-Boutique hat geöffnet! Gib im Dorf Münzen für 12 Outfits wie Hüte, Schals, Umhänge und Flügel aus (150–1200 Münzen); tipp ein gekauftes Teil an, um es an- oder auszuziehen", it: "Apre la Boutique Miao! Spendi monete in paese per 12 capi come cappelli, sciarpe, mantelli e ali (150–1200 monete); tocca un capo tuo per indossarlo o toglierlo", ru: "Открылся бутик «Мяу»! Трать монеты в городке на 12 нарядов: шляпы, шарфы, плащи и крылья (150–1200 монет); нажми на купленную вещь, чтобы надеть или снять её", tr: "Miyav Butik açıldı! Kasabada jetonlarla şapka, atkı, pelerin ve kanat gibi 12 kıyafet al (150–1200 jeton); sahip olduğun bir parçaya dokunup giy ya da çıkar", id: "Butik Meong sudah buka! Belanjakan koin di kota untuk 12 pakaian seperti topi, syal, jubah, dan sayap (150–1200 koin); ketuk barang milikmu untuk memakai atau melepasnya", vi: "Tiệm đồ Meo Meo khai trương! Dùng xu trong thị trấn mua 12 món như mũ, khăn, áo choàng và cánh (150–1200 xu); chạm vào món đã có để mặc hoặc cởi", th: "ร้านเสื้อผ้าเหมียวเปิดแล้ว! ใช้เหรียญในเมืองซื้อชุด 12 แบบ เช่น หมวก ผ้าพันคอ ผ้าคลุม และปีก (150–1200 เหรียญ) แตะของที่มีเพื่อใส่หรือถอด" }],
     ["2026-11-24", "", "殭屍戰大改版：一場分 5 個回合，回合中間休息 20 秒，選一張免費升級，再到阿肥旁邊的電腦用代幣買機槍、補防護罩和升級；打倒殭屍直接拿代幣；buff 改成打倒大隻的 buff 鼠才拿得到，誰打最多誰拿；神兵變少、散落在場上；每場抽不同的回合特色和魔王拉霸；新增「♾️ 無盡挑戰」、星星紀錄和殭屍鼠圖鑑；畫面換成新的對戰介面；拿掉燈塔接力和花車遊行兩張地圖",
