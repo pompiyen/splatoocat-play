@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v287';</script><script>window.SC_BUILD='be5a16f80e3d';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v288';</script><script>window.SC_BUILD='09866d7053c9';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -21572,73 +21572,6 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       for (let i = 0; i < 16; i++) { const a = (i / 16) * TAU + r() * 0.1, d = 330 + r() * 60, w = 30 + r() * 20, h = 40 + r() * 60; const m = k.add(new THREE.BoxGeometry(w, h, w), k.plain([0x6f6a9a, 0x8a7aa8, 0x5a5f8a][i % 3], 0.9), Math.cos(a) * d, h / 2, Math.sin(a) * d); void m; } /* 遠遠的城市大樓 */
       zArches(k, ST_HA, XR_R - 3, 0x8a8a9a, 0xff5a5a); k.clouds(0xffd9c8); },
   };
-  // 7f. 第 131 版（Yen「這個地方守完 是要去下個地方守」，照協調者的建議做）：燈塔接力（佔點）。小鴨在中間的台子上，外面三座小山丘上各有一座燈塔。
-  // 一次只亮一座：貓要站在亮的燈塔圈圈裡，撐滿 60 秒（圈裡有殭屍就停住），燈塔就把光打到小鴨的防護罩上充電；時間到換下一座，殭屍也改從那一邊湧過來。三座都輪完，最後魔王出場。
-  const RL_A = [Math.PI / 2, Math.PI / 2 + TAU / 3, Math.PI / 2 + 2 * TAU / 3], RL = { r: 84, hill: 15, hh: 3 };
-  MAPS.zrelay = { ...zBase, spawns: zSp, name: '燈塔接力', lim: { x: 150, z: 150, r: 150 },
-    zb: { n: 1, hole: 132, ha: [0, 1, 2, 3, 4, 5, 6, 7].map((i) => RL_A[i % 3] + (i < 3 ? 0 : i < 6 ? 0.2 : -0.2)), dig: [60, 50], drop: [40, 90], alt: [44, 26], tank: 120, pr: 26,
-      gates: RL_A.map((a) => ({ a, g: a, path: [pol(RL.r + 22, a + 0.28), pol(RL.r, a + 0.28), pol(60, a + 0.14), pol(46, a), pol(22, a)] /* 第 131 版：殭屍走燈塔旁邊，不直接踩過圈圈 */, sign: [...pol(RL.r + 30, a), 14] })),
-      cps: RL_A.map((a) => pol(RL.r, a)), cpR: 12, cpT: 32, cpWin: 100,
-      tur: [pol(56, RL_A[0] + 1.05), pol(56, RL_A[1] + 1.05), pol(56, RL_A[2] + 1.05), pol(24, RL_A[0] + Math.PI / 3)] },
-    gen: () => { const out = zPlaza([], 30);
-      RL_A.forEach((a, i) => { out.push({ t: 'oramp', ...xz(38.5, a), a, hu: 9, hv: 6, h0: 10, h1: 0.4, look: 'stone', team: -1 }); // 小鴨台往三座燈塔的斜坡
-        { const b = a + Math.PI / 3; out.push({ t: 'oramp', ...xz(38.5, b), a: b, hu: 9, hv: 6, h0: 10, h1: 0.4, look: 'stone', team: -1 }); } /* 第 142 版（報告：掉下台子回不去）：每 60° 一條斜坡 */
-        const c = xz(RL.r, a), l = xz(RL.r + 10, a + 0.14); void c; out.push({ t: 'cyl', ...l, r: 3.2, h: 22, look: 'lighthouse' + i, team: -1 }); // 小山丘＋燈塔
-        [-0.42, 0.42].forEach((d) => out.push({ t: 'obox', ...xz(RL.r - 4, a + d), a: a + d, hu: 4, hv: 1.2, h: 3.4, look: 'rock', team: -1 })); // 山丘旁的石牆（掩護）
-        out.push({ t: 'cyl', ...xz(56, a + 1.05), r: 5, h: 7, look: 'rock', team: -1 }); }); // 燈塔中間的大石頭（上面是砲台）
-      for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + 0.17, p = xz(128 + (i % 2) * 8, a); out.push({ t: 'cyl', ...p, r: 3 + (i % 3), h: 3 + (i % 4), look: 'rock', team: -1 }); }
-      return out; },
-    base: (x, z) => { let h = 0; for (const a of RL_A) h += bump(x, z, Math.cos(a) * RL.r, Math.sin(a) * RL.r, 30, 3); return h; }, /* 燈塔的小山丘（緩坡，殭屍也走得上去） */
-    tint: (x, z, h) => { for (const a of RL_A) { const d = Math.hypot(x - Math.cos(a) * RL.r, z - Math.sin(a) * RL.r); if (d < RL.hill + 1) return 0xd9c9a0; } for (const a of RL_A) { const lat = Math.abs(-Math.sin(a) * x + Math.cos(a) * z), along = Math.cos(a) * x + Math.sin(a) * z; if (lat < 5 && along > 30 && along < RL.r) return 0xe8c99a; } /* 燈塔到小鴨的土路 */ return (Math.floor(x / 14) + Math.floor(z / 14)) % 2 ? 0x9fdc8a : 0x93d47e; },
-    sky: [0x2a2f6a, 0x7a5fc0, 0xffb38a], fog: 0xc8b8e8, hemi: [0xf0e6ff, 0x8a9ad8],
-    river: { color: 0x7fd3ff, rough: 0.08 },
-    look: { ...zLook, court: 0xf3e7d2, hill: 0xd9c9a0, rock: 0xa8a0b8, lighthouse0: 0xff6b8b, lighthouse1: 0x4ecbff, lighthouse2: 0xffd23f },
-    rough: { ground: 0.85 },
-    ground: (g) => { tiles(g, '#efe3cc', ['#fbf3e4', '#f4e8d2'], 26); },
-    fence: [0xc6b2ff, 0xffd23f, 0xff9ebb, 0x9be7d0],
-    make: { ...zMake,
-      hill: (p, k) => { k.cyl(p); const t = k.add(new THREE.TorusGeometry(p.r - 0.3, 0.5, 8, 64), k.plain(0xffffff, 0.5), p.x, p.h, p.z); t.rotation.x = Math.PI / 2; },
-      rock: (p, k) => { if (p.t === 'obox') return k.obox(p, { r: 0.8 }); const m = k.add(new THREE.DodecahedronGeometry(p.r * 1.1, 0), k.mat('rock'), p.x, p.h * 0.5, p.z); m.scale.y = p.h / (p.r * 2.2) * 2; m.castShadow = true; },
-      ...Object.fromEntries([0, 1, 2].map((i) => ['lighthouse' + i, (p, k) => { const c = k.mat('lighthouse' + i); for (let s = 0; s < 4; s++) k.add(new THREE.CylinderGeometry(p.r * (1 - s * 0.08) - 0.1, p.r * (1 - (s - 1) * 0.08) - 0.1, p.h / 4, 18), s % 2 ? k.plain(0xffffff, 0.5) : c, p.x, p.h / 8 + s * p.h / 4, p.z);
-        k.add(new THREE.CylinderGeometry(p.r * 0.9, p.r * 0.9, 3, 18), new THREE.MeshBasicMaterial({ color: 0xfff2a8 }), p.x, p.h + 1.5, p.z); k.add(new THREE.ConeGeometry(p.r * 1.1, 3, 18), c, p.x, p.h + 4.5, p.z); }])),
-    },
-    outside: (k) => { k.floor(0x8fd37a); const r = k.rnd;
-      for (let i = 0; i < 20; i++) { const a = (i / 20) * TAU + r() * 0.12, d = 190 + r() * 80, s = 14 + r() * 9; const t = k.add(new THREE.SphereGeometry(s, 14, 10), k.plain(i % 3 ? 0x6cbf6a : 0x8bd07a, 0.85), Math.cos(a) * d, s + 6, Math.sin(a) * d); void t; }
-      const moon = new THREE.Mesh(new THREE.SphereGeometry(24, 24, 16), new THREE.MeshBasicMaterial({ color: 0xfff3c4, fog: false })); moon.position.set(-420, 230, -520); k.root.add(moon);
-      zArches(k, RL_A.flatMap((a) => [a - 0.2, a + 0.2]), 140, 0xa8a0b8, 0xffd23f); k.clouds(0xe8dcff); },
-  };
-  // 7g. 第 135 版（Yen「這個地方守完 是要去下個地方守」，照協調者的建議做）：花車遊行（護送）。小鴨坐在花車上，從南邊的第一站慢慢開到北邊的第三站。
-  // 每一站停下來守一陣子（殭屍從四面八方來），時間到花車開往下一站（路上殭屍比較少，大家跟著走），第三站最後魔王出場。花車位置只看比賽時間，每台自己算，不用網路同步。
-  const PA = { st: [[0, 92], [0, 0], [0, -92]], at: [100, 200], mv: 16, cy: 2.4, road: 15 };
-  MAPS.zparade = { ...zBase, spawns: zSp, name: '花車遊行', lim: { x: 200, z: 200, r: 200 },
-    zb: { n: 1, hole: 74, dig: [40, 26], drop: [24, 60], alt: [44, 26], tank: 60, lim: 186, noTur: 1, esc: PA, cy: PA.cy, tur: [[-30, 92], [30, 92], [-30, 0], [30, 0]] },
-    gen: () => { const out = [];
-      PA.st.forEach(([x, z], i) => { [-1, 1].forEach((sd) => out.push({ t: 'cyl', x: x + sd * 34, z, r: 2.2, h: 12, look: 'pole' + i, team: -1 })); }); // 每一站兩根彩色旗桿
-      for (let z = -120; z <= 120; z += 30) [-1, 1].forEach((sd) => out.push({ t: 'cyl', x: sd * (PA.road + 7), z: z + 15, r: 1.2, h: 6, look: 'lamp', team: -1 })); // 路燈
-      [[-44, 60], [44, 40], [-46, -30], [46, -60], [-40, -120], [42, 120], [-52, 130], [50, -130]].forEach(([x, z], i) => out.push({ t: 'obox', x, z, a: i * 0.4, hu: 4, hv: 2.4, h: 3, look: 'crate', team: -1 })); // 路邊的木箱（可以躲、可以跳上去）
-      for (let i = 0; i < 26; i++) { const a = i / 26 * TAU + 0.11, d = 150 + (i % 3) * 14, x = Math.cos(a) * d, z = Math.sin(a) * d; if (Math.abs(x) < 30) continue; out.push({ t: 'cyl', x, z, r: 6 + (i % 3), h: 3 + (i % 4), look: 'tree', team: -1 }); } // 外圈的大樹
-      for (let i = 0; i < 6; i++) { const sd = i % 2 ? 1 : -1, z = -110 + i * 44; out.push({ t: 'obox', x: sd * 118, z, a: 0, hu: 10, hv: 12, h: 10 + (i % 3) * 3, look: 'tent' + (i % 3), team: -1 }); } // 遊樂園的帳篷小屋
-      return out; },
-    base: () => 0,
-    tint: (x, z) => { for (const [sx, sz] of PA.st) { const d = Math.hypot(x - sx, z - sz); if (d < 26 && d > 23) return 0xffffff; if (d < 23) return 0xffe6a8; } /* 三個站（黃色圓圈） */ if (Math.abs(x) < PA.road && z > -110 && z < 110) return Math.abs(x) > PA.road - 1.2 ? 0xffffff : (Math.floor(z / 10) & 1 ? 0xff9ebb : 0xffb8cf); /* 遊行的粉紅大路 */ return (Math.floor(x / 14) + Math.floor(z / 14)) % 2 ? 0x9fdc8a : 0x93d47e; },
-    sky: [0x4a7fd8, 0x8fc8ff, 0xffe0b0], fog: 0xd8e8ff, hemi: [0xffffff, 0xa8c8a0],
-    river: { color: 0x7fd3ff, rough: 0.08 },
-    look: { ...zLook, crate: 0xc98a3c, lamp: 0x3a3a52, tree: 0x6cbf6a, pole0: 0xff6b8b, pole1: 0x4ecbff, pole2: 0xffd23f, tent0: 0xff9ebb, tent1: 0x8fd8ff, tent2: 0xc9b5ff },
-    rough: { ground: 0.85 },
-    ground: (g) => { tiles(g, '#efe3cc', ['#fbf3e4', '#f4e8d2'], 26); },
-    fence: [0xff9ebb, 0xffd23f, 0x8fd8ff, 0x9be7d0],
-    make: { ...zMake,
-      crate: (p, k) => k.obox(p, { r: 0.3 }),
-      lamp: (p, k) => { k.add(new THREE.CylinderGeometry(0.35, 0.45, p.h, 8), k.plain(0x3a3a52, 0.5), p.x, p.h / 2, p.z); k.add(new THREE.SphereGeometry(1.1, 12, 8), new THREE.MeshBasicMaterial({ color: 0xfff2a8 }), p.x, p.h + 0.6, p.z); },
-      tree: (p, k) => { k.add(new THREE.CylinderGeometry(0.9, 1.2, p.h + 2, 8), k.plain(0x8b5e3c, 0.8), p.x, (p.h + 2) / 2, p.z); const t = k.add(new THREE.SphereGeometry(p.r, 14, 10), k.mat('tree'), p.x, p.h + 4, p.z); t.castShadow = true; },
-      ...Object.fromEntries([0, 1, 2].map((i) => ['pole' + i, (p, k) => { k.add(new THREE.CylinderGeometry(0.5, 0.6, p.h, 10), k.plain(0xffffff, 0.5), p.x, p.h / 2, p.z); const f = k.add(new THREE.BoxGeometry(0.2, 4, 6), k.mat('pole' + i), p.x, p.h - 2.2, p.z + 3.1); f.castShadow = true; k.add(new THREE.SphereGeometry(0.9, 12, 8), k.plain(0xffd23f, 0.4), p.x, p.h + 0.6, p.z); }])),
-      ...Object.fromEntries([0, 1, 2].map((i) => ['tent' + i, (p, k) => { const m = k.obox(p, { r: 0.5 }); const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(p.hu, p.hv) * 1.45, 9, 4), k.mat('tent' + ((i + 1) % 3))); roof.rotation.y = Math.PI / 4; roof.position.y = p.h + 4.5; m.add(roof); }])),
-    },
-    outside: (k) => { k.floor(0x8fd37a); const r = k.rnd;
-      for (let i = 0; i < 18; i++) { const a = (i / 18) * TAU + r() * 0.12, d = 230 + r() * 80, s = 14 + r() * 9; k.add(new THREE.SphereGeometry(s, 14, 10), k.plain(i % 3 ? 0x6cbf6a : 0x8bd07a, 0.85), Math.cos(a) * d, s + 6, Math.sin(a) * d); }
-      const wheel = new THREE.Mesh(new THREE.TorusGeometry(60, 3, 10, 48), k.plain(0xff9ebb, 0.5)); wheel.position.set(-260, 80, -280); wheel.rotation.y = 0.6; k.root.add(wheel); /* 遠遠的摩天輪 */
-      zArches(k, [0.4, 1.2, 1.95, 2.75, 3.55, 4.3, 5.1, 5.9], 197, 0xff9ebb, 0xffd23f); k.clouds(0xffffff); },
-  };
   // 第 148 版（Yen「做一版青翠森林的漆彈地形，也放在對戰模式」）：青翠森林。漆貓自己的風格（不照抄別的遊戲）：
   // 鮮綠起伏的草丘、圓胖低多邊形大樹、松樹、石頭、蘑菇、樹樁和圓木斜坡。可以塗的地面是淡淡的嫩草色和沙土小路，
   // 兩隊墨水（連萊姆綠隊）在上面都看得清楚；殭屍的墨水在森林固定用紫色（08_game.js）。
@@ -21837,7 +21770,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     look: { ...zLook, ...foLook }, rough: MAPS.forest.rough, ground: foGround, fence: MAPS.forest.fence,
     make: { ...zMake, ...foMake }, outside: (k) => foOutside(k, 183),
   };
-  world.ZMAPS = ['zfort', 'zstreet', 'zrelay', 'zparade', 'zforest'];
+  world.ZMAPS = ['zfort', 'zstreet', 'zforest']; /* 小威 11-24：拿掉燈塔接力（zrelay）、花車遊行（zparade） */
 
   world.MAPS = MAPS;
   world.MAP_KEYS = ['park', 'candy', 'ship', 'fair', 'skate', 'round', 'forest', 'hall'];
@@ -25063,7 +24996,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   N.setVc = (on, zb) => { if (!N.isHost) return; N.vc = !!on; N.zb = !!on && !!zb; send(hostPatch()); sig = ''; };
   N.setRule = (rule) => { if (!N.isHost) return; N.rule = ruleOk(rule); send(hostPatch()); sig = ''; };
   const okMap = (v) => v === 'random' || (SC.world.MAPS && !!SC.world.MAPS[v]);
-  const okZmap = (v) => v === 'zrand' || (SC.world.ZMAPS || ['zfort']).includes(v); N.zmap = 'zfort'; /* 第 125 版：殭屍地圖（房主選；zrand 開打時抽） */
+  const okZmap = (v) => v === 'zrand' || v === 'zend' /* 小威 11-24：♾️ 無盡挑戰（隨機地圖＋打倒魔王後繼續） */ || (SC.world.ZMAPS || ['zfort']).includes(v); N.zmap = 'zfort'; /* 第 125 版：殭屍地圖（房主選；zrand 開打時抽） */
   N.setZmap = (v) => { if (!N.isHost || !okZmap(v)) return; N.zmap = v; send(hostPatch()); sig = ''; };
   N.setMap = (v) => { if (!N.isHost || !okMap(v)) return; N.map = v; send(hostPatch()); sig = ''; }; // 房主選場地（Yen 2026-11-17）
   N.setTri = (on) => { if (!N.isHost) return; N.tri = !!on; send(hostPatch()); sig = ''; }; // 3 人時：三方對戰或 2 對 1
@@ -25082,7 +25015,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const sdOf = (pl) => pl.map((e) => { const r = N.list.find((x) => x.peer === e[0]); return r && typeof r.q.sd === 'string' ? r.q.sd.slice(0, 16) : ''; });
   N.start = (dif = N.dif) => {
     if (!room || !N.isHost || N.list.length < N.minStart() || N.live) return;
-    if (N.zbOn()) { const L = N.list.slice(0, 6), pl = L.map((r, i) => [r.peer, 0, i]); return send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: 'zombie', map: N.zmap === 'zrand' || !okZmap(N.zmap) ? (SC.world.ZMAPS || ['zfort'])[(Math.random() * (SC.world.ZMAPS || ['zfort']).length) | 0] : N.zmap, n: 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L.map((r) => ({ peer: r.peer, team: 0 })), 2), vc: Math.max(0, 6 - pl.length) /* 第 178 版（Yen「玩家人數變六個」）：殭屍保衛戰一隊 6 隻貓，不夠的電腦補 */, df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } }); } // 殭屍保衛戰：真人都在第 1 隊，電腦隊友補到 4 隻
+    if (N.zbOn()) { const L = N.list.slice(0, 6), pl = L.map((r, i) => [r.peer, 0, i]); return send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: 'zombie', ze: N.zmap === 'zend' ? 1 : 0, map: N.zmap === 'zrand' || N.zmap === 'zend' || !okZmap(N.zmap) ? (SC.world.ZMAPS || ['zfort'])[(Math.random() * (SC.world.ZMAPS || ['zfort']).length) | 0] : N.zmap, n: 2, pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L.map((r) => ({ peer: r.peer, team: 0 })), 2), vc: Math.max(0, 6 - pl.length) /* 第 178 版（Yen「玩家人數變六個」）：殭屍保衛戰一隊 6 隻貓，不夠的電腦補 */, df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } }); } // 殭屍保衛戰：真人都在第 1 隊，電腦隊友補到 4 隻
     const tri = N.triOn(), L = N.lineup(N.mix === 'rand'), seat = [0, 0, 0, 0, 0, 0], pl = L.map((w) => [w.peer, w.team, seat[w.team]++]);
     send({ ...hostPatch(), h: { id: Math.random().toString(36).slice(2, 10), st: 'play', rule: N.ranked ? 'mix' : N.rule, map: !N.ranked && N.rule === 'conquest' ? SC.cq.mapKey(N.cmap) : tri ? 'round' + N.nTeams() : SC.world.mapKey(N.map), n: N.nTeams(), pal: (Math.random() * SC.PALETTES.length) | 0, fp: Math.random() < 0.5 ? 1 : 0, pl, kd: N.teamKinds(L, N.nTeams()), vc: N.vc ? pl.length : 0, df: SC.DIFFICULTY[dif] ? dif : 'normal', sd: sdOf(pl), ...inkOf(pl) } });
   };
@@ -28677,6 +28610,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     { k: 'mama', hp: 2200, sp: 4.2, chew: 12, bite: 30, s: 2.7, body: 0xf3b0c8, belly: 0xffe6ef, cap: 200, wide: 1.25, elite: 1 }, /* 第 140 版（Yen 03:50「除了大胃王精英怪 增加3個」）：鼠媽媽：推著嬰兒車，每 7 秒生出三隻小殭屍 */
     { k: 'armor', hp: 1900, sp: 3.6, chew: 14, bite: 34, s: 2.8, body: 0x9aa6b8, belly: 0xe3e8f0, cap: 200, wide: 1.2, elite: 1 }, /* 鐵甲大鼠：前面一大片鐵板，從正面打只剩 3 成，要繞到旁邊後面打，或丟墨水彈 */
     { k: 'mag', hp: 1800, sp: 4.2, chew: 10, bite: 26, s: 2.7, body: 0x5b78ff, belly: 0xe2e8ff, cap: 200, wide: 1.1, elite: 1 }, /* 第 175 版（Yen「加油鼠換掉」）：磁鐵鼠：雙手高舉超大紅色 U 型磁鐵；看到貓就停下來充電 1.6 秒（地上藍圈一圈圈往內縮），然後把 28 以內的貓全部吸到身邊 */
+    { k: 'bfm', hp: 1100, sp: 5.6, chew: 8, bite: 22, s: 3.0, body: 0xb8e6a6, belly: 0xeef8e4, cap: 260, wide: 1.25 }, /* 小威 11-24（「Buff：打掉一隻跟大胃王一樣大隻的怪才會給」）：buff 大鼠，頭上頂著道具圖示；誰打最多誰拿（單人） */
   ];
   TY.forEach((t) => { if (t.sp2) t.spk = 1; }); // spk：特殊殭屍（有出場事件、打爆時有專屬演出）
   const SPKS = ['boom', 'jelly', 'tongue', 'charge', 'lid', 'spit', 'inky', 'heal', 'pogo'];
@@ -28762,19 +28696,69 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 第 148.1 版：十分鐘的場：前五分鐘照原本的事件；中間再來一輪（時間 +270 秒、數量 ×1.3）；最後大進攻在結束前 28 秒、魔王時間到才出場 */
   /* 第 178 版（Yen「中間要有兩三波小休息空檔」）：一場中間三段小休息（約 29%、55%、80% 的時間，10/10/8 秒）：不出新的殭屍、沒有事件、小鼠群和空降也等休息完；
      後面的事件整段往後擠（壓縮到結束前 4 秒以內），所以魔王時間不變。每台都照 LEN 算出一樣的休息時間。 */
-  const REST = [[0.29, 10], [0.55, 10], [0.8, 8]]; let RESTS = [];
-  const restOf = (now) => RESTS.find((r) => now >= r[0] && now < r[1]);
-  function restMap(ev) { RESTS = REST.map(([f, l]) => [Math.round(LEN * f), Math.round(LEN * f) + l]); const END = LEN - 4; return ev.map((e) => { if (e.t >= LEN) return e; let t = e.t; for (const [a, b] of RESTS) if (t >= a) t = b + (t - a) * (END - b) / (END - a); return t === e.t ? e : { ...e, t: Math.round(t * 10) / 10 }; }).sort((a, b) => a.t - b.t); }
-  function evBuild() { return restMap(evBuild0()); }
-  function evBuild0() { const ev = difEv(); if (LEN === LEN0) return ev; const base = ev.filter((e) => e.k !== 'final' && e.k !== 'tank'), fin = ev.find((e) => e.k === 'final'), out = [...base]; for (const e of base) if (e.t + 270 < LEN - 30) out.push({ ...e, t: e.t + 270, n: Math.round(e.n * (e.n > 2 ? 1.3 : 1)) }); out.push({ ...fin, t: LEN - 28 }, { t: LEN, k: 'tank', n: 1, holes: 1 }); return out.sort((a, b) => a.t - b.t); } /* 第 142 版（v140.3 試玩報告 Z1）：事件照時間排好（第 140 版插在中間的精英怪讓 130～222 秒的事件全擠到 236 秒） */
+  let RESTS = []; Z.RESTS = RESTS;
+  /* 小威 11-24（「可以多來幾個回合，幾分鐘內有幾個回合，中間有休息時間。休息時間可以在中間的電腦購買東西」）：回合制。
+     出怪表照原本的 5 分鐘（Z.C 秒的戰鬥時間）切成 5 回合，回合中間各休息 20 秒（4 次，一場多 80 秒）：休息時不出新殭屍、小殭屍躲回洞裡、大家補滿血和墨水、
+     每個人選一張免費升級、走到阿肥旁邊的電腦買東西（08z_zshop.js）。後面的事件整段往後移 20 秒，所以每回合打的內容跟原本一樣。十分鐘的場切成 7 回合。 */
+  const RND = { rest: 20, n: 4, nLong: 6 }, RESTN = () => (Z.C >= 500 ? RND.nLong : RND.n);
+  const restOf = (now) => RESTS.find((r) => now >= r[0] && now < r[1]) || endRest(now);
+  function restMap(ev) { const C = Z.C, n = RESTN(), R = RND.rest, cut = []; for (let i = 1; i <= n; i++) cut.push(Math.round(C * i / (n + 1))); RESTS = cut.map((c, i) => [c + i * R, c + (i + 1) * R]); Z.RESTS = RESTS; Z.cut = cut;
+    const mv = (t) => (t >= C ? LEN : t + R * cut.filter((c) => t >= c).length); return ev.map((e) => { const t = mv(e.t); return t === e.t ? e : { ...e, t: Math.round(t * 10) / 10 }; }).sort((a, b) => a.t - b.t); }
+  /* 第幾回合：{ i 第幾回合（休息時是剛打完的那回合）, n 一共幾回合, rest 是不是休息, left 這段還剩幾秒, end 無盡回合 } */
+  Z.round = (now) => { const n = RESTS.length + 1; if (Z.endless && now >= Z.endless.t0) { const k = Z.endRound(now), r = endRest(now); return { i: n + k, n, rest: !!r, left: r ? r[1] - now : Z.endless.t0 + k * ECY - now, end: k }; }
+    let i = 1; for (const [a, b] of RESTS) { if (now >= b) i++; else if (now >= a) return { i, n, rest: true, left: b - now }; else return { i, n, rest: false, left: a - now }; } return { i: n, n, rest: false, left: LEN - now, boss: now >= LEN }; };
+  function evBuild() { return restMap(zMods(evBuild0())); }
+  function evBuild0() { const ev = difEv(); if (Z.C === LEN0) return ev; const base = ev.filter((e) => e.k !== 'final' && e.k !== 'tank'), fin = ev.find((e) => e.k === 'final'), out = [...base]; for (const e of base) if (e.t + 270 < Z.C - 30) out.push({ ...e, t: e.t + 270, n: Math.round(e.n * (e.n > 2 ? 1.3 : 1)) }); out.push({ ...fin, t: Z.C - 28 }, { t: Z.C, k: 'tank', n: 1, holes: 1 }); return out.sort((a, b) => a.t - b.t); } /* 第 142 版（v140.3 試玩報告 Z1）：事件照時間排好（第 140 版插在中間的精英怪讓 130～222 秒的事件全擠到 236 秒） */
   const SPEC = [['boom', 40, 3], ['jelly', 55, 2], ['tongue', 70, 2], ['inky', 85, 2], ['charge', 100, 2], ['pogo', 115, 3], ['lid', 130, 2], ['spit', 145, 3], ['heal', 160, 1]]; /* 第 123 版：[種類, 幾秒後開始出現, 同時最多幾隻（×人數）] */
   const WARN = 5;
   const EV_NAME = { horde: '殭屍潮來了！', balloon: '氣球殭屍從天上來！', big: '大胃王來了！', mama: '鼠媽媽來了！會一直生小殭屍！', armor: '鐵甲大鼠來了！從旁邊打！', mag: '磁鐵鼠來了！小心被吸過去！', mamaKo: '打倒鼠媽媽了！', armorKo: '打倒鐵甲大鼠了！', magKo: '打倒磁鐵鼠了！', dig: '殭屍從地底下鑽出來！', final: '最後大潮！撐住！', boom: '炸彈鼠來了！', tongue: '舌頭鼠來了！', charge: '衝撞鼠來了！', spit: '吐毒鼠來了！', lid: '鍋蓋鼠來了！', jelly: '果凍鼠來了！', king: '起司寶寶大王來了！', tank: '最後魔王來了！打倒它才算贏！', swarm: '小果凍鼠群衝過來了！', inky: '噴墨鼠來了！', heal: '澆水鼠來了！先打它！', pogo: '彈簧鼠跳過來了！' };
   Z.EVENTS = EVENTS; Z.duckD = 22 * S;
+  /* 小威 11-24（「我想要讓每一個玩的人都上癮 會想要一直接著打」）：每場都不一樣。中間幾回合各抽一個「回合特色」，原本起司寶寶大王那一波改成「魔王拉霸」抽出來的魔王。
+     同一場每台用房間的這場編號當種子，抽到的都一樣（事件表每台自己算）。 */
+  const MODS = [
+    { k: 'balloon', ic: '🎈', name: '氣球之夜', ev: [{ f: 0.15, k: 'balloon', n: 8 }, { f: 0.55, k: 'balloon', n: 8 }] },
+    { k: 'run', ic: '💨', name: '跑跑鼠暴走', run: 0.75, ev: [{ f: 0.3, k: 'horde', n: 14, holes: 4, run: 0.9 }] },
+    { k: 'dig', ic: '🕳️', name: '地底突襲', ev: [{ f: 0.2, k: 'dig', n: 7 }, { f: 0.6, k: 'dig', n: 7 }] },
+    { k: 'jelly', ic: '🍮', name: '果凍大爆發', spec: 'jelly', ev: [{ f: 0.35, k: 'swarm', n: 16, holes: 2 }] },
+    { k: 'boom', ic: '💣', name: '炸彈鼠派對', spec: 'boom' },
+    { k: 'fat', ic: '🐘', name: '胖胖鼠大遊行', fat: 0.35 },
+  ];
+  const SLOT = [
+    { k: 'king', ic: '👑', name: '起司寶寶大王', ev: [{ k: 'king', n: 1, holes: 1 }] },
+    { k: 'big2', ic: '🍔', name: '雙胃王', ev: [{ k: 'big', n: 2 }] },
+    { k: 'eli2', ic: '🧲', name: '鼠媽媽＋磁鐵鼠', ev: [{ k: 'mama', n: 1 }, { k: 'mag', n: 1, dt: 6 }] },
+    { k: 'iron2', ic: '🛡️', name: '雙鐵甲大鼠', ev: [{ k: 'armor', n: 2 }] },
+  ];
+  Z.MODS = MODS; Z.SLOT = SLOT; Z.mods = [null]; Z.slot = null; let zr = Math.random;
+  function zSeed() { const g = G(), id = String((g && g.opts && g.opts.net && g.opts.net.id) || Math.random()); let s = 2166136261; for (let i = 0; i < id.length; i++) s = Math.imul(s ^ id.charCodeAt(i), 16777619) >>> 0; zr = () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
+  function zMods(ev) {
+    const n = RESTN(), C = Z.C, cut = [0]; for (let i = 1; i <= n; i++) cut.push(Math.round(C * i / (n + 1))); cut.push(C); Z.mods = [null]; const pool = MODS.slice();
+    for (let r = 1; r <= n + 1; r++) { if (r === 1 || r === n + 1 || !pool.length) { Z.mods.push(null); continue; } const m = pool.splice((zr() * pool.length) | 0, 1)[0], a = cut[r - 1], b = cut[r]; Z.mods.push(m); (m.ev || []).forEach((e) => { const q = { ...e, t: Math.round(a + (b - a) * e.f), mod: m.k }; delete q.f; ev.push(q); }); }
+    const ki = ev.findIndex((e) => e.k === 'king'); Z.slot = null; if (ki >= 0) { const sl = SLOT[(zr() * SLOT.length) | 0], t = ev[ki].t; Z.slot = sl; ev.splice(ki, 1); sl.ev.forEach((e, j) => { const q = { ...e, t: t + (e.dt || 0), slot: j === 0 ? 1 : 0 }; delete q.dt; ev.push(q); }); }
+    return ev.sort((a, b) => a.t - b.t);
+  }
+  const modNow = (now) => { const R = Z.round(now); return R && !R.rest && !R.end && Z.mods ? Z.mods[R.i] || null : null; };
+  /* 小威 11-24：無盡回合（房主選「♾️ 無盡挑戰」）：打倒最後魔王以後不結束，休息 15 秒＋打 50 秒一輪一輪下去，越來越多、越來越硬，防護罩破了才結束，記最高第幾回合。 */
+  const EL = { rest: 15, fight: 50 }, ECY = EL.rest + EL.fight; let endEv = [];
+  const endOn = () => { const g = G(), h = g && g.opts && g.opts.net && g.opts.net.h; return !!(h && h.ze) || !!Z.endTest; };
+  function endRest(now) { const E = Z.endless; if (!E || now < E.t0) return null; const o = now - E.t0, k = Math.floor(o / ECY), s0 = E.t0 + k * ECY; return o - k * ECY < EL.rest ? [s0, s0 + EL.rest] : null; }
+  Z.endRound = (now) => (Z.endless ? Math.max(1, Math.floor((now - Z.endless.t0) / ECY) + 1) : 0);
+  function endlessStart(now) { Z.tankWon = 1; Z.tankFrac = SC.clamp(Z.shield / SHIELD, 0, 1); Z.endless = { t0: now }; endEv = []; }
+  function endlessSim(now) {
+    const E = Z.endless, k = Z.endRound(now), c = now - E.t0 - (k - 1) * ECY - EL.rest; Z.hpK = 1 + 0.12 * k; if (c < 0) return;
+    const go = (tag, ev) => { if (endEv.includes(tag)) return; endEv.push(tag); Z.evHoles = pickHoles(ev); fire(ev); };
+    if (c >= 1) go(k + 'h', { k: 'horde', n: 14 + 3 * k, holes: 4, run: 0.3 + Math.min(0.3, k * 0.03) });
+    if (c >= 18) go(k + 'e', { k: ['big', 'mama', 'armor', 'mag'][k % 4], n: 1 + (k >= 6 ? 1 : 0) });
+    if (c >= 28 && k % 3 === 0) go(k + 'b', { k: 'king', n: 1, holes: 1 });
+    if (c >= 36) go(k + 's', { k: 'swarm', n: 12 + 2 * k, holes: 2 });
+  }
+  /* 休息一開始（裁判）：小殭屍都躲回洞裡（不算打倒、不給代幣）；精英、魔王留著 */
+  function restSim(now) { const r = restOf(now); if (!r || Z.restSim === r[0]) return; Z.restSim = r[0]; Z.burstQ = [];
+    for (const q of Z.list) { if (q.st === 'dead') continue; const t = TY[q.ty]; if (t.boss || t.giant || ELITE.includes(t.k) || t.k === 'king' || t.k === 'drill') continue; if (q.m && q.st !== 'under') ctx.burst(q.x, q.y + 2, q.z, new THREE.Color(0xd8d0e8), 10, 12, 0.5); sawDead(q); if (Z.gone) Z.gone.set(q.id, G().time); q.st = 'dead'; q.dieT = 0; q.hp = 0; q.retreat = 1; if (q.tg) q.tg.alive = false; } }
 
   // 第 114 版（Yen 22:50「偶爾掉一些不同樣的一次性神兵，可以一次大清掃」）：城裡偶爾冒出發光的神兵，碰到就用掉（一次性）
   // 0 彩虹大浪：從小鴨往外一圈彩虹浪，打爆附近的殭屍；1 巨大貓掌：天上掉下一隻大貓掌，拍扁殭屍最多的那一堆；2 泡泡飛飛：每隻殭屍被泡泡包起來飛上天破掉；3 冰淇淋凍凍：全部殭屍凍住 6 秒（打它傷害 ×1.5）
-  const POW = { first: 25, gap: 50, gapR: 20, /* 第 176 版（Yen 21:06「出現頻率提高」）：25 秒第一個，之後每 50～70 秒 */ /* 第 175 版（Yen 20:44「神兵好像沒看到有出現」）：40 秒第一個，之後每 85～110 秒 */ life: 30, max: 16, /* 第 196 版：道具變多，上限 10→16 */ /* 第 182 版：暫時道具也用光柱，上限 6→10 */ batch: 1, gearP: 0, gearDrop: 0, goldP: 0.003, /* 第 138 版（Yen 03:29「神兵很偶爾才會出現」）：第一個 80 秒才掉，之後每 140～170 秒掉一個（一場大約 2～3 個），金殭屍更少 */ /* 第 137 版（Yen 03:17「炮台移除 炮台齒輪移除 道具出現頻率降低」）：每 60～75 秒掉一次、金殭屍少一點、不掉齒輪 */ /* 第 128 版（Yen「神器掉太多了 炮台碎片也掉太多」）：每 40～50 秒掉 2 個、齒輪少一半以上 */ cpuWait: 12, R: 3.2, rain: 110, rainDmg: 450, pawR: 22, pawT: 0.6, bub: 1.6, ice: 6, iceBoss: 3, bossDmg: 260 };
+  const POW = { first: 20, gap: 40, gapR: 20, /* 小威 11-24（「神兵出得有點太多」「神兵：散落到各處」）：20 秒第一個，之後每 40～60 秒（大約每回合 1～2 個），地上最多 3 個；休息時不掉，殭屍身上也不再掉 */ /* 第 176 版（Yen 21:06「出現頻率提高」）：25 秒第一個，之後每 50～70 秒 */ /* 第 175 版（Yen 20:44「神兵好像沒看到有出現」）：40 秒第一個，之後每 85～110 秒 */ life: 30, max: 3, /* 第 196 版：道具變多，上限 10→16 */ /* 第 182 版：暫時道具也用光柱，上限 6→10 */ batch: 1, gearP: 0, gearDrop: 0, goldP: 0.003, /* 第 138 版（Yen 03:29「神兵很偶爾才會出現」）：第一個 80 秒才掉，之後每 140～170 秒掉一個（一場大約 2～3 個），金殭屍更少 */ /* 第 137 版（Yen 03:17「炮台移除 炮台齒輪移除 道具出現頻率降低」）：每 60～75 秒掉一次、金殭屍少一點、不掉齒輪 */ /* 第 128 版（Yen「神器掉太多了 炮台碎片也掉太多」）：每 40～50 秒掉 2 個、齒輪少一半以上 */ cpuWait: 12, R: 3.2, rain: 110, rainDmg: 450, pawR: 22, pawT: 0.6, bub: 1.6, ice: 6, iceBoss: 3, bossDmg: 260 };
   const POW_COL = [0xff5fa2, 0x5ab4ff, 0xff7a2a, 0xffd23f, 0xffd23f, 0xff8ab0, 0xff8ad8, 0xffa0b4, 0xc0c8d8]; /* 8 齒輪 */ /* 第 123 版：0 雙管大砲 1 機關槍 2 火箭砲 3 橡皮鴨 4 機甲 5 拖鞋 6 毛線球 7 肉球大槌 */ /* 第 122 版：5 雷雷鈴鐺 6 毛線球漩渦 7 肉球大槌 */ /* 第 116 版（Yen）：神兵改成撿起來拿在手上用（07z_zombie_hero.js）：0 喵喵集氣波 1 彩虹雷射 2 辣椒噴火槍 3 冰冰槍 4 墨水機甲 */
   let turT = [0, 0, 0, 0], altT = 0, altSeen = 0; Z.tur = [0, 0, 0, 0]; Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 };
   let powId = 1, powT = 0, itmT = 0; Z.pows = []; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; let pwSeen = 0, pawAt = 0;
@@ -29030,10 +29014,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function make(ty, x, z, o = {}) {
     const t = TY[ty], id = o.id || nextId++ * 8 + idTag(), zk = sizeK(t, id), hp = Math.round(t.hp * dif.hp * Math.pow(zk, 1.5) * (t.boss || t.cap ? 1 : dynHp() * VOL.hp));
     const q = { k: zk, gold: !SIZE_NO.includes(t.k) && Math.abs(Math.sin(id * 78.233) * 12543.17) % 1 < POW.goldP, id, ty, x, z, y: o.y != null ? o.y : H(x, z), hp: o.hp != null ? o.hp : hp, max: hp, br: o.br != null ? o.br : 0, ph: o.ph || 0, st: o.st || 'walk', t: 0, yaw: Math.atan2(-x, -z), vx: 0, vz: 0, side: Math.random() < 0.5 ? -1 : 1, sideT: 0, gooT: Math.random() * 0.4, bite: new Map(), stompN: o.stompN || 0, warn: 0, stompT: 4 + Math.random() * 2, flash: 0, chewT: 0, und: o.und || 0, hop: o.hop || 0, nx: x, nz: z, ny: null, wave: Math.random() * 6, pred: null, predAt: 0, dieT: 0, act: o.act || 0, actT: 0, cd: 1.5 + Math.random() * 2, ax: o.ax || 0, az: o.az || 0, n: o.n || 0, nSeen: o.n || 0, hc: null, heldAt: 0 };
+    if (Z.hpK > 1 && o.hp == null && auth() && !t.boss) q.hp = q.max = Math.round(q.max * Z.hpK); /* 小威 11-24：無盡回合越來越硬（每回合 +12%） */
     q.hunt = auth() && HUNT.k.includes(t.k) && Math.random() < HUNT.p; q.huntCd = 2 + Math.random() * 3; /* 第 116 版（Yen）：有些殭屍會追咬貓（大部分還是去咬小鴨） */
     q.m = makeMesh(q); Z.list.push(q); bindTarget(q); return q;
   }
-  const SIZE_NO = ['big', 'mama', 'armor', 'mag', 'king', 'tank', 'balloon', 'mini'];
+  const SIZE_NO = ['big', 'mama', 'armor', 'mag', 'king', 'tank', 'balloon', 'mini', 'bfm'];
   function sizeK(t, id) { if (SIZE_NO.includes(t.k)) return 1; const h = Math.abs(Math.sin(id * 12.9898) * 43758.5453) % 1; return +(0.65 + h * h * 1.25).toFixed(2); } /* 第 123 版（Yen「每隻殭屍大小變化要差異更大」）：0.65～1.9 倍，大部分小一點、偶爾超大隻；越大血越多、走越慢、咬越大口（用編號算，每台都一樣不用傳） */
   const HUNT = { k: ['walk', 'run', 'fat', 'dig', 'lid', 'mini', 'jelly', 'pogo', 'inky', 'big'], p: 0.55, R: 32, keep: 40, T: 8, cd: 3, sp: 1.25 }; /* 第 123 版（Yen「所有殭屍都要更有主動性的攻擊玩家」）：一半以上會追貓，追完 3 秒又會再追；另一半還是直直去咬小鴨 */
   const nearGate = (a) => { if (MP.gates) { let b = 0, bd = 9; MP.gates.forEach((q, i) => { const d = Math.abs(SC.angDiff(a, q.a)); if (d < bd) { bd = d; b = i; } }); return b; } const k = Math.round(a / Q); return ((k % 4) + 4) % 4; };
@@ -29093,9 +29078,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // ---------- 開始、結束 ----------
   Z.start = (c) => {
-    ctx = c; scene = c.scene; inkTip = 0; MP = { ...ZDEF, ...((SC.world.MAPS[SC.world.key] || {}).zb || {}) }; LEN = MP.len || LEN0; Z.LEN = LEN; dif = DIF[c.dif] || DIF.normal; EVENTS = evBuild(); Z.restSaid = Z.restEnd = null; Z.eliK = Z.bossK = 0; (G().actors || []).forEach((a) => { a.zbM = a.zbE = a.zbB = 0; }); TUR_P = MP.tur || TUR_D; escKey = ''; Z.hT = null; escUp(); Z.on = true; Z.stop(true); Z.on = true; skyT = 45; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.dir = { seq: 0, k: 0, x: 0, z: 0 }; dirT = dirMoveT = dirLv = dirK0 = dirN0 = dirD0 = dirSp = 0; dirNear = 1e9; dirQ = []; dirDebt = 0; Z.dirLv = 0; Z.bossS0 = 0; EXP.key = ''; EXP.on = 0; EXP.bias = EXP.heal = 0; Z.aiK = 1; aiKT = 0; aiKH = aiKC = -1; for (const a of (G().actors || [])) a.zbK0 = a.zbTier = null; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.brUp = 0; Z.brCd = 0; Z.bar = (MP.bars || []).map(() => 1); Z.barFix = 0; Z.cp = { i: -1, p: 0, done: 0, fail: 0, block: 0 }; cpSeen = { i: -1, done: 0, fail: 0 }; Z.calm = [0, 0]; Z.calmSaid = -1; brSeen = 0; signsFx(true); Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; itmT = SC.zbItem ? SC.zbItem.D.first : 1e9; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; a.gearC = 0; if (a.gearSp) a.gearSp.visible = false; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
+    ctx = c; scene = c.scene; inkTip = 0; MP = { ...ZDEF, ...((SC.world.MAPS[SC.world.key] || {}).zb || {}) }; Z.C = MP.len || LEN0; LEN = Z.C + RESTN() * RND.rest; Z.LEN = LEN; dif = DIF[c.dif] || DIF.normal; Z.dk = c.dif || 'normal'; zSeed(); EVENTS = evBuild(); Z.restSaid = Z.restEnd = null; Z.eliK = Z.bossK = 0; (G().actors || []).forEach((a) => { a.zbM = a.zbE = a.zbB = 0; }); TUR_P = MP.tur || TUR_D; escKey = ''; Z.hT = null; escUp(); Z.on = true; Z.stop(true); Z.on = true; skyT = 45; nextId = 1; Z.gone = new Map(); myDead.clear(); Z.netT = -1e9; spawnT = 3; Z.shield = SHIELD; Z.ev = -1; Z.evPh = 0; Z.end = 0; Z.dyn = 1; dynT = 0; Z.dir = { seq: 0, k: 0, x: 0, z: 0 }; dirT = dirMoveT = dirLv = dirK0 = dirN0 = dirD0 = dirSp = 0; dirNear = 1e9; dirQ = []; dirDebt = 0; Z.dirLv = 0; Z.bossS0 = 0; EXP.key = ''; EXP.on = 0; EXP.bias = EXP.heal = 0; Z.aiK = 1; aiKT = 0; aiKH = aiKC = -1; for (const a of (G().actors || [])) a.zbK0 = a.zbTier = null; Z.tur = [0, 0, 0, 0]; turT = [0, 0, 0, 0]; Z.brUp = 0; Z.brCd = 0; Z.bar = (MP.bars || []).map(() => 1); Z.barFix = 0; Z.cp = { i: -1, p: 0, done: 0, fail: 0, block: 0 }; cpSeen = { i: -1, done: 0, fail: 0 }; Z.calm = [0, 0]; Z.calmSaid = -1; brSeen = 0; signsFx(true); Z.alt = { seq: 0, x: 0, z: 0, p: 0, k: 0, life: 0 }; Z.altDone = { seq: 0, k: 0 }; altT = ALT.first; altSeen = 0; gearTip = 0; altTip = 0; Z.pops = 0; Z.killed = 0; Z.result = null; Z.puds = []; pudId = 1; Z.pows = []; powId = 1; powT = POW.first; itmT = SC.zbItem ? SC.zbItem.D.first : 1e9; Z.pw = { seq: 0, k: 0, x: 0, z: 0 }; pwSeen = 0; pawAt = 0; (G().actors || []).forEach((a) => { a.zbHold = null; a.gearC = 0; if (a.gearSp) a.gearSp.visible = false; }); endT = 0; endFx = null; authWas = auth(); seenAt = 0; Z.netEnd = 0;
     dif = DIF[c.dif] || DIF.normal;
     if (!duck) { duck = SC.duck.make({ dog: 1 }); duck.g.scale.setScalar(1); } /* 第 207 版：保衛忠犬阿肥（07b2_duck.js 的 dog 造型） */
+    Z.EVENTS = EVENTS; Z.turLv = 0; Z.endless = null; Z.tankWon = 0; Z.tankFrac = 0; Z.hpK = 1; Z.restSim = null; endEv = []; if (SC.zbShop) SC.zbShop.start(); /* 小威 11-24：回合、商店、無盡回合 */
     scene.add(duck.g); duck.g.position.set(DX, PED - COURT + CY, DZ); duck.g.rotation.set(0, 0, 0); duck.g.scale.setScalar(S); duck.fortSet((DOME_Y + (COURT - PED)) / S, DOME_S, c.colors[1]); // 小鴨和罩子一起放大 duck.g.visible = true;
     if (!holeFx.length) for (let i = 0; i < 12; i++) { // 事件前老鼠洞上的光柱
       const g = new THREE.Group(), a = holeAng(i), m = new THREE.Mesh(new THREE.CylinderGeometry(5, 6.5, 60, 20, 1, true), new THREE.MeshBasicMaterial({ color: 0xb6ff6a, transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
@@ -29109,6 +29095,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     swClear();
     rain.forEach((q) => { if (q.ring) { scene && scene.remove(q.ring); scene && scene.remove(q.d); } }); rain = []; waves.forEach((q) => { if (q.m) scene && scene.remove(q.m); }); waves = []; if (brObj) { brObj.forEach((o) => scene && scene.remove(o)); brObj = null; } if (barObj) { barObj.forEach((o) => scene && scene.remove(o.g)); barObj = null; } if (cpObj) { cpObj.forEach((o) => scene && scene.remove(o.g)); cpObj = null; } signsFx(true); bossEdge(0); if (turObj) { turObj.forEach((o) => { scene && scene.remove(o.g, o.ln); }); turObj = null; } if (altObj) { scene && scene.remove(altObj.grp); altObj = null; } spots.forEach((q) => scene && scene.remove(q.cone, q.pool)); spots.length = 0; if (spotEl) spotEl.classList.remove('on');
     Z.list.forEach((q) => { freeTarget(q); dropMesh(q); }); Z.list.length = 0; if (alarmEl) alarmEl.classList.remove('on'); if (alarm3) { alarm3.ring.visible = alarm3.bang.visible = false; } Z.puds = []; for (const [, o] of pudObj) scene && scene.remove(o); pudObj.clear(); Z.pows = []; for (const [, o] of powObj) scene && scene.remove(o); powObj.clear(); if (SC.zbHero) SC.zbHero.reset(); if (pawFx) { scene && scene.remove(pawFx.g); pawFx = null; } fxHide(); if (helpEl) helpEl.classList.remove('on'); if (guideEl) guideEl.classList.remove('on'); guideGoal = null; marks.forEach((m) => scene && scene.remove(m.o)); marks.length = 0; ghosts.forEach((q) => scene && scene.remove(q.g)); ghosts.length = 0;
+    if (!keep && SC.zbShop) SC.zbShop.stop(); /* 小威 11-24：收掉商店電腦和畫面 */
     if (!keep) { Z.on = false; if (floatObj) { scene && scene.remove(floatObj.g); floatObj = null; } if (duck && duck.g.parent) duck.g.parent.remove(duck.g); holeFx.forEach((g) => (g.visible = false)); hud(false); setCard(null); }
   };
   /* 第 135 版：花車遊行（護送）：小鴨坐在花車上，位置只看比賽時間（每台自己算，不用網路同步）；開車的時候殭屍出得少 */
@@ -29177,6 +29164,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (z.ox || z.oz) { const f = Math.exp(-5 * dt); z.ox *= f; z.oz *= f; if (Math.abs(z.ox) + Math.abs(z.oz) < 0.02) z.ox = z.oz = 0; }
   }
   function damage(z, amt, from) {
+    if (z.bf && from && z.st !== 'dead' && z.st !== 'under' && amt > 0) { const m = z.dmgBy || (z.dmgBy = new Map()); m.set(from, (m.get(from) || 0) + Math.min(amt, Math.max(0, z.hp))); } /* 小威 11-24：buff 大鼠記誰打最多（最後一擊只算剩下的血） */
     if (z.st === 'dead' || z.st === 'under') return; const t = TY[z.ty]; if (z.dz > 0) amt *= DIZZY.dmgK; if ((t.k === 'king' || t.k === 'tank') && z.act === 3) amt *= KING.weakK; z.hp -= amt; z.flash = 1;
     if (z.hp <= 0) { if (!z.predDead) pop(z, from, false); kill(z); if (t.k === 'boom' && !z.boomed) blastZombies(z, 120); if (t.k === 'jelly') splitJelly(z); return; }
     if (t.k === 'tongue' && z.act === 1 && from) { z.act = 0; z.cd = SPX.tongue.cd; z.dz = DIZZY.tongue; } // 第 112 版：準備吐舌頭時被打到——咬到自己的舌頭，頭暈
@@ -29187,7 +29175,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const live = Z.list.filter((q) => q.st !== 'dead').length; for (let i = 0; i < 4 && live + i < CAPZ + 2; i++) { const a = z.yaw + Math.PI + (i - 1.5) * 0.85, /* 第 129 版：分成四隻 */ q = make(TI.mini, z.x + Math.sin(a) * 2.2, z.z + Math.cos(a) * 2.2, { ph: z.ph, br: z.br }); q.hop = 0.6; q.vx = Math.sin(a) * 6; q.vz = Math.cos(a) * 6; }
   }
   function blastZombies(z, amt) { for (const q of Z.list) if (q !== z && q.st !== 'dead' && q.st !== 'under' && Math.hypot(q.x - z.x, q.z - z.z) < SPX.boom.blast) damage(q, Math.min(amt, TY[q.ty].cap || amt), null); } // 炸彈鼠的爆炸也會炸到旁邊的殭屍
-  function kill(z) { if (auth() && G().state === 'play' && !TY[z.ty].boss) { if (z.gold) dropAt(z.x, z.z, powK()); else if (Math.random() < POW.gearP) dropAt(z.x, z.z, GEAR); else if (SC.zbItem && Math.random() < SC.zbItem.D.killP) dropAt(z.x, z.z, SC.zbItem.rand()); /* 第 182 版：打倒殭屍偶爾掉暫時道具 */ if (z.bf && SC.zbItem && SC.zbItem.teamGive) SC.zbItem.teamGive(z.bf - 1, z.x, z.y, z.z); /* 小威 11-24：buff 怪打倒了，全隊上 buff */ } sawDead(z); Z.killed++; if (Z.gone) Z.gone.set(z.id, G().time); z.st = 'dead'; z.dieT = 0; z.hp = 0; if (z.tg) z.tg.alive = false; }
+  function bfWho(z) { let best = null, bd = 0; if (z.dmgBy) for (const [a, d] of z.dmgBy) if (a && !a.gone && a.team === 0 && d > bd) { bd = d; best = a; } return best; } /* 沒有貓打到（被機槍、爆炸打倒）就沒人拿 */
+  function kill(z) { if (auth() && G().state === 'play' && !TY[z.ty].boss) { if (Math.random() < POW.gearP) dropAt(z.x, z.z, GEAR); else if (SC.zbItem && Math.random() < SC.zbItem.D.killP) dropAt(z.x, z.z, SC.zbItem.rand()); /* 第 182 版：打倒殭屍偶爾掉暫時道具 */ if (z.bf && SC.zbItem && SC.zbItem.soloGive) SC.zbItem.soloGive(z.bf - 1, bfWho(z), z.x, z.y, z.z); /* 小威 11-24（「必須是單人吃才有，不要變成一個人吃全隊都加」）：打最多的那隻貓自己拿 */ } sawDead(z); Z.killed++; if (Z.gone) Z.gone.set(z.id, G().time); z.st = 'dead'; z.dieT = 0; z.hp = 0; if (z.tg) z.tg.alive = false; }
   function pop(z, from, pred) { // 打爆：「啵」一聲變成一團白煙和小星星，地上留下我方墨水
     const t = TY[z.ty], y = z.y + 2.4 * t.s, col = ctx.colors[0], near = ctx.near(z.x, z.y, z.z);
     ctx.burst(z.x, y, z.z, col, 18 + t.s * 8, 22, 0.6); ctx.burst(z.x, y, z.z, new THREE.Color(0xffffff), 12, 16, 0.5); ctx.ring(z.x, H(z.x, z.z) + 0.3, z.z, col, 3 + t.s * 2, 0.35);
@@ -29200,9 +29189,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (near > 0.05) { SC.audio.sfx.zpop && SC.audio.sfx.zpop(near, t.s); }
     { const eli = ELITE.includes(t.k), bos = !!(t.boss || t.k === 'king' || t.k === 'tank' || t.k === 'drill'); if ((eli || bos) && !z.cntd) { z.cntd = 1; if (eli) Z.eliK++; else Z.bossK++; if (from && from.team === 0) { if (eli) from.zbE = (from.zbE | 0) + 1; else from.zbB = (from.zbB | 0) + 1; } } } /* 第 191 版：結算要秀打倒幾隻精英、魔王 */
     if (from && !from.remote) { from.kos++; if (from.isPlayer) { Z.pops++; SC.ui.hitMarker(true); if (ELITE.includes(t.k)) { SC.ui.banner(EV_NAME[t.k + 'Ko'] || '打倒大胃王了！', 1.8); SC.audio.sfx.koGot(); } } }
+    if (from && !from.remote && from.team === 0 && SC.zbShop) SC.zbShop.kill(from, t, z); /* 小威 11-24（「打殭屍直接計數就好，不同的殭屍有不同的計法」）：打倒直接加代幣，不掉在地上 */
     if (t.fly && z.st === 'fly') ctx.burst(z.x, z.y + 7.5 * t.s, z.z, new THREE.Color(BCOL[z.id % BCOL.length]), 14, 18, 0.45);
   }
-  Z.netHit = (from, id, amt) => { if (id >= MA) { const v = id - MA; swArea0((v >> 20 & 1023) - 512, (v >> 10 & 1023) - 512, v & 1023, amt, from); return; } if (id >= MID) { swKillId(id - MID, from, amt); return; } if (!auth()) return; if (id <= -TUR_ID) { const k = -id - TUR_ID; if (k === BR.id) brPress(); else if (k >= 20 && k < 20 + (MP.bars ? MP.bars.length : 3)) barRepair(k - 20); /* 第 142 版：十字路口 12 道都修得到 */ else turOn(k); return; } if (id < 0) { const pk = Z.pows.find((q) => q.id === -id); if (pk) firePow(pk); return; } const z = Z.list.find((q) => q.id === id); if (!z) return; if (amt >= 2000) { skAct(z, from, amt >= 3000 ? 'pull' : 'rope'); amt %= 1000; } /* 第 163 版：2000＋＝捆綁繩、3000＋＝黏黏拉 */ if (amt >= 1000) { amt -= 1000; freezeZ(z); } if (from && !from.isPlayer) shove(z, from, 8); damage(z, SC.clamp(amt, 0, 999), from); }; /* 1000 以上＝冰冰槍：先凍住再扣血 */
+  Z.netHit = (from, id, amt) => { if (id >= MA) { const v = id - MA; swArea0((v >> 20 & 1023) - 512, (v >> 10 & 1023) - 512, v & 1023, amt, from); return; } if (id >= MID) { swKillId(id - MID, from, amt); return; } if (!auth()) return; if (id <= -TUR_ID) { const k = -id - TUR_ID; if (k === BR.id) brPress(); else if (k >= 20 && k < 20 + (MP.bars ? MP.bars.length : 3)) barRepair(k - 20); /* 第 142 版：十字路口 12 道都修得到 */ else if (k >= 40 && k < 60) shopTeam(k - 40); else turOn(k); return; } if (id < 0) { const pk = Z.pows.find((q) => q.id === -id); if (pk) firePow(pk); return; } const z = Z.list.find((q) => q.id === id); if (!z) return; if (amt >= 2000) { skAct(z, from, amt >= 3000 ? 'pull' : 'rope'); amt %= 1000; } /* 第 163 版：2000＋＝捆綁繩、3000＋＝黏黏拉 */ if (amt >= 1000) { amt -= 1000; freezeZ(z); } if (from && !from.isPlayer) shove(z, from, 8); damage(z, SC.clamp(amt, 0, 999), from); }; /* 1000 以上＝冰冰槍：先凍住再扣血 */
   /* 第 163 版（Yen 11-22 18:00）：武器技能（08z_zskill.js）。捆綁繩：綁在原地（頭暈）；黏黏拉：拉到放招的貓面前、再黏住。
      裁判那台直接改；別台送 'Z'（2000＋傷害＝綁、3000＝拉）。大隻、魔王只綁一下、拉不動。 */
   const ZSKB = { rope: 3.5, ropeBig: 1.2, pullD: 5.5, pullT: 0.45, glue: 1.6 };
@@ -29411,9 +29401,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function brReroute() { for (const z of Z.list) { if (z.st !== 'walk' || z.ph >= 2 || !MP.gates[z.br] || !MP.gates[z.br].up) continue; z.keepBr = 1; gateReset(z); } }
   function bridgeSim(dt) { if (!MP.btn) return; if (Z.brUp > 0) { Z.brUp -= dt; if (Z.brUp <= 0) { Z.brUp = 0; Z.brCd = BR.cd; brReroute(); } } else if (Z.brCd > 0) Z.brCd = Math.max(0, Z.brCd - dt); }
   function turretSim(dt) { /* 裁判：開著的機槍每 0.12 秒打最近的殭屍 */
-    bridgeSim(dt); cpSim(dt); for (let i = 0; i < 4; i++) { if (Z.tur[i] <= 0) continue; Z.tur[i] = Math.max(0, Z.tur[i] - dt); if ((turT[i] -= dt) > 0) continue; turT[i] = TUR.gap; const z = turTarget(i); if (z) damage(z, Math.min(TUR.dmg, TY[z.ty].cap || TUR.dmg), null); }
+    bridgeSim(dt); cpSim(dt); for (let i = 0; i < 4; i++) { if (Z.tur[i] <= 0) continue; Z.tur[i] = Math.max(0, Z.tur[i] - dt); if ((turT[i] -= dt) > 0) continue; turT[i] = TUR.gap; const z = turTarget(i); if (z) damage(z, turDmg(z), null); }
   }
-  function turTarget(i) { const [x, zz] = TUR_P[i]; let best = null, bd = TUR.R; for (const z of Z.list) { if (z.st !== 'walk' && z.st !== 'eat' && z.st !== 'fly' || z.predDead) continue; const d = Math.hypot(z.x - x, z.z - zz); if (d < bd) { bd = d; best = z; } } return best; }
+  function turTarget(i) { const [x, zz] = TUR_P[i]; let best = null, bd = 1e9; for (const z of Z.list) { if (z.st !== 'walk' && z.st !== 'eat' && z.st !== 'fly' || z.predDead) continue; if (Math.hypot(z.x - x, z.z - zz) > TUR.R) continue; const d = Math.hypot(z.x - DX, z.z - DZ); if (d < bd) { bd = d; best = z; } } return best; } /* 小威 11-24：機槍先打離阿肥最近的（快咬到防護罩的） */
+  /* 小威 11-24（「我目前覺得可以買一些砲台之類的」）：商店買的機槍（四座瞭望塔上，買了這場都在）。一座每秒約 75（第一次升級 ×1.5、第二次 ×2），打精英、魔王只有一半 */
+  const turDmg = (z) => { const t = TY[z.ty], k = 0.5 * (1 + 0.5 * (Z.turLv | 0)) * (t.boss || t.giant || ELITE.includes(t.k) ? 0.5 : 1), d = TUR.dmg * k; return Math.min(d, t.cap || d); };
+  function shopTeam(i) { if (i === 0) { const k = Z.tur.findIndex((t) => t <= 0); if (k >= 0) Z.tur[k] = 9999; else Z.turLv = Math.min(2, (Z.turLv | 0) + 1); } else if (i === 1) Z.shield = Math.min(SHIELD, Z.shield + SHIELD * 0.15); }
+  Z.shopTeam = (i, a) => { if (auth()) { shopTeam(i); return; } if (a) ctx.sendHit(a, -(TUR_ID + 40 + i), 0, 'W01'); if (i === 0) { const k = Z.tur.findIndex((t) => t <= 0); if (k >= 0) Z.tur[k] = 9999; } }; /* 別台：先在自己這台亮起來，等裁判的狀態蓋過來 */
   const CMB = { n: 150, idle: 20 }; /* 第 138 版（Yen 03:30「combo 150 給加成」） */ /* 第 134 版（Yen 02:51「不是佔祭壇可以得到buff 改成combo 50隻全隊可以隨機buff」）：全隊連續打倒 50 隻 → 大家隨機拿一種加成 20 秒；10 秒沒打倒殭屍 combo 歸零。祭壇拿掉了。 */
   let cmbK = 0, cmbT = 0;
   function altarSim(dt, now, g) { /* 裁判：算全隊 combo（借 Z.alt.p 傳給別台：0～1） */
@@ -29425,8 +29419,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 每台：收到「祭壇集滿了」→ 這台的貓（玩家、電腦隊友）拿到加成 */
   let inkTip = 0; function inkHint() { const g = G(), p = g.player && g.player(); if (g.state !== 'play' || !p) return; if (!(inkTip & 1) && g.time > 20) { inkTip |= 1; SC.ui.tip('殭屍踩到我們的墨水會變慢、更好打！', 4.5); } else if (!(inkTip & 2) && SC.zbHero && SC.zbHero.has(p) && g.time > 24) { inkTip |= 2; SC.ui.tip('神兵快沒電？潛進自己的墨水就會充電！', 4.5); } }
   let gearTip = 0; function gearHint() { if (gearTip || G().state !== 'play' || !Z.pows.some((q) => q.k === GEAR)) return; gearTip = 1; SC.ui.tip('撿齒輪 ⚙️，拿去放在砲台上，砲台就會自動射擊！', 5); }
-  function buffTick() { gearHint(); inkHint(); if (!altTip && G().state === 'play' && G().time > 8) { altTip = 1; SC.ui.tip('連續打倒 150 隻殭屍，大家都會變強！', 5); } const D = Z.altDone, g = G(); if (!D.seq || D.seq === altSeen) return; altSeen = D.seq; for (const a of g.actors) if (!a.remote && !a.gone && !a.isTarget && a.team === 0) { a.buffK = D.k; a.buffUntil = g.time + ALT.buff; if (a.alive) { ctx.burst(a.pos.x, a.pos.y + 3, a.pos.z, new THREE.Color(0xffe14a), 30, 20, 0.7); ctx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, new THREE.Color(0xffe14a), 6, 0.5); } }
-    if (g.state === 'play') { SC.ui.banner(BUFF_NAME[D.k], 2.2, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } }
+  function buffTick() { gearHint(); inkHint(); if (!altTip && G().state === 'play' && G().time > 8) { altTip = 1; SC.ui.tip('連續打倒 150 隻殭屍，每個人 +15 代幣！', 5); } const D = Z.altDone, g = G(); if (!D.seq || D.seq === altSeen) return; altSeen = D.seq; for (const a of g.actors) if (!a.remote && !a.gone && !a.isTarget && a.team === 0) { if (SC.zbShop) SC.zbShop.bonus(a, 15); /* 小威 11-24：combo 改給代幣（不再全隊加 buff） */ if (a.alive) { ctx.burst(a.pos.x, a.pos.y + 3, a.pos.z, new THREE.Color(0xffe14a), 30, 20, 0.7); ctx.ring(a.pos.x, a.pos.y + 0.3, a.pos.z, new THREE.Color(0xffe14a), 6, 0.5); } }
+    if (g.state === 'play') { SC.ui.banner('連續打倒 150 隻！每個人 +15 代幣！', 2.2, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } }
   Z.buffOf = (a) => a && a.buffUntil > G().time && Z.on ? a.buffK : -1;
   function dropPow(near, kk) { /* 第 124 版（Yen「每過一段時間神兵會散落在四處」）：整張地圖到處都會掉（不只城裡）；也會掉齒輪 */
     if (Z.pows.length >= POW.max) return; for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = near ? DOME_R + 7 + Math.random() * 12 : MP.drop[0] + Math.random() * MP.drop[1], x = DX + Math.cos(a) * r, z = DZ + Math.sin(a) * r, h = H(x, z); if (near ? h < CY - 2 : h < -1 || h > CY + 3) continue; if (MP.lim && Math.hypot(x, z) > MP.lim) continue; Z.pows.push({ id: powId++, k: kk != null ? kk : !near && Math.random() < POW.gearDrop ? GEAR : powK(), x, z, life: POW.life, born: G().time }); return; }
@@ -29434,8 +29428,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 小威 11-24（「上 buff 可以是跑出 buff 怪，血量不能太少，打掉全隊都能上 buff，頻率跟現在一樣多」）：
      原本定時掉在地上的暫時道具，改成從老鼠洞跑出「buff 怪」（頭上頂著道具圖示、身上一圈那個顏色的光）。打倒牠，全隊都拿到那個 buff。
      時間跟原本掉道具一樣（08z_zitem.js 的 D.gap、D.batch）；跑不出來（例如這張地圖沒有洞）就照舊掉在地上。z.bf＝道具編號＋1，跟著殭屍一起傳給別台。 */
-  const BFZ = { hp: 700, ty: 'walk' };
-  function spawnBuffZ() { const IT = SC.zbItem; if (!IT || !IT.bfRand) return false; let z = null; try { z = spawnAt(TI[BFZ.ty], (Math.random() * 8) | 0, true); } catch (e) { z = null; } if (!z) return false;
+  const BFZ = { hp: 1100, ty: 'bfm' }; /* 小威 11-24：buff 大鼠（大胃王那麼大）血 1100×難度 */
+  function spawnBuffZ() { const IT = SC.zbItem; if (!IT || !IT.bfRand) return false; let z = null; try { z = spawnAt(TI[BFZ.ty], (Math.random() * NH()) | 0, true); } catch (e) { z = null; } if (!z) return false;
     z.bf = IT.bfRand() + 1; z.gold = false; z.hunt = false; z.max = z.hp = Math.round(BFZ.hp * (dif.hp || 1)); return true; }
   const powK = () => (Math.random() * (SC.zbHero ? SC.zbHero.K.length : POW_COL.length - 1)) | 0; /* 第 171 版：神兵換成一套四種（07z_zombie_hero.js 的 K） */
   function dropAt(x, z, k) { if (Z.pows.length >= POW.max || H(x, z) < -1) return; Z.pows.push({ id: powId++, k, x, z, life: POW.life, born: G().time }); }
@@ -29459,11 +29453,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function simulate(dt) {
     const g = G(), now = g.time, live = Z.list.filter((q) => q.st !== 'dead'), cats = g.actors.filter((a) => a.alive && !a.gone && !a.isTarget);
+    restSim(now); if (Z.endless) endlessSim(now); /* 小威 11-24：回合休息、無盡回合 */
     for (let i = Z.puds.length - 1; i >= 0; i--) { const q = Z.puds[i]; let ours = 0; for (const [ox, oz] of PUDP) if (SC.ink.ownerAt(q.x + ox * PUD.r * 0.6, q.z + oz * PUD.r * 0.6) === 1) ours++; q.life -= dt * (1 + ours * 1.2); if (q.life <= 0) Z.puds.splice(i, 1); } // 第 112 版：毒水上面塗我們的墨水，毒水就消得很快
     // 神兵：隔一陣子在城裡冒出一個（同時最多 2 個，25 秒沒人撿就消失）
     for (let i = Z.pows.length - 1; i >= 0; i--) if ((Z.pows[i].life -= dt) <= 0) Z.pows.splice(i, 1);
-    if ((powT -= dt) <= 0 && (now < LEN - 8 || now > LEN + 2)) { powT = POW.gap + Math.random() * POW.gapR; for (let b = 0; b < POW.batch; b++) dropPow(); }
-    if (SC.zbItem && (itmT -= dt) <= 0 && (now < LEN - 8 || now > LEN + 2)) { itmT = SC.zbItem.D.gap + Math.random() * SC.zbItem.D.gapR; for (let b = 0; b < (SC.zbItem.D.batch || 1); b++) if (!spawnBuffZ()) dropPow(false, SC.zbItem.rand()); } /* 第 196 版：一次掉 2 個 */ /* 第 182 版：暫時道具（08z_zitem.js） */
+    if ((powT -= dt) <= 0 && !restOf(now) && (now < LEN - 8 || now > LEN + 2)) { powT = POW.gap + Math.random() * POW.gapR; for (let b = 0; b < POW.batch; b++) dropPow(); }
+    if (SC.zbItem && (itmT -= dt) <= 0 && !restOf(now) && (now < LEN - 8 || now > LEN + 2)) { itmT = (SC.zbItem.D.gap + Math.random() * SC.zbItem.D.gapR) * (now > LEN && !Z.endless ? 1.6 : 1); for (let b = 0; b < (SC.zbItem.D.batch || 1) + (crewK() > 1.2 ? 1 : 0); b++) spawnBuffZ(); } /* 小威 11-24：buff 只從 buff 大鼠來（不再掉在地上）；休息時不出；人多（5、6 隻貓）一次多一隻 */ /* 第 182 版：暫時道具（08z_zitem.js） */
     turretSim(dt); altarSim(dt, now, g);
     aiKTick(now, g); dirTick(now, g); /* 第 149 版：拿掉 dynTick（動態殭屍量）和 expTick（戰鬥經驗學習） */
     // 事件
@@ -29475,10 +29470,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 平常一直有：越後面越多、種類越多
     spawnT -= dt;
     if (spawnT <= 0 && dirDebt >= 1) { dirDebt -= 1; spawnT = SC.lerp(1.43, 1.26, Math.min(1, now / LEN)) / (difN() * crewK() * zDyn()); } /* 第 147 版：指揮官派出去的那隊，從平常的出怪量扣回來（不會一下倒太多） */
-    if (spawnT <= 0 && !restOf(now) && (now < LEN - 2 || now > LEN + BOSS_QUIET)) { const k = Math.min(1, now / LEN); spawnT = SC.lerp(1.43, 1.26, k) / (difN() * crewK() * zDyn()) * (now > LEN ? 2 : 1) * (now > Z.calm[0] && now < Z.calm[1] ? CALM.k : 1); /* 第 128 版：大波之後喘口氣 */ /* 第 122 版：魔王戰時小殭屍少一半 */ const r = Math.random(); let ty = now > 150 && r < wave().fat ? TI.fat : now > 60 && r < 0.42 ? TI.run : TI.walk;
+    if (spawnT <= 0 && !restOf(now) && (now < LEN - 2 || now > LEN + BOSS_QUIET)) { const k = Math.min(1, now / LEN); spawnT = SC.lerp(1.43, 1.26, k) / (difN() * crewK() * zDyn()) * (now > LEN ? (Z.endless ? 1 / (1 + 0.15 * Z.endRound(now)) : 2) : 1) * (now > Z.calm[0] && now < Z.calm[1] ? CALM.k : 1); /* 第 128 版：大波之後喘口氣 */ /* 第 122 版：魔王戰時小殭屍少一半 */ const r = Math.random(); let ty = now > 150 && r < wave().fat ? TI.fat : now > 60 && r < 0.42 ? TI.run : TI.walk;
       const cnt = (q) => live.filter((z) => TY[z.ty].k === q).length; /* 第 123 版：特殊殭屍隨機混進來（越後面越多） */
       if (Math.random() < SC.lerp(0.14, 0.38, k) * wave().specK) { const ok = SPEC.filter(([q, at, mx]) => now > at * wave().specT && cnt(q) < Math.ceil(mx * 1.5 * crewK())); /* 第 142 版：特殊殭屍上限 ×1.5 */ if (ok.length) ty = TI[ok[(Math.random() * ok.length) | 0][0]]; }
       if (MP.chg && now > MP.chg[0] && Math.random() < MP.chg[1] && cnt('charge') < Math.ceil(MP.chg[2] * crewK())) ty = TI.charge; /* 第 132 版（Yen 02:44）：殭屍大街多很多衝撞鼠 */
+      { const md = modNow(now); if (md) { const r2 = Math.random(); if (md.run && r2 < md.run) ty = TI.run; else if (md.fat && r2 < md.fat) ty = TI.fat; else if (md.spec && r2 < 0.3 && cnt(md.spec) < Math.ceil(4 * crewK())) ty = TI[md.spec]; } } /* 小威 11-24：回合特色 */
       if (!(ty === TI.walk && Math.random() < 0.2)) { const sr = Math.random(); if (MP.sky && now > MP.sky[2] && ty !== TI.charge && sr < MP.sky[0]) spawnSky(ty); else if (MP.sky && now > MP.sky[2] && ty !== TI.charge && !TY[ty].sp2 && sr < MP.sky[0] + MP.sky[1]) spawnUnder(ty); else spawnAt(ty, (Math.random() * NH()) | 0); } }
     if (MP.sky && now > MP.sky[2] && now < LEN - 8 && now > skyT && !restOf(now)) skyEvent(now); /* 第 142 版：普通殭屍 ×0.8 */
     // 每隻殭屍
@@ -29523,7 +29519,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 打爆的殭屍留 0.5 秒（讓別台看得到）再移除
     for (let i = Z.list.length - 1; i >= 0; i--) { const z = Z.list[i]; if (z.st === 'dead' && (z.dieT += dt) > 0.5) { freeTarget(z); dropMesh(z); Z.list.splice(i, 1); } }
     // 結束
-    if (!Z.end) { if (Z.shield <= 0) { Z.shield = 0; Z.end = 2; } else if (now >= LEN + 4 && !Z.list.some((q) => (TY[q.ty].k === 'tank' || TY[q.ty].k === 'drill') && q.st !== 'dead')) Z.end = 1; else if (now >= LEN + OVER) Z.end = 2; }  /* 第 122 版：時間到不算贏，要打倒最後魔王；魔王戰最多 10 分鐘 */
+    if (!Z.end) { if (Z.shield <= 0) { Z.shield = 0; Z.end = 2; } else if (!Z.endless && now >= LEN + 4 && !Z.list.some((q) => (TY[q.ty].k === 'tank' || TY[q.ty].k === 'drill') && q.st !== 'dead')) { if (endOn()) endlessStart(now); else Z.end = 1; } else if (!Z.endless && now >= LEN + OVER) Z.end = 2; } /* 小威 11-24：無盡回合打到防護罩破掉才結束 */  /* 第 122 版：時間到不算贏，要打倒最後魔王；魔王戰最多 10 分鐘 */
   }
   function pickHoles(E) { const N = NH(), n = E.holes || 0, s = (Math.random() * N) | 0; if (n >= 8) return Array.from({ length: N }, (_, h) => h); if (n === 4) return [0, 1, 2, 3].map((k) => (Math.round(k * N / 4) + (s % Math.max(1, N / 4))) % N); if (n === 2) return [s, (s + N / 2) % N]; if (ELITE.includes(E.k) || E.k === 'king' || E.k === 'tank') return E.n === 2 ? [s, (s + N / 2) % N] : [s]; return []; }
   const BAR = { ram: 0.2, hp: 900, lv: [7, 12, 15], up: 2.6, fix: 0.5 }; /* 第 130 版：長街的路障：耐久 900（殭屍咬一下扣 chew），老鼠山：前 7 隻在地上、再 5 隻疊第二層、再 3 隻第三層，再來的就翻過去 */
@@ -29803,9 +29799,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   Z.pushOut0 = (a) => { const R = MP.ramp; if (!R || !(Z.brUp > 0) || a.remote || !a.alive) return; if (a.pos.x > R.x0 && a.pos.x < R.x1 && Math.abs(a.pos.z) < R.w && a.pos.y < 10.5 + 1) { if (a.pos.x > (R.x0 + R.x1) / 2) { a.pos.x = R.x1 + 1.5; } else { a.pos.x = R.x0 - 1.5; a.pos.y = 10.3; } a.vel.x = 0; } }; /* 吊橋升起來的時候橋上站不住 */
   function turretFx(dt) {
-    if (MP.noTur) { if (turObj) { turObj.forEach((o) => scene.remove(o.g)); turObj = null; } return; }
+    if (MP.noTur && !SC.zbShop) { if (turObj) { turObj.forEach((o) => scene.remove(o.g)); turObj = null; } return; }
     if (!turObj) turObj = [0, 1, 2, 3].map(turretMesh); const now = performance.now() / 1000, play = G().state === 'play';
-    turObj.forEach((o, i) => { const on = Z.tur[i] > 0 && play; o.need.visible = !on && play; o.need.position.y = 7.5 + Math.sin(now * 3 + i) * 0.5; o.body.material.emissiveIntensity = on ? 0.25 + Math.max(0, Math.sin(now * 10)) * 0.25 : 0; o.body.material.color.setHex(on ? 0xffd23f : 0x9a9aa8);
+    turObj.forEach((o, i) => { const on = Z.tur[i] > 0 && play; o.g.visible = on || !SC.zbShop; o.need.visible = !on && play && !SC.zbShop; if (SC.zbShop) o.g.scale.setScalar(1 + 0.15 * (Z.turLv | 0)); o.need.position.y = 7.5 + Math.sin(now * 3 + i) * 0.5; o.body.material.emissiveIntensity = on ? 0.25 + Math.max(0, Math.sin(now * 10)) * 0.25 : 0; o.body.material.color.setHex(on ? [0xffd23f, 0xff9a2a, 0xff5fa2][Z.turLv | 0] || 0xffd23f : 0x9a9aa8);
       o.ln.material.opacity = Math.max(0, o.ln.material.opacity - dt * 12); if (!on) { o.head.rotation.y += dt * 0.3; return; }
       const z = turTarget(i); if (!z) { o.head.rotation.y += dt * 1.2; return; } const p = o.g.position, ty = Math.atan2(z.x - p.x, z.z - p.z); o.head.rotation.y += SC.angDiff(o.head.rotation.y, ty) * Math.min(1, dt * 14);
       if ((o.t -= dt) > 0) return; o.t = TUR.gap; const zy = z.y + 2.2 * TY[z.ty].s * (z.k || 1), hp = new V3(p.x + Math.sin(o.head.rotation.y) * 3.8, p.y + 2.9, p.z + Math.cos(o.head.rotation.y) * 3.8); o.ln.geometry.setFromPoints([hp, new V3(z.x + (Math.random() - 0.5) * 1.5, zy + (Math.random() - 0.5) * 1.5, z.z + (Math.random() - 0.5) * 1.5)]); o.ln.material.opacity = 1;
@@ -30275,6 +30271,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (playing && a && !Z.end) simulate(dt);
     if (playing && !Z.end) { if (bites(dt)) lastBite = true; catFx(dt); }
     swTick(dt, cam); escFx(dt); const chewing = render(dt, cam); holdFx(performance.now() / 1000); pudFx(dt); powFx(dt); helpHud(); if (SC.zbHero) SC.zbHero.tick(dt); if (SC.zbItem) SC.zbItem.tick(dt); if (SC.zbRibbon) SC.zbRibbon.tick(dt); /* 第 211 版：隊友彩虹彩帶 */
+    if (SC.zbShop) SC.zbShop.tick(dt, cam); /* 小威 11-24：回合、商店 */
     // 事件卡、光柱
     const E = Z.ev >= 0 ? EVENTS[Z.ev] : null, warnOn = playing && Z.evPh === 1 && E;
     setCard(warnOn ? E : null, warnOn ? Math.max(0, Math.ceil(E.t - g.time)) : 0);
@@ -30282,7 +30279,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     holeFx.forEach((h, i) => { const on = warnOn && (Z.evHoles || []).includes(i); h.visible = !!on; if (on) { h.userData.ex.position.y = 22 + Math.abs(Math.sin(now * 4)) * 4; h.children[0].material.opacity = 0.25 + Math.max(0, Math.sin(now * 8)) * 0.2; } });
     if (warnOn && Z.lastWarn !== Z.ev) { Z.lastWarn = Z.ev; SC.audio.sfx.zhorn && SC.audio.sfx.zhorn(); }
     if (playing && CALM.k > 1 && Z.evPh === 2 && Z.ev >= 0 && Z.calmSaid !== Z.ev && ['horde', 'swarm', 'final'].includes(E.k) && G().time >= E.t + CALM.from) { Z.calmSaid = Z.ev; SC.ui.banner('喘口氣！快去撿神兵、放齒輪！', 2.2); }
-    if (playing) { const r = restOf(G().time), ri = r ? RESTS.indexOf(r) : -1; if (ri >= 0 && Z.restSaid !== ri) { Z.restSaid = ri; SC.ui.banner('休息一下！快去撿神兵、補墨水！', 2.4); SC.audio.sfx.spReady && SC.audio.sfx.spReady(); } if (ri < 0 && Z.restSaid != null && Z.restSaid >= 0 && Z.restEnd !== Z.restSaid) { Z.restEnd = Z.restSaid; SC.ui.banner('休息結束！下一波來了！', 1.8); SC.audio.sfx.zhorn && SC.audio.sfx.zhorn(); } } /* 第 178 版：小休息開始、結束 */
+    if (playing) { const r = restOf(G().time), rk = r ? r[0] : -1; if (rk >= 0 && Z.restSaid !== rk) { Z.restSaid = rk; if (SC.zbShop) SC.zbShop.restStart(r); else SC.ui.banner('休息一下！', 2.4); } if (rk < 0 && Z.restSaid != null && Z.restSaid >= 0 && Z.restEnd !== Z.restSaid) { Z.restEnd = Z.restSaid; if (SC.zbShop) SC.zbShop.restEnd(); SC.audio.sfx.zhorn && SC.audio.sfx.zhorn(); } } /* 小威 11-24：回合休息（08z_zshop.js）；第 178 版：小休息開始、結束 */
     if (playing && Z.evPh === 2 && Z.lastFire !== Z.ev) { Z.lastFire = Z.ev; SC.ui.banner(EV_NAME[E.k] || '', 1.8); SC.audio.sfx.zgroan && SC.audio.sfx.zgroan(); }
     // 小鴨
     const k = Z.shield / SHIELD;
@@ -30334,27 +30331,28 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   Z.dbgDuck = () => duck; /* 第 207 版：測試用（截圖阿肥） */
   Z.dbgMake = (k, x, zz, o) => make(TI[k], x, zz, o || { ph: 1 }); /* 第 175 版：測試用，叫出指定的殭屍 */
   Z.swKillsN = () => swKills; /* 第 191 版 */
-  Z.makeResult = () => ({ won: Z.end === 1, frac: SC.clamp(Z.shield / SHIELD, 0, 1), pops: Z.killed, mice: swKills, eli: Z.eliK | 0, boss: Z.bossK | 0, secs: Math.min(LEN + OVER, G().time) });
+  Z.makeResult = () => ({ won: Z.end === 1 || !!Z.tankWon, er: Z.endless ? Z.endRound(G().time) : 0, tf: Z.endless ? Z.tankFrac : null, frac: SC.clamp(Z.shield / SHIELD, 0, 1), pops: Z.killed, mice: swKills, eli: Z.eliK | 0, boss: Z.bossK | 0, secs: Z.endless ? G().time : Math.min(LEN + OVER, G().time) });
 
   // ---------- 連線 ----------
   // zs（第 108 版改成第 2 版格式）：[2, 時間×10, 防護罩, 事件編號, 事件階段, 結束, 下一個編號, 事件洞, 殭屍總數, 毒水灘數, 每灘 4 個數字…, 每隻 9 個數字…]
   // 每灘：[編號, x×10, z×10, 剩幾秒×10]；每隻：[編號, 種類 + 橋×16 + 階段×64 + 狀態×256 + 站在罩子上×2048 + 動作×4096, x×10, z×10, y×10, 血量％, 次數×2 + 預告, 瞄準 x, 瞄準 z]
   const ST = ['walk', 'eat', 'fly', 'under', 'dead'], ZN = 9; Z.ZN = ZN;
   Z.pack = () => {
-    const out = [12, Math.round(G().time * 10), Math.round(SC.clamp(Z.shield / SHIELD, 0, 1) * 10000), Z.ev, Z.evPh, Z.end, nextId, Z.evHoles ? Z.evHoles.reduce((m, h) => m | (1 << h), 0) : 0, Z.list.length, Z.puds.length, Z.pows.length, Z.pw.seq, Z.pw.k, Math.round(Z.pw.x), Math.round(Z.pw.z), Math.round(zDyn() * 100) + Math.ceil(Math.max(0, Z.brUp || 0)) * 1000 + Math.ceil(Z.brCd || 0) * 20000, Z.alt.seq, Z.alt.x, Z.alt.z, Math.round(Z.alt.p * 100), Z.alt.k, Math.round(Math.max(0, Z.alt.life) * 10), Z.altDone.seq, Z.altDone.k, ...Z.tur.map((t) => Math.round(t * 10)), ...[0, 1, 2].map((b) => Math.round(SC.clamp(Z.bar[b] == null ? 1 : Z.bar[b], 0, 1) * 1000)), (Z.cp.i + 1) + Z.cp.done * 10 + Z.cp.fail * 100 + Z.cp.block * 1000, Math.round(SC.clamp(Z.cp.p, 0, 1) * 1000), Math.round(SC.clamp(Z.bar[3] == null ? 1 : Z.bar[3], 0, 1) * 1000), ...[4, 5, 6, 7, 8, 9, 10, 11].map((b) => Math.round(SC.clamp(Z.bar[b] == null ? 1 : Z.bar[b], 0, 1) * 1000)), Z.dir.seq, Z.dir.k, Math.round(Z.dir.x), Math.round(Z.dir.z), Z.sw.seq, Math.round(Z.sw.a * 1000), Z.sw.n, Z.sw.s]; /* 第 11 版：殭屍指揮官的招式（編號、種類、位置） */ /* 第 10 版：十字路口每條路三道，共 12 道 */ /* 第 9 版：第四道路障（十字路口） */ /* 第 7 版：三道路障的耐久；第 8 版：燈塔接力 */ /* 第 5 版：多了這場的強度倍數；第 6 版：祭壇、四座機槍 */ // 第 4 版：多了神兵（數量、最後一次用掉的編號／種類／位置）
+    const out = [13, Math.round(G().time * 10), Math.round(SC.clamp(Z.shield / SHIELD, 0, 1) * 10000), Z.ev, Z.evPh, Z.end, nextId, Z.evHoles ? Z.evHoles.reduce((m, h) => m | (1 << h), 0) : 0, Z.list.length, Z.puds.length, Z.pows.length, Z.pw.seq, Z.pw.k, Math.round(Z.pw.x), Math.round(Z.pw.z), Math.round(zDyn() * 100) + Math.ceil(Math.max(0, Z.brUp || 0)) * 1000 + Math.ceil(Z.brCd || 0) * 20000, Z.alt.seq, Z.alt.x, Z.alt.z, Math.round(Z.alt.p * 100), Z.alt.k, Math.round(Math.max(0, Z.alt.life) * 10), Z.altDone.seq, Z.altDone.k, ...Z.tur.map((t) => Math.round(t * 10)), ...[0, 1, 2].map((b) => Math.round(SC.clamp(Z.bar[b] == null ? 1 : Z.bar[b], 0, 1) * 1000)), (Z.cp.i + 1) + Z.cp.done * 10 + Z.cp.fail * 100 + Z.cp.block * 1000, Math.round(SC.clamp(Z.cp.p, 0, 1) * 1000), Math.round(SC.clamp(Z.bar[3] == null ? 1 : Z.bar[3], 0, 1) * 1000), ...[4, 5, 6, 7, 8, 9, 10, 11].map((b) => Math.round(SC.clamp(Z.bar[b] == null ? 1 : Z.bar[b], 0, 1) * 1000)), Z.dir.seq, Z.dir.k, Math.round(Z.dir.x), Math.round(Z.dir.z), Z.sw.seq, Math.round(Z.sw.a * 1000), Z.sw.n, Z.sw.s, Z.turLv | 0, Z.endless ? Math.round(Z.endless.t0 * 10) : 0, Z.tankWon | 0]; /* 第 11 版：殭屍指揮官的招式（編號、種類、位置） */ /* 第 10 版：十字路口每條路三道，共 12 道 */ /* 第 9 版：第四道路障（十字路口） */ /* 第 7 版：三道路障的耐久；第 8 版：燈塔接力 */ /* 第 5 版：多了這場的強度倍數；第 6 版：祭壇、四座機槍 */ // 第 4 版：多了神兵（數量、最後一次用掉的編號／種類／位置）
     for (const q of Z.puds) out.push(q.id, Math.round(q.x * 10), Math.round(q.z * 10), Math.round(q.life * 10));
     for (const q of Z.pows) out.push(q.id, q.k, Math.round(q.x * 10), Math.round(q.z * 10), Math.round(q.life * 10));
     for (const z of Z.list) out.push(z.id, (z.ty & 15) + (z.ty >> 4) * 262144 + z.br * 16 + z.ph * 64 + Math.max(0, ST.indexOf(z.st)) * 256 + (z.onTop ? 2048 : 0) + ((z.act || 0) & 3) * 4096 + (((z.act || 0) >> 2) & 3) * 524288 + (z.dz > 0 ? 16384 : 0) + (z.bub > 0 ? 32768 : 0) + (z.ice > 0 ? 65536 : 0) + (z.hunting ? 131072 : 0) + (z.buf ? 4194304 : 0) + ((z.bf || 0) & 15) * 8388608, Math.round(z.x * 10), Math.round(z.z * 10), Math.round((z.st === 'under' ? -z.und : z.y) * 10), Math.round(SC.clamp(z.hp / z.max, 0, 1) * 100), z.n * 2 + (z.warn > 0 ? 1 : 0), Math.round(z.ax), Math.round(z.az));
     return out;
   };
-  Z.head = (zs) => (zs[0] >= 12 ? 50 : zs[0] >= 11 ? 46 : zs[0] >= 10 ? 42 : zs[0] >= 9 ? 34 : zs[0] >= 8 ? 33 : zs[0] >= 7 ? 31 : zs[0] >= 6 ? 28 : zs[0] >= 5 ? 16 : 15); /* 表頭有幾個數字 */
+  Z.head = (zs) => (zs[0] >= 13 ? 53 : zs[0] >= 12 ? 50 : zs[0] >= 11 ? 46 : zs[0] >= 10 ? 42 : zs[0] >= 9 ? 34 : zs[0] >= 8 ? 33 : zs[0] >= 7 ? 31 : zs[0] >= 6 ? 28 : zs[0] >= 5 ? 16 : 15); /* 表頭有幾個數字 */
   Z.apply = (zs) => {
-    if (!Z.on || auth() || !Array.isArray(zs) || (zs[0] < 4 || zs[0] > 12) || zs.length < 15 || !zs.every(Number.isFinite)) return;
+    if (!Z.on || auth() || !Array.isArray(zs) || (zs[0] < 4 || zs[0] > 13) || zs.length < 15 || !zs.every(Number.isFinite)) return;
     if (zs[1] < Z.netT && (Z.oldN = (Z.oldN || 0) + 1) < 12) return; Z.oldN = 0; Z.netT = zs[1]; Z.hT = zs[1] / 10; Z.hAt = G().time; /* 第 135 版：花車位置照裁判的時間算 */ /* 第 115 版：比上一個舊的快照（中繼站晚到、重送的）不要用，不然打爆的殭屍會跑回來；連續 12 個都比較舊＝換了裁判，照新的走 */
     if (zs[6] > nextId) nextId = zs[6] | 0; /* 第 121 版：接手當裁判時從大家用過的號碼後面接著數 */
     Z.shield = SC.clamp(zs[2] / 10000, 0, 1) * SHIELD; /* 第 3 版起：送比例（萬分之幾），兩邊上限不同也不會一邊 50% 一邊 100% */ if (zs[3] >= -1 && zs[3] < EVENTS.length) { Z.ev = zs[3] | 0; Z.evPh = zs[4] | 0; } if (!Z.end && (zs[5] === 1 || zs[5] === 2)) { Z.end = zs[5]; Z.netEnd = G().time; } nextId = Math.max(nextId, zs[6] | 0);
     Z.evHoles = []; for (let h = 0; h < 12; h++) if (zs[7] & (1 << h)) Z.evHoles.push(h);
     if (zs[0] >= 12 && zs[46] !== Z.sw.seq) Z.sw = { seq: zs[46] | 0, a: zs[47] / 1000, n: SC.clamp(zs[48] | 0, 0, 200), s: zs[49] | 0 }; /* 第 148 版：小鼠潮 */
+    if (zs[0] >= 13) { Z.turLv = SC.clamp(zs[50] | 0, 0, 2); const e0 = zs[51] / 10; if (e0 > 0 && !Z.endless) { Z.endless = { t0: e0 }; Z.tankFrac = SC.clamp(Z.shield / SHIELD, 0, 1); } Z.tankWon = zs[52] | 0; } /* 小威 11-24：機槍等級、無盡回合 */
     if (zs[0] >= 11 && zs[42] !== Z.dir.seq) { Z.dir = { seq: zs[42] | 0, k: zs[43] | 0, x: zs[44], z: zs[45] }; if (Z.dir.seq > 0) dirShow(Z.dir); }
     const nAll = zs[8] | 0, nP = SC.clamp(zs[9] | 0, 0, 12), nK = SC.clamp(zs[10] | 0, 0, 10); /* 第 120 版：神兵種類 0～4（之前 0～3 讓別台看到的墨水機甲變成冰冰槍） */ let i = Z.head(zs); if (zs[0] >= 5) { const v = zs[15] | 0; Z.dyn = SC.clamp((v % 1000) / 100, 0.3, 4); Z.brUp = Math.floor((v % 20000) / 1000); Z.brCd = Math.floor(v / 20000); } if (zs[0] >= 6) { Z.alt = { seq: zs[16], x: zs[17], z: zs[18], p: SC.clamp(zs[19] / 100, 0, 1), k: SC.clamp(zs[20] | 0, 0, 2), life: zs[21] / 10 }; Z.altDone = { seq: zs[22], k: SC.clamp(zs[23] | 0, 0, 2) }; Z.tur = [24, 25, 26, 27].map((j) => Math.max(0, zs[j] / 10)); } if (zs[0] >= 7 && MP.bars) Z.bar = MP.bars.map((_, b) => b < 3 ? SC.clamp(zs[28 + b] / 1000, 0, 1) : b === 3 && zs[0] >= 9 ? SC.clamp(zs[33] / 1000, 0, 1) : b > 3 && b < 12 && zs[0] >= 10 ? SC.clamp(zs[30 + b] / 1000, 0, 1) : Z.bar[b]); if (zs[0] >= 8) { const v = zs[31] | 0; Z.cp = { i: (v % 10) - 1, done: Math.floor(v / 10) % 10, fail: Math.floor(v / 100) % 10, block: Math.floor(v / 1000) % 10, p: SC.clamp(zs[32] / 1000, 0, 1) }; } const puds = [], pows = [];
     if (zs[11] !== Z.pw.seq) Z.pw = { seq: zs[11], k: SC.clamp(zs[12] | 0, 0, 8), x: zs[13], z: zs[14] };
@@ -30407,6 +30405,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   EV_ICON.drill = ICON.mouse('#8f86a8', '<path d="M30 22l10 2-10 2z" fill="#c8d0dc" stroke="#1b1430" stroke-width="1.4"/><path d="M8 9a12 8 0 0 1 24 0z" fill="#ffc93c" stroke="#1b1430" stroke-width="1.6"/>');
   Z.icon = (k) => EV_ICON[k] || ICON.mouse();
+  Z.H = H; Z.dogIcon = ICON.duck; Z.scene = () => scene; Z.dome = () => ({ x: DX, z: DZ, r: DOME_R, cy: CY }); Z.mouseIcon = ICON.mouse; Z.restOf = (t) => restOf(t); Z.TYk = (k) => TY[TI[k]]; Z.ELITE = ELITE; Z.auth = () => auth(); /* 小威 11-24：08z_zshop.js 用 */
   let H_ = null;
   function hud(on) {
     if (H_ && (H_.len !== LEN || H_.ev !== EVENTS)) { H_.bar.remove(); H_.card.remove(); H_ = null; } /* 第 148.1 版：一場長度不同（十分鐘）就重畫事件條 */
@@ -30414,7 +30413,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const top = document.querySelector('#hud .h-top'), hudEl = document.getElementById('hud'); if (!top || !hudEl) return;
       const bar = document.createElement('div'); bar.className = 'h-zb'; bar.id = 'zb-bar';
       bar.innerHTML = `<div class="zb-row"><i class="zb-duck">${ICON.duck}</i><div class="zb-shield" role="progressbar" aria-label="防護罩"><i class="zb-fill"></i><b class="zb-pct"></b></div><span class="zb-pops"><i>${ICON.mouse()}</i><b>0</b></span><span class="zb-dyn" hidden>🔥<b></b></span><span class="zb-cmb" aria-label="combo"><i>🎁</i><em><u></u></em><b>0</b></span><span class="zb-buff" hidden><i></i><b></b></span></div>`
-        + `<div class="zb-line" aria-hidden="true"><i class="zb-done"></i>${EVENTS.map((e) => `<span class="zb-ev" data-k="${e.k}" style="left:${((e.t / LEN) * 100).toFixed(1)}%">${EV_ICON[e.k === 'tank' && MP && MP.drill ? 'drill' : e.k]}</span>`).join('')}<span class="zb-flag">🏁</span><span class="zb-paw">🐾</span></div>`;
+        + `<div class="zb-line" aria-hidden="true"><i class="zb-done"></i>${EVENTS.map((e) => `<span class="zb-ev" data-k="${e.k}" style="left:${((e.t / LEN) * 100).toFixed(1)}%">${EV_ICON[e.k === 'tank' && MP && MP.drill ? 'drill' : e.k]}</span>`).join('')}${RESTS.map(([a, b]) => `<span class="zb-rs" style="left:${((a / LEN) * 100).toFixed(1)}%;width:${(((b - a) / LEN) * 100).toFixed(1)}%"></span>`).join('')}<span class="zb-flag">🏁</span><span class="zb-paw">🐾</span></div>`;
       top.appendChild(bar);
       const card = document.createElement('div'); card.className = 'h-zcard'; card.id = 'zb-card'; card.innerHTML = '<div class="zc-ic"></div><div class="zc-t"><b></b><span class="zc-n"></span></div>'; hudEl.appendChild(card);
       H_ = { bar, card, fill: bar.querySelector('.zb-fill'), pct: bar.querySelector('.zb-pct'), pops: bar.querySelector('.zb-pops b'), done: bar.querySelector('.zb-done'), paw: bar.querySelector('.zb-paw'), evs: [...bar.querySelectorAll('.zb-ev')], duck: bar.querySelector('.zb-duck'), dyn: bar.querySelector('.zb-dyn'), cmb: bar.querySelector('.zb-cmb'), buff: bar.querySelector('.zb-buff'), last: {} };
@@ -30452,10 +30451,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 第 125 版（Yen「讓使用者在進行遊戲的時候不用進行思考就知道下一步要怎麼做」）：畫面上永遠只有一個「下一步」指標。
      順序：小鴨被咬（大紅箭頭，原本的）＞ 祭壇（站上去集氣）＞ 齒輪（開機槍）＞ 神兵（手上沒有時）＞ 最後魔王。
      東西在畫面裡：頭上一個會跳的圖示泡泡＋往下的箭頭；不在畫面裡：泡泡貼在畫面邊上，箭頭指過去。 */
-  const GUIDE_TXT = { cp: '站上去', bar: '修路障', alt: '站上去', gear: '撿齒輪', pow: '撿神兵', tank: '打魔王', tur: '放上砲台' };
+  const GUIDE_TXT = { shop: '去買東西', perk: '選升級', cp: '站上去', bar: '修路障', alt: '站上去', gear: '撿齒輪', pow: '撿神兵', tank: '打魔王', tur: '放上砲台' };
   let guideEl = null, guideAt = 0, guideGoal = null; const gv = new V3();
   function guidePick(g, p) {
     if (!p || !p.alive || p.zbHold) return null; const px = p.pos.x, pz = p.pos.z, A = Z.alt;
+    { const sg = SC.zbShop && SC.zbShop.guide && SC.zbShop.guide(p); if (sg) return sg; } /* 小威 11-24：休息時指去商店電腦 */
     if (MP.esc && escMv && Math.hypot(px - DX, pz - DZ) > 40) return { k: 'esc', ic: '🦆', x: DX, y: CY + 24, z: DZ, id: 'e' }; /* 第 135 版：花車開走了 → 跟上 */
     if (MP.cps && Z.cp.i >= 0 && !((Z.cp.done | Z.cp.fail) & (1 << Z.cp.i))) { const [x, z] = MP.cps[Z.cp.i]; if (Math.hypot(px - x, pz - z) > MP.cpR * 0.8) return { k: 'cp', ic: '🗼', x, y: H(x, z) + 6, z, id: 'c' + Z.cp.i }; } /* 第 131 版：亮著的燈塔最重要 */
     if (p.gearC && MP.bars) { let b = -1, lo = 0.7; Z.bar.forEach((h, i) => { if (h > 0 && h < lo) { lo = h; b = i; } }); if (b >= 0) { const [bx, bz] = barXZ(b, barAD(b)[1] - 3); return { k: 'bar', ic: '⚙️', x: bx, y: H(bx, bz) + 6, z: bz, id: 'b' + b }; } } /* 第 130 版：路障壞了 → 拿齒輪去修 */
@@ -30892,7 +30892,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   HZ.equip = (a, k, remote, e) => {
     const g = G(); if (!a || k == null || !K[k]) return; scene = scene || SC.debug && SC.debug.scene || a.cat.group.parent;
     if (!remote && a.heroK === k) { a.heroE = K[k].t; if (a.isPlayer) { SC.ui.banner(K[k].name, 1.6, true); sfx().hget && sfx().hget(); } return; } /* 同一種再撿一個：補滿 */
-    a.heroS = null; a.heroK = k; a.heroE = e != null ? e : K[k].t; a.heroUntil = g.time + (K[k].use === 'wear' ? a.heroE + 2 : 30); a.heroNext = 0; a.heroPrev = false; a.heroStep = 0;
+    a.heroS = null; a.heroK = k; a.heroE = e != null ? e : K[k].t * (SC.zbShop ? SC.zbShop.mul(a, 'hero') : 1); /* 小威 11-24：升級「神兵電量」 */ a.heroUntil = g.time + (K[k].use === 'wear' ? a.heroE + 2 : 30); a.heroNext = 0; a.heroPrev = false; a.heroStep = 0;
     attach(a); const c = col(k);
     SC.fx.burst(a.pos.x, a.pos.y + 3, a.pos.z, c, 90, 40, 1.0); SC.fx.burst(a.pos.x, a.pos.y + 6, a.pos.z, new THREE.Color(0xffffff), 30, 30, 0.7); SC.fx.ring(a.pos.x, a.pos.y + 0.4, a.pos.z, c, 18, 0.6); SC.fx.ring(a.pos.x, a.pos.y + 0.6, a.pos.z, new THREE.Color(0xffffff), 7, 0.4);
     if (a.isPlayer) { if (e == null) SC.ui.banner(K[k].name, 2.2, true); sfx().hget && sfx().hget(); if (K[k].k === 'spn') SND.tor(1); if (K[k].k === 'car') SND.honk(1); SC.ui.flash && SC.ui.flash('rgba(255,255,255,.35)', 0.25); }
@@ -31392,7 +31392,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const bodyR = (e) => (e.isTarget ? e.hr : C.ACTOR_RADIUS);
   const bodyMid = (e, mid) => (e.isTarget ? e.cy : mid);
 
-  function spGain(a, n) { if (!a || a.remote || spBusy(a) || a.sp >= 100 || G.state !== 'play' || G.demo && a.isPlayer) return; a.sp = Math.min(100, a.sp + n * (G.rule === 'zombie' && SC.zsk ? SC.zsk.SPH : 1) * (SC.dg && a.isPlayer ? SC.dg.spK() : 1)); if (a.sp >= 100 && a.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } }
+  function spGain(a, n) { if (!a || a.remote || spBusy(a) || a.sp >= 100 || G.state !== 'play' || G.demo && a.isPlayer) return; a.sp = Math.min(100, a.sp + n * (G.rule === 'zombie' && SC.zsk ? SC.zsk.SPH * (SC.zbShop ? SC.zbShop.mul(a, 'ult') : 1) : 1) * (SC.dg && a.isPlayer ? SC.dg.spK() : 1)); if (a.sp >= 100 && a.isPlayer && !G.demo) { A.sfx.spReady(); SC.ui.spReady(); } }
   function hurt(t, amount, from, cause) { // 第 110 版（Yen 22:19）：打到對手、打到魔王、打到殭屍鼠都會累積絕招（每 1 點傷害加 C.SP_HIT_K）
     const hit = hurt0(t, amount, from, cause);
     if (hit && from && from !== t && from.team !== t.team && cause !== 'special' && cause !== 'fall') spGain(from, Math.min(amount, 120) * C.SP_HIT_K);
@@ -31437,6 +31437,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!t.alive || G.state !== 'play' || G.time < t.protectUntil || t.spT != null || t.skInv > G.time) return false; // 放絕招的時候不會受傷（第 163 版：殭屍模式散彈衝刺時也不會）
     if (baseSafe(t, from)) return false;
     if (cause === 'zombie' && (t.heroImm || zItm(t, 'shd'))) { SC.fx.burst(t.pos.x, t.pos.y + 2.5, t.pos.z, WHITE, 4, 10, 0.3); return false; } /* 第 116 版：墨水機甲殭屍咬不動 */
+    if (cause === 'zombie' && SC.zbShop && SC.zbShop.mul) amount *= SC.zbShop.mul(t, 'def'); /* 小威 11-24：殭屍模式升級「防咬外套」 */
     if (from && from !== t && from.team !== t.team && !from.remote) from.dmgOut = (from.dmgOut || 0) + SC.clamp(amount, 0, Math.max(0, t.hp + (t.armor || 0)));
     if (from && from.isPlayer && from !== t && from.team !== t.team && !from.remote && SC.dmg) SC.dmg.hit(t, amount, t.armor || 0, t.hp); /* 大威：傷害數字、血條 */
     if (t.armor > 0 && SC.armor) amount = SC.armor.absorb(t, amount, from, cause); /* 第 192 版：積分賽先扣護甲 */
@@ -32138,6 +32139,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (SC.vskSpeed) sp *= SC.vskSpeed(a); /* 第 169 版：滾刷 Q 加速 */
     if (a.isPlayer && G.mode === 'boss') sp *= SC.dg && SC.dg.active ? SC.dg.speedK(a) : G.opts.adv ? 1.15 : 1; /* 世界三：快腳、潛水艇卡；世界一、二的魔王戰也快 15%（Yen 11-23） */ /* 世界三地城：快腳、潛水艇卡 */
     if (a.heroSpd) sp *= a.heroSpd; if (zItm(a, 'spd')) sp *= SC.zbItem.D.spd; if (a.skSpdUntil > now) sp *= a.skSpdK || 1; /* 第 171 版：神兵（大錘、跑車）、墨刀 Q 跑得快 */
+    sp *= (G.rule === 'zombie' && SC.zbShop ? SC.zbShop.mul(a, 'spd') : 1); /* 小威 11-24：殭屍模式升級「跑速」 */
     if (a.onGround) a.airSpeed = Math.max(C.WALK_SPEED, sp);
     const len = Math.hypot(ctl.mx, ctl.mz), k = len > 1 ? 1 / len : 1, acc = a.onGround ? 13 : 4;
     if (a.launchT > 0) a.launchT -= dt; // 被機頂甩出去的瞬間不能煞車
@@ -32180,10 +32182,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (a.submerged) { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.REFILL_RATE * (G.mode === 'boss' ? 1.5 : 1) * dt); }
     else if (a.form === 'cat' && a.ground === 'neutral') { if (since > C.REFILL_DELAY) a.ink = Math.min(100, a.ink + C.NEUTRAL_CAT_REFILL * dt); }
     else if (a.form === 'biped' && (a.ground === 'own' || a.ground === 'neutral') && a.ink < (G.mode === 'boss' ? 50 : C.EMERGENCY_CAP) && since > C.EMERGENCY_DELAY) a.ink = Math.min(G.mode === 'boss' ? 50 : C.EMERGENCY_CAP, a.ink + C.EMERGENCY_RATE * (G.mode === 'boss' ? 2.5 : 1) * dt); /* 第 141 版（試玩報告：小孩一直沒墨）：魔王關站著也會補到一半、補得比較快 */
-    if (zInk) { if (a.ink > zInk0) a.ink = Math.min(100, zInk0 + (a.ink - zInk0) * 1.35); if (zItm(a, 'ink')) a.ink = 100; /* 第 182 版：墨水無限 */ a.zInkL = a.ink; }
+    if (zInk) { if (a.ink > zInk0) a.ink = Math.min(100, zInk0 + (a.ink - zInk0) * 1.35 * (SC.zbShop ? SC.zbShop.mul(a, 'ink') : 1)); /* 小威 11-24：升級「墨水回復」 */ if (zItm(a, 'ink')) a.ink = 100; /* 第 182 版：墨水無限 */ a.zInkL = a.ink; }
     if (a.inWater) { /* 海裡不回血 */ }
     else if (a.ground === 'enemy' && !baseSafe(a, null) && !(G.rule === 'turf' && onTower(a)) && now >= a.protectUntil) { if (a.hp > C.ENEMY_INK_FLOOR) a.hp = Math.max(C.ENEMY_INK_FLOOR, a.hp - C.ENEMY_INK_DRAIN * dt); }
-    else if (a.hp < 100 && now - a.lastHitAt > C.HEAL_DELAY) a.hp = Math.min(100, a.hp + (a.submerged ? C.HEAL_OWN_INK : a.form === 'cat' && a.ground === 'neutral' ? C.HEAL_NEUTRAL : C.HEAL_RATE) * dt);
+    else if (a.hp < 100 && now - a.lastHitAt > C.HEAL_DELAY) a.hp = Math.min(100, a.hp + (a.submerged ? C.HEAL_OWN_INK : a.form === 'cat' && a.ground === 'neutral' ? C.HEAL_NEUTRAL : C.HEAL_RATE) * dt * (G.rule === 'zombie' && SC.zbShop ? SC.zbShop.mul(a, 'heal') : 1)); /* 小威 11-24：升級「回血」 */
     if (a.submerged && a.speed > 8) { a.swimT -= dt; if (a.swimT <= 0) { a.swimT = 0.11; SC.fx.burst(a.pos.x, a.pos.y + 0.2, a.pos.z, colors[a.team], 2, 8, 0.3, 0.2); if (a.isPlayer) A.sfx.swim(); } }
 
     // 武器
@@ -34433,6 +34435,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     { k: 'jmp', ic: '🦘', name: '跳躍 +1！', col: 0x2fd6c8, t: 0 }, // 第 196 版（Yen 11-23）：這場永久多一段跳（a.xJ，可以一直疊）
   ]);
   const D = (IT.D = { first: 8, gap: 9, gapR: 5, batch: 2, killP: 0.03, /* 第 196 版（Yen「道具給的量都多一點大方一點」）：第一次 12→8 秒、每 14～22→9～14 秒、一次掉 2 個、打倒殭屍掉道具 1.5%→3%、效果時間 15→20 秒（護盾 10→14） */ atk: 1.6, bigR: 7, bigK: 0.5, reach: 1.4, spd: 1.35, rate: 0.55, draw: 1.8 }); // 一場 5 分鐘大約 15～20 個
+  Object.assign(D, { first: 14, gap: 22, gapR: 8, batch: 1, killP: 0 }); /* 小威 11-24（「Buff：打掉一隻跟大胃王一樣大隻的怪才會給」「怪可以出多一些，但必須是單人吃才有」）：buff 只從 buff 大鼠來，每 22～30 秒一隻（一回合 2～3 隻），打倒殭屍不再掉道具 */
+  const BF_NAME = { atk: '大劍鼠', ink: '墨水桶鼠', big: '爆爆鼠', spd: '飛毛腿鼠', rate: '快手鼠', dbl: '雙槍鼠', shd: '盾牌鼠', hp: '愛心鼠', jmp: '跳跳鼠' }; IT.bfName = (i) => BF_NAME[(K[i] || {}).k] || 'buff 大鼠'; /* 小威 11-24：一種 buff 一種鼠 */
   const KI = {}; K.forEach((q, i) => (KI[q.k] = i));
   const on = () => G() && G().rule === 'zombie';
   IT.is = (k) => k >= BASE && k < BASE + K.length;
@@ -34440,6 +34444,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   IT.col = (k) => (K[k - BASE] || K[0]).col;
   IT.on = (a, key) => !!(a && a.itm && a.itm[key] > G().time && on());
   IT.atk = (a) => (IT.on(a, 'atk') ? D.atk : 1) * (SC.zbHero && SC.zbHero.fourDmg ? SC.zbHero.fourDmg(a) : 1); /* 第 185 版：四手霸王傷害 ×1.5 也算在這 */
+  { const atk0 = IT.atk; IT.atk = (a) => atk0(a) * (SC.zbShop && SC.zbShop.mul ? SC.zbShop.mul(a, 'atk') : 1); } /* 小威 11-24：商店、升級的攻擊力 */
   const hex = (c) => '#' + c.toString(16).padStart(6, '0');
   const texC = {};
   IT.tex = (k) => { // 地上光柱裡的圖示：圓角方塊（神兵是圓的），一眼分得出來
@@ -34460,7 +34465,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   IT.reset = (a) => { if (a) { a.itm = null; a.itmLast = -1; } };
 
   // ---------- 小威 11-24：buff 怪（07z_zombie.js 的 spawnBuffZ）。打倒了全隊都拿到那個 buff ----------
-  const BF_POOL = K.map((q, i) => i).filter((i) => K[i].k !== 'jmp'); // 跳躍 +1 會永久疊加，不給全隊
+  const BF_POOL = K.map((q, i) => i); /* 小威 11-24：單人拿，跳跳鼠也可以出 */
   IT.bfRand = () => BF_POOL[(Math.random() * BF_POOL.length) | 0];
   function teamApply(i, x, y, z) {
     const g = G(); if (!g || !g.actors || !K[i] || !on()) return; const p = g.player && g.player(), team = p ? p.team : 0;
@@ -34470,8 +34475,28 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   IT.teamGive = (i, x, y, z) => { teamApply(i, x, y, z); const g = G(), p = g && g.player && g.player(); if (p && SC.zsk && SC.zsk.send) SC.zsk.send(p, 'tbf', x, y, z, 0, i); }; // 裁判那台：自己這台先上，再告訴別台
   IT.teamNet = (i, x, y, z) => teamApply(i | 0, x, y, z);
+  /* 小威 11-24（「必須是單人吃才有，不要變成一個人吃全隊都加」）：buff 大鼠打倒了，打最多的那隻貓自己拿。裁判決定是誰，送 'pbf'（誰、哪一種）給大家：
+     拿到的那台跳大字，其他台只讓那隻貓身上有光環、跳一行小字。 */
+  function soloApply(a, i, x, y, z) {
+    if (!a || !K[i] || !on()) return; const g = G(), p = g.player && g.player(), mine = a === p; apply(a, i, mine); if (a.itm && K[i].t && a.itm[K[i].k] > g.time + 40) a.itm[K[i].k] = g.time + 40; /* 同一種疊起來最多 40 秒 */
+    const c = new THREE.Color(K[i].col); if (SC.fx && Number.isFinite(x)) { SC.fx.burst(x, (y || 0) + 3, z, c, 40, 26, 0.7); if (SC.fx.ring) SC.fx.ring(x, (y || 0) + 0.4, z, c, 10, 0.45); }
+    if (mine && SC.ui) { SC.ui.banner(IT.bfName(i) + '！' + K[i].name, 2, true); } else if (p && SC.ui && SC.ui.tip && a.team === p.team) SC.ui.tip((a.name || '') + ' ' + K[i].ic + ' ' + K[i].name, 2);
+  }
+  IT.soloGive = (i, a, x, y, z) => { if (!a) return; soloApply(a, i, x, y, z); const g = G(), p = g && g.player && g.player(); if (p && SC.zsk && SC.zsk.send && a.idx != null) SC.zsk.send(p, 'pbf', x, y, z, 0, i, a.idx); };
+  IT.soloNet = (idx, i, x, y, z) => { const g = G(); if (!g || !g.actors) return; const a = g.actors.find((q) => q.idx === (idx | 0) && !q.isTarget); if (a) soloApply(a, i | 0, x, y, z); };
   // buff 怪的樣子：頭上一個大大的道具圖示、身上一圈那個顏色的光、腳下一圈光環
   const bfObj = new Map(), BALL0 = new THREE.SphereGeometry(1, 16, 12), RING0 = new THREE.TorusGeometry(1, 0.12, 6, 32);
+  const bfSaid = new Set(); IT.bfReset = () => bfSaid.clear();
+  /* 小威 11-24（「跑速 buff 就來一隻跑速鼠，攻擊很高的話就來一隻大劍鼠，可以讓跳躍變很高的話就來一隻跳躍鼠」）：身體染成那個 buff 的顏色，手上／腳下帶著代表的東西 */
+  function bfDress(z, q, g, s) {
+    try { if (z.m.mat && z.m.mat.color) z.m.mat.color.lerp(new THREE.Color(q.col), 0.45); } catch (e) { /* 材質不一樣就不染 */ }
+    const m = (c, e = 0) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.4, metalness: e, emissive: c, emissiveIntensity: 0.15 }), add = (geo, mat, x, y, zz, rx = 0, rz = 0) => { const o = new THREE.Mesh(geo, mat); o.position.set(x * s, y * s, zz * s); o.rotation.set(rx, 0, rz); o.scale.setScalar(s); g.add(o); return o; };
+    if (q.k === 'atk') { add(new THREE.BoxGeometry(0.28, 3.2, 0.12), m(0xe8eef5, 0.6), 1.5, 3.6, 0.6, 0, -0.35); add(new THREE.BoxGeometry(1.1, 0.22, 0.3), m(0xffd23f, 0.3), 1.0, 2.2, 0.6, 0, -0.35); add(new THREE.CylinderGeometry(0.14, 0.14, 0.8, 8), m(0x8a5428), 0.85, 1.75, 0.6, 0, -0.35); }
+    else if (q.k === 'jmp') { for (let i = 0; i < 4; i++) add(new THREE.TorusGeometry(0.7, 0.12, 6, 18), m(0x5a6bd6, 0.5), 0, 0.15 + i * 0.28, 0, Math.PI / 2); }
+    else if (q.k === 'spd') { [-0.55, 0.55].forEach((x) => add(new THREE.BoxGeometry(0.55, 0.35, 1.0), m(0x3fe08a), x, 0.2, 0.35)); add(new THREE.ConeGeometry(0.35, 1.2, 8), m(0xffffff), 0, 2.4, -1.3, Math.PI / 2); }
+    else if (q.k === 'shd') add(new THREE.CylinderGeometry(1.0, 1.0, 0.18, 20), m(0x9ff0ff, 0.4), 0, 2.2, 1.35, Math.PI / 2);
+    else if (q.k === 'ink') add(new THREE.CylinderGeometry(0.6, 0.5, 1.2, 12), m(0x3aa0ff), 0, 3.0, -1.2);
+  }
   function bfFx(t) {
     const Z = SC.zb, seen = new Set();
     if (Z && Z.list && on()) for (const z of Z.list) {
@@ -34479,8 +34504,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const tyS = (Z.zTY(z) || {}).s || 1, s = tyS * (z.k || 1);
       if (!o) { const q = K[z.bf - 1], c = new THREE.Color(q.col), g = new THREE.Group(), sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: IT.tex(BASE + z.bf - 1), depthTest: false, transparent: true })); sp.renderOrder = 9; g.add(sp);
         const gl = new THREE.Mesh(BALL0, new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.28, depthWrite: false, blending: THREE.AdditiveBlending })); const rg = new THREE.Mesh(RING0, new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending })); rg.rotation.x = Math.PI / 2; g.add(gl, rg);
-        z.m.g.parent.add(g); o = { g, sp, gl, rg, c }; bfObj.set(z, o); }
-      const P = z.m.g.position; o.g.visible = z.m.g.visible !== false; o.g.position.set(P.x, P.y, P.z);
+        z.m.g.parent.add(g); o = { g, sp, gl, rg, c }; bfObj.set(z, o);
+        bfDress(z, q, g, s); if (!bfSaid.has(z.id) && G().state === 'play') { bfSaid.add(z.id); if (SC.ui && SC.ui.tip) SC.ui.tip(q.ic + ' ' + IT.bfName(z.bf - 1) + '來了！打倒牠拿「' + q.name.replace(/！$/, '') + '」', 3); } } /* 小威 11-24 */
+      const P = z.m.g.position; o.g.visible = z.m.g.visible !== false; o.g.position.set(P.x, P.y, P.z); o.g.rotation.y = z.m.g.rotation.y;
       o.sp.position.y = 5.4 * s + 2 + Math.sin(t * 3) * 0.4; o.sp.scale.set(4.2, 4.2, 1); o.gl.position.y = 2.3 * s; o.gl.scale.set(2.2 * s, 2.8 * s, 2.2 * s); o.gl.material.opacity = 0.2 + Math.sin(t * 6) * 0.08; o.rg.position.y = 0.3; o.rg.scale.setScalar(2.4 * s * (1 + Math.sin(t * 5) * 0.08)); o.rg.rotation.z = t * 2;
       if (Math.random() < 0.15 && SC.fx) SC.fx.burst(P.x + (Math.random() - 0.5) * 2 * s, P.y + Math.random() * 4 * s, P.z + (Math.random() - 0.5) * 2 * s, o.c, 1, 4, 0.5, -0.4);
     }
@@ -34551,6 +34577,350 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   if (SC.i18n && SC.i18n.addL) Object.keys(LI).forEach((l) => SC.i18n.addL(l, K.map((q, i) => [q.name, LI[l][i]])));
 })();
 
+// 殭屍保衛戰改版（小威 2026-11-24）：回合、代幣、阿肥商店（中間的電腦）、三選一升級、魔王拉霸、無盡回合、星星紀錄、殭屍鼠圖鑑。
+// 小威原話：「我記得現在是有幾分鐘的限制，我覺得可以多來幾個回合，幾分鐘內有幾個回合，中間有休息時間。休息時間可以在中間的電腦購買東西：
+//   打殭屍會累積代幣，但代幣不要從殭屍身上掉落，不然地上會太多，反正打殭屍直接計數就好，不同的殭屍有不同的計法。累積的錢可以在休息時間去中間的電腦買東西。」
+//   「我想要讓每一個玩的人都上癮 會想要一直接著打 目前感覺還是偏單薄 玩不了太久」「照你的建議都改好然後上線」
+// 回合和休息的時間、回合特色、拉霸魔王、無盡回合在 07z_zombie.js（RESTS、Z.round、Z.mods、Z.slot、Z.endless）；這裡管畫面和每隻貓自己的東西。
+// 代幣、升級都記在每隻貓身上（a.zbCoin、a.zbUp、a.zbBuy），每台只算自己的貓（裁判那台另外算電腦隊友），不用網路同步；
+// 全隊的東西（機槍、補防護罩）交給裁判做（SC.zb.shopTeam）。數值都在下面的 D、UP、SHOP，改了要記在 web/BALANCE_LOG.md。
+(() => {
+  const SH = (SC.zbShop = {}), G = () => SC.game, Zb = () => SC.zb, T = (s) => (SC.tr ? SC.tr(s) : s);
+  const on = () => { const g = G(); return !!(g && g.rule === 'zombie' && SC.zb && SC.zb.on); };
+  const D = (SH.D = {
+    coin: { base: 1, fat: 2, spk: 3, bfm: 8, elite: 10, boss: 25, tank: 40 }, // 打倒一隻給幾個代幣
+    bonus: [10, 5], // 每回合打完：每隻貓 10 + 5×第幾回合
+    kioskR: 9, // 離電腦多近可以買
+    perkT: 12, // 三選一沒選，幾秒後幫你隨便選
+  });
+  // 升級（商店、三選一共用）：每一級的效果
+  const UP = (SH.UP = {
+    atk: { ic: '⚔️', name: '攻擊力 +12%', k: (n) => 1 + 0.12 * n },
+    spd: { ic: '👟', name: '跑速 +8%', k: (n) => 1 + 0.08 * n },
+    def: { ic: '🧥', name: '被咬少痛 12%', k: (n) => Math.max(0.5, 1 - 0.12 * n) },
+    head: { ic: '🎯', name: '爆頭傷害 +30%', k: (n) => 1 + 0.3 * n },
+    qcd: { ic: '⏱️', name: 'Q 冷卻 −15%', k: (n) => Math.pow(0.85, n) },
+    ult: { ic: '⭐', name: '大招充能 +30%', k: (n) => 1 + 0.3 * n },
+    ink: { ic: '💧', name: '墨水回復 +35%', k: (n) => 1 + 0.35 * n },
+    heal: { ic: '💗', name: '回血 +40%', k: (n) => 1 + 0.4 * n },
+    coin: { ic: '🪙', name: '代幣 +20%', k: (n) => 1 + 0.2 * n },
+    hero: { ic: '🔋', name: '神兵電量 +40%', k: (n) => 1 + 0.4 * n },
+    jmp: { ic: '🦘', name: '跳躍 +1', max: 3 },
+  });
+  // 阿肥商店：前兩樣是全隊的（裁判做），後面是自己的（價錢一次比一次貴）
+  const SHOP = (SH.SHOP = [
+    { k: 'tur', ic: '🔫', name: '自動機槍', team: 1 },
+    { k: 'shd', ic: '🛡️', name: '補防護罩 +15%', team: 1, price: 20 },
+    { k: 'atk', ic: '⚔️', name: '攻擊力 +12%', price: [25, 35, 45, 55] },
+    { k: 'spd', ic: '👟', name: '跑速 +8%', price: [20, 30, 40] },
+    { k: 'def', ic: '🧥', name: '防咬外套', price: [20, 30, 40] },
+    { k: 'jmp', ic: '🦘', name: '跳躍 +1', price: [25, 40] },
+  ]);
+  const TUR_PRICE = [30, 45, 60]; // 買一座機槍；四座都有了以後升級第一次、第二次
+  SH.mul = (a, k) => { if (!a || !a.zbUp || !on()) return 1; const n = a.zbUp[k] | 0, u = UP[k]; return n && u && u.k ? u.k(n) : 1; };
+  const up = (a, k) => { a.zbUp = a.zbUp || {}; a.zbUp[k] = (a.zbUp[k] | 0) + 1; if (k === 'jmp') a.xJ = (a.xJ || 0) + 1; };
+  const locals = () => { const g = G(); return (g.actors || []).filter((a) => !a.remote && a.team === 0 && !a.isTarget && !a.gone); };
+  const me = () => { const g = G(); return g && g.player ? g.player() : null; };
+
+  // ---------- 代幣 ----------
+  const coinOf = (t) => { const Z = Zb(), C = D.coin; if (t.k === 'tank') return C.tank; if (t.boss || t.giant || t.k === 'king' || t.k === 'drill') return C.boss; if (t.elite || (Z.ELITE || []).includes(t.k)) return C.elite; if (t.k === 'bfm') return C.bfm; if (t.spk) return C.spk; if (t.k === 'fat') return C.fat; return C.base; };
+  const give = (a, n) => { if (!a || !(n > 0)) return; a.zbCoin = (a.zbCoin | 0) + n; if (a.isPlayer) { popN += n; popAt = performance.now(); } };
+  SH.kill = (a, t, z) => { if (!on() || !t) return; give(a, Math.round(coinOf(t) * SH.mul(a, 'coin'))); if (a.isPlayer) dexSee(t.k); };
+  SH.bonus = (a, n) => { if (on()) give(a, n); };
+  SH.coins = (a) => (a && a.zbCoin) | 0;
+
+  // ---------- 一場開始／結束 ----------
+  let perk = null, shopOpen = false, kio = null, popN = 0, popAt = 0, newDex = [], cpuBuy = 0;
+  SH.start = () => {
+    for (const a of G().actors || []) { a.zbCoin = 0; a.zbUp = {}; a.zbBuy = {}; }
+    perk = null; shopOpen = false; popN = 0; newDex = []; slotSeen = -1; slotEl && slotEl.classList.remove('on'); if (SC.zbItem && SC.zbItem.bfReset) SC.zbItem.bfReset();
+    kioskOff(); ui(); panels();
+  };
+  SH.stop = () => { kioskOff(); perk = null; shopOpen = false; panels(); if (chip) chip.remove(); chip = null; if (slotEl) slotEl.classList.remove('on'); setTimeout(() => { if (SC.hx && SC.hx.frame && !on()) SC.hx.frame(); }, 0); };
+
+  // ---------- 休息開始／結束（每台；07z_zombie.js 叫） ----------
+  SH.restStart = (r) => {
+    const g = G(), Z = Zb(), R = Z.round(g.time), p = me();
+    for (const a of locals()) { if (a.alive) { a.hp = Math.max(a.hp, 100); a.ink = 100; a.zInkL = 100; } give(a, D.bonus[0] + D.bonus[1] * Math.max(1, R.end ? R.end - 1 : R.i)); }
+    if (R.end) SC.ui.banner(R.end === 1 ? '打倒最後魔王了！無盡回合要開始了！' : '無盡第 ' + (R.end - 1) + ' 回合過關！', 2.4, true);
+    else SC.ui.banner('第 ' + R.i + ' 回合過關！', 2.2, true);
+    setTimeout(() => { if (on() && Zb().round(G().time).rest) SC.ui.tip('休息時間：先選一張升級，再去阿肥旁邊的電腦買東西！', 4); }, 2300);
+    if (SC.audio && SC.audio.sfx.spReady) SC.audio.sfx.spReady();
+    if (p && p.team === 0 && !G().spec) offer(p);
+    if (Z.auth && Z.auth()) for (const a of locals()) if (!a.isPlayer) cpuRest(a);
+  };
+  SH.restEnd = () => {
+    const g = G(), Z = Zb(), R = Z.round(g.time); if (perk) pick((Math.random() * perk.list.length) | 0); shopOpen = false; panels();
+    const md = !R.end && Z.mods ? Z.mods[R.i] : null;
+    SC.ui.banner(R.end ? '無盡第 ' + R.end + ' 回合！' : R.i >= R.n ? '最後一回合！' : md ? '第 ' + R.i + ' 回合：' + md.name + '！' : '第 ' + R.i + ' 回合！', 2.2, true);
+  };
+  function cpuRest(a) { // 電腦隊友：隨便選一張升級；有錢先買機槍，再買自己的
+    const keys = Object.keys(UP).filter((k) => k !== 'jmp' && k !== 'hero'); up(a, keys[(Math.random() * keys.length) | 0]);
+    for (let n = 0; n < 3; n++) { const st = SHOP.map((it, i) => ({ it, i, ...state(a, it) })).filter((s) => s.ok && s.it.k !== 'shd' && s.it.k !== 'jmp'); if (!st.length) break; const s = st.find((q) => q.it.k === 'tur') || st[(Math.random() * st.length) | 0]; buy(a, s.i, true); }
+  }
+
+  // ---------- 三選一升級 ----------
+  function offer(p) {
+    const pool = Object.keys(UP).filter((k) => !(UP[k].max && ((p.zbUp && p.zbUp[k]) | 0) >= UP[k].max)), list = [];
+    while (list.length < 3 && pool.length) list.push(pool.splice((Math.random() * pool.length) | 0, 1)[0]);
+    perk = { list, at: G().time }; panels();
+  }
+  function pick(i) {
+    const p = me(); if (!perk || !p || !perk.list[i]) return; const k = perk.list[i]; perk = null; up(p, k);
+    SC.ui.banner(UP[k].ic + ' ' + UP[k].name, 1.6, true); if (SC.audio && SC.audio.sfx.koGot) SC.audio.sfx.koGot(); panels();
+  }
+
+  // ---------- 商店 ----------
+  function state(a, it) {
+    const Z = Zb(), c = SH.coins(a);
+    if (it.k === 'tur') { const n = (Z.tur || []).filter((t) => t > 0).length, lv = Z.turLv | 0; if (n < 4) return { price: TUR_PRICE[0], label: '自動機槍（' + n + '/4）', ok: c >= TUR_PRICE[0] }; if (lv < 2) return { price: TUR_PRICE[lv + 1], label: '機槍升級 Lv' + (lv + 1), ok: c >= TUR_PRICE[lv + 1] }; return { sold: 1, label: '機槍已經滿了' }; }
+    if (it.k === 'shd') { const f = Z.shield / 2000; if (f >= 0.99) return { sold: 1, label: '防護罩是滿的' }; return { price: it.price, label: it.name, ok: c >= it.price }; }
+    const n = ((a.zbBuy && a.zbBuy[it.k]) | 0); if (n >= it.price.length) return { sold: 1, label: it.name + '（買滿了）' }; return { price: it.price[n], label: it.name + (n ? '（第 ' + (n + 1) + ' 次）' : ''), ok: c >= it.price[n] };
+  }
+  function buy(a, i, quiet) {
+    const it = SHOP[i]; if (!it || !a) return false; const s = state(a, it); if (!s.ok) { if (!quiet && a.isPlayer) { SC.ui.tip(s.sold ? s.label : '代幣不夠！再去打殭屍吧', 1.6); if (SC.audio && SC.audio.sfx.click) SC.audio.sfx.click(); } return false; }
+    a.zbCoin -= s.price; const Z = Zb();
+    if (it.team) { Z.shopTeam(it.k === 'tur' ? 0 : 1, a); } else { a.zbBuy = a.zbBuy || {}; a.zbBuy[it.k] = (a.zbBuy[it.k] | 0) + 1; up(a, it.k); }
+    if (!quiet && a.isPlayer) { SC.ui.banner(it.ic + ' ' + s.label.replace(/（.*）$/, '') + '！', 1.4, true); if (SC.audio && SC.audio.sfx.koGot) SC.audio.sfx.koGot(); if (shopEl) { const b = shopEl.querySelector('[data-i="' + i + '"]'); if (b) { b.classList.remove('got'); void b.offsetWidth; b.classList.add('got'); } } }
+    if (a.pos && SC.fx) SC.fx.burst(a.pos.x, a.pos.y + 3, a.pos.z, new THREE.Color(0xffd23f), 18, 16, 0.5);
+    lastKey = ''; return true;
+  }
+  SH.buy = (i) => buy(me(), i, false);
+  SH.pick = (i) => pick(i);
+
+  // ---------- 中間的電腦（商店） ----------
+  const emoTex = (e) => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); x.font = '96px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(e, 64, 70); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
+  function screenTex() { const c = document.createElement('canvas'); c.width = 256; c.height = 192; const x = c.getContext('2d'); x.fillStyle = '#1b1430'; x.fillRect(0, 0, 256, 192); x.fillStyle = '#e6ff2a'; x.fillRect(0, 150, 256, 42); x.font = '84px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('🛒', 128, 78); x.fillStyle = '#1b1430'; x.font = '900 30px ' + (getComputedStyle(document.body).getPropertyValue('--f-body') || 'sans-serif'); x.fillText(T('阿肥商店'), 128, 172); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; }
+  function kioskPick() {
+    const Z = Zb(), d = Z.dome(), R = d.r + 6; let best = null;
+    for (const f of [0.75, 0.25, 1.75, 1.25, 0.5, 1, 0, 1.5]) { const a = f * Math.PI, x = d.x + Math.cos(a) * R, z = d.z + Math.sin(a) * R, y = Z.H(x, z); if (y > d.cy - 4 && y < d.cy + 4) return { x, z, y, a }; if (!best && y > -1) best = { x, z, y, a }; }
+    return best || { x: d.x, z: d.z + R, y: Z.H(d.x, d.z + R), a: Math.PI / 2 };
+  }
+  function kioskOn() {
+    const Z = Zb(), sc = Z.scene && Z.scene(); if (!sc) return null; if (kio && kio.g.parent === sc) return kio; kioskOff();
+    const P = kioskPick(), g = new THREE.Group(), M = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.45, ...o }), add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); g.add(m); return m; };
+    add(new THREE.CylinderGeometry(2.8, 3.2, 0.8, 24), M(0x2b1f4a), 0, 0.4, 0);
+    add(new THREE.BoxGeometry(3.8, 4.4, 2.4), M(0xff8fc8), 0, 3, 0);
+    add(new THREE.BoxGeometry(4.2, 0.5, 2.8), M(0xffd23f), 0, 5.45, 0);
+    add(new THREE.BoxGeometry(3.2, 0.5, 1.4), M(0xffffff), 0, 1.25, 1.4).rotation.x = -0.35;
+    const scr = add(new THREE.PlaneGeometry(3.0, 2.25), new THREE.MeshBasicMaterial({ map: screenTex() }), 0, 3.35, 1.21);
+    add(new THREE.CylinderGeometry(0.12, 0.12, 1.6, 8), M(0x2b1f4a), 1.2, 6.4, 0);
+    const bulb = add(new THREE.SphereGeometry(0.42, 14, 10), new THREE.MeshBasicMaterial({ color: 0xe6ff2a }), 1.2, 7.3, 0);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(D.kioskR - 1.5, 0.28, 8, 48), new THREE.MeshBasicMaterial({ color: 0xe6ff2a, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending })); ring.rotation.x = Math.PI / 2; ring.position.y = 0.35; g.add(ring);
+    const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: emoTex('🛒'), depthTest: false, transparent: true })); spr.scale.set(5, 5, 1); spr.position.y = 10; spr.renderOrder = 9; g.add(spr);
+    g.position.set(P.x, P.y, P.z); g.rotation.y = Math.atan2(Math.cos(P.a), Math.sin(P.a)); sc.add(g);
+    kio = { g, ring, spr, bulb, scr, x: P.x, z: P.z, y: P.y }; return kio;
+  }
+  function kioskOff() { if (kio && kio.g.parent) kio.g.parent.remove(kio.g); kio = null; }
+  SH.kiosk = () => kio;
+  const nearK = (a) => !!(kio && a && a.alive && Math.hypot(a.pos.x - kio.x, a.pos.z - kio.z) < D.kioskR && Math.abs(a.pos.y - kio.y) < 8);
+  // 「下一步」指標：休息時、選完升級、有錢、不在電腦旁邊 → 指去電腦
+  SH.guide = (p) => {
+    if (!on() || !kio || !p) return null; const R = Zb().round(G().time); if (!R.rest || R.left < 3) return null;
+    if (perk) return null; if (nearK(p)) return null; const cheap = Math.min(...SHOP.map((it) => state(p, it)).filter((s) => !s.sold).map((s) => s.price)); if (!(SH.coins(p) >= cheap)) return null;
+    return { k: 'shop', ic: '🛒', x: kio.x, y: kio.y + 9, z: kio.z, id: 's' };
+  };
+
+  // ---------- 時鐘（09_ui.js 的計時器） ----------
+  const mmss = (s) => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  SH.clock = () => {
+    const R = Zb().round(G().time), s = Math.max(0, Math.ceil(R.left));
+    if (R.rest) return { k: 'r' + s, txt: mmss(s), fin: s <= 5 }; /* 休息時計時器變粉紅色（SH.tick） */
+    if (R.boss) return { k: 'b', txt: '打倒魔王！', fin: true };
+    return { k: (R.end ? 'e' : 't') + s, txt: mmss(s), fin: s <= 10 };
+  };
+
+  // ---------- 畫面 ----------
+  const css = document.createElement('style'); css.textContent = `
+#timer.zrest,.hx-clk.zrest b{color:#ff8fc8!important}
+.zb-line .zb-rs{position:absolute;top:6px;height:11px;border-radius:6px;background:#ff8fc8;border:2px solid #1b1430;box-sizing:border-box;z-index:0}
+#zs-chip{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;pointer-events:none;font:900 15px/1 var(--f-body);color:#fff}
+#zs-chip>*{display:flex;align-items:center;gap:5px;height:30px;padding:0 12px;border-radius:99px;background:#120b22;border:2px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.35);white-space:nowrap}
+#zs-chip .r{background:#e6ff2a;color:#120b22;border-color:#120b22;font-style:italic}
+#zs-chip .r.rest{background:#ff8fc8}
+#zs-chip .c u{text-decoration:none;font-size:17px;color:#ffd23f}
+#zs-chip .c.bump{animation:zsBump .45s ease-out}
+#zs-chip .md{background:#2b1f4a}
+#zs-chip .ups{gap:7px;font-size:14px;padding:0 10px}
+#zs-chip .ups i{font-style:normal}#zs-chip .ups b{font-size:11px;color:#e6ff2a;margin-left:-3px}
+#zs-pop{position:fixed;z-index:31;pointer-events:none;font:900 italic 22px/1 var(--f-body);color:#ffd23f;-webkit-text-stroke:5px #120b22;paint-order:stroke;opacity:0;transform:translate(-50%,0)}
+#zs-pop.on{animation:zsPop .9s ease-out forwards}
+@keyframes zsPop{0%{opacity:0;transform:translate(-50%,8px) scale(.7)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}100%{opacity:0;transform:translate(-50%,-26px) scale(1)}}
+@keyframes zsBump{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+#zs-perk,#zs-shop{position:fixed;z-index:32;display:none;font-family:var(--f-body);color:#fff}
+#zs-perk.on,#zs-shop.on{display:block}
+#zs-perk{left:50%;top:50%;transform:translate(-50%,-58%);text-align:center}
+#zs-perk h3{margin:0 0 12px;font:900 italic 30px/1.1 var(--f-body);-webkit-text-stroke:7px #120b22;paint-order:stroke;color:#e6ff2a}
+#zs-perk .row{display:flex;gap:16px;justify-content:center}
+.zsp-card{position:relative;width:170px;height:200px;border-radius:20px;background:#120b22;border:4px solid #fff;box-shadow:0 0 0 4px #120b22,0 10px 0 rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;box-sizing:border-box;cursor:pointer;pointer-events:auto;animation:zsIn .35s cubic-bezier(.2,1.5,.4,1) both;transition:transform .12s}
+.zsp-card:nth-child(2){animation-delay:.07s}.zsp-card:nth-child(3){animation-delay:.14s}
+.zsp-card:hover{transform:translateY(-6px) rotate(-1.5deg);border-color:#e6ff2a}
+.zsp-card i{font-style:normal;font-size:64px;line-height:1}
+.zsp-card b{font:900 18px/1.2 var(--f-body)}
+.zsp-card kbd{position:absolute;left:-12px;top:-12px;width:38px;height:38px;border-radius:12px;background:#e6ff2a;color:#120b22;border:3px solid #120b22;font:900 22px/32px var(--f-body);text-align:center}
+.zsp-card em{font-style:normal;font-size:12px;color:#c9b8ff}
+@keyframes zsIn{from{opacity:0;transform:translateY(30px) scale(.8)}to{opacity:1;transform:none}}
+#zs-perk p{margin:12px 0 0;font:800 15px/1.3 var(--f-body);-webkit-text-stroke:4px #120b22;paint-order:stroke}
+#zs-shop{right:calc(18px + env(safe-area-inset-right));top:50%;transform:translateY(-50%);width:360px;padding:16px 16px 12px;border-radius:22px;background:#120b22;border:4px solid #fff;box-shadow:0 0 0 4px #120b22,0 12px 0 rgba(0,0,0,.35);animation:zsIn .3s cubic-bezier(.2,1.5,.4,1) both;pointer-events:auto}
+#zs-shop header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#zs-shop header b{font:900 italic 24px/1 var(--f-body);color:#e6ff2a}
+#zs-shop header span{font:900 20px/1 var(--f-body);color:#ffd23f;background:#2b1f4a;border-radius:99px;padding:6px 12px}
+#zs-shop .it{display:grid;grid-template-columns:30px 40px 1fr auto;align-items:center;gap:8px;height:50px;margin-bottom:6px;padding:0 10px 0 6px;border-radius:14px;background:#2b1f4a;border:3px solid transparent;cursor:pointer}
+#zs-shop .it:hover{border-color:#e6ff2a}
+#zs-shop .it kbd{width:28px;height:28px;border-radius:9px;background:#e6ff2a;color:#120b22;font:900 17px/28px var(--f-body);text-align:center}
+#zs-shop .it i{font-style:normal;font-size:28px;text-align:center}
+#zs-shop .it b{font:800 15px/1.15 var(--f-body)}
+#zs-shop .it b small{display:block;font-size:11px;color:#b9a8e8;font-weight:700}
+#zs-shop .it u{text-decoration:none;font:900 18px/1 var(--f-body);color:#ffd23f}
+#zs-shop .it.no{opacity:.5}#zs-shop .it.no u{color:#ff8a9a}
+#zs-shop .it.sold{opacity:.38;cursor:default}#zs-shop .it.sold u{font-size:13px;color:#fff}
+#zs-shop .it.got{animation:zsBump .45s ease-out;border-color:#ffd23f}
+#zs-shop footer{display:flex;justify-content:space-between;font:800 13px/1.3 var(--f-body);color:#c9b8ff;margin-top:4px}
+#zs-slot{position:fixed;left:50%;top:34%;z-index:32;transform:translate(-50%,-50%);display:none;pointer-events:none;text-align:center;font-family:var(--f-body)}
+#zs-slot.on{display:block;animation:zsIn .3s ease-out both}
+#zs-slot h3{margin:0 0 10px;font:900 italic 34px/1 var(--f-body);color:#ffd23f;-webkit-text-stroke:8px #120b22;paint-order:stroke}
+#zs-slot .reels{display:flex;gap:10px;justify-content:center;padding:12px 16px;border-radius:22px;background:#c21f5c;border:5px solid #120b22;box-shadow:0 0 0 4px #ffd23f,0 10px 0 rgba(0,0,0,.35)}
+#zs-slot .reel{width:84px;height:92px;border-radius:14px;background:#fff;border:4px solid #120b22;display:grid;place-items:center;font-size:58px;overflow:hidden}
+#zs-slot .reel.spin span{animation:zsSpin .12s linear infinite}
+@keyframes zsSpin{from{transform:translateY(-30%)}to{transform:translateY(30%)}}
+#zs-slot p{margin:12px 0 0;font:900 26px/1.1 var(--f-body);color:#fff;-webkit-text-stroke:6px #120b22;paint-order:stroke;min-height:28px}
+.zs-res{grid-column:1/-1;margin-top:8px;padding:10px 12px;border-radius:16px;background:rgba(27,20,48,.92);color:#fff;font:800 14px/1.35 var(--f-body);text-align:left}
+.zs-res .st{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.zs-res .st b{font-size:28px;letter-spacing:2px;color:#ffd23f;-webkit-text-stroke:1px #120b22}
+.zs-res .st b s{text-decoration:none;color:#4a4366}
+.zs-res .nw{display:inline-block;padding:2px 9px;border-radius:99px;background:#e6ff2a;color:#120b22;font-weight:900;animation:zsBump .6s ease-out 2}
+.zs-res .goal{margin-top:4px;color:#e6ff2a}
+.zs-res .dex{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;align-items:center}
+.zs-res .dex span{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:#2b1f4a}
+.zs-res .dex span svg{width:24px;height:24px}
+.zs-res .dex span.no{opacity:.35;font-size:13px;color:#fff}
+.zs-res .dex span.nw{box-shadow:0 0 0 2px #e6ff2a}
+.zs-st{display:block;font:900 11px/1 var(--f-body);color:#ffd23f;letter-spacing:1px;margin-top:2px}
+@media (max-width:760px),(max-height:520px){#zs-chip{font-size:12px;gap:5px}#zs-chip>*{height:24px;padding:0 8px}#zs-chip .ups{display:none}.zsp-card{width:110px;height:140px}.zsp-card i{font-size:40px}.zsp-card b{font-size:13px}#zs-perk h3{font-size:22px}#zs-shop{width:min(520px,62vw);padding:8px 10px;right:8px;top:8px;transform:none}#zs-shop header{margin-bottom:6px}#zs-shop header b{font-size:18px}#zs-shop header span{font-size:15px;padding:4px 10px}#zs-shop .its{display:grid;grid-template-columns:1fr 1fr;column-gap:6px}#zs-shop .it{height:44px;margin-bottom:5px;grid-template-columns:24px 26px 1fr auto;gap:5px}#zs-shop .it kbd{width:22px;height:22px;font-size:13px;line-height:22px}#zs-shop .it i{font-size:20px}#zs-shop .it b{font-size:12px}#zs-shop .it b small{display:none}#zs-shop .it u{font-size:14px}#zs-shop footer{font-size:11px}}`;
+  document.head.appendChild(css);
+  let chip = null, perkEl = null, shopEl = null, slotEl = null, popEl = null, lastKey = '', chipKey = '';
+  function ui() {
+    if (!perkEl) { perkEl = document.createElement('div'); perkEl.id = 'zs-perk'; document.body.appendChild(perkEl); perkEl.addEventListener('click', (e) => { const c = e.target.closest('.zsp-card'); if (c) pick(+c.dataset.i); }); }
+    if (!shopEl) { shopEl = document.createElement('div'); shopEl.id = 'zs-shop'; document.body.appendChild(shopEl); shopEl.addEventListener('click', (e) => { const c = e.target.closest('.it'); if (c) buy(me(), +c.dataset.i, false); }); }
+    if (!slotEl) { slotEl = document.createElement('div'); slotEl.id = 'zs-slot'; slotEl.innerHTML = '<h3>🎰 魔王拉霸！</h3><div class="reels"><div class="reel"><span></span></div><div class="reel"><span></span></div><div class="reel"><span></span></div></div><p></p>'; document.body.appendChild(slotEl); }
+    if (!popEl) { popEl = document.createElement('div'); popEl.id = 'zs-pop'; document.body.appendChild(popEl); }
+  }
+  function chipOn() { const top = document.querySelector('#hud .h-top'); if (!top) return null; if (chip && chip.parentNode === top) return chip; if (chip) chip.remove(); chip = document.createElement('div'); chip.id = 'zs-chip'; top.appendChild(chip); chipKey = ''; return chip; }
+  function panels() {
+    ui(); const p = me();
+    perkEl.classList.toggle('on', !!perk);
+    if (perk) { const k = perk.list.join(); if (perkEl.dataset.k !== k) { perkEl.dataset.k = k; perkEl.innerHTML = '<h3>選一張升級！</h3><div class="row">' + perk.list.map((k, i) => { const u = UP[k], n = ((p && p.zbUp && p.zbUp[k]) | 0); return `<div class="zsp-card" data-i="${i}"><kbd>${i + 1}</kbd><i>${u.ic}</i><b>${u.name}</b>${n ? `<em>已經有 ${n} 級</em>` : ''}</div>`; }).join('') + '</div><p>按 1、2、3 選（這場一直有效）</p>'; } }
+    else perkEl.dataset.k = '';
+    shopEl.classList.toggle('on', !!(shopOpen && !perk)); if (!shopOpen || perk || !p) return;
+    const R = Zb().round(G().time), key = SH.coins(p) + '|' + SHOP.map((it) => JSON.stringify(state(p, it))).join() + '|' + Math.ceil(R.left); if (key === lastKey) return; lastKey = key;
+    const md = !R.end && Zb().mods ? Zb().mods[R.i + 1] : null;
+    shopEl.innerHTML = `<header><b>🛒 阿肥商店</b><span>🪙 ${SH.coins(p)}</span></header>` + '<div class="its">' + SHOP.map((it, i) => { const s = state(p, it); return `<div class="it${s.sold ? ' sold' : s.ok ? '' : ' no'}" data-i="${i}"><kbd>${i + 1}</kbd><i>${it.ic}</i><b>${s.label}${it.team ? '<small>全隊</small>' : '<small>自己</small>'}</b><u>${s.sold ? '—' : '🪙 ' + s.price}</u></div>`; }).join('') + '</div>'
+      + `<footer><span>按 1～6 買</span><span>休息還有 ${Math.max(0, Math.ceil(R.left))} 秒${md ? '・下一回合：' + md.ic + ' ' + md.name : ''}</span></footer>`;
+  }
+  function chipTick() {
+    const c = chipOn(); if (!c) return; const g = G(), Z = Zb(), R = Z.round(g.time), p = me(); if (!p) return;
+    const md = R.rest ? (!R.end && Z.mods ? Z.mods[R.i + 1] : null) : !R.end && Z.mods ? Z.mods[R.i] : null, ups = p.zbUp ? Object.keys(UP).filter((k) => p.zbUp[k] > 0) : [];
+    const rt = R.end ? '♾️ 無盡第 ' + R.end + ' 回合' : R.boss ? '魔王回合' : '第 ' + R.i + ' / ' + R.n + ' 回合', key = rt + R.rest + (md ? md.k : '') + SH.coins(p) + ups.map((k) => k + p.zbUp[k]).join();
+    if (key === chipKey) return; const bump = chipKey && SH.coins(p) > (c._coin | 0); chipKey = key; c._coin = SH.coins(p);
+    c.innerHTML = `<b class="r${R.rest ? ' rest' : ''}">${rt}${R.rest ? '・休息' : ''}</b>${md ? `<span class="md">${R.rest ? '下一回合 ' : ''}${md.ic} ${md.name}</span>` : ''}<span class="c">🪙 <u>${SH.coins(p)}</u></span>${ups.length ? `<span class="ups">${ups.map((k) => `<i>${UP[k].ic}</i>${p.zbUp[k] > 1 ? `<b>${p.zbUp[k]}</b>` : ''}`).join('')}</span>` : ''}`;
+    if (bump) { const e = c.querySelector('.c'); if (e) e.classList.add('bump'); }
+  }
+  function popTick() {
+    if (!popN || !popEl || performance.now() - popAt < 120) return; const c = chip && chip.querySelector('.c'); if (!c) { popN = 0; return; } const r = c.getBoundingClientRect();
+    popEl.textContent = '+' + popN + ' 🪙'; popEl.style.left = (r.left + r.width / 2) + 'px'; popEl.style.top = (r.bottom + 4) + 'px'; popEl.classList.remove('on'); void popEl.offsetWidth; popEl.classList.add('on'); popN = 0;
+  }
+  // 魔王拉霸：拉霸那一波的預告 5 秒裡轉，最後停在抽到的魔王
+  let slotSeen = -1, slotT = 0;
+  function slotTick(dt) {
+    const Z = Zb(), E = Z.ev >= 0 && Z.EVENTS ? Z.EVENTS[Z.ev] : null, sl = Z.slot, show = !!(E && E.slot && sl && Z.evPh >= 1 && G().time < E.t + 2.2);
+    slotEl.classList.toggle('on', show); if (!show) return; if (slotSeen !== Z.ev) { slotSeen = Z.ev; slotT = 0; slotEl.querySelector('p').textContent = ''; if (SC.audio && SC.audio.sfx.zhorn) SC.audio.sfx.zhorn(); } slotT += dt;
+    const all = (Z.SLOT || []).map((q) => q.ic), reels = slotEl.querySelectorAll('.reel'); reels.forEach((r, i) => { const stop = slotT > 1.6 + i * 0.6, sp = r.querySelector('span'); r.classList.toggle('spin', !stop); sp.textContent = stop ? sl.ic : all[(Math.floor(slotT * 14) + i * 2) % all.length]; if (stop && !r._d) { r._d = 1; if (SC.audio && SC.audio.sfx.count) SC.audio.sfx.count(); } if (!stop) r._d = 0; });
+    if (slotT > 3.0) slotEl.querySelector('p').textContent = sl.name + '！';
+  }
+  SH.tick = (dt) => {
+    if (!on()) return; const g = G(), Z = Zb(), p = me(); ui(); const R = Z.round(g.time), play = g.state === 'play';
+    const k = kioskOn(); if (k) { const t = performance.now() / 1000, lit = play && R.rest; k.ring.visible = lit; k.spr.visible = lit; k.spr.position.y = 10 + Math.sin(t * 3) * 0.6; k.ring.scale.setScalar(1 + Math.sin(t * 4) * 0.04); k.bulb.material.color.setHex(lit && Math.sin(t * 8) > 0 ? 0xffffff : 0xe6ff2a); }
+    if (perk && g.time - perk.at > D.perkT) pick((Math.random() * perk.list.length) | 0);
+    const want = !!(play && R.rest && p && nearK(p)); if (want !== shopOpen) { shopOpen = want; lastKey = ''; if (want && SC.audio && SC.audio.sfx.click) SC.audio.sfx.click(); }
+    { const tm = document.getElementById('timer'); if (tm) tm.classList.toggle('zrest', !!(play && R.rest)); }
+    panels(); chipTick(); popTick(); slotTick(dt);
+    if (SC.hx && SC.hx.frame && !(SC.slots && SC.slots.on)) SC.hx.frame(); /* 新版對戰介面（09wh_hud.js）：殭屍模式沒有武器欄，由這裡每格叫一次 */
+  };
+  // 鍵盤：三選一（1～3）、商店（1～6）。比換武器的 1、2、3 先收到
+  addEventListener('keydown', (e) => {
+    if (!on() || e.repeat) return; const m = /^(?:Digit|Numpad)([1-6])$/.exec(e.code); if (!m) return; const n = +m[1] - 1;
+    if (perk) { if (n < 3) pick(n); } else if (shopOpen) buy(me(), n, false); else return;
+    e.preventDefault(); e.stopImmediatePropagation();
+  }, true);
+
+  // ---------- 紀錄：星星、最高無盡回合、殭屍鼠圖鑑 ----------
+  const REC = 'sc-zbrec', DEXK = 'sc-zbdex';
+  const load = (k) => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
+  const save = (k, o) => { try { localStorage.setItem(k, JSON.stringify(o)); } catch (e) { /* 私密模式：這次記不住 */ } };
+  const DEX = (SH.DEX = [['walk', '殭屍鼠'], ['run', '跑跑鼠'], ['fat', '胖胖鼠'], ['balloon', '氣球鼠'], ['dig', '鑽地鼠'], ['mini', '小果凍鼠'], ['boom', '炸彈鼠'], ['jelly', '果凍鼠'], ['tongue', '舌頭鼠'], ['charge', '衝撞鼠'], ['spit', '吐毒鼠'], ['lid', '鍋蓋鼠'], ['inky', '噴墨鼠'], ['heal', '澆水鼠'], ['pogo', '彈簧鼠'], ['bfm', 'buff 大鼠'], ['big', '大胃王'], ['mama', '鼠媽媽'], ['armor', '鐵甲大鼠'], ['mag', '磁鐵鼠'], ['king', '起司寶寶大王'], ['drill', '鑽牆鼠'], ['tank', '肌肉坦克鼠']]);
+  function dexSee(k) { if (!DEX.some((d) => d[0] === k)) return; const o = load(DEXK); if (o[k]) return; o[k] = 1; save(DEXK, o); newDex.push(k); const nm = (DEX.find((d) => d[0] === k) || [])[1]; if (SC.ui && SC.ui.tip) SC.ui.tip('📖 圖鑑新發現：' + nm + '！（' + Object.keys(o).length + ' / ' + DEX.length + '）', 2.6); }
+  const icon = (k) => { const Z = Zb(), t = Z.TYk && Z.TYk(k), ev = ['walk', 'run', 'fat', 'mini', 'bfm'].includes(k); return ev && t ? Z.mouseIcon('#' + t.body.toString(16).padStart(6, '0')) : Z.icon(k); };
+  const DIFS = ['easy', 'normal', 'hard', 'crazy', 'hell', 'mad', 'ultra'], difName = (k) => (SC.DIFFICULTY && SC.DIFFICULTY[k] && SC.DIFFICULTY[k].name) || k;
+  SH.results = (r, el, vEl) => {
+    if (!el || !r) return; const g = G(), Z = Zb(), dk = Z.dk || 'normal', key = (g.map || '') + '|' + dk, rec = load(REC), o = rec[key] || {};
+    const deaths = (g.actors || []).filter((a) => a.team === 0 && !a.isTarget).reduce((n, a) => n + (a.deaths | 0), 0), won = !!r.won;
+    const fr = r.tf != null ? r.tf : Z.endless ? Z.tankFrac || 0 : r.frac; /* 無盡回合：防護罩看打倒最後魔王那一刻（別台收到的結算沒有這兩個數字，用自己這台的） */
+    const st = won ? 1 + (fr >= 0.5 ? 1 : 0) + (deaths <= 3 ? 1 : 0) : 0, kills = (r.pops | 0) + (r.mice != null ? r.mice | 0 : Z.swKillsN ? Z.swKillsN() : 0), er = r.er != null ? r.er | 0 : Z.endless ? Z.endRound(g.time) : 0;
+    const nSt = st > (o.s | 0), nEr = er > (o.er | 0), nK = kills > (o.k | 0) && (o.k | 0) > 0; rec[key] = { s: Math.max(o.s | 0, st), er: Math.max(o.er | 0, er), k: Math.max(o.k | 0, kills) }; save(REC, rec);
+    if (er && vEl) vEl.textContent = '♾️ 撐到無盡第 ' + er + ' 回合！';
+    const miss = []; if (won && fr < 0.5) miss.push('防護罩留一半以上'); if (won && deaths > 3) miss.push('全隊倒下 3 次以內');
+    const nx = DIFS[DIFS.indexOf(dk) + 1];
+    const goal = !won ? '下次目標：打倒最後魔王，守住阿肥！' : miss.length ? '下次拿 ★★★：' + miss.join('、') : er ? '下次挑戰撐過無盡第 ' + (Math.max(er, o.er | 0) + 1) + ' 回合！' : nx ? '三顆星！下次試試「' + difName(nx) + '」！' : '三顆星！最難的也過了，太厲害了！';
+    const dex = load(DEXK), have = DEX.filter((d) => dex[d[0]]).length;
+    const stars = '★'.repeat(st) + '<s>' + '★'.repeat(3 - st) + '</s>';
+    el.insertAdjacentHTML('beforeend', `<div class="zs-res"><div class="st"><b>${stars}</b><span>${difName(dk)}</span>${nSt ? '<span class="nw">新紀錄！</span>' : ''}${er ? `<span>♾️ 第 ${er} 回合</span>${nEr ? '<span class="nw">最高紀錄！</span>' : ''}` : ''}${nK ? '<span class="nw">打爆數新紀錄！</span>' : ''}</div><div class="goal">${goal}</div>`
+      + `<div class="dex"><span title="">📖</span>${DEX.map(([k, nm]) => dex[k] ? `<span class="${newDex.includes(k) ? 'nw' : ''}" title="${nm}">${icon(k)}</span>` : '<span class="no">?</span>').join('')}<em>　${have} / ${DEX.length}</em></div></div>`);
+  };
+  // 選地圖的時候：每張地圖這個難度拿過幾顆星；無盡挑戰顯示最高第幾回合
+  setInterval(() => {
+    const box = document.getElementById('pick-zmap'); if (!box || box.offsetParent === null) return; const dk = (SC.net && SC.net.dif) || 'normal', rec = load(REC);
+    let bestE = 0; for (const k in rec) if (k.endsWith('|' + dk)) bestE = Math.max(bestE, rec[k].er | 0);
+    box.querySelectorAll('.pick[data-v]').forEach((b) => { const v = b.dataset.v; if (v === 'zrand') return; const o = rec[v + '|' + dk], txt = v === 'zend' ? (bestE ? '最高 ' + bestE + ' 回合' : '') : o && o.s ? '★'.repeat(o.s) + '☆'.repeat(3 - o.s) : '';
+      let s = b.querySelector('.zs-st'); if (!txt) { if (s) s.remove(); return; } if (!s) { s = document.createElement('span'); s.className = 'zs-st'; b.appendChild(s); } if (s.textContent !== txt) s.textContent = txt; });
+  }, 1200);
+
+  // ---------- 翻譯 ----------
+  if (SC.i18n && SC.i18n.add) {
+    SC.i18n.add([
+      ['攻擊力 +12%', 'Attack +12%', 'こうげき +12%', '공격력 +12%'], ['跑速 +8%', 'Speed +8%', 'スピード +8%', '이동 속도 +8%'], ['被咬少痛 12%', 'Bites hurt 12% less', 'かまれても12%いたくない', '물려도 12% 덜 아파'],
+      ['爆頭傷害 +30%', 'Headshot damage +30%', 'ヘッドショット +30%', '헤드샷 피해 +30%'], ['Q 冷卻 −15%', 'Q cooldown −15%', 'Q クールダウン −15%', 'Q 쿨다운 −15%'], ['大招充能 +30%', 'Special charges +30% faster', 'スペシャル +30%', '필살기 충전 +30%'],
+      ['墨水回復 +35%', 'Ink refill +35%', 'インクかいふく +35%', '잉크 회복 +35%'], ['回血 +40%', 'Healing +40%', 'かいふく +40%', '회복 +40%'], ['代幣 +20%', 'Coins +20%', 'コイン +20%', '코인 +20%'], ['神兵電量 +40%', 'Hero weapon battery +40%', 'しんぺいのでんち +40%', '신병 배터리 +40%'], ['跳躍 +1', 'Extra jump', 'ジャンプ +1', '점프 +1'],
+      ['自動機槍', 'Auto turret', 'じどうきかんじゅう', '자동 기관총'], ['補防護罩 +15%', 'Repair shield +15%', 'シールドかいふく +15%', '보호막 수리 +15%'], ['防咬外套', 'Bite-proof jacket', 'かまれにくいジャケット', '물림 방지 재킷'],
+      ['機槍已經滿了', 'Turrets maxed', 'きかんじゅうはマックス', '기관총 최대'], ['防護罩是滿的', 'Shield is full', 'シールドはまんたん', '보호막이 가득 찼어'], ['全隊', 'Team', 'チーム', '팀 전체'], ['自己', 'You', 'じぶん', '나'],
+      ['🛒 阿肥商店', '🛒 Afei Shop', '🛒 アフェイのおみせ', '🛒 아페이 상점'], ['阿肥商店', 'Afei Shop', 'アフェイのおみせ', '아페이 상점'], ['按 1～6 買', 'Press 1–6 to buy', '1～6でかう', '1~6으로 구매'],
+      ['選一張升級！', 'Pick an upgrade!', 'アップグレードをえらんで！', '업그레이드를 골라!'], ['按 1、2、3 選（這場一直有效）', 'Press 1, 2 or 3 (lasts the whole match)', '1・2・3でえらぶ（このしあいずっと）', '1, 2, 3으로 골라 (이번 판 내내 유지)'],
+      ['休息時間：先選一張升級，再去阿肥旁邊的電腦買東西！', 'Break time: pick an upgrade, then shop at the computer next to Afei!', 'きゅうけい：アップグレードをえらんで、アフェイのよこのコンピューターでかいものしよう！', '휴식 시간: 업그레이드를 고르고 아페이 옆 컴퓨터에서 쇼핑해!'],
+      ['代幣不夠！再去打殭屍吧', 'Not enough coins! Go pop more zombies', 'コインがたりない！もっとゾンビをたおそう', '코인이 부족해! 좀비를 더 잡자'],
+      ['打倒最後魔王了！無盡回合要開始了！', 'Final boss down! Endless rounds begin!', 'ラスボスをたおした！エンドレスラウンドはじまるよ！', '최종 보스 처치! 무한 라운드 시작!'], ['最後一回合！', 'Final round!', 'ラストラウンド！', '마지막 라운드!'],
+      ['打倒魔王！', 'Defeat the boss!', 'ボスをたおせ！', '보스를 쓰러뜨려!'], ['魔王回合', 'Boss round', 'ボスラウンド', '보스 라운드'], ['休息', 'Break', 'きゅうけい', '휴식'], ['🎰 魔王拉霸！', '🎰 Boss slots!', '🎰 ボススロット！', '🎰 보스 슬롯!'],
+      ['去買東西', 'Go shop', 'かいものへ', '쇼핑하러'], ['選升級', 'Pick upgrade', 'アップグレード', '업그레이드'],
+      ['氣球之夜', 'Balloon Night', 'ふうせんのよる', '풍선의 밤'], ['跑跑鼠暴走', 'Runner Rush', 'はしりネズミだいそうそう', '달리기 쥐 폭주'], ['地底突襲', 'Underground Ambush', 'ちていきしゅう', '지하 기습'], ['果凍大爆發', 'Jelly Explosion', 'ゼリーだいばくはつ', '젤리 대폭발'], ['炸彈鼠派對', 'Bomb Mouse Party', 'ばくだんネズミパーティー', '폭탄 쥐 파티'], ['胖胖鼠大遊行', 'Chubby Parade', 'ぽっちゃりネズミのパレード', '통통 쥐 퍼레이드'],
+      ['起司寶寶大王', 'King Cheese Baby', 'チーズベビーキング', '치즈 아기 대왕'], ['雙胃王', 'Double Big Eaters', 'ダブルおおぐい', '더블 대식가'], ['鼠媽媽＋磁鐵鼠', 'Mama Mouse + Magnet Mouse', 'ママネズミ＋じしゃくネズミ', '엄마 쥐 + 자석 쥐'], ['雙鐵甲大鼠', 'Double Iron Mice', 'ダブルてっこうネズミ', '더블 철갑 쥐'],
+      ['大劍鼠', 'Big Sword Mouse', 'だいけんネズミ', '대검 쥐'], ['墨水桶鼠', 'Ink Bucket Mouse', 'インクバケツネズミ', '잉크통 쥐'], ['爆爆鼠', 'Boom Mouse', 'バクバクネズミ', '펑펑 쥐'], ['飛毛腿鼠', 'Speedy Mouse', 'しゅんそくネズミ', '날쌘 쥐'], ['快手鼠', 'Quick Paw Mouse', 'はやうちネズミ', '빠른손 쥐'], ['雙槍鼠', 'Twin Blaster Mouse', 'にちょうネズミ', '쌍권총 쥐'], ['盾牌鼠', 'Shield Mouse', 'たてネズミ', '방패 쥐'], ['愛心鼠', 'Heart Mouse', 'ハートネズミ', '하트 쥐'], ['跳跳鼠', 'Bouncy Mouse', 'ぴょんぴょんネズミ', '깡총 쥐'], ['buff 大鼠', 'Buff Mouse', 'バフネズミ', '버프 쥐'],
+      ['殭屍鼠', 'Zombie Mouse', 'ゾンビネズミ', '좀비 쥐'], ['跑跑鼠', 'Runner Mouse', 'はしりネズミ', '달리기 쥐'], ['胖胖鼠', 'Chubby Mouse', 'ぽっちゃりネズミ', '통통 쥐'], ['氣球鼠', 'Balloon Mouse', 'ふうせんネズミ', '풍선 쥐'], ['鑽地鼠', 'Digger Mouse', 'もぐらネズミ', '땅굴 쥐'], ['小果凍鼠', 'Mini Jelly', 'ちびゼリー', '꼬마 젤리'], ['炸彈鼠', 'Bomb Mouse', 'ばくだんネズミ', '폭탄 쥐'], ['果凍鼠', 'Jelly Mouse', 'ゼリーネズミ', '젤리 쥐'], ['舌頭鼠', 'Tongue Mouse', 'べろネズミ', '혀 쥐'], ['衝撞鼠', 'Charger Mouse', 'とっしんネズミ', '돌진 쥐'], ['吐毒鼠', 'Spitter Mouse', 'どくはきネズミ', '독침 쥐'], ['鍋蓋鼠', 'Pot Lid Mouse', 'なべぶたネズミ', '냄비뚜껑 쥐'], ['噴墨鼠', 'Ink Sprayer Mouse', 'インクふきネズミ', '잉크 분사 쥐'], ['澆水鼠', 'Watering Mouse', 'みずやりネズミ', '물뿌리개 쥐'], ['彈簧鼠', 'Pogo Mouse', 'ばねネズミ', '용수철 쥐'], ['大胃王', 'Big Eater', 'おおぐい', '대식가'], ['鼠媽媽', 'Mama Mouse', 'ママネズミ', '엄마 쥐'], ['鐵甲大鼠', 'Iron Mouse', 'てっこうネズミ', '철갑 쥐'], ['磁鐵鼠', 'Magnet Mouse', 'じしゃくネズミ', '자석 쥐'], ['鑽牆鼠', 'Driller Mouse', 'ドリルネズミ', '드릴 쥐'], ['肌肉坦克鼠', 'Muscle Tank Mouse', 'マッスルタンクネズミ', '근육 탱크 쥐'],
+      ['新紀錄！', 'New record!', 'しんきろく！', '신기록!'], ['最高紀錄！', 'Best ever!', 'さいこうきろく！', '최고 기록!'], ['打爆數新紀錄！', 'Most pops ever!', 'たおしたかずしんきろく！', '처치 수 신기록!'],
+      ['下次目標：打倒最後魔王，守住阿肥！', 'Next goal: beat the final boss and protect Afei!', 'つぎのもくひょう：ラスボスをたおしてアフェイをまもろう！', '다음 목표: 최종 보스를 쓰러뜨리고 아페이를 지켜!'], ['防護罩留一半以上', 'keep the shield above half', 'シールドをはんぶんいじょうのこす', '보호막 절반 이상 지키기'], ['全隊倒下 3 次以內', 'team KOs 3 or fewer', 'チームのダウン3かいいない', '팀 다운 3번 이하'],
+      ['三顆星！最難的也過了，太厲害了！', 'Three stars on the hardest level. Amazing!', 'いちばんむずかしいのも3つぼし！すごい！', '가장 어려운 단계도 별 셋! 대단해!'], ['♾️ 無盡挑戰', '♾️ Endless', '♾️ エンドレス', '♾️ 무한 도전'],
+    ]);
+    const P = SC.i18n.pat;
+    P(/^第 (\d+) \/ (\d+) 回合$/, ['Round $1/$2', 'ラウンド $1/$2', '라운드 $1/$2']); P(/^第 (\d+) \/ (\d+) 回合・休息$/, ['Round $1/$2 · Break', 'ラウンド $1/$2・きゅうけい', '라운드 $1/$2 · 휴식']);
+    P(/^♾️ 無盡第 (\d+) 回合$/, ['♾️ Endless round $1', '♾️ エンドレス $1', '♾️ 무한 라운드 $1']); P(/^♾️ 無盡第 (\d+) 回合・休息$/, ['♾️ Endless round $1 · Break', '♾️ エンドレス $1・きゅうけい', '♾️ 무한 라운드 $1 · 휴식']);
+    P(/^第 (\d+) 回合過關！$/, ['Round $1 cleared!', 'ラウンド $1 クリア！', '라운드 $1 클리어!']); P(/^第 (\d+) 回合！$/, ['Round $1!', 'ラウンド $1！', '라운드 $1!']); P(/^第 (\d+) 回合：(.+)！$/, ['Round $1: $2!', 'ラウンド $1：$2！', '라운드 $1: $2!']);
+    P(/^無盡第 (\d+) 回合過關！$/, ['Endless round $1 cleared!', 'エンドレス $1 クリア！', '무한 라운드 $1 클리어!']); P(/^無盡第 (\d+) 回合！$/, ['Endless round $1!', 'エンドレス $1！', '무한 라운드 $1!']); P(/^♾️ 撐到無盡第 (\d+) 回合！$/, ['♾️ Survived to endless round $1!', '♾️ エンドレス $1 までがんばった！', '♾️ 무한 라운드 $1까지 버텼어!']);
+    P(/^休息 (\d+)$/, ['Break $1', 'きゅうけい $1', '휴식 $1']); P(/^休息還有 (\d+) 秒$/, ['Break: $1s left', 'きゅうけいあと $1 びょう', '휴식 $1초 남음']); P(/^休息還有 (\d+) 秒・下一回合：(\S+) (.+)$/, ['Break: $1s · Next: $2 $3', 'あと $1 びょう・つぎ：$2 $3', '휴식 $1초 · 다음: $2 $3']);
+    P(/^下一回合 (\S+) (.+)$/, ['Next $1 $2', 'つぎ $1 $2', '다음 $1 $2']); P(/^(\S+) (.+)來了！打倒牠拿「(.+)」$/, ['$1 $2 is here! Pop it to get “$3”', '$1 $2があらわれた！たおして「$3」をゲット', '$1 $2 등장! 쓰러뜨리고 “$3” 받기']);
+    P(/^自動機槍（(\d)\/4）$/, ['Auto turret ($1/4)', 'じどうきかんじゅう（$1/4）', '자동 기관총 ($1/4)']); P(/^機槍升級 Lv(\d)$/, ['Turret upgrade Lv$1', 'きかんじゅうアップ Lv$1', '기관총 업그레이드 Lv$1']); P(/^(.+)（第 (\d+) 次）$/, ['$1 (#$2)', '$1（$2かいめ）', '$1 ($2번째)']); P(/^(.+)（買滿了）$/, ['$1 (maxed)', '$1（マックス）', '$1 (최대)']);
+    P(/^已經有 (\d+) 級$/, ['Already Lv $1', 'いま Lv $1', '현재 Lv $1']); P(/^📖 圖鑑新發現：(.+)！（(\d+) \/ (\d+)）$/, ['📖 New in the bestiary: $1! ($2/$3)', '📖 ずかんにとうろく：$1！（$2/$3）', '📖 도감 새 발견: $1! ($2/$3)']);
+    P(/^下次拿 ★★★：(.+)$/, ['Next time for ★★★: $1', 'つぎは★★★：$1', '다음엔 ★★★: $1']); P(/^下次挑戰撐過無盡第 (\d+) 回合！$/, ['Next: survive endless round $1!', 'つぎはエンドレス $1 をこえよう！', '다음 목표: 무한 라운드 $1 넘기!']); P(/^三顆星！下次試試「(.+)」！$/, ['Three stars! Try “$1” next!', '3つぼし！つぎは「$1」にちょうせん！', '별 셋! 다음엔 “$1”에 도전!']);
+    P(/^最高 (\d+) 回合$/, ['Best: round $1', 'さいこう $1', '최고 $1 라운드']); P(/^♾️ 第 (\d+) 回合$/, ['♾️ Round $1', '♾️ ラウンド $1', '♾️ 라운드 $1']);
+  }
+})();
+
 // 殭屍保衛戰的武器技能（Yen 2026-11-22 18:00）：每把武器一個小招（Q）和一個大絕（F，Yen 18:18 改成跟其他模式一樣用 F）。只有殭屍模式有，對戰、積分賽照舊。
 // 小招有冷卻時間（按鈕上一圈倒數）；大絕用原本的星星量表，殭屍模式平均約 60 秒充滿。
 //   墨刀  Q 疾風刀（第 171 版）：8 秒跑得快、刀變長、砍得更遠。F 雙刀劍氣 20 秒。拿刀往前跳得比較遠。
@@ -34588,7 +34958,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   S.qOn = () => on() || !!vDef(G.player && G.player()); // 06_input：這個模式 Q 是小招（墨水彈改用 E、G）
   const NAMES = { W01: ['火箭砲', '自動瞄準'], W02: ['黏黏衝', '大甩爆擊'], W03: ['砲台', '墨水空襲'], W04: ['大跳', '散彈十連發'], W05: ['疾風刀', '雙刀劍氣'], W06: ['十連箭', '大弓箭蛇'] };
   const TIPS = { W01: '漆彈槍　Q 火箭砲　F 自動瞄準', W02: '滾刷　Q 黏黏衝　F 大甩爆擊', W03: '狙擊槍　Q 砲台　F 墨水空襲', W04: '散彈槍　Q 大跳　F 散彈十連發', W05: '墨刀　Q 疾風刀　F 雙刀劍氣', W06: '弓箭　Q 十連箭　F 大弓箭蛇' };
-  const KINDS = ['iai', 'dash', 'rope', 'pull', 'tur', 'turX', 'arw', 'dual', 'air', 'fan', 'lock', 'snk', 'iaiCut', 'v', 'kat', 'leap', 'slam', 'rk', 'rkOn', 'tri', 'bld', 'vol', 'stk', 'itm', 'tbf']; /* 第 182 版 itm：暫時道具（08z_zitem.js），只能加在最後 */ /* 小威 11-24 tbf：buff 怪打倒了，全隊上 buff */
+  const KINDS = ['iai', 'dash', 'rope', 'pull', 'tur', 'turX', 'arw', 'dual', 'air', 'fan', 'lock', 'snk', 'iaiCut', 'v', 'kat', 'leap', 'slam', 'rk', 'rkOn', 'tri', 'bld', 'vol', 'stk', 'itm', 'tbf', 'pbf']; /* 小威 11-24 pbf：buff 大鼠打倒了，打最多的那隻貓自己拿 */ /* 第 182 版 itm：暫時道具（08z_zitem.js），只能加在最後 */ /* 小威 11-24 tbf：buff 怪打倒了，全隊上 buff */
   const kid = (k) => KINDS.indexOf(k);
   const WHITE = new THREE.Color(0xffffff), RED = new THREE.Color(0xff3b3b), GOLD = new THREE.Color(0xffd23f);
   const t1 = new V3(), t2 = new V3(), t3 = new V3();
@@ -34659,7 +35029,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const hitZ = (a, e, dmg, cause) => { if (a.remote || !isZ(e)) return false; K().hurt(e, dmg, a, cause); return dead(e); };
 
   // 殭屍爆頭（只有殭屍模式、真人的子彈；砲台不算）
-  S.zHead = (e, p) => { if (!on() || p.tur || !e.zb) return 0; const k = ZSK.head[p.cause]; if (!k) return 0; return p.y > e.pos.y + e.hy0 + (e.hy1 - e.hy0) * ZSK.headY ? k : 0; };
+  S.zHead = (e, p) => { if (!on() || p.tur || !e.zb) return 0; const k = ZSK.head[p.cause]; if (!k) return 0; return p.y > e.pos.y + e.hy0 + (e.hy1 - e.hy0) * ZSK.headY ? k * (SC.zbShop ? SC.zbShop.mul(p.owner, 'head') : 1) : 0; }; /* 小威 11-24：升級「爆頭傷害」 */
   S.onHead = () => {}; // 第 171 版：散彈槍 Q 改成大跳，不再爆頭重置
 
   // ---------- 每隻貓的狀態 ----------
@@ -34692,7 +35062,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     return !!(a.vMove && d.lock);
   }
   function castQ(a) {
-    const w = a.weapon, cfg = ZSK[w]; if (!cfg) return; a.qAt = G.time + cfg.qCd; a.qCd = cfg.qCd; a.form = 'biped'; a.submerged = false; a.charge = -1;
+    const w = a.weapon, cfg = ZSK[w]; if (!cfg) return; a.qCd = cfg.qCd * (SC.zbShop ? SC.zbShop.mul(a, 'qcd') : 1); a.qAt = G.time + a.qCd; /* 小威 11-24：升級「Q 冷卻」 */ a.form = 'biped'; a.submerged = false; a.charge = -1;
     if (a.isPlayer) popQ(NAMES[w][0] + '！');
     if (w === 'W05') return katBuff(a, false);
     if (w === 'W04') return leapStart(a);
@@ -35032,6 +35402,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!on()) return; const k = KINDS[d[0] | 0], x = d[1], y = d[2], z = d[3], yaw = d[4], col = G.colors[a.team];
     if (k === 'itm') { if (SC.zbItem) SC.zbItem.net(a, d[5]); }
     else if (k === 'tbf') { if (SC.zbItem && SC.zbItem.teamNet) SC.zbItem.teamNet(d[5], x, y, z); }
+    else if (k === 'pbf') { if (SC.zbItem && SC.zbItem.soloNet) SC.zbItem.soloNet(d[6], d[5], x, y, z); } /* 小威 11-24：buff 大鼠（單人） */
     else if (k === 'kat') katBuff(a, true);
     else if (k === 'leap') { a.leapFx = G.time + 1.2; const n = K().near(a); if (n > 0.05) SFX.leap(n); SC.fx.burst(x, y + 0.5, z, col, 24, 22, 0.5, 0.5); fx({ t: 0, upd(dt) { this.t += dt; if (Math.random() < 0.6 && K().near(a) > 0.05) afterImage(a); return this.t < 0.9 && a.alive; } }); }
     else if (k === 'slam') slamAt(a, x, y, z, false);
@@ -35073,7 +35444,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (!scene) return; const now = G.time;
     for (let i = items.length - 1; i >= 0; i--) { const it = items[i]; let keep = false; try { keep = it.upd(dt, now); } catch (err) { keep = false; console.warn(err); } if (!keep) { items.splice(i, 1); if (it.kill) it.kill(); } }
     if (!on()) { hud.on(vOn() && !!SC.vsk[(G.player() || {}).weapon]); if (vOn()) hud.upd(G.player()); return; }
-    if (G.state === 'play') for (const a of G.actors) { if (a.remote || !a.alive) continue; if (a.sp < 100 && !(a.ultUntil > now) && !(a.sprayUntil > now) && a.spT == null) { a.sp = Math.min(100, a.sp + ZSK.spIdle * dt); if (a.sp >= 100 && a.isPlayer) { sfx().spReady(); SC.ui.spReady(); } } }
+    if (G.state === 'play') for (const a of G.actors) { if (a.remote || !a.alive) continue; if (a.sp < 100 && !(a.ultUntil > now) && !(a.sprayUntil > now) && a.spT == null) { a.sp = Math.min(100, a.sp + ZSK.spIdle * dt * (SC.zbShop ? SC.zbShop.mul(a, 'ult') : 1)); if (a.sp >= 100 && a.isPlayer) { sfx().spReady(); SC.ui.spReady(); } } }
     for (const a of G.actors) { if (a.cat.dualOn && !(a.dualUntil > now && a.alive)) a.cat.dual(false);
       if (a.reachK !== 1 && !(a.skSpdUntil > now && a.alive)) { a.reachK = 1; if (a.cat.bladeK) a.cat.bladeK(1); }
       if (a.skSpdUntil > now && a.alive && a.speed > 8 && Math.random() < 0.5 && K().near(a) > 0.06) SC.fx.burst(a.pos.x - Math.sin(a.yaw) * 1.5, a.pos.y + 1 + Math.random() * 2, a.pos.z - Math.cos(a.yaw) * 1.5, WHITE, 1, 2, 0.25, 0);
@@ -35478,10 +35849,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ];
   const ZMAP_PICKS = [ /* 第 125 版：殭屍保衛戰的四張地圖 */
     ['zrand', '隨機', MAP_PICKS[0][2]],
+    ['zend', '♾️ 無盡挑戰', MAP_SVG(`<rect x="3" y="6" width="58" height="34" rx="8" fill="#2b1f4a" ${MS}/><path d="M14 23c0-7 9-7 18 0s18 7 18 0-9-7-18 0-18 7-18 0z" fill="none" stroke="#ffd23f" stroke-width="5" stroke-linecap="round"/>`)], /* 小威 11-24：無盡挑戰（隨機地圖，打倒最後魔王以後一回合一回合打下去） */
     ['zfort', '阿肥堡壘', MAP_SVG(`<rect x="3" y="33" width="58" height="8" rx="4" fill="#9cdb84" ${MS}/><path d="M14 33V17h6v5h6v-5h12v5h6v-5h6v16z" fill="#a64b32" ${MS}/><path d="M27 33v-7a5 5 0 0 1 10 0v7z" fill="#1b1430"/><ellipse cx="26.5" cy="10.5" rx="2.2" ry="4" fill="#8a5428" ${MS}/><ellipse cx="37.5" cy="10.5" rx="2.2" ry="4" fill="#8a5428" ${MS}/><circle cx="32" cy="10" r="5.6" fill="#f0a04b" ${MS}/><ellipse cx="32" cy="12.2" rx="2.8" ry="1.9" fill="#fff3df"/><circle cx="32" cy="11.4" r="1" fill="#1b1430"/>`)],
     ['zstreet', '殭屍六岔路口', MAP_SVG(`<rect x="2" y="2" width="60" height="44" rx="4" fill="#b8a8e0" ${MS}/><svg x="2" y="2" width="60" height="44" viewBox="2 2 60 44"><rect x="32" y="20" width="40" height="8" fill="#d9625b" transform="rotate(-90 32 24)"/><rect x="32" y="20" width="40" height="8" fill="#e8873a" transform="rotate(-30 32 24)"/><rect x="32" y="20" width="40" height="8" fill="#dcaa3a" transform="rotate(30 32 24)"/><rect x="32" y="20" width="40" height="8" fill="#55ad6e" transform="rotate(90 32 24)"/><rect x="32" y="20" width="40" height="8" fill="#5a8fd9" transform="rotate(150 32 24)"/><rect x="32" y="20" width="40" height="8" fill="#9a6bd9" transform="rotate(210 32 24)"/></svg><circle cx="32" cy="24" r="8" fill="#f3e7d2" ${MS}/><circle cx="32" cy="22" r="4" fill="#ffd23f" ${MS}/>`)], /* 第 137 版：十字路口；第 194 版：六岔路口，六條彩色的路 */
-    ['zrelay', '燈塔接力', MAP_SVG(`<rect x="3" y="35" width="58" height="6" rx="3" fill="#9fdc8a" ${MS}/><path d="M24 35l3-24h10l3 24z" fill="#ff6b8b" ${MS}/><path d="M25.5 24h13M26.4 17h11.2" stroke="#fff" stroke-width="3"/><rect x="26" y="5" width="12" height="6" rx="1.5" fill="#fff2a8" ${MS}/><path d="M38 7l16-4v10z" fill="#ffe14a" opacity=".8"/><ellipse cx="14" cy="36" rx="9" ry="3" fill="none" stroke="#ffd23f" stroke-width="2.4"/>`)],
-    ['zparade', '花車遊行', MAP_SVG(`<rect x="2" y="36" width="60" height="8" rx="3" fill="#ffb8cf" ${MS}/><rect x="16" y="26" width="32" height="9" rx="4" fill="#ff9ebb" ${MS}/><circle cx="22" cy="38" r="4" fill="#3a3a52" ${MS}/><circle cx="42" cy="38" r="4" fill="#3a3a52" ${MS}/><circle cx="32" cy="18" r="9" fill="#ffd23f" ${MS}/><path d="M38 18l7 2-7 2z" fill="#ff9a3c" ${MS}/><circle cx="34" cy="15" r="1.6" fill="#1b1430"/><circle cx="18" cy="26" r="2.4" fill="#4ecbff"/><circle cx="46" cy="26" r="2.4" fill="#9be7d0"/><path d="M56 34V12l-8 4 8 4" fill="#ff6b8b" ${MS}/>`)], /* 第 135 版：花車遊行（護送）取代吊橋玩具房 */
     ['zforest', '青翠森林', MAP_SVG(`<rect x="2" y="34" width="60" height="10" rx="5" fill="#9fe08a" ${MS}/><rect x="18" y="22" width="6" height="13" fill="#9a6a42" ${MS}/><circle cx="21" cy="17" r="11" fill="#5cc84a" ${MS}/><path d="M44 34l-9 0 9-24 9 24z" fill="#46b35a" ${MS}/><ellipse cx="52" cy="31" rx="5" ry="3" fill="#ff5a6a" ${MS}/>`)], /* 第 148 版：小鼠潮 2D 超爆量 */
   ];
   ui.bossFace2 = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M17 22l-3-9 9 5z" fill="#ff8a3d" stroke="#1b1430" stroke-width="2.5" stroke-linejoin="round"/><path d="M47 22l3-9-9 5z" fill="#ff8a3d" stroke="#1b1430" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="39" r="22" fill="#ffe3c2" stroke="#1b1430" stroke-width="3"/><path d="M21 20q-2-13 11-13t11 13z" fill="#fff" stroke="#1b1430" stroke-width="3"/><circle cx="24" cy="36" r="5" fill="#fff" stroke="#1b1430" stroke-width="2"/><circle cx="40" cy="36" r="5" fill="#fff" stroke="#1b1430" stroke-width="2"/><circle cx="24.5" cy="36.5" r="2.6" fill="#1b1430"/><circle cx="40.5" cy="36.5" r="2.6" fill="#1b1430"/><path d="M25 45q7 8 14 0z" fill="#7a2240" stroke="#1b1430" stroke-width="2" stroke-linejoin="round"/><circle cx="16" cy="44" r="3.2" fill="#ff9fb4" opacity=".85"/><circle cx="48" cy="44" r="3.2" fill="#ff9fb4" opacity=".85"/></svg>`;
@@ -36265,6 +36635,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       els['res-stats'].classList.add('has-board');
       els['res-stats'].innerHTML = `<div class="zb-res"><div><span>撐了</span><b>${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}</b></div><div><span>防護罩剩下</span><b>${Math.round(r.frac * 100)}%</b></div><div><span>${T('打爆總數')}</span><b>${allK}</b><small>${T('殭屍鼠')} ${r.pops}・${T('小鼠')} ${mice}</small></div><div><span>${T('精英／魔王')}</span><b>${eli}／${boss}</b></div><div class="zb-score"><span>${T('隊伍總分')}</span><b>${tot.toLocaleString()}</b><small>${T('每隻貓 ★ 加起來')} ${catSum.toLocaleString()}＋${T('防護罩')} ${pct}%×${ZBP.shield}${r.won ? '＋' + T('守住') + ' ' + ZBP.win : ''}</small></div>${how}${clutch ? `<div class="zb-ach"><span>🦆 ${T('成就達成')}</span><b>${T('千鈞一髮')}</b><small>${T('殭屍關防護罩只剩 1% 還獲勝')}</small></div>` : ''}</div>`
         + ''; /* 第 174 版：每隻貓打爆幾隻改寫在頒獎台上 */
+      if (SC.zbShop && SC.zbShop.results) try { SC.zbShop.results(r, els['res-stats'], els.verdict); } catch (e) { console.warn(e); } /* 小威 11-24：星星紀錄、無盡回合、殭屍鼠圖鑑 */
       els.hud.classList.remove('on'); els['m-results'].hidden = false; resultsT = 0; SC.audio.music('toy'); return;
     }
     const net = g.mode === 'net'; $('btn-again').classList.remove('rk-again'); $('btn-again').textContent = net ? '回房間' : '再來一場'; $('btn-menu').textContent = net ? '離開房間' : '回主選單';
@@ -36372,6 +36743,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       set('bhp', Math.round((b.health / b.maxHealth) * 200), (v) => (els['boss-fill'].style.width = v / 2 + '%'));
       set('bph', b.phase + b.state + !!b.tired, () => { els['boss-phase'].textContent = b.tired ? '累了！快打！' : b.state === 'stunned' ? '頭暈中！' : b.state === 'finale' ? '能量暴走！' : b.state === 'goal' || b.state === 'cleared' ? '打倒了！' : b.phaseName; [...els['boss-pips'].children].forEach((el, i) => el.classList.toggle('done', i < b.phase - 1 || ['finale', 'goal', 'cleared'].includes(b.state))); });
     } else if (g.mode === 'sandbox' && g.opts.tut && SC.tut) set('timer', SC.tut.step(), (v) => { els.timer.textContent = Math.max(1, v) + ' / ' + (SC.tut.total || 7); }); // 第 106 版：教學時顯示第幾步
+    else if (g.rule === 'zombie' && SC.zbShop && SC.zbShop.clock && SC.zb && SC.zb.on) { const c = SC.zbShop.clock(); set('timer', c.k, () => { els.timer.textContent = c.txt; els.timer.classList.toggle('final', !!c.fin); }); } /* 小威 11-24：回合制（休息倒數、無盡回合） */
     else if (g.rule === 'zombie' && SC.zb && left <= 0) set('timer', -1, () => { els.timer.textContent = '打倒魔王！'; els.timer.classList.add('final'); }); /* 第 122 版：時間到了換成打最後魔王 */
     else if (g.mode !== 'sandbox') set('timer', secs, (v) => { els.timer.textContent = Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); els.timer.classList.toggle('final', v <= C.FINAL_SECONDS); });
     const net = g.mode === 'net', s = (net && SC.net.match && SC.net.match.score) || SC.ink.score(); // 連線時分數以房主為準
@@ -41739,7 +42111,19 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const crown = `<svg class="hx-crown" viewBox="0 0 60 40" aria-hidden="true"><path d="M5 34 3 8l14 12L30 3l13 17L57 8l-2 26z" fill="none" stroke="${LIME}" stroke-width="5" stroke-linejoin="round"/></svg>`;
   // 大招圖案：每種武器一個
   const ULT = { W02: '<rect x="6" y="12" width="40" height="16" rx="7"/><path d="M26 28v8l-8 8" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><path d="M50 14h10M50 24h8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>', W03: '<path d="M4 32Q32 6 60 32 32 58 4 32z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/><circle cx="32" cy="32" r="10"/><path d="M32 2v8M32 54v8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>', W04: '<circle cx="14" cy="46" r="8"/><path d="M22 38 58 20M24 46h36M20 34 46 6" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><circle cx="58" cy="20" r="4"/><circle cx="46" cy="6" r="4"/>', W05: '<path d="M8 56 54 8l4 4-40 48z"/><path d="M6 34 30 10M24 60 58 34" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".6"/>', x: '<path d="M32 2l5 17 17-9-10 16 18 6-18 6 10 16-17-9-5 17-5-17-17 9 10-16L2 32l18-6-10-16 17 9z"/>' };
-  let top = null, team = null, stat = null, pop = null, last = {}, popT = 0;
+  let top = null, team = null, stat = null, pop = null, last = {}, popT = 0, zw = null;
+  /* 小威 11-24（「請幫我把殭屍模式的介面也改成跟一般對戰一樣（用優化過的版本）…保持原本的技能」）：殭屍模式沒有空投艙的武器欄，
+     右下改用同一種武器面板（墨水 %、武器剪影、其他武器／墨水彈／墨貓三小格）；上方比分換成「阿肥 防護罩 %」和「殭屍鼠 打倒幾隻」；小地圖移到左上。 */
+  const zbHx = () => !!(G.rule === 'zombie' && SC.zb && SC.zb.on && !G.spec && !G.demo);
+  function zbTop(p) {
+    const Z = SC.zb; set('sa', Math.round(SC.clamp(Z.shield / 2000, 0, 1) * 100) + '%', (v) => { const e = top.querySelector('.hx-sc.a'); e.textContent = v; e.classList.add('pc'); }); set('sb', String(Z.killed | 0), (v) => { const e = top.querySelector('.hx-sc.b'); e.textContent = v; e.classList.remove('pc'); });
+    set('fcz', last.deco, () => { if (Z.dogIcon) top.querySelector('.hx-t.a .fc').innerHTML = Z.dogIcon; if (Z.mouseIcon) top.querySelector('.hx-t.b .fc').innerHTML = Z.mouseIcon(); });
+    { const c = top.querySelector('.hx-clk'), t = $('timer'); if (c && t) c.classList.toggle('zrest', t.classList.contains('zrest')); }
+    const I = SC.input, lo = (G.loadout && G.loadout()) || [p.weapon], bomb = !!(I && I.bombSlot), ink = Math.round(p.ink); set('zw', p.weapon + lo.join() + bomb + ink, () => {
+      const cells = lo.map((k, i) => (k !== p.weapon || bomb ? `<span class="hx-c"><kbd>${i + 1}</kbd><img src="${sil(k)}" alt=""></span>` : '')).join('') + (bomb ? '' : `<span class="hx-c nd"><kbd>3</kbd><img src="${nadePic('bomb')}" alt=""></span>`) + `<span class="hx-c"><kbd>Shift</kbd>${SC.ui.icon ? SC.ui.icon('CAT').replace('<svg', '<svg class="wi"') : ''}</span>`;
+      const pic = bomb ? `<span class="hx-nd"><img src="${nadePic('bomb')}" alt=""></span>` : `<img src="${sil(p.weapon)}" alt="">`, name = bomb ? T('墨水彈') : T((C[p.weapon] || {}).name || ''), low = ink < 12, warn = ink < 30;
+      zw.innerHTML = `<div class="hx-wp${low ? ' low' : warn ? ' warn' : ''}">${S.wpBg || ''}<div class="hx-l1"><div class="hx-num"><b>${ink}</b><em>%</em></div><div class="hx-sil">${pic}</div></div><div class="hx-ink"><i style="width:${ink}%"></i></div><div class="hx-l2">${cells}<em>${name}</em></div>${warn ? `<div class="hx-need"><kbd>Shift</kbd>${T(low ? '沒墨水了！潛墨補充' : '快沒墨水了')}</div>` : ''}</div>`; });
+  }
   const set = (k, v, f) => { if (last[k] !== v) { last[k] = v; f(v); } };
   // 武器剪影：把真的武器模型從側面畫成白色圖，一把只畫一次
   const SIL = new Map(); function sil(k) { if (SIL.has(k)) return SIL.get(k); const re = SC.debug && SC.debug.renderer; if (!re) return ''; let url = ''; try { const w = 360, h = 150, rt = new THREE.WebGLRenderTarget(w, h, { samples: 4 }), sc = new THREE.Scene(), base = /^W0\d$/.test(k), m = base ? SC.weaponModel(k, new THREE.MeshStandardMaterial({ color: 0xffffff })) : SC.supply.model(k, new THREE.Color(0xffffff)), white = new THREE.MeshBasicMaterial({ color: 0xffffff }), grey = new THREE.MeshBasicMaterial({ color: 0xb9b4cc });
@@ -41754,13 +42138,17 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     const cell = { 1: `<span class="hx-c"><kbd>1</kbd><img src="${sil(lo[0])}" alt=""></span>`, 2: `<span class="hx-c"><kbd>2</kbd><img src="${sil(lo[1])}" alt=""></span>`, 3: `<span class="hx-c nd"><kbd>3</kbd><img src="${nadePic(cur)}" alt="">${cur === 'bomb' ? '' : `<u>${n[cur]}</u>`}</span>`, 4: `<span class="hx-c ad${s ? ' has' : ''}" data-s="4"><kbd>4</kbd>${s ? `<img src="${sil(s.k)}" alt="">` : '<svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5v9l-9 4-9-4zM3 9l9 4 9-4M12 13v9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'}</span>` };
     return `<div class="hx-wp${low ? ' low' : warn ? ' warn' : ''}${main === 4 ? ' gold' : ''}">${S.wpBg || ''}<div class="hx-l1"><div class="hx-num">${num}</div><div class="hx-sil">${pic}</div></div><div class="hx-ink"><i style="width:${ink}%"></i></div><div class="hx-l2">${[1, 2, 3, 4].filter((k) => k !== main).map((k) => cell[k]).join('')}<em>${name}</em></div>${warn ? `<div class="hx-need"><kbd>Shift</kbd>${T(bl ? '墨水要 80% 才能丟' : low ? '沒墨水了！潛墨補充' : '快沒墨水了')}</div>` : ''}</div>`; };
   S.panelKey = (p) => Math.round(p.ink);
+  { const st = document.createElement('style'); st.textContent = `#app.hx.hx-zb .h-map.round{left:calc(var(--gl) + 4px);right:auto;top:calc(12px + var(--sat));width:clamp(112px,11.5vw,176px)!important;height:auto!important;border:4px solid ${N}!important;box-shadow:0 0 0 2.5px ${LIME},0 5px 0 2.5px ${N}!important}
+#app.hx.hx-zb .h-weapons{display:none!important}#app.hx-zb .hx-zslots{position:absolute;zoom:calc(var(--hz,1)*.82);right:calc(var(--gr) - 4px);bottom:calc(8px + var(--sab));pointer-events:none}.hx-zslots[hidden]{display:none}
+#app.hx.hx-zb .zb-row :is(.zb-duck,.zb-shield,.zb-pops){display:none}#app.hx.hx-zb .hx-top{order:-3}#app.hx.hx-zb #zs-chip{order:-2}#app.hx.hx-zb .h-zb{order:-1}#app.hx.hx-zb .h-chat{left:auto;right:calc(var(--gr) + 108px)}#app.hx.hx-zb .h-zb{width:420px}#app.hx.hx-zb .hx-t .fc svg{overflow:visible}#app.hx.hx-zb .hx-sc.pc{font-size:30px}`; document.head.appendChild(st); } /* 小威 11-24：殭屍模式的新介面 */
   // ---------- 建立 ----------
   function build() { if (top) return; const hud = $('hud'), tp = hud.querySelector('.h-top'), st = $('status'), sp = $('sp-btn');
     top = document.createElement('div'); top.className = 'hx-top'; top.innerHTML = '<div class="hx-t a"><span class="bg"></span><i class="fc"></i><b></b><em class="hx-sc a"></em></div><div class="hx-clk"><span class="bg"></span><b></b></div><div class="hx-t b"><span class="bg"></span><em class="hx-sc b"></em><b></b><i class="fc"></i></div>'; tp.appendChild(top);
     team = document.createElement('div'); team.className = 'hx-team'; hud.appendChild(team);
     stat = document.createElement('div'); stat.className = 'hx-id'; stat.innerHTML = '<b translate="no"></b><span><i>0</i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C3 14 2 10 2 7.5A5 5 0 0 1 12 6a5 5 0 0 1 10 1.5C22 10 21 14 12 21z" fill="currentColor"/></svg></span>'; st.querySelector('.h-meters').insertBefore(stat, st.querySelector('.h-meters').firstChild); st.insertAdjacentHTML('beforeend', crown);
     sp.insertAdjacentHTML('beforeend', '<span class="hx-ray"></span><span class="hx-ult"><svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"></svg></span><span class="hx-f"><kbd>F</kbd></span>');
-    pop = document.createElement('div'); pop.className = 'hx-pop'; hud.appendChild(pop); }
+    pop = document.createElement('div'); pop.className = 'hx-pop'; hud.appendChild(pop);
+    zw = document.createElement('div'); zw.className = 'hx-zslots'; zw.hidden = true; hud.appendChild(zw); }
   // 顏色換了（每場）重畫裝飾
   function deco() { const a = '#' + G.colors[0].getHexString(), b = '#' + G.colors[1].getHexString(); const key = a + b; if (last.deco === key) return; last.deco = key;
     
@@ -41770,9 +42158,11 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     S.wpBg = `<span class="bg">${street(a, 'hxw', true, 440)}</span>`; const ray = []; for (let i = 0; i < 14; i++) { const r = rnd(i * 77 + 5), an = (i / 14) * 360, l = 70 + r() * 28; ray.push(`<path d="M-9 -50L0 -${l.toFixed(0)}L9 -50z" stroke="${N}" stroke-width="2.5" stroke-linejoin="round" transform="rotate(${an.toFixed(0)})" fill="${i % 3 ? LIME : i % 2 ? a : '#fff'}"/>`); } $('sp-btn').querySelector('.hx-ray').innerHTML = `<svg viewBox="-100 -100 200 200" aria-hidden="true">${ray.join('')}</svg>`; }
   S.ult = () => { if (!S.on || !pop) return; const p = G.player(), a = '#' + G.colors[0].getHexString(); pop.innerHTML = `<span class="bg">${brush(420, 92, a, 21, { edge: N, dx: 6, dy: 6, end: 40, dots: 16 })}</span>${crown}<b>${T('大招發動！')}</b><i><svg viewBox="0 0 64 64" fill="currentColor">${ULT[p && p.weapon] || ULT.x}</svg></i>`; pop.classList.remove('on'); void pop.offsetWidth; pop.classList.add('on'); clearTimeout(popT); popT = setTimeout(() => pop.classList.remove('on'), 950); };
   let at = 0, hooked = false;
-  S.frame = () => { const app = $('app'), want = ON && SC.slots && SC.slots.on && !SC.input.isTouch && innerWidth > innerHeight * 1.15 && innerWidth >= 900; if (want !== S.on) { S.on = want; if (want) { build(); last = {}; } app.classList.toggle('hx', want); if (SC.slots.redraw) SC.slots.redraw(); }
+  S.frame = () => { const app = $('app'), zb = zbHx(), want = ON && (SC.slots && SC.slots.on || zb) && !SC.input.isTouch && innerWidth > innerHeight * 1.15 && innerWidth >= 900; if (want !== S.on) { S.on = want; if (want) { build(); last = {}; } app.classList.toggle('hx', want); if (SC.slots.redraw) SC.slots.redraw(); }
+    if (last.zbm !== zb) { last.zbm = zb; last.deco = null; last.fcz = null; last.na = null; } app.classList.toggle('hx-zb', !!(S.on && zb)); if (zw) zw.hidden = !(S.on && zb); /* 小威 11-24：殭屍模式也用這一版（武器面板、比分換成殭屍的） */
     if (!S.on) return; if (!hooked && SC.ui.spUsed) { hooked = true; const o = SC.ui.spUsed; SC.ui.spUsed = (...x) => { o(...x); S.ult(); }; } const t = performance.now(); if (t - at < 120) return; at = t; deco(); const p = G.player(); if (!p) return; app.style.setProperty('--hz', SC.clamp(Math.min(innerHeight / 860, innerWidth / 1500), 0.62, 1.4).toFixed(3));
-    const tri = G.teams >= 3; app.classList.toggle('hx-tri', tri); if (!tri) { set('sa', $('pct-a').textContent, (v) => { const e = top.querySelector('.hx-sc.a'); e.textContent = v; e.classList.toggle('pc', v.includes('%')); }); set('sb', $('pct-b').textContent, (v) => { const e = top.querySelector('.hx-sc.b'); e.textContent = v; e.classList.toggle('pc', v.includes('%')); }); } set('tm', $('timer').textContent + ($('timer').classList.contains('final') ? '!' : ''), (v) => { top.querySelector('.hx-clk b').textContent = v.replace('!', ''); top.querySelector('.hx-clk').classList.toggle('fin', v.includes('!')); }); set('na', T('我方') + T('對手'), () => { top.querySelector('.hx-t.a b').textContent = T('我方'); top.querySelector('.hx-t.b b').textContent = T('對手'); });
+    const tri = G.teams >= 3; app.classList.toggle('hx-tri', tri); if (!tri && !zb) { set('sa', $('pct-a').textContent, (v) => { const e = top.querySelector('.hx-sc.a'); e.textContent = v; e.classList.toggle('pc', v.includes('%')); }); set('sb', $('pct-b').textContent, (v) => { const e = top.querySelector('.hx-sc.b'); e.textContent = v; e.classList.toggle('pc', v.includes('%')); }); } set('tm', $('timer').textContent + ($('timer').classList.contains('final') ? '!' : ''), (v) => { top.querySelector('.hx-clk b').textContent = v.replace('!', ''); top.querySelector('.hx-clk').classList.toggle('fin', v.includes('!')); }); set('na', zb ? T('阿肥') + T('殭屍鼠') : T('我方') + T('對手'), () => { top.querySelector('.hx-t.a b').textContent = T(zb ? '阿肥' : '我方'); top.querySelector('.hx-t.b b').textContent = T(zb ? '殭屍鼠' : '對手'); });
+    if (zb) zbTop(p); /* 小威 11-24 */
     const hp = Math.max(0, Math.round(p.hp)); set('hp', hp, (v) => { stat.querySelector('i').textContent = v; stat.classList.toggle('low', v < 35); }); set('nm', SC.ui.myId ? SC.ui.myId() : p.name, (v) => (stat.querySelector('b').textContent = v)); set('ul', p.weapon, (w) => ($('sp-btn').querySelector('.hx-ult svg').innerHTML = ULT[w] || ULT.x));
     const mates = G.actors.filter((a) => a.team === 0 && !a.gone).sort((a, b) => (a.slot | 0) - (b.slot | 0)), mk = mates.map((a) => a.id + '|' + a.kind).join(); set('tk', mk, () => { team.innerHTML = mates.map((a, i) => `<div class="hx-m${a.isPlayer ? ' me' : ''}" data-i="${a.id}"><span>${i + 1}</span><u>${SC.ui.face(a.kind)}</u><div><b translate="no"></b><p><i></i></p></div><em></em></div>`).join(''); team.classList.toggle('many', mates.length > 4); }); mates.forEach((a) => { const e = team.querySelector(`[data-i="${a.id}"]`); if (!e) return; const h = a.alive ? Math.max(0, Math.round(a.hp)) : 0, k = h + '|' + (a.alive ? 1 : 0); if (e._k !== k) { e._k = k; e.querySelector('i').style.width = h + '%'; e.querySelector('em').textContent = a.alive ? h : '✕'; e.classList.toggle('out', !a.alive); } const nm = a.isPlayer && SC.ui.myId ? SC.ui.myId() : a.name; if (e._n !== nm) { e._n = nm; e.querySelector('b').textContent = nm; } });
     const map = $('minimap'), mb = map.offsetTop + map.offsetHeight; const z = +app.style.getPropertyValue('--hz') || 1; set('mb', mb + '/' + z, () => (team.style.top = (mb + 14) / (z * 0.88) + 'px')); };
@@ -43347,6 +43737,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-24", "", "殭屍戰大改版：一場分 5 個回合，回合中間休息 20 秒，選一張免費升級，再到阿肥旁邊的電腦用代幣買機槍、補防護罩和升級；打倒殭屍直接拿代幣；buff 改成打倒大隻的 buff 鼠才拿得到，誰打最多誰拿；神兵變少、散落在場上；每場抽不同的回合特色和魔王拉霸；新增「♾️ 無盡挑戰」、星星紀錄和殭屍鼠圖鑑；畫面換成新的對戰介面；拿掉燈塔接力和花車遊行兩張地圖",
+      { en: "Zombie Battle overhaul: each match now has 5 rounds with 20-second breaks where you pick a free upgrade, then spend coins at the computer next to Afei on turrets, shield repairs and upgrades; popping zombies gives coins directly; buffs now come only from big Buff Mice, and whoever hits one the most gets it; fewer hero weapons, scattered around the map; every match rolls different round twists and a boss slot machine; new ♾️ Endless challenge, star records and a zombie mouse bestiary; the screen now uses the new battle HUD; the Lighthouse Relay and Parade Float maps were removed", ja: "ゾンビバトルが大きく変わりました。1試合は5ラウンドで、あいだの20秒休憩に無料アップグレードを1つえらび、アフェイのよこのコンピューターでコインを使ってきかんじゅう・シールドかいふく・アップグレードをかえます。ゾンビをたおすとコインがそのままもらえます。バフは大きなバフネズミをたおしたときだけ、いちばんダメージをあたえた人がもらえます。しんぺいはへって、マップにちらばります。試合ごとにラウンドのとくちょうとボススロットがかわります。「♾️ エンドレス」、星のきろく、ゾンビネズミずかんもふえました。画面は新しい対戦画面になりました。とうだいリレーとパレードカーのマップはなくなりました", ko: "좀비 배틀 대개편: 한 판이 5라운드가 되고, 라운드 사이 20초 휴식에 무료 업그레이드를 하나 고른 뒤 아페이 옆 컴퓨터에서 코인으로 기관총, 보호막 수리, 업그레이드를 살 수 있어요. 좀비를 잡으면 코인이 바로 들어와요. 버프는 큰 버프 쥐를 잡을 때만, 가장 많이 때린 사람이 받아요. 신병은 줄고 맵 곳곳에 흩어져요. 판마다 라운드 특색과 보스 슬롯이 달라요. 「♾️ 무한 도전」, 별 기록, 좀비 쥐 도감이 생겼어요. 화면이 새 대전 화면으로 바뀌었어요. 등대 릴레이와 꽃차 퍼레이드 맵은 빠졌어요", es: "Gran cambio en Batalla zombi: cada partida tiene 5 rondas con descansos de 20 segundos para elegir una mejora gratis y gastar monedas en el ordenador junto a Afei en torretas, reparar el escudo y mejoras; derrotar zombis da monedas al instante; los potenciadores solo salen de los grandes ratones de poder y se los queda quien más daño les hace; hay menos armas heroicas, repartidas por el mapa; cada partida sortea giros de ronda y una tragaperras de jefes; nuevo desafío ♾️ Infinito, récords con estrellas y un bestiario de ratones zombi; la pantalla usa la nueva interfaz de combate; se quitaron los mapas Relevo de faros y Carroza del desfile", pt: "Grande mudança na Batalha Zumbi: cada partida agora tem 5 rodadas com pausas de 20 segundos para escolher um upgrade grátis e gastar moedas no computador ao lado do Afei em torretas, reparo do escudo e upgrades; derrotar zumbis dá moedas na hora; os bônus agora só vêm dos grandes ratos de bônus, e fica com ele quem causar mais dano; menos armas heroicas, espalhadas pelo mapa; cada partida sorteia efeitos de rodada e uma máquina caça-níqueis de chefes; novo desafio ♾️ Infinito, recordes com estrelas e um bestiário de ratos zumbis; a tela agora usa a nova interface de batalha; os mapas Revezamento dos faróis e Carro alegórico foram removidos", fr: "Grosse refonte de la Bataille zombie : chaque partie compte 5 manches avec des pauses de 20 secondes pour choisir une amélioration gratuite, puis dépenser tes pièces à l’ordinateur près d’Afei en tourelles, réparations du bouclier et améliorations ; éliminer des zombies rapporte des pièces directement ; les bonus viennent seulement des grosses souris bonus, et c’est celui qui leur fait le plus de dégâts qui les gagne ; moins d’armes héroïques, éparpillées sur la carte ; chaque partie tire des particularités de manche et une machine à sous de boss ; nouveaux : défi ♾️ Infini, records en étoiles et bestiaire des souris zombies ; l’écran utilise la nouvelle interface de combat ; les cartes Relais des phares et Char de parade ont été retirées", de: "Großes Update für den Zombie-Kampf: Jedes Match hat jetzt 5 Runden mit 20-Sekunden-Pausen, in denen du ein Gratis-Upgrade wählst und am Computer neben Afei Münzen für Geschütztürme, Schildreparatur und Upgrades ausgibst; besiegte Zombies bringen direkt Münzen; Buffs gibt es nur noch von großen Buff-Mäusen, und wer am meisten Schaden macht, bekommt ihn; weniger Heldenwaffen, verteilt über die Karte; jedes Match lost andere Rundenbesonderheiten und einen Boss-Spielautomaten aus; neu: ♾️ Endlos-Herausforderung, Sterne-Rekorde und ein Zombiemaus-Lexikon; der Bildschirm nutzt jetzt die neue Kampfanzeige; die Karten Leuchtturm-Staffel und Paradewagen wurden entfernt", it: "Grande rinnovamento per Battaglia zombie: ogni partita ha 5 round con pause di 20 secondi in cui scegli un potenziamento gratis e spendi monete al computer accanto ad Afei in torrette, riparazioni dello scudo e potenziamenti; sconfiggere zombie dà monete subito; i bonus arrivano solo dai grossi topi bonus e li prende chi fa più danni; meno armi eroiche, sparse per la mappa; ogni partita estrae caratteristiche di round diverse e una slot machine dei boss; nuovi: sfida ♾️ Infinita, record a stelle e un bestiario dei topi zombie; lo schermo usa la nuova interfaccia di battaglia; rimosse le mappe Staffetta dei fari e Carro della parata", ru: "Большое обновление «Битвы с зомби»: в каждом матче 5 раундов и перерывы по 20 секунд, где можно выбрать бесплатное улучшение и потратить монеты у компьютера рядом с Афэем на турели, ремонт щита и улучшения; за побеждённых зомби монеты даются сразу; усиления теперь дают только большие мыши-усилители, и получает его тот, кто нанёс больше всего урона; героического оружия меньше, оно разбросано по карте; в каждом матче разные особенности раундов и игровой автомат с боссами; новые: испытание ♾️ Бесконечность, звёздные рекорды и бестиарий зомби-мышей; на экране новый боевой интерфейс; карты «Эстафета маяков» и «Карнавальная платформа» убраны", tr: "Zombi Savaşı'nda büyük yenilik: her maç artık 5 tur; aradaki 20 saniyelik molalarda bedava bir yükseltme seçip Afei'nin yanındaki bilgisayarda jetonlarla taret, kalkan onarımı ve yükseltme alabilirsin; zombi yenince jeton doğrudan gelir; güçlendirmeler artık sadece büyük güçlendirme farelerinden gelir ve en çok hasarı veren alır; kahraman silahları azaldı, haritaya dağılıyor; her maçta farklı tur özellikleri ve bir patron slot makinesi çıkar; yeni: ♾️ Sonsuz meydan okuma, yıldız rekorları ve zombi fare ansiklopedisi; ekran yeni savaş arayüzünü kullanıyor; Deniz Feneri Bayrak Yarışı ve Geçit Arabası haritaları kaldırıldı", id: "Perombakan besar Perang Zombi: setiap pertandingan kini 5 ronde dengan jeda 20 detik untuk memilih satu upgrade gratis, lalu belanja koin di komputer di samping Afei untuk turret, perbaikan perisai, dan upgrade; mengalahkan zombi langsung dapat koin; buff kini hanya dari tikus buff besar, dan yang memberi damage terbanyak yang dapat; senjata pahlawan lebih sedikit dan tersebar di peta; setiap pertandingan mengundi keunikan ronde dan mesin slot bos; baru: tantangan ♾️ Tanpa Akhir, rekor bintang, dan ensiklopedia tikus zombi; layar memakai tampilan pertarungan baru; peta Estafet Mercusuar dan Kereta Parade dihapus", vi: "Đại cập nhật Trận Zombie: mỗi trận giờ có 5 vòng, giữa các vòng nghỉ 20 giây để chọn một nâng cấp miễn phí rồi dùng xu ở chiếc máy tính cạnh Afei mua súng tự động, sửa khiên và nâng cấp; hạ zombie là nhận xu ngay; buff giờ chỉ có từ những con chuột buff to, ai gây sát thương nhiều nhất sẽ nhận; vũ khí thần binh ít hơn và rải khắp bản đồ; mỗi trận bốc ngẫu nhiên đặc điểm vòng đấu và máy quay trùm; mới: thử thách ♾️ Vô tận, kỷ lục sao và sách tranh chuột zombie; màn hình dùng giao diện chiến đấu mới; bỏ hai bản đồ Tiếp sức Hải đăng và Xe Diễu Hành", th: "ปรับใหญ่โหมดศึกซอมบี้: แต่ละเกมมี 5 รอบ พักระหว่างรอบ 20 วินาทีให้เลือกอัปเกรดฟรี 1 ใบ แล้วใช้เหรียญที่คอมพิวเตอร์ข้างอาเฟยซื้อป้อมปืน ซ่อมโล่ และอัปเกรด; ล้มซอมบี้แล้วได้เหรียญทันที; บัฟได้จากหนูบัฟตัวใหญ่เท่านั้น ใครตีมากที่สุดคนนั้นได้; อาวุธเทพลดลงและกระจายอยู่ทั่วแผนที่; ทุกเกมสุ่มลักษณะพิเศษของรอบและสล็อตบอส; ใหม่: ภารกิจ ♾️ ไม่รู้จบ สถิติดาว และสมุดภาพหนูซอมบี้; หน้าจอใช้ HUD การต่อสู้แบบใหม่; ลบแผนที่วิ่งผลัดประภาคารและรถแห่ออก" }],
     ["2026-11-24", "", "沐沐小鎮改成跟對戰用同一套：走路、跳、潛墨、墨水量、五把武器的手感和塗地、潛墨留下的壓痕光影、鏡頭和音效都跟開一場對戰一模一樣，以後對戰調整小鎮也會自動跟著變",
       { en: "MooMoo Town now runs on the same system as battles: moving, jumping, ink diving, the ink tank, how all five weapons feel and paint, the light-catching trail left by ink diving, the camera and sounds are exactly like a real match, and future battle tweaks apply to town automatically", ja: "モーモータウンがバトルと同じしくみになりました。移動、ジャンプ、インクもぐり、インク量、5つの武器の手ざわりと塗り、もぐった跡の光と影、カメラと音がバトルとまったく同じです。今後バトルを調整するとタウンも自動で同じになります", ko: "무무 마을이 대전과 같은 시스템으로 바뀌었어요. 이동, 점프, 잉크 잠수, 잉크 양, 다섯 무기의 손맛과 칠하기, 잠수 자국의 빛과 그림자, 카메라와 소리가 실제 대전과 똑같고, 앞으로 대전을 조정하면 마을도 자동으로 따라가요", es: "El Pueblo MooMoo ahora usa el mismo sistema que las batallas: moverse, saltar, bucear en tinta, el tanque de tinta, cómo se sienten y pintan las cinco armas, el rastro con luces y sombras al bucear, la cámara y los sonidos son iguales que en una partida real, y los ajustes futuros de batalla se aplican solos al pueblo", pt: "A Vila MooMoo agora usa o mesmo sistema das batalhas: andar, pular, mergulhar na tinta, o tanque de tinta, como as cinco armas se comportam e pintam, o rastro com luz e sombra ao mergulhar, a câmera e os sons são iguais a uma partida de verdade, e ajustes futuros de batalha valem para a vila automaticamente", fr: "Le village MooMoo utilise maintenant le même système que les batailles : déplacements, sauts, plongée dans l'encre, réservoir d'encre, sensations et peinture des cinq armes, traînée de plongée avec ombres et reflets, caméra et sons sont identiques à un vrai match, et les futurs réglages de bataille s'appliquent automatiquement au village", de: "Das MooMoo-Dorf nutzt jetzt dasselbe System wie die Kämpfe: Laufen, Springen, Tintentauchen, Tintentank, Gefühl und Malen aller fünf Waffen, die glänzende Tauchspur, Kamera und Sounds sind genau wie in einem echten Match, und künftige Kampf-Anpassungen gelten automatisch auch im Dorf", it: "Il Villaggio MooMoo ora usa lo stesso sistema delle battaglie: camminata, salto, immersione nell'inchiostro, serbatoio, sensazione e pittura delle cinque armi, la scia di luci e ombre dell'immersione, telecamera e suoni sono identici a una vera partita, e le future modifiche alle battaglie valgono anche per il villaggio", ru: "Деревня МуМу теперь работает на той же системе, что и бои: ходьба, прыжки, ныряние в краску, запас краски, ощущение и покраска всех пяти видов оружия, след с бликами и тенями после ныряния, камера и звуки — точь-в-точь как в настоящем матче, а будущие настройки боёв сразу применяются и к деревне", tr: "MooMoo Kasabası artık savaşlarla aynı sistemi kullanıyor: yürümek, zıplamak, mürekkebe dalmak, mürekkep deposu, beş silahın hissi ve boyaması, dalışın ışıklı gölgeli izi, kamera ve sesler gerçek bir maçla birebir aynı; ileride savaşta yapılan ayarlar kasabaya da otomatik geçer", id: "Kota MooMoo sekarang memakai sistem yang sama dengan pertarungan: berjalan, melompat, menyelam di tinta, tangki tinta, rasa dan cara mengecat kelima senjata, jejak menyelam dengan cahaya dan bayangan, kamera dan suara sama persis dengan pertandingan sungguhan, dan penyesuaian pertarungan nanti otomatis berlaku di kota", vi: "Thị trấn MooMoo giờ dùng chung hệ thống với trận đấu: đi lại, nhảy, lặn mực, bình mực, cảm giác và cách tô của cả năm vũ khí, vệt lặn có ánh sáng và bóng đổ, camera và âm thanh giống hệt một trận thật, và các chỉnh sửa trận đấu sau này sẽ tự áp dụng cho thị trấn", th: "เมืองมูมูตอนนี้ใช้ระบบเดียวกับการต่อสู้แล้ว ทั้งการเดิน กระโดด ดำหมึก ถังหมึก ความรู้สึกและการทาสีของอาวุธทั้งห้า รอยดำหมึกที่มีแสงเงา กล้อง และเสียง เหมือนเล่นแมตช์จริงทุกอย่าง และถ้าปรับการต่อสู้ในอนาคต เมืองก็จะเปลี่ยนตามเองอัตโนมัติ" }],
     ["2026-11-24", "", "電腦對戰可以選 3 對 3 了：你和兩隻電腦隊友一起對上三隻電腦，塗地戰、擊倒戰都能玩",
