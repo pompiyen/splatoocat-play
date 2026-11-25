@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v313';</script><script>window.SC_BUILD='57f1559dd82b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v314';</script><script>window.SC_BUILD='27587fe2cf5e';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1599,6 +1599,25 @@ html:is([data-lang="en"], [data-lang="es"], [data-lang="pt"], [data-lang="fr"], 
 .tw-rng-g .wi { width: 48px; height: 48px; display: block; margin: 0 auto 2px; }
 .tw-rng-g .fm-it.tw-cur { outline: 3px solid var(--sun, #ffd23c); }
 .portrait .tw-rng-g { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tw-wpn .wi { width: 30px; height: 30px; display: block; }
+.tw-rng .tw-cl-open { display: block; margin: 0 auto 10px; font-size: 18px; }
+.tw-fade { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 9999; transition: opacity .35s ease-in; }
+.tw-fade.on { opacity: 1; pointer-events: auto; }
+.tw-clh { position: absolute; left: 50%; top: calc(64px + var(--sat)); transform: translateX(-50%); background: var(--navy); color: #fff; border: 3px solid #fff; border-radius: 16px; padding: 4px 14px; box-shadow: var(--pop); font-size: 20px; display: flex; align-items: baseline; gap: 10px; pointer-events: none; z-index: 2; white-space: nowrap; }
+.tw-clh[hidden] { display: none; }
+.tw-clh b { color: #ffb35a; } .tw-clh small { font-size: 14px; opacity: .85; }
+@media (orientation: portrait) { .tw-clh { left: auto; right: 12px; transform: none; top: calc(62px + var(--sat)); font-size: 16px; padding: 3px 10px; gap: 6px; } .tw-clh small { font-size: 12px; } }
+.tw-clay .fm-card { max-width: 420px; text-align: center; }
+.tw-cl-last { font-size: 26px; font-weight: 800; margin: 4px 0; color: #ff7a1a; }
+.tw-cl-me { margin: 4px 0 8px; font-weight: 700; }
+.tw-cl-board { text-align: left; background: rgba(0,0,0,.06); border-radius: 12px; padding: 8px 12px; margin: 0 0 12px; }
+.tw-cl-board ol { margin: 6px 0 0; padding: 0; list-style: none; max-height: 210px; overflow: auto; }
+.tw-cl-board li { display: flex; justify-content: space-between; gap: 8px; padding: 1px 0; }
+.tw-cl-board li.me { font-weight: 800; color: #ff7a1a; }
+.tw-cl-board li.none { opacity: .7; }
+.tw-cl-board li i { font-style: normal; opacity: .6; min-width: 1.6em; display: inline-block; }
+.tw-cl-board small { display: block; margin-top: 6px; opacity: .75; }
+.tw-cl-go { font-size: 20px; min-width: 160px; }
 
 /* 大威 2026-11-23：小地圖放大（殭屍不變）、空投艙畫面標記、按 E 撿取 */
 .h-map.mm2 { width: clamp(168px, 20vw, 250px); border-radius: 16px; border-width: 4px; } .h-map.mm2.round { border-radius: 50%; width: clamp(150px, 17vw, 210px); } .is-touch .h-map.mm2 { width: clamp(128px, 18vw, 210px); } .is-touch .h-map.mm2.round { width: clamp(120px, 15vw, 180px); }
@@ -38400,7 +38419,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   const rangeHit = (x, y, z, rad, col) => { if (Z || !RT.length) return false; for (const r of RT) if (!r.down && Math.abs(x - r.c.x) < rad + 1.2 && Math.abs(z - r.c.z) < rad + 1.2 && Math.abs(y - r.c.y) < rad + 1.2 && Math.hypot(x - r.c.x, y - r.c.y, z - r.c.z) < rad + 1.2) { rangeKnock(r, col); return true; } return false; };
   const rangeArea = (x, z, rad, col) => { if (Z || !RT.length) return; for (const r of RT) if (!r.down && Math.hypot(x - r.c.x, z - r.c.z) < rad + 1.2) rangeKnock(r, col); };
-  const rangeBeam = (a, b, col) => { if (Z || !RT.length) return; const d = tv3.subVectors(b, a), L = d.length(); if (L < 0.01) return; for (const r of RT) { if (r.down) continue; const u = SC.clamp(((r.c.x - a.x) * d.x + (r.c.y - a.y) * d.y + (r.c.z - a.z) * d.z) / (L * L), 0, 1); if (Math.hypot(a.x + d.x * u - r.c.x, a.y + d.y * u - r.c.y, a.z + d.z * u - r.c.z) < 1.5) rangeKnock(r, col); } };
+  const rangeBeam = (a, b, col) => { if (Z || !RT.length) return; const d = tv3.subVectors(b, a), L = d.length(); if (L < 0.01) return; for (const r of RT) { if (r.down) continue; const u = SC.clamp(((r.c.x - a.x) * d.x + (r.c.y - a.y) * d.y + (r.c.z - a.z) * d.z) / (L * L), 0, 1); if (Math.hypot(a.x + d.x * u - r.c.x, a.y + d.y * u - r.c.y, a.z + d.z * u - r.c.z) < 1.5) rangeKnock(r, col); } if (CL.on) for (const q of CL.discs) { if (!q.live || q.delay > 0) continue; const u = SC.clamp(((q.p.x - a.x) * d.x + (q.p.y - a.y) * d.y + (q.p.z - a.z) * d.z) / (L * L), 0, 1); if (Math.hypot(a.x + d.x * u - q.p.x, a.y + d.y * u - q.p.y, a.z + d.z * u - q.p.z) < 1.3) clHit(q); } };
   const faceIn = (g, x, z) => { g.position.set(x, 0, z); g.rotation.y = Math.atan2(-x, -z); };
 
   // 貓耳屋頂的小房子（小鎮的招牌樣子）
@@ -38558,8 +38577,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
     range(g) { // 第 247 版：靶場。朝廣場這邊是一道矮櫃台（站在櫃台前往後打），左邊是有條紋遮雨棚的武器架小攤；櫃台後面是靶道，一排靶子，打中會往後倒、過一下再彈起來
       const wood = mat(0xc98c55, { map: SC.townArt.wood() }), dark = mat(0x6b3f22);
-      mesh(new THREE.BoxGeometry(9, 1.0, 1.2), wood, 0, 0.5, 0, g); mesh(new THREE.BoxGeometry(9.4, 0.16, 1.5), dark, 0, 1.06, 0, g);
-      [[-4, 0.62], [-1.3, 0.62], [1.4, 0.62], [3.9, 0.62]].forEach(([x, z], i) => { const c = mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.7, 10), mat(INK[i]), x, 1.5, z - 0.6, g); void c; });
+      [-1, 1].forEach((k) => { mesh(new THREE.BoxGeometry(2.6, 1.0, 1.2), wood, k * 3.5, 0.5, 0, g); mesh(new THREE.BoxGeometry(2.8, 0.16, 1.5), dark, k * 3.5, 1.06, 0, g); }); // 第 3 百多版：櫃台中間空出一道拱門，直接走進靶場
+      { const ar = mat(0x6b3f22); [-2.15, 2.15].forEach((x) => mesh(new THREE.BoxGeometry(0.36, 4.4, 0.36), ar, x, 2.2, 0, g)); mesh(new THREE.BoxGeometry(4.9, 0.4, 0.5), ar, 0, 4.4, 0, g);
+        const tg = mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.16, 18), new THREE.MeshLambertMaterial({ map: targetTex() }), 0, 5.1, 0.1, g); tg.rotation.x = Math.PI / 2; }
+      // 射飛盤的兩間小發射屋（靶道外面左右各一間，開口朝靶道）
+      [-1, 1].forEach((k) => { const h = new THREE.Group(); h.position.set(k * 12.4, 0, -12); g.add(h); mesh(new THREE.BoxGeometry(2.2, 1.7, 2.2), mat(0x5aa05a, { map: SC.townArt.wood() }), 0, 0.85, 0, h); const rf = mesh(new THREE.BoxGeometry(2.6, 0.2, 2.6), mat(0xff7a1a), 0, 1.8, 0, h); rf.rotation.z = k * 0.18; mesh(new THREE.BoxGeometry(0.12, 0.7, 1.4), mat(0x1b1430), -k * 1.12, 1.2, 0, h); [0, 1, 2].forEach((i) => { const dk = mesh(new THREE.CylinderGeometry(0.5, 0.58, 0.14, 14), mat(0xff7a1a), 0, 1.98 + i * 0.15, 0, h); dk.castShadow = false; }); });
+      [[-4.2, 0.62], [-2.7, 0.62], [2.7, 0.62], [4.2, 0.62]].forEach(([x, z], i) => { const c = mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.7, 10), mat(INK[i]), x, 1.5, z - 0.6, g); void c; });
       const st = new THREE.Group(); st.position.set(-8.4, 0, 1); st.rotation.y = 0.5; g.add(st);
       mesh(new THREE.BoxGeometry(4.2, 1.2, 1.4), wood, 0, 0.6, 0, st); [[-1.9, 0.6], [1.9, 0.6], [-1.9, -1.2], [1.9, -1.2]].forEach(([x, z]) => mesh(new THREE.CylinderGeometry(0.13, 0.13, 4.6, 6), dark, x, 2.3, z, st));
       const aw = mesh(new THREE.BoxGeometry(4.6, 0.18, 2.6), new THREE.MeshLambertMaterial({ map: stripeTex('#ff4f7b', '#fff3dc', 8) }), 0, 4.65, -0.3, st); aw.rotation.x = 0.14;
@@ -38575,7 +38598,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         const d = mesh(new THREE.CylinderGeometry(1.15, 1.15, 0.22, 20), new THREE.MeshLambertMaterial({ map: targetTex() }), 0, 2.6, 0, pv); d.rotation.x = Math.PI / 2;
         RT.push({ base, pv, x0: x, mv, ph: i * 1.7, down: 0, k: 0, c: new V3() });
       });
-      anim.push((tt, dt) => rangeFrame(tt, dt || 1 / 60));
+      anim.push((tt, dt) => { rangeFrame(tt, dt || 1 / 60); clFrame(Math.min(0.05, dt || 1 / 60)); });
     },
     wear(g) { // 喵喵服飾店（第 3 百多版：18 世紀鄉村小屋，營業中）：粉紅牆、紫瓦、門口兩隻穿衣服的木頭假貓，屋頂上一件會轉的大 T 恤
       cottage(g, { wall: 0xfbe6f2, roof: 0x6a4cc8, sign: 0xa56bff, awn: '#a56bff', shutter: 0x8a5cff, noBoard: true, icon: (bd) => { [-1, 1].forEach((k) => { const m = mesh(new THREE.ExtrudeGeometry(teeShape(), { depth: 0.06, bevelEnabled: false }), mat(0xffffff), k * 0.09, 0, 0, bd); m.scale.setScalar(0.32); m.rotation.y = k * Math.PI / 2; }); } });
@@ -38616,8 +38639,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
     farm(g) { // 菜園（下一版開放）：三排田、小芽、圍籬、稻草人
       for (let r = 0; r < 3; r++) { mesh(new THREE.BoxGeometry(11, 0.6, 2.4), mat(0x8a5a32), 0, 0.3, -4 + r * 3.6, g); for (let k = 0; k < 6; k++) { const x = -4.5 + k * 1.8, z = -4 + r * 3.6; mesh(new THREE.ConeGeometry(0.35, 0.9, 5), mat(0x6fd04a), x, 1, z, g); if ((k + r) % 3 === 0) mesh(new THREE.SphereGeometry(0.42, 8, 6), mat([0xff6a3a, 0xffd23f, 0xb04aff][r]), x, 0.75, z + 0.4, g); } }
-      for (let i = 0; i < 9; i++) mesh(new THREE.BoxGeometry(0.25, 1.3, 0.25), mat(0xfff3d6), -6.5 + i * 1.6, 0.65, 3.6, g);
-      mesh(new THREE.BoxGeometry(13, 0.2, 0.15), mat(0xfff3d6), 0, 1, 3.6, g);
+      for (let i = 0; i < 9; i++) if (i < 3 || i > 5) mesh(new THREE.BoxGeometry(0.25, 1.3, 0.25), mat(0xfff3d6), -6.5 + i * 1.6, 0.65, 3.6, g);
+      [-1, 1].forEach((k) => mesh(new THREE.BoxGeometry(4.3, 0.2, 0.15), mat(0xfff3d6), k * 4.45, 1, 3.6, g));
+      { // 第 3 百多版（Yen 11-25「菜園跟靶場也是」直接走進門）：圍籬中間一道木頭拱門，上面爬著小葉子和紅蘿蔔
+        const wd = mat(0x8a5a32, { map: SC.townArt.tx('wood', 0.5, 1), rough: 0.9 }), lf = mat(0x6fd04a, { flatShading: true });
+        [-2.1, 2.1].forEach((x) => mesh(new THREE.CylinderGeometry(0.2, 0.24, 3.4, 8), wd, x, 1.7, 3.6, g));
+        const bm = mesh(new THREE.CylinderGeometry(0.2, 0.2, 4.8, 8), wd, 0, 3.45, 3.6, g); bm.rotation.z = Math.PI / 2;
+        [-1.8, -0.7, 0.5, 1.7].forEach((x, k) => mesh(new THREE.IcosahedronGeometry(0.42 + (k % 2) * 0.12, 0), lf, x, 3.7, 3.6, g));
+        const cr = mesh(new THREE.ConeGeometry(0.3, 1, 8), mat(0xff7a1a), 0, 2.9, 3.75, g); cr.rotation.z = Math.PI; mesh(new THREE.ConeGeometry(0.22, 0.4, 5), lf, 0, 3.55, 3.75, g);
+      }
       const sc = new THREE.Group(); sc.position.set(6.8, 0, -4); g.add(sc); mesh(new THREE.CylinderGeometry(0.15, 0.15, 4, 6), mat(0x8a5a32), 0, 2, 0, sc); mesh(new THREE.BoxGeometry(3, 0.2, 0.2), mat(0x8a5a32), 0, 3, 0, sc); mesh(new THREE.SphereGeometry(0.8, 10, 8), mat(0xf2d27a), 0, 4.3, 0, sc); [-1, 1].forEach((s) => mesh(new THREE.ConeGeometry(0.3, 0.6, 4), mat(0xf2d27a), s * 0.45, 5.1, 0, sc)); mesh(new THREE.ConeGeometry(1, 0.8, 10), mat(0xff4f9a), 0, 5.1, 0, sc);
       sign(g, -6.8, 5.5, 0xfff3d6);
     },
@@ -38635,7 +38665,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   //   北邊兩棟中間的大路接坡道上二樓高地（西邊菜園、東邊靶場），二樓中間再一道坡道上三樓高地（探險小徑）。
   const U = (deg) => { const a = (deg * Math.PI) / 180; return { x: Math.round(Math.cos(a) * 42 * 10) / 10, z: Math.round(-Math.sin(a) * 42 * 10) / 10 }; };
   const SPOTS = [
-    { k: 'boss', n: '探險小徑', s: '打怪物、爬塔、闖迷宮', i: '🌿', x: 0, z: -88, r: 5, y: 8, sc: 1.3, south: true }, /* Yen 11-25：冒險門改成探險小徑（小品）；三樓高地 */
+    { k: 'boss', n: '探險小徑', s: '打怪物、爬塔、闖迷宮', i: '🌿', x: 0, z: -88, r: 5, y: 8, sc: 1.3, south: true, walk: { gz: 0.6, hw: 2.1 } }, /* Yen 11-25：冒險門改成探險小徑（小品）；三樓高地 */
     { k: 'sandbox', n: '教學站', s: '教學試玩', i: '🎈', ...U(205), r: 6, y: 13.2, sc: 2, top: 6.5 },
     { k: 'stk', n: '貼紙庫', s: '貼紙本', i: '📒', ...U(175), r: 6, y: 13.2, sc: 2, top: 6.5 },
     { k: 'task', n: '任務所', s: '每日任務', i: '📋', ...U(115), r: 6, y: 13.2, sc: 2, top: 6.5 },
@@ -38643,8 +38673,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     { k: 'heart', n: '愛心補給站', s: '贊助和更新日誌', i: '❤️', ...U(-25), r: 6, y: 13.2, sc: 2, top: 6.5 },
     { k: 'home', n: '我的家', s: '換貓咪', i: '🏠', x: 26, z: 56, r: 6, y: 13.2, sc: 2, top: 6.5 },
     { k: 'fish', n: '釣魚池', s: '掛機釣魚賺代幣', i: '🎣', x: -28, z: 54, r: 10.5, y: 5, water: true }, /* 第 284 版（Yen「開啟釣魚玩法，可掛機賺代幣」）：09tg_fish.js */
-    { k: 'farm', n: '菜園', s: '種菜、偷菜', i: '🥕', x: -44, z: -72, r: 7.5, y: 7, south: true }, /* 二樓高地西邊 */
-    { k: 'range', n: '靶場', s: '換武器、打靶', i: '🎯', x: 44, z: -66, r: 4.5, y: 7.5, top: 1.2, sc: 0.9, south: true }, /* 第 247 版：靶場；第 3 百多版搬到二樓高地東邊，靶道往北 */
+    { k: 'farm', n: '菜園', s: '種菜、偷菜', i: '🥕', x: -44, z: -72, r: 7.5, y: 7, south: true, walk: { gz: 3.6, hw: 1.7 } }, /* 二樓高地西邊 */
+    { k: 'range', n: '靶場', s: '打靶、射飛盤', i: '🎯', x: 44, z: -66, r: 4.5, y: 7.5, top: 1.2, sc: 0.9, south: true, walk: { gz: 0.3, hw: 1.75 } }, /* 第 247 版：靶場；第 3 百多版搬到二樓高地東邊，靶道往北 */
   ];
   // 沒有作用的店面（門窗關著）：麵包坊、鐘錶行、花店
   const DECO = [{ ...U(145), wall: 0xf6e3c8, roof: 0x9a4a32 }, { ...U(65), wall: 0xe8e0d0, roof: 0x4a5a6a }, { ...U(35), wall: 0xf0e4ea, roof: 0x7a5a8a }];
@@ -38705,7 +38735,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const root = new THREE.Group(); scene.add(root);
     // 每棟房子腳下整平；門口
     PADS.push({ x: 0, z: 0, r: 28, h: 0 }); /* 第 3 百多版：神像大三倍，廣場也放大（半徑 26） */
-    SPOTS.forEach((s) => { const L = Math.hypot(s.x, s.z); s.dx = s.south ? 0 : -s.x / L; s.dz = s.south ? 1 : -s.z / L; s.gy = s.water ? 0 : baseH(s.x, s.z); if (!s.water) PADS.push({ x: s.x, z: s.z, r: s.r + 2, h: s.gy }); s.door = new V3(s.x + s.dx * (s.r + 2.6), 0, s.z + s.dz * (s.r + 2.6)); if (!s.water) solids.push({ x: s.x, z: s.z, r: s.r, top: s.gy + (s.top != null ? s.top : s.y - 1) }); });
+    SPOTS.forEach((s) => { const L = Math.hypot(s.x, s.z); s.dx = s.south ? 0 : -s.x / L; s.dz = s.south ? 1 : -s.z / L; s.gy = s.water ? 0 : baseH(s.x, s.z); if (!s.water) PADS.push({ x: s.x, z: s.z, r: s.r + 2, h: s.gy }); s.door = new V3(s.x + s.dx * (s.r + 2.6), 0, s.z + s.dz * (s.r + 2.6));
+      if (s.walk) { const K = s.sc || 1; s.gate = { x: s.x + s.dx * s.walk.gz * K, z: s.z + s.dz * s.walk.gz * K, nx: s.dx, nz: s.dz, hw: s.walk.hw * K, al: 1e9 }; s.door.set(s.gate.x + s.dx * 4.5, 0, s.gate.z + s.dz * 4.5); return; } /* 第 3 百多版（Yen 11-25「…直接穿過門後螢幕漸黑後進入」）：走進去的門沒有圓柱擋，門口兩邊的柱子不算實體，不會卡在門側 */
+      if (!s.water) solids.push({ x: s.x, z: s.z, r: s.r, top: s.gy + (s.top != null ? s.top : s.y - 1) }); });
     DECO.forEach((q) => { q.gy = baseH(q.x, q.z); PADS.push({ x: q.x, z: q.z, r: 14, h: q.gy }); solids.push({ x: q.x, z: q.z, r: 12, top: q.gy + 6.5 * 2 }); });
     solids.push({ x: 0, z: 0, r: 14 });
     // 路：從廣場沿著能走的路線到每個門口（自動算出來，所以路一定走得通）
@@ -38814,7 +38846,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // ───────── 畫面上的字（建築名牌、提示、底下按鈕）─────────
   function buildHud() {
     hud = document.createElement('div'); hud.id = 'town'; hud.className = 'town'; hud.hidden = true;
-    hud.innerHTML = `<div class="tw-top"><div class="tw-name"><b>沐沐小鎮</b><small translate="no">MooMoo Town</small><small class="tw-cov"></small></div><div class="tw-tools"><span class="tw-rkw"></span><button type="button" class="tw-ic tw-col" aria-label="換墨水顏色"><i></i></button><button type="button" class="tw-ic tw-wash" aria-label="把小鎮洗乾淨">🧽</button><button type="button" class="tw-ic" data-go="heart" aria-label="愛心小舖">❤️</button><button type="button" class="tw-ic" data-go="set" aria-label="設定">⚙️</button></div></div>
+    hud.innerHTML = `<div class="tw-top"><div class="tw-name"><b>沐沐小鎮</b><small translate="no">MooMoo Town</small><small class="tw-cov"></small></div><div class="tw-tools"><span class="tw-rkw"></span><button type="button" class="tw-ic tw-wpn" data-go="wpn" aria-label="換武器"></button><button type="button" class="tw-ic tw-col" aria-label="換墨水顏色"><i></i></button><button type="button" class="tw-ic tw-wash" aria-label="把小鎮洗乾淨">🧽</button><button type="button" class="tw-ic" data-go="heart" aria-label="愛心小舖">❤️</button><button type="button" class="tw-ic" data-go="set" aria-label="設定">⚙️</button></div></div>
       <div class="tw-lbls"></div><div class="tw-bub" hidden></div>
       <div class="tw-hint"></div><button type="button" class="tw-mouse"></button><div class="tw-aim" aria-hidden="true"></div><button type="button" class="tw-jump" aria-label="跳">⤒<small>跳</small></button>
       <div class="tw-prompt" hidden><span class="tw-pi"></span><span class="tw-pt"><b></b><small></small></span><button type="button" class="btn primary tw-pgo">進入</button><kbd class="tw-pk">E</kbd></div>
@@ -38897,7 +38929,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     let mx = 0, mz = 0; const s = Math.sin(yaw), c = Math.cos(yaw);
     if (frozT > 0) { path = null; pathSpot = null; }
     else if (In.moveX || In.moveZ) { path = null; pathSpot = null; mx = s * In.moveZ - c * In.moveX; mz = c * In.moveZ + s * In.moveX; hintT = Math.max(hintT, 5); }
-    else if (path && path.length) { if (!In.lookX && !(In.locked && In.fire)) { yaw = angTo(yaw, face, 2.6 * dt); camPitch = SC.damp(camPitch, -0.14, 3, dt); } /* 第 226 版：自己走去門口時，鏡頭慢慢轉到前進方向，看得到要去的房子 */ const g = path[0], dx = g.x - pos.x, dz = g.z - pos.z, L = Math.hypot(dx, dz); if (L < 1) { path.shift(); if (!path.length) { const sp = pathSpot; path = null; pathSpot = null; if (sp) { face = Math.atan2(sp.x - pos.x, sp.z - pos.z); if (!sp.soon) { T.enter(sp.k); return; } } } } else { mx = dx / L; mz = dz / L; } }
+    else if (path && path.length) { if (!In.lookX && !(In.locked && In.fire)) { yaw = angTo(yaw, face, 2.6 * dt); camPitch = SC.damp(camPitch, -0.14, 3, dt); } /* 第 226 版：自己走去門口時，鏡頭慢慢轉到前進方向，看得到要去的房子 */ const g = path[0], dx = g.x - pos.x, dz = g.z - pos.z, L = Math.hypot(dx, dz); if (L < 1) { path.shift(); if (!path.length) { const sp = pathSpot; path = null; pathSpot = null; if (sp && sp.gate) path = [new V3(sp.gate.x - sp.gate.nx * 3, 0, sp.gate.z - sp.gate.nz * 3)]; /* 走進去的門：走到門口後繼續往門裡走，穿過門就進去 */ else if (sp) { face = Math.atan2(sp.x - pos.x, sp.z - pos.z); if (!sp.soon) { T.enter(sp.k); return; } } } } else { mx = dx / L; mz = dz / L; } }
     const wet = swimming(), wantCat = !!In.cat, subm = wantCat && onGround && !Z && !wet && ownInk(pos.x, pos.z); swimFx(wantCat, subm); /* 第 216 版：Shift／墨貓鈕變墨貓，在自己的墨水裡潛墨游很快（跟對戰一樣的速度） */
     const ml = Math.hypot(mx, mz), dive = wet && wantCat; let spd = (wet ? (dive ? SWIM.dive : SWIM.surf) * (1 + SWIM.pulse * Math.max(0, Math.sin(strokeP))) : wantCat ? (subm ? CF().OWN_INK_CAT_SPEED || 46.8 : CF().NEUTRAL_CAT_SPEED || 19) : CF().WALK_SPEED || 23.4) * Math.min(1, ml);
     waterFx(dt, wet, dive, ml);
@@ -38927,14 +38959,40 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     shootCd = Math.max(-0.05, shootCd - dt); /* 第 258 版：冷卻每格都倒數（以前只有按住才倒數，放開再按會卡住：狙擊要按很多下、滾刷跳打慢） */
     const firing = !Z && !!In.fire && !wantCat && !(wet && onGround) && !T.pickOpen(); if (firing) { face = angTo(face, yaw, 18 * dt); shoot(dt); }
     animSt = { speed: onGround ? sp : 0, onGround, vy, form: wantCat || (wet && onGround) ? 'cat' : 'biped', submerged: subm || (dive && onGround), pitch: firing ? -camPitch : 0, firing, rolling: firing && wpn() === 'W02' && onGround && sp > 2, charge: 0, t }; me.animate(dt, animSt);
-    doorPrompt();
+    gateTick(dt); doorPrompt();
   }
   function doorPrompt() {
     // 走到門口附近就跳出「進入」
-    let nn = null, best = 1e9; if (Z) nn = Z.near(pos); else for (const s2 of SPOTS) { const d = Math.hypot(pos.x - s2.door.x, pos.z - s2.door.z); if (d < 5.5 && d < best && Math.abs(pos.y - s2.door.y) < 3) { best = d; nn = s2; } }
+    let nn = null, best = 1e9; if (Z) nn = Z.near(pos); else for (const s2 of SPOTS) { if (s2.gate) continue; const d = Math.hypot(pos.x - s2.door.x, pos.z - s2.door.z); if (d < 5.5 && d < best && Math.abs(pos.y - s2.door.y) < 3) { best = d; nn = s2; } }
     if (nn !== near) { const fr = (o) => !!o && o.k !== 'range' && (!Z || !!o.free); doorMouse(fr(nn), fr(near)); } /* 第 252 版：站在靶場前不自動放開滑鼠，才能一直按住開槍、右鍵開鏡（換武器按 E） */
     if (nn !== near || (near && near.dirty)) { near = nn; prompt.hidden = !near; if (near) { near.dirty = false; prompt.querySelector('.tw-pi').textContent = near.i; prompt.querySelector('b').textContent = near.n; prompt.querySelector('small').innerHTML = SC.townArt.coinHtml(near.s); const go = prompt.querySelector('.tw-pgo'); go.hidden = !!near.soon || near.btn === ''; if (go.textContent !== (near.btn || '進入')) go.textContent = near.btn || '進入'; prompt.classList.toggle('soon', !!near.soon); } }
   }
+  // 第 3 百多版（Yen 11-25「探險小徑直接穿過門後螢幕漸黑後進入開啟，模型確保不會卡在門側，而是前進時會順著滑進門。菜園跟靶場也是」）：
+  //   門前 6 公尺內往門裡走、偏到門柱旁邊（或圍籬上）時，身體會被輕輕往門中間推，順著滑進門，不會卡在門柱；穿過門的那條線就畫面漸黑、進去。
+  //   靶場不是另一個地方：畫面黑一下，站到櫃台裡面面向靶道，跳出射飛盤的卡片。
+  let gateBusy = 0, lastGate = null, fadeEl = null;
+  function gateTick(dt) {
+    wpnBtn();
+    if (Z || gateBusy > 0) { gateBusy = Math.max(0, gateBusy - dt); return; }
+    for (const s of SPOTS) { const G = s.gate; if (!G) continue;
+      const rx = pos.x - G.x, rz = pos.z - G.z, al = rx * G.nx + rz * G.nz, lat = rx * G.nz - rz * G.nx, was = G.al; G.al = al;
+      if (Math.abs(pos.y - s.gy) > 3.5) { G.al = 1e9; continue; }
+      const vin = -(vel.x * G.nx + vel.z * G.nz);
+      if (al > -0.5 && al < 7 && vin > 0.5 && Math.abs(lat) < G.hw + 4.8) { const lim = Math.max(0.3, G.hw - 0.9), over = Math.abs(lat) - lim; if (over > 0) { const k = Math.min(over, (4 + vin * 0.9) * dt * (al < 2.5 ? 1.6 : 1)), sg = Math.sign(lat); pos.x -= G.nz * sg * k; pos.z += G.nx * sg * k; } }
+      if (was > 0 && was < 4 && al <= 0 && Math.abs(lat) < G.hw + 0.4) { gateGo(s); return; }
+    }
+  }
+  function fade(on) { if (!fadeEl) { if (!on) return; fadeEl = document.createElement('div'); fadeEl.className = 'tw-fade'; document.body.appendChild(fadeEl); } fadeEl.classList.toggle('on', !!on); }
+  function gateGo(s) {
+    gateBusy = 1.5; lastGate = s; path = null; pathSpot = null; fade(1); try { SC.audio.sfx.ui && SC.audio.sfx.ui(); } catch (e) {}
+    setTimeout(() => {
+      if (!T.on) { fade(0); return; }
+      if (s.k === 'range') { const G = s.gate; lastGate = null; pos.set(G.x - G.nx * 3, 0, G.z - G.nz * 3); pos.y = walkH(pos.x, pos.z); vel.set(0, 0, 0); face = yaw = Math.atan2(-G.nx, -G.nz); camPitch = -0.04; last.copy(pos); fp = null; arReset = true; setTimeout(() => clPanel(), 200); }
+      else T.enter(s.k);
+      setTimeout(() => fade(0), s.k === 'farm' ? 260 : 140);
+    }, 380);
+  }
+  T._gate = (k) => { const s = SPOTS.find((q) => q.k === k); return s && s.gate; }; // 測試用
   // 第 214 版（Yen 13:11）：電腦上走到門口跳出「進入」時，自動放開滑鼠，可以直接點；離開門口、按鈕消失時再鎖回去，變回原本轉視角的操作
   let autoFreed = false;
   function doorMouse(nowNear, wasNear) {
@@ -38975,7 +39033,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (T._fix) { cam.position.set(...T._fix[0]); cam.lookAt(...T._fix[1]); }
     const su = Z ? Z.sun : sun; su.position.set(pos.x * 0.5 + 30, 60, pos.z * 0.5 + 25); su.target.position.set(pos.x * 0.5, 0, pos.z * 0.5);
     const W = sz.x, Hh = sz.y, sw = hud.clientWidth / Math.max(1, W), shh = hud.clientHeight / Math.max(1, Hh);
-    for (const sp of zSpots()) { pv.set(sp.x, sp.gy + sp.y, sp.z).project(cam); const dd = Math.hypot(sp.x - pos.x, sp.z - pos.z), vis = pv.z < 1 && pv.x > -1.1 && pv.x < 1.1 && pv.y > -1 && pv.y < 1.15 && dd < 95; if (vis !== sp.vis) { sp.vis = vis; sp.el.style.visibility = vis ? '' : 'hidden'; } if (!vis) continue;
+    for (const sp of zSpots()) { pv.set(sp.x, sp.gy + sp.y, sp.z).project(cam); const dd = Math.hypot(sp.x - pos.x, sp.z - pos.z), vis = !(CL.on && sp.k === 'range') && pv.z < 1 && pv.x > -1.1 && pv.x < 1.1 && pv.y > -1 && pv.y < 1.15 && dd < 95; if (vis !== sp.vis) { sp.vis = vis; sp.el.style.visibility = vis ? '' : 'hidden'; } if (!vis) continue;
       const hw = hud.clientWidth, hh = hud.clientHeight, short = hh < 520, x = SC.clamp(((pv.x + 1) / 2) * W * sw, 64, hw - 64), y = SC.clamp(((1 - pv.y) / 2) * Hh * shh, short ? 64 : 112, hh - (short ? 92 : 150));
       sp.el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%) scale(${(SC.clamp(1.2 - dd / 90, 0.66, 1.05) * SC.clamp(hh / 720, 0.72, 1)).toFixed(2)})`; sp.el.classList.toggle('nr', sp === near); }
   }
@@ -39405,7 +39463,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (a.nextShotAt !== arShotAt) { const was = arShotAt; arShotAt = a.nextShotAt; if (was !== -1) { mzl.set(pos.x, pos.y + 2.2, pos.z); cam.getWorldDirection(aimD); skyShot(); } } /* 對著雲開槍：一道墨水射上天（小鎮才有） */
     animSt = { speed: a.onGround ? a.speed || 0 : 0, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged || (wet && ARN.dive), pitch: a.pitch || 0, firing: !!a.ctl.fire, rolling: !!a.rolling, charge: 0, t };
     if (pendEnter) { const k = pendEnter; pendEnter = null; T.enter(k); return; }
-    doorPrompt();
+    gateTick(dt); doorPrompt();
   }
   // 河裡、湖裡游泳（小鎮才有）：角色的移動交給這裡，鏡頭、畫面、特效還是對戰的
   function swimExt(a, ctl) {
@@ -39486,6 +39544,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     let best = null, bt = max; const wl = hitWall(o, arP1.copy(o).addScaledVector(d, max));
     if (wl) { bt = wl.p.distanceTo(o); arH.wall = true; arH.p.copy(wl.p); arH.n.copy(wl.n); arH.cap = wl.cap; arH.hitFn = null; best = arH; }
     if (!Z) for (const r of RT) { if (r.down) continue; const u = (r.c.x - o.x) * d.x + (r.c.y - o.y) * d.y + (r.c.z - o.z) * d.z; if (u < 0 || u > bt + 1.6) continue; /* 靶子本身也是會沾墨的模型：打到靶面就算打到靶 */ if (Math.hypot(o.x + d.x * u - r.c.x, o.y + d.y * u - r.c.y, o.z + d.z * u - r.c.z) < 1.5) { bt = u; arH.wall = false; arH.p.copy(o).addScaledVector(d, u); arH.hitFn = () => rangeKnock(r, ARN.cols[0]); best = arH; } }
+    if (!Z && CL.on) for (const q of CL.discs) { if (!q.live || q.delay > 0) continue; const u = (q.p.x - o.x) * d.x + (q.p.y - o.y) * d.y + (q.p.z - o.z) * d.z; if (u < 0 || u > bt + 1) continue; /* 射飛盤：光束經過飛盤 1.15 以內就算打中 */ if (Math.hypot(o.x + d.x * u - q.p.x, o.y + d.y * u - q.p.y, o.z + d.z * u - q.p.z) < 1.3) { bt = u; arH.wall = false; arH.p.copy(o).addScaledVector(d, u); const qq = q; arH.hitFn = () => clHit(qq); best = arH; } }
     if (best) best.t = bt; return best;
   }
   function arBlocked(a, x, z) {
@@ -39508,7 +39567,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (path && path.length) {
       const C2 = SC.game.arena.cam(); if (!In.lookX && !(In.locked && In.fire)) { C2.yaw = angTo(C2.yaw, a.yaw, 2.6 * dt); C2.pitch = SC.damp(C2.pitch, -0.14, 3, dt); } /* 自己走去門口時，鏡頭慢慢轉到前進方向 */
       const g = path[0], dx = g.x - pos.x, dz = g.z - pos.z, L = Math.hypot(dx, dz);
-      if (L < 1) { path.shift(); if (!path.length) { const sp = pathSpot; path = null; pathSpot = null; if (sp) { a.yaw = Math.atan2(sp.x - pos.x, sp.z - pos.z); if (!sp.soon) pendEnter = sp.k; } } } else { ctl.mx = dx / L; ctl.mz = dz / L; }
+      if (L < 1) { path.shift(); if (!path.length) { const sp = pathSpot; path = null; pathSpot = null; if (sp && sp.gate) path = [new V3(sp.gate.x - sp.gate.nx * 3, 0, sp.gate.z - sp.gate.nz * 3)]; else if (sp) { a.yaw = Math.atan2(sp.x - pos.x, sp.z - pos.z); if (!sp.soon) pendEnter = sp.k; } } } else { ctl.mx = dx / L; ctl.mz = dz / L; }
     }
     if (jumpReq) { ctl.jump = true; jumpReq = false; }
     if (T.pickOpen()) { ctl.fire = false; ctl.bomb = false; ctl.sp = false; ctl.q = false; }
@@ -39653,6 +39712,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function keyNav(e) {
     if (T.pickOpen() || e.repeat) return !!NAVK[e.code] || e.code === 'Tab';
     if (NAVK[e.code] && enterLock <= 0) { click(); T.enter(NAVK[e.code]); return true; }
+    { const m = /^(Digit|Numpad)([1-5])$/.exec(e.code); if (m && !Z) { setWpn('W0' + m[2]); return true; } } /* 第 3 百多版（Yen 11-25「小鎮武器…直接就可以切換」）：1～5 換武器 */
     // 第 233 版（Yen 18:46「全螢幕之後沒辦法選介面上的功能，新增 Esc 固定切換滑鼠指標，並有明顯操作提示」）：全螢幕時遊戲接管了 Esc，所以由這裡處理：按一下叫出滑鼠、再按一下鎖回去
     if (e.code === 'Escape') { if (performance.now() - unlockT < 400) return true; autoFreed = false; altFree = false; if (document.pointerLockElement) document.exitPointerLock(); else lockNow(); return true; }
     if (e.code === 'Tab') { autoFreed = false; if (document.pointerLockElement) document.exitPointerLock(); else lockNow(); return true; }
@@ -39724,12 +39784,101 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   let rgOv = null;
   function rangePanel() {
     if (!hud) return; if (!rgOv) { rgOv = document.createElement('div'); rgOv.className = 'fm-ov tw-rng'; rgOv.hidden = true; hud.appendChild(rgOv);
-      rgOv.addEventListener('click', (e) => { e.stopPropagation(); if (e.target === rgOv || e.target.closest('.fm-x')) { rgOv.hidden = true; return; } const b = e.target.closest('[data-w]'); if (!b) return; const pk = document.querySelector(`#pick-wpn .pick[data-v="${b.dataset.w}"]`); if (pk) pk.click(); else click(); T.holdWeapon(); rgOv.hidden = true; try { SC.audio.sfx.swap && SC.audio.sfx.swap(); } catch (er) {} const nm = (CW()[b.dataset.w] || {}).name || ''; say('🎯 ' + tr('換成 {w} 了！對著靶子試試看').replace('{w}', tr(nm))); });
+      rgOv.addEventListener('click', (e) => { e.stopPropagation(); if (e.target === rgOv || e.target.closest('.fm-x')) { rgOv.hidden = true; return; } if (e.target.closest('.tw-cl-open')) { rgOv.hidden = true; click(); clPanel(); return; } const b = e.target.closest('[data-w]'); if (!b) return; rgOv.hidden = true; if (setWpn(b.dataset.w)) lockNow(); });
       window.addEventListener('keydown', (e) => { if (rgOv && !rgOv.hidden && e.code === 'Escape') { rgOv.hidden = true; e.stopPropagation(); } }, true); }
     const cur = wpn(), C0 = CW();
-    rgOv.innerHTML = `<div class="fm-card"><button type="button" class="fm-x" aria-label="關閉">✕</button><h3>🎯 ${tr('靶場・換武器')}</h3><p class="fm-tip">${tr('選一把武器，對前面的靶子試試看！')}</p><div class="fm-grid tw-rng-g">${['W01', 'W02', 'W03', 'W04', 'W05'].map((w) => `<button type="button" class="fm-it${w === cur ? ' tw-cur' : ''}" data-w="${w}">${SC.ui && SC.ui.icon ? SC.ui.icon(w) : ''}<b>${tr((C0[w] || {}).name || w)}</b><small>${w === cur ? '✓ ' + tr('使用中') : ''}</small></button>`).join('')}</div></div>`;
+    const rs = SPOTS.find((q) => q.k === 'range'), atR = !!rs && Math.hypot(pos.x - rs.x, pos.z - rs.z) < 28;
+    rgOv.innerHTML = `<div class="fm-card"><button type="button" class="fm-x" aria-label="關閉">✕</button><h3>🎯 ${tr('換武器')}</h3><p class="fm-tip">${tr('在小鎮裡隨時都能換武器，電腦也可以按 1～5')}</p>${atR ? `<button type="button" class="btn tw-cl-open">🥏 ${tr('射飛盤')}</button>` : ''}<div class="fm-grid tw-rng-g">${['W01', 'W02', 'W03', 'W04', 'W05'].map((w) => `<button type="button" class="fm-it${w === cur ? ' tw-cur' : ''}" data-w="${w}">${SC.ui && SC.ui.icon ? SC.ui.icon(w) : ''}<b>${tr((C0[w] || {}).name || w)}</b><small>${w === cur ? '✓ ' + tr('使用中') : ''}</small></button>`).join('')}</div></div>`;
     rgOv.hidden = false;
   }
+  // 第 3 百多版（Yen 11-25「小鎮武器不需進靶場換，直接就可以切換」）：右上角的武器鈕、電腦按 1～5 隨時換；換的還是對戰帶的第一把
+  function setWpn(w, quiet) {
+    if (CL.on && w !== 'W03' && !quiet) { say('🥏 ' + tr('飛盤遊戲只能用狙擊槍')); return false; }
+    if (wpn() !== w) { const pk = document.querySelector(`#pick-wpn .pick[data-v="${w}"]`); if (pk) pk.click(); }
+    T.holdWeapon(w); wpnBtn();
+    if (!quiet) { try { SC.audio.sfx.swap ? SC.audio.sfx.swap() : click(); } catch (er) {} say('🎯 ' + tr('換成 {w} 了！').replace('{w}', tr((CW()[w] || {}).name || w))); }
+    return true;
+  }
+  let wpnB = null; function wpnBtn() { const b = wpnB && wpnB.isConnected ? wpnB : (wpnB = hud && hud.querySelector('.tw-wpn')); if (!b) return; const w = wpn(); if (b.dataset.w === w) return; b.dataset.w = w; b.innerHTML = SC.ui && SC.ui.icon ? SC.ui.icon(w) : '🔫'; }
+  T.setWpn = (w) => setWpn(w);
+  // ───────── 射飛盤（第 3 百多版，Yen 11-25「靶場除了各種試打靶之外也加入射飛盤小遊戲難度偏中略上，連續射擊紀錄會有榜」「飛盤小遊戲限定狙擊槍」）─────────
+  //   飛盤從靶道兩邊的小發射屋飛出來，劃一道弧線往遠處掉；只能用狙擊槍（開始時自動換，結束換回原本的），打中一個連續 +1，漏掉一個（掉到地上）就結束。
+  //   越打越快（連續 24 個以後快 1.6 倍：橫著飛得更快、整個弧線更短），連續 6 個以後有時一次兩個（從兩邊各一個）。玩的時候墨水不會用完。
+  //   最佳紀錄存在這台裝置；登入的話上排行榜（09z_account.js 的 account.clay：Firestore bossrank/s99，t＝7200－連續數，規則不用改）
+  const CL = { on: false, n: 0, discs: [], next: 0, wasW: null, ov: null, geo: null, col: null };
+  const clBest = (v) => { try { if (v != null) localStorage.setItem('sc-clay', String(v)); return +localStorage.getItem('sc-clay') || 0; } catch (e) { return v || 0; } };
+  const clK = () => 1 + Math.min(CL.n, 24) * 0.025;
+  function clDisc() {
+    let d = CL.discs.find((q) => !q.live); if (d) return d;
+    if (!CL.geo) { CL.geo = { b: new THREE.CylinderGeometry(0.62, 0.74, 0.2, 18), r: new THREE.TorusGeometry(0.44, 0.07, 5, 18), m: mat(0xff7a1a, { emissive: 0xff5a00, emissiveIntensity: 0.3 }), w: mat(0xfff3dc) }; CL.col = new THREE.Color(0xff7a1a); }
+    const g = new THREE.Group(), r = new THREE.Mesh(CL.geo.r, CL.geo.w); g.add(new THREE.Mesh(CL.geo.b, CL.geo.m)); r.rotation.x = Math.PI / 2; r.position.y = 0.11; g.add(r); g.scale.setScalar(1.2); g.visible = false; scene.add(g);
+    d = { g, p: new V3(), v: new V3(), live: false, delay: 0, spin: 0 }; CL.discs.push(d); return d;
+  }
+  function clLaunch() {
+    const s = SPOTS.find((q) => q.k === 'range'), k = clK(), two = CL.n >= 6 && Math.random() < 0.4, side = Math.random() < 0.5 ? -1 : 1; if (!s) return;
+    for (let i = 0; i < (two ? 2 : 1); i++) {
+      const d = clDisc(), sd = i ? -side : side; d.live = true; d.delay = i ? 0.3 + Math.random() * 0.4 : 0; d.spin = 0;
+      d.p.set(s.x + sd * 11.2, s.gy + 1.6, s.z - 10.8 + (Math.random() - 0.5) * 1.6);
+      d.v.set(-sd * (5 + Math.random() * 3.5) * k, (12.5 + Math.random() * 3.5) * k, -(2 + Math.random() * 3) * k);
+      d.g.position.copy(d.p); d.g.visible = d.delay <= 0; if (d.g.visible) clWhoosh(d);
+    }
+  }
+  function clWhoosh(d) { try { SC.audio.sfx.jump ? SC.audio.sfx.jump(2) : SC.audio.sfx.ui(); } catch (e) {} if (fxOk()) SC.fx.pop(d.p.x, d.p.y, d.p.z, WHITE, 1.6, 0.12); }
+  function clFrame(dt) {
+    if (!CL.on) return; const s = SPOTS.find((q) => q.k === 'range');
+    if (Z || !T.on || !s) { clEnd('', null, true); return; }
+    if (Math.hypot(pos.x - s.x, pos.z - s.z) > 30) { clEnd(tr('離開靶場，射飛盤結束')); return; }
+    if (wpn() !== 'W03') setWpn('W03', true);
+    if (ARN.a) ARN.a.ink = 100;
+    const k = clK(), G = 11 * k * k; let live = 0;
+    for (const d of CL.discs) { if (!d.live) continue; live++;
+      if (d.delay > 0) { d.delay -= dt; if (d.delay > 0) continue; d.g.visible = true; clWhoosh(d); }
+      d.v.y -= G * dt; d.p.addScaledVector(d.v, dt); d.spin += dt * 16; d.g.position.copy(d.p); d.g.rotation.set(0.22, d.spin, 0.12 * Math.sign(d.v.x));
+      if (d.v.y < 0 && (d.p.y < H(d.p.x, d.p.z) + 0.35 || d.p.y < s.gy - 4)) { clEnd(null, d); return; }
+    }
+    if (!live && (CL.next -= dt) <= 0) clLaunch();
+  }
+  function clHit(d) {
+    if (!CL.on || !d.live) return; d.live = false; d.g.visible = false; CL.n++;
+    if (fxOk()) { SC.fx.burst(d.p.x, d.p.y, d.p.z, CL.col, 18, 18, 0.6); SC.fx.burst(d.p.x, d.p.y, d.p.z, WHITE, 6, 12, 0.4); SC.fx.pop(d.p.x, d.p.y, d.p.z, CL.col, 3.2, 0.14); }
+    try { SC.audio.sfx.metal ? SC.audio.sfx.metal() : SC.audio.sfx.ding(); SC.audio.sfx.ding && SC.audio.sfx.ding(); } catch (e) {}
+    if (!CL.discs.some((q) => q.live)) CL.next = Math.max(0.45, 1.1 - CL.n * 0.02) + Math.random() * 0.5;
+    clHud();
+  }
+  function clHud() {
+    if (!hud) return; let el = hud.querySelector('.tw-clh'); if (!el) { el = document.createElement('div'); el.className = 'tw-clh'; hud.appendChild(el); }
+    el.hidden = !CL.on; if (CL.on) el.innerHTML = `🥏 <b>${tr('連續 {n}').replace('{n}', CL.n)}</b><small>${tr('最佳 {n}').replace('{n}', Math.max(clBest(), CL.n))}</small>`;
+  }
+  function clStart() {
+    if (Z || CL.on) return; CL.wasW = wpn(); setWpn('W03', true);
+    CL.on = true; CL.n = 0; CL.next = 1.8; CL.discs.forEach((d) => { d.live = false; d.g.visible = false; });
+    if (CL.ov) CL.ov.hidden = true; clHud(); say('🥏 ' + tr('飛盤來了！')); lockNow();
+  }
+  function clEnd(msg, missed, quiet) {
+    if (!CL.on) return; CL.on = false; CL.discs.forEach((d) => { d.live = false; d.g.visible = false; });
+    const n = CL.n, rec = n > clBest(); if (rec) clBest(n);
+    if (CL.wasW && CL.wasW !== 'W03') setWpn(CL.wasW, true); CL.wasW = null; clHud();
+    if (rec && SC.account && SC.account.clay) SC.account.clay.submit(n);
+    if (quiet) return;
+    if (missed && fxOk()) SC.fx.burst(missed.p.x, missed.p.y, missed.p.z, CL.col, 8, 8, 0.5);
+    try { SC.audio.sfx.empty ? SC.audio.sfx.empty() : SC.audio.sfx.ui(); } catch (e) {}
+    say('🥏 ' + (msg || tr('漏掉了！這次連續打中 {n} 個').replace('{n}', n)) + (rec ? '　' + tr('新紀錄！') : ''));
+    if (!msg) setTimeout(() => { if (T.on && !CL.on && !Z) clPanel(n); }, 1100);
+  }
+  const esc = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  function clPanel(last) {
+    if (!hud || Z) return; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+    if (!CL.ov) { CL.ov = document.createElement('div'); CL.ov.className = 'fm-ov tw-clay'; CL.ov.hidden = true; hud.appendChild(CL.ov);
+      CL.ov.addEventListener('click', (e) => { e.stopPropagation(); if (e.target === CL.ov || e.target.closest('.fm-x')) { CL.ov.hidden = true; lockNow(); return; } if (e.target.closest('.tw-cl-go')) { click(); clStart(); } });
+      window.addEventListener('keydown', (e) => { if (CL.ov && !CL.ov.hidden && e.code === 'Escape') { CL.ov.hidden = true; e.stopPropagation(); } }, true); }
+    const A = SC.account, need = A && A.clay && !A.user;
+    CL.ov.innerHTML = `<div class="fm-card"><button type="button" class="fm-x" aria-label="關閉">✕</button><h3>🥏 ${tr('射飛盤')}</h3><p class="fm-tip">${tr('只能用狙擊槍。飛盤會從兩邊飛出來，開鏡瞄準把它打下來，漏掉一個就結束！')}</p>${last != null ? `<p class="tw-cl-last">${tr('連續 {n}').replace('{n}', last)}</p>` : ''}<p class="tw-cl-me">${tr('我的最佳 {n}').replace('{n}', clBest())}</p><div class="tw-cl-board"><b>🏆 ${tr('排行榜')}</b><ol></ol>${need ? `<small>${tr('登入後可以上排行榜')}</small>` : ''}</div><button type="button" class="btn primary tw-cl-go">${tr(last != null ? '再玩一次' : '開始射飛盤')}</button></div>`;
+    CL.ov.hidden = false;
+    const ol = CL.ov.querySelector('ol'), show = (L) => { if (!ol.isConnected) return; ol.innerHTML = L.length ? L.map((r, i) => `<li${r.me ? ' class="me"' : ''}><span><i>${r.me && L.length === 1 && !r.uid ? '' : i + 1}</i>${esc(r.n)}</span><b>${r.s}</b></li>`).join('') : `<li class="none">${tr('還沒有人上榜')}</li>`; };
+    const mine = clBest() > 0 ? [{ n: (A && A.user && A.name && A.name()) || '🐱', s: clBest(), me: 1 }] : [];
+    show(mine); if (A && A.clay) A.clay.top().then((L) => show(L.length ? L.map((r) => ({ ...r, me: A.user && r.uid === A.user.uid })) : mine)).catch(() => {});
+  }
+  T._clay = () => CL; T._clStart = () => clStart(); T._clHit = (d) => clHit(d); T._clStep = (n, dt) => { for (let i = 0; i < n; i++) clFrame(dt); }; T._ray = (o, d, m) => arRay(o, d, m); // 測試用
   T.enter = (k) => {
     if (Z && Z.act && Z.act(k)) return; /* 第 217 版：菜園裡的動作 */
     if (Z && !['menu', 'versus', 'net', 'ranked'].includes(k)) return; // 第 232 版：菜園裡沒處理的東西按 E 不會跑到選單（以前在朋友家會被送回自己家）
@@ -39737,7 +39886,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const mt = $('m-title'); if (!mt) return; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); /* 第 213 版：打開面板時放開滑鼠，才點得到 */
     if (k === 'heart') { const b = mt.querySelector('.ac-btn.heart'); if (b) b.click(); else if (SC.changelog && SC.changelog.open) SC.changelog.open(); return; }
     if (k === 'stk') { if (SC.stk) SC.stk.open(); return; }
-    if (k === 'range') { rangePanel(); return; }
+    if (k === 'range') { clPanel(); return; }
+    if (k === 'wpn') { if (!Z) rangePanel(); return; }
     if (k === 'fish') { if (SC.fish) SC.fish.start(); return; }
     if (k === 'wear') { if (SC.wear) SC.wear.open(); return; }
     if (k === 'home') { pickCat(); return; }
@@ -39754,12 +39904,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   T.show = () => {
     if (!R) return; if (!T.built) build(); if (Z) setZone(null); refreshCats(); T.on = true; taK = ''; { const zb = document.getElementById('zq-btn'); if (zb) delete zb.dataset.tw; } try { const ae = document.activeElement; if (ae && ae !== document.body && ae.blur) ae.blur(); } catch (e) {} hud.hidden = false; document.getElementById('app').classList.add('in-town'); enterLock = 0.4;
     ['m-title', 'm-results', 'm-pause'].forEach((id) => { const e = $(id); if (e) e.hidden = true; }); if (SC.catView) SC.catView.hide();
-    const back = near || (!spawned && SPOTS.find((s) => s.k === 'home')); spawned = true;
+    const back = near || lastGate || (!spawned && SPOTS.find((s) => s.k === 'home')); lastGate = null; gateBusy = 0.6; fade(0); spawned = true;
     if (back) { pos.set(back.door.x + back.dx * 2, 0, back.door.z + back.dz * 2); pos.y = walkH(pos.x, pos.z); face = Math.atan2(back.dx, back.dz); yaw = face; camPitch = -0.14; fp = null; near = null; prompt.hidden = true; } // 從哪棟出來就站在那棟門口（第一次在自己家門口），面向廣場
     path = null; pathSpot = null; vel.set(0, 0, 0); vy = 0; onGround = true; last.copy(pos); arReset = true;
     const In = SC.input; In.release(); In.cancelActions(); In.consume(); In.active = true; hud.querySelector('.tw-hint').textContent = touchHint(); hintT = 0;
   };
-  T.hide = () => { if (SC.fish && SC.fish.on && SC.fish.on()) SC.fish.stop(); if (SC.input) SC.input.scope = false; zoom = 1; scopeEl(0); T.on = false; autoFreed = false; inkSave(true); shots.length = 0; if (ARN.q) ARN.q.forEach((l) => (l.length = 0)); if (SC.fx && SC.fx.root && SC.fx.home) { SC.fx.drawBlobs([]); SC.fx.home.add(SC.fx.root); } if (picker) picker.hidden = true; if (setEl) setEl.hidden = true; document.getElementById('app').classList.remove('in-town'); if (hud) { hud.hidden = true; prompt.hidden = true; } const In = SC.input; if (In) { In.release(); In.active = false; } if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); };
+  T.hide = () => { clEnd('', null, true); if (CL.ov) CL.ov.hidden = true; if (SC.fish && SC.fish.on && SC.fish.on()) SC.fish.stop(); if (SC.input) SC.input.scope = false; zoom = 1; scopeEl(0); T.on = false; autoFreed = false; inkSave(true); shots.length = 0; if (ARN.q) ARN.q.forEach((l) => (l.length = 0)); if (SC.fx && SC.fx.root && SC.fx.home) { SC.fx.drawBlobs([]); SC.fx.home.add(SC.fx.root); } if (picker) picker.hidden = true; if (setEl) setEl.hidden = true; document.getElementById('app').classList.remove('in-town'); if (hud) { hud.hidden = true; prompt.hidden = true; } const In = SC.input; if (In) { In.release(); In.active = false; } if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); };
   T.frame = (dt) => {
     t += dt; if (enterLock > 0) enterLock -= dt; arRan = false;
     if (SC.net && SC.net.code) { T.hide(); const mt = $('m-title'); if (mt) mt.hidden = false; return; } // 從好友名單被邀進房間：直接到房間
@@ -39893,6 +40043,24 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ], X9 = ['es', 'pt', 'fr', 'de', 'it', 'ru', 'tr', 'id', 'vi', 'th'];
   I.add(R9.map((r) => r.slice(0, 4))); if (I.addL) X9.forEach((l, j) => I.addL(l, R9.map((r) => [r[0], r[4 + j]]))); }
   /* 第 218 版：小鎮設定面板 */
+  // 第 3 百多版（Yen 11-25 走進門、隨時換武器、射飛盤）的字：中、英、日、韓、西、葡、法、德、義、俄、土、印尼、越、泰
+  [["換武器", "Change weapon", "武器をかえる", "무기 바꾸기", "Cambiar arma", "Trocar arma", "Changer d’arme", "Waffe wechseln", "Cambia arma", "Сменить оружие", "Silah değiştir", "Ganti senjata", "Đổi vũ khí", "เปลี่ยนอาวุธ"],
+    ["在小鎮裡隨時都能換武器，電腦也可以按 1～5", "You can change weapons anywhere in town; on a computer press 1–5 too", "町のどこでも武器をかえられるよ。パソコンは 1～5 キーでもOK", "마을 어디서나 무기를 바꿀 수 있어요. 컴퓨터는 1~5 키로도 돼요", "Puedes cambiar de arma en cualquier parte del pueblo; en el ordenador también con 1–5", "Dá para trocar de arma em qualquer lugar da vila; no computador também com 1–5", "Change d’arme n’importe où au village ; sur ordinateur, touches 1 à 5 aussi", "Im Dorf kannst du überall die Waffe wechseln, am Computer auch mit 1–5", "Puoi cambiare arma ovunque nel villaggio; al computer anche con 1–5", "В городке оружие можно сменить где угодно, на компьютере ещё клавишами 1–5", "Kasabanın her yerinde silah değiştirebilirsin; bilgisayarda 1–5 tuşlarıyla da", "Bisa ganti senjata di mana saja di kota; di komputer juga dengan tombol 1–5", "Đổi vũ khí ở bất cứ đâu trong thị trấn; trên máy tính bấm 1–5 cũng được", "เปลี่ยนอาวุธได้ทุกที่ในเมือง บนคอมกด 1–5 ก็ได้"],
+    ["換成 {w} 了！", "Switched to {w}!", "{w} にかえたよ！", "{w}(으)로 바꿨어요!", "¡Ahora llevas {w}!", "Agora com {w}!", "Tu as pris {w} !", "Jetzt mit {w}!", "Ora hai {w}!", "Теперь у тебя {w}!", "{w} seçildi!", "Sekarang pakai {w}!", "Đã đổi sang {w}!", "เปลี่ยนเป็น {w} แล้ว!"],
+    ["射飛盤", "Clay Shooting", "クレー射撃", "클레이 사격", "Tiro al plato", "Tiro ao prato", "Ball-trap", "Tontaubenschießen", "Tiro al piattello", "Стрельба по тарелочкам", "Kil güvercin atışı", "Tembak piringan", "Bắn đĩa bay", "ยิงจานบิน"],
+    ["只能用狙擊槍。飛盤會從兩邊飛出來，開鏡瞄準把它打下來，漏掉一個就結束！", "Sniper only. Discs fly out from both sides: scope in and shoot them down. Miss one and it's over!", "スナイパーだけ。円盤が両側から飛び出すよ。スコープでねらって打ち落とそう。1つでも逃したら終わり！", "저격총만 쓸 수 있어요. 원반이 양쪽에서 날아와요. 조준경으로 맞혀 떨어뜨리세요. 하나라도 놓치면 끝!", "Solo rifle de francotirador. Los platos salen de ambos lados: apunta con la mira y derríbalos. ¡Si fallas uno, se acaba!", "Só rifle de precisão. Os pratos saem dos dois lados: mire com a luneta e derrube. Deixou um passar, acabou!", "Sniper uniquement. Les plateaux partent des deux côtés : vise à la lunette et abats-les. Un seul raté et c’est fini !", "Nur Scharfschützengewehr. Die Scheiben fliegen von beiden Seiten: mit dem Zielfernrohr zielen und abschießen. Eine verpasst, und es ist vorbei!", "Solo fucile da cecchino. I piattelli partono dai due lati: mira col mirino e abbattili. Se ne perdi uno è finita!", "Только снайперская винтовка. Тарелочки вылетают с обеих сторон: целься в прицел и сбивай. Пропустишь одну — конец!", "Sadece keskin nişancı tüfeği. Diskler iki yandan fırlar; dürbünle nişan al ve vur. Birini kaçırırsan biter!", "Hanya senapan runduk. Piringan terbang dari dua sisi; bidik dengan teropong dan tembak jatuh. Lewat satu, selesai!", "Chỉ dùng súng bắn tỉa. Đĩa bay ra từ hai bên, mở ống ngắm và bắn rơi. Lỡ một cái là hết!", "ใช้ได้แค่ปืนสไนเปอร์ จานบินจะพุ่งออกมาจากสองข้าง ส่องกล้องแล้วยิงให้ร่วง พลาดแค่ใบเดียวก็จบ!"],
+    ["開始射飛盤", "Start", "スタート", "시작", "Empezar", "Começar", "Commencer", "Los geht’s", "Inizia", "Начать", "Başla", "Mulai", "Bắt đầu", "เริ่ม"],
+    ["連續 {n}", "Streak {n}", "連続 {n}", "연속 {n}", "Racha {n}", "Sequência {n}", "Série {n}", "Serie {n}", "Serie {n}", "Серия {n}", "Seri {n}", "Beruntun {n}", "Liên tiếp {n}", "ติดกัน {n}"],
+    ["最佳 {n}", "Best {n}", "ベスト {n}", "최고 {n}", "Mejor {n}", "Melhor {n}", "Meilleur {n}", "Bestwert {n}", "Migliore {n}", "Рекорд {n}", "En iyi {n}", "Terbaik {n}", "Cao nhất {n}", "ดีที่สุด {n}"],
+    ["登入後可以上排行榜", "Sign in to get on the leaderboard", "ログインするとランキングにのれるよ", "로그인하면 랭킹에 올라가요", "Inicia sesión para entrar en la clasificación", "Entre na conta para aparecer no ranking", "Connecte-toi pour entrer au classement", "Melde dich an, um in die Bestenliste zu kommen", "Accedi per entrare in classifica", "Войди, чтобы попасть в таблицу рекордов", "Sıralamaya girmek için giriş yap", "Masuk untuk tampil di papan peringkat", "Đăng nhập để lên bảng xếp hạng", "เข้าสู่ระบบเพื่อขึ้นตารางอันดับ"],
+    ["還沒有人上榜", "No one on the board yet", "まだだれもいないよ", "아직 아무도 없어요", "Aún no hay nadie", "Ainda não tem ninguém", "Personne pour l’instant", "Noch niemand", "Ancora nessuno", "Пока никого нет", "Henüz kimse yok", "Belum ada yang masuk", "Chưa có ai", "ยังไม่มีใคร"],
+    ["飛盤來了！", "Here come the discs!", "円盤が来るよ！", "원반이 온다!", "¡Ahí vienen los platos!", "Lá vêm os pratos!", "Voilà les plateaux !", "Die Scheiben kommen!", "Arrivano i piattelli!", "Летят тарелочки!", "Diskler geliyor!", "Piringan datang!", "Đĩa bay tới rồi!", "จานบินมาแล้ว!"],
+    ["漏掉了！這次連續打中 {n} 個", "Missed! You hit {n} in a row", "逃しちゃった！今回は {n} 連続", "놓쳤어요! 이번엔 {n}개 연속", "¡Se escapó! Acertaste {n} seguidos", "Passou! Você acertou {n} seguidos", "Raté ! Tu en as eu {n} d’affilée", "Daneben! {n} Treffer in Folge", "Mancato! Ne hai presi {n} di fila", "Мимо! Ты сбил {n} подряд", "Kaçtı! Arka arkaya {n} vurdun", "Lolos! Kamu kena {n} beruntun", "Lỡ rồi! Bạn bắn trúng {n} liên tiếp", "พลาด! ยิงโดนติดกัน {n} ใบ"],
+    ["飛盤遊戲只能用狙擊槍", "Clay shooting is sniper only", "クレー射撃はスナイパーだけ", "클레이 사격은 저격총만", "El tiro al plato es solo con francotirador", "Tiro ao prato é só com rifle de precisão", "Le ball-trap, c’est sniper uniquement", "Tontauben nur mit Scharfschützengewehr", "Il tiro al piattello è solo col cecchino", "Тарелочки — только снайперкой", "Kil güvercin atışı sadece keskin nişancıyla", "Tembak piringan hanya dengan senapan runduk", "Bắn đĩa chỉ dùng súng bắn tỉa", "ยิงจานบินใช้ได้แค่ปืนสไนเปอร์"],
+    ["離開靶場，射飛盤結束", "You left the range, clay shooting over", "マト場をはなれたので終了", "사격장을 떠나서 끝났어요", "Saliste del campo: fin del tiro al plato", "Você saiu do estande: fim do tiro ao prato", "Tu as quitté le stand : ball-trap terminé", "Schießstand verlassen, Tontauben beendet", "Hai lasciato il poligono: fine del tiro al piattello", "Ты ушёл с полигона — игра окончена", "Atış alanından çıktın, oyun bitti", "Kamu keluar dari lapangan tembak, permainan selesai", "Rời trường bắn, trò bắn đĩa kết thúc", "ออกจากสนามยิงแล้ว จบเกมยิงจานบิน"],
+    ["再玩一次", "Play again", "もう一回", "한 번 더", "Otra vez", "De novo", "Rejouer", "Nochmal", "Ancora", "Ещё раз", "Tekrar oyna", "Main lagi", "Chơi lại", "เล่นอีกครั้ง"],
+    ["我的最佳 {n}", "My best {n}", "自己ベスト {n}", "내 최고 {n}", "Mi mejor {n}", "Meu melhor {n}", "Mon record {n}", "Mein Bestwert {n}", "Il mio record {n}", "Мой рекорд {n}", "En iyim {n}", "Terbaikku {n}", "Kỷ lục của tôi {n}", "สถิติของฉัน {n}"],
+    ["打靶、射飛盤", "Targets & clay shooting", "マトあて・クレー射撃", "표적·클레이 사격", "Dianas y tiro al plato", "Alvos e tiro ao prato", "Cibles et ball-trap", "Zielscheiben & Tontauben", "Bersagli e piattelli", "Мишени и тарелочки", "Hedefler ve kil güvercin", "Sasaran & tembak piringan", "Bia và bắn đĩa", "เป้าและยิงจานบิน"]].forEach((r) => { I.add([r.slice(0, 4)]); if (I.addL) ["es", "pt", "fr", "de", "it", "ru", "tr", "id", "vi", "th"].forEach((l, k) => I.addL(l, [[r[0], r[4 + k]]])); });
   I.add([["設定", "Settings", "設定", "설정"], ["回到小鎮", "Back to town", "町にもどる", "마을로 돌아가기"]]);
   Object.entries({ es: ["Ajustes", "Volver al pueblo"], pt: ["Configurações", "Voltar à vila"], fr: ["Réglages", "Retour au village"], de: ["Einstellungen", "Zurück ins Dorf"], it: ["Impostazioni", "Torna al villaggio"], ru: ["Настройки", "Назад в городок"], tr: ["Ayarlar", "Kasabaya dön"], id: ["Pengaturan", "Kembali ke kota"], vi: ["Cài đặt", "Về thị trấn"], th: ["ตั้งค่า", "กลับเมือง"] }).forEach(([l, v]) => I.addL(l, [["設定", v[0]], ["回到小鎮", v[1]]]));
   /* 第 219 版：換墨水顏色 */
@@ -44433,6 +44601,15 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
       return { up: () => up };
     };
     // 第 147 版（殭屍指揮官的戰鬥經驗）：每個分類（難度_地圖_我方隻數）大家各存一筆自己的累積（只有數字，沒有名字），開場讀最近 40 筆一起算
+    // 第 3 百多版（Yen 11-25「靶場…射飛盤小遊戲…連續射擊紀錄會有榜」）：小鎮靶場射飛盤的排行榜，借用 bossrank 的 s99 這一格（規則不用改）：
+    //   t＝7200－連續打中數，越小越前面；每個帳號只留自己最好的一筆（規則只准變小）
+    account.clay = {
+      top: async () => { const { db, F } = await load(); const snap = await F.getDocs(F.query(F.collection(db, 'bossrank', 's99', 'runs'), F.orderBy('t'), F.limit(10))); return snap.docs.map((d) => { const x = d.data(); return { uid: x.uid, n: x.n, s: 7200 - x.t }; }).filter((r) => r.s > 0); },
+      submit: async (n) => {
+        const u = account.user; if (!u || !(n > 0)) return; const t = 7200 - Math.min(7180, n | 0);
+        try { const { db, F } = await load(); const ref = F.doc(db, 'bossrank', 's99', 'runs', u.uid), old = await F.getDoc(ref); if (old.exists() && !(t < old.data().t)) return; await F.setDoc(ref, { uid: u.uid, n: account.name(), t, d: Date.now() }); } catch (e) { /* 寫不上去：紀錄還在這台裝置 */ }
+      },
+    };
     account.zbExp = {
       read: async (key) => { if (!useFb || !/^[a-z0-9_]{3,40}$/.test(key)) return []; const { db, F } = await load(); const snap = await F.getDocs(F.query(F.collection(db, 'zbexp', key, 'runs'), F.orderBy('d', 'desc'), F.limit(40))); return snap.docs.map((d) => d.data()); },
       add: async (key, r) => { const u = account.user; if (!useFb || !u || !/^[a-z0-9_]{3,40}$/.test(key)) return; const { db, F } = await load(); await F.setDoc(F.doc(db, 'zbexp', key, 'runs', u.uid), { n: r.n | 0, e: +r.e, dy: +r.dy, w: +r.w, k: +r.k, d: Date.now() }); },
@@ -45104,6 +45281,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-25", "", "沐沐小鎮：探險小徑、菜園、靶場改成直接走進門（畫面變暗就進去了，走歪也會順著滑進門）；靶場新增射飛盤小遊戲（限定狙擊槍，連續打中的紀錄有排行榜）；在小鎮裡隨時都能換武器（右上角的武器鈕，電腦按 1～5）",
+      { en: "MooMoo Town: just walk through the gates of the Adventure Trail, Veggie Garden and Target Range (the screen fades and you're in; if you're a bit off, you slide into the gate); new Clay Shooting minigame at the range (sniper only, with a leaderboard for your best streak); change weapons anywhere in town (weapon button at the top right, or 1–5 on a computer)", ja: "沐沐の町：探検の小道・畑・マト場は門をくぐるだけで入れるように（画面が暗くなって中へ。少しずれても門にすべりこみます）。マト場にクレー射撃ミニゲームを追加（スナイパー限定、連続ヒットのランキングつき）。町のどこでも武器をかえられます（右上の武器ボタン、パソコンは 1～5）", ko: "무무 마을: 탐험 오솔길·텃밭·사격장은 문을 지나가기만 하면 들어가요(화면이 어두워지며 입장, 조금 비껴가도 문으로 미끄러져 들어가요). 사격장에 클레이 사격 미니게임 추가(저격총 전용, 연속 명중 랭킹). 마을 어디서나 무기 변경(오른쪽 위 무기 버튼, 컴퓨터는 1~5)", es: "Pueblo MooMoo: entra al Sendero de aventura, el huerto y el campo de tiro con solo cruzar la puerta (la pantalla se oscurece y ya estás dentro; si vas un poco torcido, te deslizas hacia la puerta); nuevo minijuego de tiro al plato en el campo (solo francotirador, con clasificación de la mejor racha); cambia de arma en cualquier parte del pueblo (botón de arma arriba a la derecha o 1–5 en el ordenador)", pt: "Vila MooMoo: entre na Trilha da aventura, na horta e no estande de tiro só passando pelo portão (a tela escurece e você já entrou; se estiver meio torto, desliza para o portão); novo minijogo de tiro ao prato no estande (só rifle de precisão, com ranking da melhor sequência); troque de arma em qualquer lugar da vila (botão de arma no canto superior direito ou 1–5 no computador)", fr: "Village MooMoo : il suffit de passer le portail du Sentier d’aventure, du potager et du stand de tir (l’écran s’assombrit et tu es dedans ; si tu es un peu décalé, tu glisses vers le portail) ; nouveau mini-jeu de ball-trap au stand (sniper uniquement, classement de la meilleure série) ; change d’arme n’importe où au village (bouton d’arme en haut à droite, ou 1 à 5 sur ordinateur)", de: "MooMoo-Dorf: Durch die Tore von Abenteuerpfad, Gemüsegarten und Schießstand einfach hindurchgehen (der Bildschirm wird dunkel und du bist drin; wer leicht daneben läuft, rutscht ins Tor); neues Tontauben-Minispiel am Schießstand (nur Scharfschützengewehr, Bestenliste für die längste Serie); Waffe überall im Dorf wechseln (Waffenknopf oben rechts oder 1–5 am Computer)", it: "Villaggio MooMoo: per entrare nel Sentiero dell’avventura, nell’orto e nel poligono basta passare dal cancello (lo schermo si scurisce e sei dentro; se sei un po’ storto scivoli verso il cancello); nuovo minigioco di tiro al piattello al poligono (solo cecchino, con classifica della serie migliore); cambia arma ovunque nel villaggio (pulsante arma in alto a destra o 1–5 al computer)", ru: "Городок МуМу: в Тропу приключений, огород и тир теперь можно просто войти через ворота (экран темнеет — и ты внутри; если идёшь чуть мимо, тебя мягко заводит в ворота); в тире новая мини-игра «Стрельба по тарелочкам» (только снайперка, таблица лучших серий); оружие можно сменить где угодно в городке (кнопка оружия справа вверху или 1–5 на компьютере)", tr: "MooMoo Kasabası: Macera Patikası, sebze bahçesi ve atış alanına kapıdan geçerek girersin (ekran kararır ve içeridesin; biraz kayarsan kapıya doğru süzülürsün); atış alanına kil güvercin mini oyunu eklendi (sadece keskin nişancı, en iyi seri sıralaması); kasabanın her yerinde silah değiştir (sağ üstteki silah düğmesi veya bilgisayarda 1–5)", id: "Kota MooMoo: masuk ke Jalur Petualangan, kebun sayur, dan lapangan tembak cukup dengan berjalan melewati gerbang (layar menggelap dan kamu sudah di dalam; kalau agak meleset, kamu meluncur ke gerbang); minigame tembak piringan baru di lapangan tembak (hanya senapan runduk, ada papan peringkat beruntun terbaik); ganti senjata di mana saja di kota (tombol senjata di kanan atas, atau 1–5 di komputer)", vi: "Thị trấn MooMoo: chỉ cần đi qua cổng là vào Đường mòn phiêu lưu, vườn rau và trường bắn (màn hình tối lại là đã vào; đi lệch một chút cũng tự trượt vào cổng); trường bắn có thêm trò bắn đĩa bay (chỉ súng bắn tỉa, có bảng xếp hạng chuỗi trúng liên tiếp); đổi vũ khí ở bất cứ đâu trong thị trấn (nút vũ khí góc trên bên phải, hoặc 1–5 trên máy tính)", th: "เมืองมูมู: เดินผ่านประตูก็เข้าทางผจญภัย สวนผัก และสนามยิงได้เลย (จอมืดลงแล้วก็เข้าไป ถ้าเดินเฉียงนิดหน่อยก็จะไถลเข้าประตูเอง) สนามยิงมีมินิเกมยิงจานบินใหม่ (ใช้ได้แค่สไนเปอร์ มีตารางอันดับยิงโดนติดกันสูงสุด) เปลี่ยนอาวุธได้ทุกที่ในเมือง (ปุ่มอาวุธมุมขวาบน หรือกด 1–5 บนคอม)" }],
     ["2026-11-25", "", "沐沐小鎮改建：八棟 18 世紀鄉村小屋圍成 U 形，中間是放大三倍的貓神大雕像廣場；營業中的店門開著、燈亮著，沒開的店門窗關著；菜園和靶場搬到二樓高地，探險小徑在三樓高地",
       { en: "MooMoo Town rebuilt: eight 18th-century country cottages form a U around a plaza with a cat god statue three times bigger; open shops have open doors and lit lamps, closed ones are shuttered; the Veggie Garden and Target Range moved up to the second terrace, the Adventure Trail sits on the third", ja: "沐沐の町を改築：18世紀のいなか風の家8軒がU字に並び、真ん中は3倍の大きさになったネコ神さまの広場。営業中の店はドアが開いて明かりがつき、閉まっている店は窓もドアも閉まっています。畑とマト場は2段目の高台へ、探検の小道は3段目の高台に", ko: "무무 마을 개축: 18세기 시골풍 집 8채가 U자로 둘러싸고, 가운데는 3배 커진 고양이 신 광장이에요. 영업 중인 가게는 문이 열리고 불이 켜져 있고, 닫은 가게는 문과 창이 닫혀 있어요. 텃밭과 사격장은 2층 고지로, 탐험 오솔길은 3층 고지에", es: "Pueblo MooMoo renovado: ocho casitas de campo del siglo XVIII forman una U alrededor de una plaza con la estatua del dios gato tres veces más grande; las tiendas abiertas tienen la puerta abierta y luces, las cerradas tienen las contraventanas cerradas; el huerto y el campo de tiro suben a la segunda terraza y el sendero de aventura está en la tercera", pt: "Vila MooMoo reconstruída: oito casinhas de campo do século XVIII formam um U em volta de uma praça com a estátua do deus gato três vezes maior; lojas abertas têm porta aberta e luzes acesas, as fechadas estão com as janelas fechadas; a horta e o estande de tiro subiram para o segundo patamar e a trilha de aventura fica no terceiro", fr: "Le village MooMoo est rebâti : huit chaumières du XVIIIe siècle forment un U autour d'une place avec la statue du dieu chat trois fois plus grande ; les boutiques ouvertes ont la porte ouverte et les lanternes allumées, les fermées ont les volets clos ; le potager et le stand de tir montent sur la deuxième terrasse, le sentier d'aventure est sur la troisième", de: "MooMoo-Dorf umgebaut: Acht Landhäuschen im Stil des 18. Jahrhunderts bilden ein U um einen Platz mit einer dreimal so großen Katzengott-Statue; geöffnete Läden haben offene Türen und Licht, geschlossene haben zugeklappte Fensterläden; Gemüsegarten und Schießstand liegen jetzt auf der zweiten Terrasse, der Abenteuerpfad auf der dritten", it: "Il paese MooMoo è stato ricostruito: otto casette di campagna del Settecento formano una U attorno a una piazza con la statua del dio gatto tre volte più grande; i negozi aperti hanno la porta aperta e le luci accese, quelli chiusi hanno le imposte serrate; l'orto e il poligono salgono alla seconda terrazza, il sentiero dell'avventura è sulla terza", ru: "Городок МуМу перестроен: восемь деревенских домиков в стиле XVIII века стоят буквой U вокруг площади со статуей кошачьего бога, ставшей втрое больше; у открытых лавок двери открыты и горят фонари, у закрытых ставни заперты; огород и тир переехали на второй уступ, тропа приключений — на третьем", tr: "MooMoo Kasabası yeniden yapıldı: 18. yüzyıl tarzı sekiz kır evi, üç kat büyüyen kedi tanrı heykelinin olduğu meydanın çevresinde U şeklinde dizildi; açık dükkânların kapısı açık ve fenerleri yanıyor, kapalı olanların kepenkleri kapalı; sebze bahçesi ve atış alanı ikinci terasa taşındı, macera yolu üçüncü terasta", id: "Kota MooMoo dibangun ulang: delapan pondok desa ala abad ke-18 membentuk huruf U mengelilingi alun-alun dengan patung dewa kucing tiga kali lebih besar; toko yang buka pintunya terbuka dan lampunya menyala, yang tutup jendelanya tertutup; kebun sayur dan lapangan tembak pindah ke dataran kedua, jalan setapak petualangan di dataran ketiga", vi: "Thị trấn MooMoo được xây lại: tám ngôi nhà quê kiểu thế kỷ 18 xếp hình chữ U quanh quảng trường có tượng thần mèo to gấp ba; tiệm đang mở thì cửa mở, đèn sáng, tiệm đóng thì cửa sổ đóng kín; vườn rau và trường bắn lên tầng cao thứ hai, đường mòn phiêu lưu ở tầng thứ ba", th: "เมืองมูมู่สร้างใหม่: บ้านชนบทสไตล์ศตวรรษที่ 18 แปดหลังเรียงเป็นรูปตัว U รอบลานรูปปั้นเทพแมวที่ใหญ่ขึ้นสามเท่า ร้านที่เปิดอยู่ประตูเปิดและไฟสว่าง ร้านที่ปิดหน้าต่างประตูปิดหมด แปลงผักกับสนามยิงเป้าย้ายขึ้นที่ราบชั้นสอง ทางเดินผจญภัยอยู่ชั้นสาม" }],
     ["2026-11-25", "", "「冒險模式」改名「貓咪歷險」。選關畫面的三個世界都多了一行說明，告訴你這個世界怎麼玩（世界一 2D 闖關、世界二爬塔和無盡爬塔、世界三迷宮）。",
