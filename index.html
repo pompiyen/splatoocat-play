@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v294';</script><script>window.SC_BUILD='e2cb53994c99';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v295';</script><script>window.SC_BUILD='430b3fff60bc';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -25041,8 +25041,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const n = N.clean(p.n), k = KINDS.includes(p.k) ? p.k : 'maomao';
     const u = typeof p.u === 'string' && /^[A-Za-z0-9]{6,40}$/.test(p.u) ? p.u : ''; // 登入的人帶帳號 id，房裡的人才能送好友邀請（對方要按接受，Yen 11-22）
     const rt = Number.isInteger(p.rt) && p.rt >= 0 && p.rt <= 9 ? p.rt : -1, tl = typeof p.tl === 'string' && /^[a-z0-9]{1,12}$/.test(p.tl) ? p.tl : ''; /* 第 198 版：牌位圖示和稱號（09ya_season.js），積分賽房間給別人看 */
-    if (n === prof.n && k === prof.k && p.w === prof.w && u === prof.u && rt === prof.rt && tl === prof.tl) return;
-    prof = { n, k, w: p.w, u, rt, tl }; if (N.state === 'lobby') send({ n: N.quick && !N.ranked ? '' : n, k, w: p.w, u, rt, tl }); // 配對房不送暱稱（積分賽例外：要登入，送帳號名字，Yen 11-22）
+    const lk = SC.wear && SC.wear.code ? SC.wear.code() : ''; /* 服飾店的衣服＋小魷魚帽（Yen 11-25：其他玩家也看得到） */
+    if (n === prof.n && k === prof.k && p.w === prof.w && u === prof.u && rt === prof.rt && tl === prof.tl && lk === prof.lk) return;
+    prof = { n, k, w: p.w, u, rt, tl, lk }; if (N.state === 'lobby') send({ n: N.quick && !N.ranked ? '' : n, k, w: p.w, u, rt, tl, lk }); // 配對房不送暱稱（積分賽例外：要登入，送帳號名字，Yen 11-22）
   };
   // 分隊（Yen 2026-11-19）：mix 'rand'＝開打時隨機分隊，'pick'＝房主指定（點玩家換隊，沒指定的照進房順序輪流）。asg：peer → 隊伍
   const hostPatch = () => ({ vc: N.vc ? 1 : 0, zb: N.zb ? 1 : 0, zm: N.zmap, df: N.dif, r: N.rule, mp: N.map, tt: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, cqm: N.cmap, as: N.list.slice(0, N.cqOn() ? 12 : 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
@@ -25107,7 +25108,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const players = h.pl.map((e, idx) => {
       const r = list.find((x) => x.peer === e[0]);
       // 開打那一刻剛好沒收到某人的資料（公開中繼站可能漏訊息）也要把他算進來，不然整場都看不到他（Yen 2026-11-19：各玩各的）
-      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: Array.isArray(h.kd) && KINDS.includes(h.kd[e[1]]) ? h.kd[e[1]] : e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), isMe: !spec && e === mine, gone: false, sid: sd && typeof sd[idx] === 'string' ? sd[idx] : '' };
+      return { idx, peer: e[0], team: (e[1] - g0 + nT) % nT, slot: e[2], kind: Array.isArray(h.kd) && KINDS.includes(h.kd[e[1]]) ? h.kd[e[1]] : e[1] === 1 ? 'shuang' : 'maomao', nick: (r && r.nick) || '玩家' + (idx + 1), lk: (r && r.lk) || '', isMe: !spec && e === mine, gone: false, sid: sd && typeof sd[idx] === 'string' ? sd[idx] : '' };
     });
     const nC = Math.max(0, Math.min(h.rule === "zombie" ? 5 : 4, h.vc | 0)), /* 第 178 版：殭屍保衛戰最多 5 隻電腦補滿 6 人 */ ck = Array.isArray(h.kd) && KINDS.includes(h.kd[1]) ? h.kd[1] : 'shuang';
     const fill = []; if (h.rule === 'conquest') for (let t = 0; t < 2; t++) for (let k = h.pl.filter((e) => e[1] === t).length; k < SC.cq.TEAM; k++) fill.push({ idx: h.pl.length + fill.length, team: (t - g0 + nT) % nT, slot: k, kind: Array.isArray(h.kd) && KINDS.includes(h.kd[t]) ? h.kd[t] : t ? 'shuang' : 'maomao', cpu: true }); // 佔領戰：兩隊都由電腦補到 4 隻
@@ -25147,13 +25148,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (clock - joinAt < 1.3) return;
       // 進房時間：一定排在已經在房間裡的人後面，不受各台裝置時鐘誤差影響
       let maxJ = 0; for (const p of peers) { const j = p.presence && p.presence.j; if (typeof j === 'number' && j > maxJ) maxJ = j; }
-      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : prof.n, k: prof.k, w: prof.w, u: prof.u || '', rt: prof.rt == null ? -1 : prof.rt, tl: prof.tl || '', r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build, sd: SID, rj: null });
+      N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : prof.n, k: prof.k, w: prof.w, lk: prof.lk || '', u: prof.u || '', rt: prof.rt == null ? -1 : prof.rt, tl: prof.tl || '', r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build, sd: SID, rj: null });
     }
     const list = [];
     for (const p of peers) {
       const q = p.presence || {}; if (p.kind !== 'viewer' || q.v !== 1 || typeof q.j !== 'number') continue;
       const isMe = p.isMe && p.sameTab; if (isMe) myPeer = p.peer;
-      list.push({ peer: p.peer, isMe, j: q.j, nick: N.quick && !N.ranked ? '' : N.clean(q.n), kind: KINDS.includes(q.k) ? q.k : 'maomao', q, old: typeof q.b === 'string' ? q.b !== N.build : !!N.build });
+      list.push({ peer: p.peer, isMe, j: q.j, nick: N.quick && !N.ranked ? '' : N.clean(q.n), kind: KINDS.includes(q.k) ? q.k : 'maomao', lk: typeof q.lk === 'string' ? q.lk.slice(0, 60) : '', q, old: typeof q.b === 'string' ? q.b !== N.build : !!N.build });
     }
     list.sort((a, b) => a.j - b.j || (a.peer < b.peer ? -1 : 1));
     const host = list[0], h = host ? validH(host.q.h) : null, m = N.match;
@@ -31863,7 +31864,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const others = Object.keys(SC.CAT_KINDS).filter((k) => k !== G.opts.kind), other = G.demo ? (G.opts.kind === 'maomao' ? 'shuang' : 'maomao') : others[(Math.random() * others.length) | 0]; // 對手隊隨機挑另一種貓（同一種貓固定同一隊）
     G.targets.forEach((t) => { scene.remove(t.mesh); t.dispose(); }); G.targets = []; G.popped = 0;
     if (net && net.cpus.length) G.opts.difficulty = net.df; // 一起打電腦：電腦強度照房主選的
-    G.actors = net ? net.players.map((q, i) => { const a = makeActor(i, q.team, q.kind, q.isMe); a.idx = q.idx; a.slot = q.slot; if (!q.isMe) { a.remote = true; a.ai = null; a.name = q.nick; } return a; }).concat(net.cpus.map((q, k) => { const a = makeActor(net.players.length + k, q.team, q.kind, false); a.idx = q.idx; a.slot = q.slot; a.cpu = true; a.remote = true; a.ai = null; if (k) a.name += k + 1; return a; }))
+    G.actors = net ? net.players.map((q, i) => { const a = makeActor(i, q.team, q.kind, q.isMe); a.idx = q.idx; a.slot = q.slot; if (!q.isMe) { a.remote = true; a.ai = null; a.name = q.nick; if (q.lk && SC.wear && SC.wear.show) SC.wear.show(a.cat, q.lk); /* 別的玩家穿的衣服（Yen 11-25） */ } return a; }).concat(net.cpus.map((q, k) => { const a = makeActor(net.players.length + k, q.team, q.kind, false); a.idx = q.idx; a.slot = q.slot; a.cpu = true; a.remote = true; a.ai = null; if (k) a.name += k + 1; return a; }))
       : solo ? [makeActor(0, 0, G.opts.kind, true)]
       : cq ? Array.from({ length: SC.cq.TEAM * 2 }, (_, i) => makeActor(i, i < SC.cq.TEAM ? 0 : 1, i < SC.cq.TEAM ? G.opts.kind : other, i === 0))
       : trio ? Array.from({ length: 6 }, (_, i) => makeActor(i, i < 3 ? 0 : 1, i < 3 ? G.opts.kind : other, i === 0)) /* 電腦對戰 3 對 3（Yen 11-24「電腦對戰加入 3對3」）：自己加兩隻電腦隊友，對面三隻電腦 */
@@ -37800,9 +37801,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 小魷魚帽（Yen 2026-11-24）：貼紙本最上面一顆按鈕，戴上／拿下。只存在這台裝置（sc-hat）。
   const HAT = 'sc-hat';
   S.hat = () => { try { return localStorage.getItem(HAT) === 'squid'; } catch (e) { return false; } };
-  S.setHat = (on) => { try { if (on) localStorage.setItem(HAT, 'squid'); else localStorage.removeItem(HAT); } catch (e) { /* 私密模式：這一次記不住 */ } const p = SC.game && SC.game.player && SC.game.player(); if (p && p.cat) S.dress(p.cat); };
+  S.setHat = (on, quiet) => { try { if (on) localStorage.setItem(HAT, 'squid'); else localStorage.removeItem(HAT); } catch (e) { /* 私密模式：這一次記不住 */ } if (on && SC.wear && SC.wear.hatOff) SC.wear.hatOff(); /* 服飾店的帽子和小魷魚帽只能戴一頂，後戴的算數 */ if (SC.wear && SC.wear.refresh) SC.wear.refresh(); if (quiet) return; const p = SC.game && SC.game.player && SC.game.player(); if (p && p.cat) S.dress(p.cat); };
   S.dress = (cat) => { // 把貼的那張貼紙放到這隻貓背上的墨水罐後面（沒貼就拿掉）
-    if (cat && cat.setHat) cat.setHat(S.hat());
+    if (cat && SC.wear && SC.wear.apply) SC.wear.apply(cat); else if (cat && cat.setHat) cat.setHat(S.hat()); // 小魷魚帽和服飾店的衣服一起穿（09th_wear.js）
     if (!cat || !cat.tank) return; if (cat.stk) { cat.tank.remove(cat.stk); cat.stk = null; }
     const st = S.worn(); if (!st) return;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(0.95, 0.95), new THREE.MeshBasicMaterial({ map: tex(st), transparent: true, alphaTest: 0.05 }));
@@ -39310,7 +39311,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const busy = T.pickOpen() || !!document.querySelector('.ac-wrap, .rkd-ov:not([hidden]), #m-stk:not([hidden]), .cat-view:not([hidden]), .fm-ov:not([hidden]), .tw-set:not([hidden]), #m-help:not([hidden])'); SC.input.active = !busy; if (busy) { SC.input.release(); if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); } // 開著面板時不要走、不鎖滑鼠
     rkBadge();
     if (SC.input.pause) SC.input.pause = false; /* 第 216 版：小鎮裡 Esc 只是放開滑鼠，不暫停 */
-    if (SC.wear && SC.wear.tick) SC.wear.tick(t);
+    if (SC.wear && SC.wear.tick) SC.wear.tick(t, me);
     if (T.fishing) { SC.input.active = false; SC.input.release(); } /* 第 284 版：釣魚時不走路 */
     update(dt); if (!T.on) return; if (SC.fish && SC.fish.frame) SC.fish.frame(dt);
     for (const f of anim) f(t, dt);
@@ -40336,6 +40337,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // - 小鎮東邊小丘上的「喵喵服飾店」：用菜園的代幣買帽子、脖子配件、背上的東西，買了就能穿／脫
 // - 三個位置各穿一件：頭（hat）、脖子（neck）、背（back）；只是好看，不影響能力
 // - 穿上的衣服在小鎮、菜園和對戰裡自己的貓身上都看得到（存在這台裝置）
+// - 第 2xx 版（Yen 11-25「服飾店的衣服和小魷魚帽其他玩家也看得到」）：W.code() 把自己穿的衣服和小魷魚帽壓成一小段字（例如 'wizard.scarf.wings.' 或 '...q'），
+//   連線對戰放在大廳 presence 的 lk、朋友小鎮放在 visit presence 的 lk；別人那台用 W.show(貓, 字) 照著穿。頭上只能戴一頂：小魷魚帽和店裡的帽子後戴的那頂算數。
 (() => {
   window.SC = window.SC || {};
   const W = (SC.wear = {}), KEY = 'sc-wear';
@@ -40365,16 +40368,27 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
   const live = new Set(); // 目前穿著衣服的貓（換裝時一起更新）
   // 把現在穿的衣服套到貓身上（自己的貓：小鎮、菜園、對戰、結果畫面）
-  W.apply = (cat) => {
-    if (!cat || !cat.head || !cat.torso) return; load(); live.add(cat);
+  const squid = () => !!(SC.stk && SC.stk.hat && SC.stk.hat());
+  // 自己現在穿什麼（給別人看）：'帽.脖子.背.q'，全部沒穿就是空字串
+  W.code = () => { load(); const on = (sl) => { const k = st.on[sl]; return BY[k] && BY[k].s === sl && st.own[k] ? k : ''; }; const q = squid(), c = [q ? '' : on('hat'), on('neck'), on('back'), q ? 'q' : ''].join('.'); return c === '...' ? '' : c; };
+  // 照一段字把衣服穿到貓身上（自己的或別人的貓都用這個；字一樣就不重做）
+  W.show = (cat, code) => {
+    if (!cat || !cat.head || !cat.torso) return; code = typeof code === 'string' ? code.slice(0, 60) : ''; if (live.size > 40) live.forEach((c) => { if (!c.group || !c.group.parent) live.delete(c); }); if (cat._lk === code && cat._wear) return; cat._lk = code;
+    const p = code.split('.'), want = { hat: p[0], neck: p[1], back: p[2] }, q = p[3] === 'q'; live.add(cat);
     (cat._wear || []).forEach((o) => o.parent && o.parent.remove(o)); cat._wear = [];
-    Object.keys(SLOT).forEach((sl) => { const it = BY[st.on[sl]]; if (!it || !st.own[it.k]) return; const g = new THREE.Group(), P = SLOT[sl]; it.b(g); g.userData.wear = it.k;
+    Object.keys(SLOT).forEach((sl) => { const it = BY[want[sl]]; if (!it || it.s !== sl || (sl === 'hat' && q)) return; const g = new THREE.Group(), P = SLOT[sl]; it.b(g); g.userData.wear = it.k;
       if (sl === 'hat') { g.position.set(0, P.y, 0.05); g.rotation.x = -0.08; cat.head.add(g); } else { g.position.set(0, P.y, P.z || 0); cat.torso.add(g); }
       cat._wear.push(g); });
-    const hat = !!(BY[st.on.hat] && st.own[st.on.hat]); (cat.topAcc || []).forEach((o) => { if (o) o.visible = !hat; });
+    if (cat.setHat) cat.setHat(q); // 小魷魚帽（05_cat.js；戴上時會收起原本的皇冠／鴨舌帽）
+    const hat = !q && !!(BY[want.hat] && BY[want.hat].s === 'hat'); if (hat) (cat.topAcc || []).forEach((o) => { if (o) o.visible = false; }); else if (!q) (cat.topAcc || []).forEach((o) => { if (o) o.visible = true; });
   };
+  // 自己的貓：穿上自己現在的衣服（小鎮、菜園、對戰、結果畫面）
+  W.apply = (cat) => { if (!cat) return; cat._mine = true; W.show(cat, W.code()); };
+  W.refresh = () => live.forEach((cat) => { if (cat._mine) W.show(cat, W.code()); });
+  // 戴小魷魚帽時把店裡的帽子脫下（後戴的算數；09s_stickers.js 的 setHat 呼叫）
+  W.hatOff = () => { load(); if (st.on.hat) { st.on.hat = ''; save(); } };
   // 小動畫：翅膀拍、披風飄、星星轉（小鎮的每一格呼叫）
-  W.tick = (t) => { live.forEach((cat) => (cat._wear || []).forEach((g) => g.traverse((o) => { if (o.userData.wing) o.rotation.y = o.userData.wing * (0.25 + Math.sin(t * 5) * 0.25); if (o.userData.cape) o.rotation.x = -0.15 - Math.abs(Math.sin(t * 2.2)) * 0.12; if (o.userData.spin) o.rotation.y = t * 2; }))); };
+  W.tick = (t, mine) => { if (mine) W.apply(mine); /* 小鎮自己的貓每格對一次（字一樣就不重做），在別處換了小魷魚帽回來也會跟上 */ live.forEach((cat) => { if (!cat.group || !cat.group.parent) { live.delete(cat); return; } (cat._wear || []).forEach((g) => g.traverse((o) => { if (o.userData.wing) o.rotation.y = o.userData.wing * (0.25 + Math.sin(t * 5) * 0.25); if (o.userData.cape) o.rotation.x = -0.15 - Math.abs(Math.sin(t * 2.2)) * 0.12; if (o.userData.spin) o.rotation.y = t * 2; })); }); };
   W.wearing = () => Object.assign({}, load().on);
   // 店面板
   let ov = null;
@@ -40396,7 +40410,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const it = BY[k]; if (!it) return; load(); const T = SC.town;
     if (!st.own[k]) { if (!(SC.farm && SC.farm.spend && SC.farm.spend(it.p))) return; st.own[k] = 1; st.on[it.s] = k; save(); try { SC.audio.sfx.firework && SC.audio.sfx.firework(0.5); } catch (e) {} if (T && T._ui) T._ui().say('👗 ' + tr('買了 {n}！已經穿上').replace('{n}', tr(it.n))); }
     else { st.on[it.s] = st.on[it.s] === k ? '' : k; save(); try { SC.audio.sfx.ding && SC.audio.sfx.ding(0.4); } catch (e) {} }
-    live.forEach((cat) => W.apply(cat)); render();
+    if (it.s === 'hat' && st.on.hat && SC.stk && SC.stk.hat && SC.stk.hat() && SC.stk.setHat) SC.stk.setHat(false, true); // 戴店裡的帽子：小魷魚帽先拿下
+    W.refresh(); render();
   }
   W._test = { load, buy, reset: () => { st = { own: {}, on: {} }; save(); } };
   const RR = [
@@ -40587,7 +40602,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     // 送：大約每 0.08 秒一次（中繼站自己也會限速）
     if ((sendT -= dt) <= 0) { sendT = 0.08; const m = T.netMe(); if (m) {
       const a = m.a || {}, rgbNow = SC.town._myRgb ? SC.town._myRgb() : null;
-      const pr = { u: myUid(), n: String((acc() && acc().name && acc().name()) || '').slice(0, 16), r: role, k: m.k, w: m.w, c: rgbNow ? (rgbNow[0] << 16) | (rgbNow[1] << 8) | rgbNow[2] : null, p: [r2(m.x), r2(m.y), r2(m.z), r2(m.f)], a: [r2(a.speed || 0), a.onGround ? 1 : 0, a.form === 'cat' ? 1 : 0, a.submerged ? 1 : 0, a.firing ? 1 : 0, a.rolling ? 1 : 0, r2(a.pitch || 0), r2(a.vy || 0)], zn: m.zone ? 1 : 0, e: evs.map((x) => x.e) };
+      const pr = { u: myUid(), n: String((acc() && acc().name && acc().name()) || '').slice(0, 16), r: role, k: m.k, w: m.w, lk: SC.wear && SC.wear.code ? SC.wear.code() : '', c: rgbNow ? (rgbNow[0] << 16) | (rgbNow[1] << 8) | rgbNow[2] : null, p: [r2(m.x), r2(m.y), r2(m.z), r2(m.f)], a: [r2(a.speed || 0), a.onGround ? 1 : 0, a.form === 'cat' ? 1 : 0, a.submerged ? 1 : 0, a.firing ? 1 : 0, a.rolling ? 1 : 0, r2(a.pitch || 0), r2(a.vy || 0)], zn: m.zone ? 1 : 0, e: evs.map((x) => x.e) };
       pr.pl = place(); pr.fc = (SC.farm && SC.farm.stoleN) || 0;
       pr.nt = armed ? 1 : 0;
       if (role === 'H') { pr.ac = acList; if (SC.farm && SC.farm.liveInfo && (!farmInfo || now - farmInfoT > 2000)) { try { farmInfo = SC.farm.liveInfo(); } catch (e) { farmInfo = null; } farmInfoT = now; } if (farmInfo) { pr.fp = farmInfo.p; pr.fu = farmInfo.u; } }
@@ -40603,6 +40618,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const P = Array.isArray(pr.p) && pr.p.length === 4 && pr.p.every((v) => typeof v === 'number' && isFinite(v) && Math.abs(v) < 500) ? pr.p : null; if (!P) return;
     if (!c) { const cat = SC.makeCat(kind); c = { cat, kind, x: P[0], y: P[1], z: P[2], f: P[3], name: '', w: '', col: -1 }; cat.group.position.set(P[0], P[1], P[2]); const sc = T._scene(); if (sc) sc.add(cat.group); cats.set(id, c); }
     const nm = String(pr.n || '?').slice(0, 16); if (nm !== c.name && c.cat.setTag) { c.name = nm; c.cat.setTag(nm, '#fff', true); }
+    if (SC.wear && SC.wear.show) SC.wear.show(c.cat, typeof pr.lk === 'string' ? pr.lk : ''); // 朋友穿的衣服和小魷魚帽（Yen 11-25）
     c.netOn = pr.nt === 1 && pr.r === 'H'; const w = /^W0[1-5]$/.test(pr.w) ? pr.w : 'W01'; if (!c.net && w !== c.w) { c.w = w; try { c.cat.setWeapon(w); } catch (e) {} }
     if (typeof pr.c === 'number' && pr.c !== c.col) { c.col = pr.c; const v = unpack(pr.c); c.cat.setTeamColor(new THREE.Color(v[0] / 255, v[1] / 255, v[2] / 255)); }
     const k = 1 - Math.exp(-12 * dt); if (Math.hypot(P[0] - c.x, P[2] - c.z) > 12) { c.x = P[0]; c.y = P[1]; c.z = P[2]; }
@@ -44528,6 +44544,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-25", "", "服飾店買的衣服和小魷魚帽，現在連線對戰和朋友的小鎮裡其他玩家也看得到；店裡的帽子和小魷魚帽一次只能戴一頂，後戴的算數",
+      { en: "Outfits from the Meow Boutique and the Little Squid Hat now show to other players in online matches and friends' towns; you can wear one hat at a time, the last one you put on", ja: "ニャンニャン洋服店の服とちびイカぼうしが、オンライン対戦や友だちの町でほかのプレイヤーにも見えるように。帽子は一度にひとつ、あとからかぶったほうになります", ko: "야옹 옷가게 옷과 꼬마 오징어 모자가 온라인 대전과 친구 마을에서 다른 플레이어에게도 보여요. 모자는 한 번에 하나, 나중에 쓴 모자가 적용돼요", es: "La ropa de la Boutique Miau y el Gorro de calamar ahora se ven para los demás en partidas en línea y en pueblos de amigos; solo un sombrero a la vez: el último que te pongas", pt: "As roupas da Butique Miau e o Chapéu de lula agora aparecem para outros jogadores em partidas online e vilas de amigos; um chapéu por vez: vale o último que você colocar", fr: "Les tenues de la Boutique Miaou et le Bonnet calmar sont maintenant visibles par les autres en ligne et dans les villages d'amis ; un seul chapeau à la fois : le dernier mis", de: "Outfits aus der Miau-Boutique und die Tintenfischmütze sehen jetzt auch andere Spieler online und in Freundesdörfern; nur ein Hut gleichzeitig, der zuletzt aufgesetzte zählt", it: "I vestiti della Boutique Miao e il Cappello calamaro ora si vedono anche dagli altri online e nei paesi degli amici; un solo cappello alla volta: vale l'ultimo indossato", ru: "Наряды из бутика «Мяу» и шапку-кальмар теперь видят другие игроки в онлайн-матчах и в городках друзей; шляпа только одна — та, что надета последней", tr: "Miyav Butik kıyafetleri ve Kalamar şapka artık çevrimiçi maçlarda ve arkadaş kasabalarında diğer oyunculara da görünüyor; aynı anda tek şapka, en son takılan geçerli", id: "Pakaian Butik Meong dan Topi cumi kecil kini terlihat oleh pemain lain di pertandingan online dan kota teman; hanya satu topi sekaligus, yang terakhir dipakai", vi: "Đồ của Tiệm đồ Meo Meo và Mũ mực nhỏ giờ người chơi khác cũng thấy khi đấu online và ở thị trấn bạn bè; mỗi lần chỉ đội một mũ, mũ đội sau cùng được tính", th: "ชุดจากร้านเสื้อผ้าเหมียวและหมวกปลาหมึกน้อย ตอนนี้ผู้เล่นคนอื่นก็เห็นในการแข่งออนไลน์และเมืองของเพื่อน ใส่หมวกได้ทีละใบ ใบที่ใส่ทีหลังจะถูกใช้" }],
     ["2026-11-25", "", "連線聊天的八個快捷短語換成漆貓自己的手繪表情；對戰中的聊天移到右上、訊息移到左下，不再蓋住小地圖",
       { en: "The eight quick chat phrases in online rooms now have hand-drawn cat faces; in battle, chat moved to the top right and messages to the bottom left so they no longer cover the minimap", ja: "オンラインのクイックチャット8種が手描きのネコの表情に。対戦中のチャットは右上、メッセージは左下に移り、ミニマップを隠さなくなりました", ko: "온라인 빠른 채팅 8종이 직접 그린 고양이 표정으로 바뀌었어요. 대전 중 채팅은 오른쪽 위, 메시지는 왼쪽 아래로 옮겨 미니맵을 가리지 않아요", es: "Las ocho frases rápidas del chat en línea tienen ahora caras de gato dibujadas a mano; en batalla, el chat está arriba a la derecha y los mensajes abajo a la izquierda, sin tapar el minimapa", pt: "As oito frases rápidas do chat online agora têm carinhas de gato desenhadas à mão; na batalha, o chat fica no canto superior direito e as mensagens no inferior esquerdo, sem cobrir o minimapa", fr: "Les huit phrases rapides du chat en ligne ont des têtes de chat dessinées à la main ; en combat, le chat passe en haut à droite et les messages en bas à gauche, sans cacher la mini-carte", de: "Die acht Schnellchat-Sätze online haben jetzt handgezeichnete Katzengesichter; im Kampf ist der Chat oben rechts und Nachrichten unten links, sodass sie die Minikarte nicht mehr verdecken", it: "Le otto frasi rapide della chat online hanno ora faccine di gatto disegnate a mano; in battaglia la chat è in alto a destra e i messaggi in basso a sinistra, senza coprire la minimappa", ru: "У восьми быстрых фраз онлайн-чата теперь нарисованные от руки мордочки котов; в бою чат справа вверху, а сообщения слева внизу и больше не закрывают мини-карту", tr: "Çevrimiçi sohbetteki sekiz hızlı ifade artık elle çizilmiş kedi yüzleri; savaşta sohbet sağ üste, mesajlar sol alta taşındı ve mini haritayı kapatmıyor", id: "Delapan frasa cepat di obrolan online kini memakai wajah kucing gambar tangan; saat bertarung, obrolan pindah ke kanan atas dan pesan ke kiri bawah agar tidak menutupi peta mini", vi: "Tám câu chat nhanh khi chơi mạng nay có mặt mèo vẽ tay; trong trận, khung chat ở góc trên bên phải và tin nhắn ở góc dưới bên trái, không còn che bản đồ nhỏ", th: "วลีด่วนทั้งแปดในแชตออนไลน์เปลี่ยนเป็นหน้าแมววาดมือ ระหว่างต่อสู้ แชตย้ายไปมุมขวาบนและข้อความไปมุมซ้ายล่าง ไม่บังแผนที่ย่ออีกต่อไป" }],
     ["2026-11-25", "", "戰鬥音樂變小聲、調過音色，槍聲和打擊聲更清楚",
