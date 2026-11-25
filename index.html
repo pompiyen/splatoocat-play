@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v301';</script><script>window.SC_BUILD='a28849f944c6';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v302';</script><script>window.SC_BUILD='5043da67aeec';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -19963,7 +19963,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     let total = 0;
     for (let cz = 0; cz < H; cz++) for (let cx = 0; cx < W; cx++) {
       const x = -IX + (cx + 0.5) * C.CELL, z = -IZ + (cz + 0.5) * C.CELL, h = heightAt(x, z), i = cz * W + cx;
-      cellH[i] = h; paintable[i] = h > -4 && (h < 30 || (SC.world.gated && SC.world.gated(x, z))) ? 1 : 0; total += paintable[i]; // 第 94 版（Yen）：城牆頂（62 高）也能塗
+      cellH[i] = h; paintable[i] = h > -4 && (h < 30 || SC.world.inkUp || (SC.world.gated && SC.world.gated(x, z))) ? 1 : 0; /* 殭屍海嘯（Yen 11-25「高台上要能塗墨」）：MAPS.ztsu.inkUp 整張都能塗 */ total += paintable[i]; // 第 94 版（Yen）：城牆頂（62 高）也能塗
     }
     ink.total = total; steepCalc(0, W - 1, 0, H - 1); ink.reset();
     if (key) { built.set(key, { cellH: cellH.slice(), paintable: paintable.slice(), steep: steep.slice(), total }); if (built.size > 4) built.delete(built.keys().next().value); } // 最多記 4 張
@@ -21817,22 +21817,22 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
   // 殭屍海嘯試作頁（Yen 11-24「開一個獨立試作頁作殭屍海嘯地形」）：只從 ?tsunami 網址進去（07zt_tsunami.js），不在模式清單、不在 ZMAPS。
   // 比殭屍版青翠森林（半徑 200）大，半徑 300（面積約 2.25 倍）；正中間一根 100 高、沒有樓梯的大石柱，貓咪只能在柱頂上守。
-  const TSU = { R: 56, H: 100 }; /* Yen 11-25「高台直徑擴大兩倍」：半徑 28→56 */
-  MAPS.ztsu = { teams: 2, holeW: 0, baseIn: 999, gridStep: 3, cell: 1, hgrid: 1, sunFollow: 1, name: '殭屍海嘯', lim: { x: 300, z: 300, r: 300 }, vic: { x: 0, z: 0 }, tsu: TSU,
+  const TSU = { R: 56, H: 100, B: 63 }; /* Yen 11-25「高台不要垂直角，抓85~88度」：牆往下慢慢變寬，底部半徑 63（約 86 度） */ /* Yen 11-25「高台直徑擴大兩倍」：半徑 28→56 */
+  MAPS.ztsu = { teams: 2, holeW: 0, baseIn: 999, gridStep: 3, cell: 1, hgrid: 1, sunFollow: 1, name: '殭屍海嘯', inkUp: 1, lim: { x: 300, z: 300, r: 300 }, vic: { x: 0, z: 0 }, tsu: TSU,
     spawns: [0, 1].map(() => [0, 1, 2, 3, 4, 5].map((k) => ({ x: Math.cos(k * 1.0472 + 0.5) * 24, z: Math.sin(k * 1.0472 + 0.5) * 24 }))),
-    gen: () => { const out = [{ t: 'cyl', x: 0, z: 0, r: TSU.R, h: TSU.H, look: 'tsuP', team: -1 }], L = [], r0 = seeded(77);
+    gen: () => { const out = [{ t: 'cyl', x: 0, z: 0, r: TSU.R, rb: TSU.B, h: TSU.H, look: 'tsuP', team: -1 }], L = [], r0 = seeded(77);
       for (let i = 0; i < 26; i++) { const a = r0() * TAU, r = 175 + r0() * 105, kd = i % 4; L.push(kd === 0 ? ['trunk', r, a, { r: 2.4 + r0(), h: 10 + r0() * 3 }] : kd === 1 ? ['pine', r, a, { r: 1.6, h: 9 }] : kd === 2 ? ['rock', r, a, { r: 2.8 + r0() * 2, h: 2.5 + r0() * 2 }] : ['shroom', r, a, { r: 2.2 + r0(), h: 4.5 + r0() * 2 }]); }
       foProps(out, L); return out; },
-    base: (x, z) => { const r = Math.hypot(x, z); return r < 120 ? 0 : smooth((r - 120) / 40) * (Math.max(0, Math.sin(x * 0.03) * Math.cos(z * 0.034)) * 3.2 + Math.max(0, Math.sin((x + z) * 0.021 + 1.3)) * 1.6); },
+    base: (x, z) => { const r = Math.hypot(x, z); if (r < TSU.B) return Math.max(0, TSU.H * Math.min(1, (TSU.B - r) / (TSU.B - TSU.R)) - 12); /* 斜牆的碰撞（比看得到的牆面低一點，地面格子才不會穿出來） */ return r < 120 ? 0 : smooth((r - 120) / 40) * (Math.max(0, Math.sin(x * 0.03) * Math.cos(z * 0.034)) * 3.2 + Math.max(0, Math.sin((x + z) * 0.021 + 1.3)) * 1.6); },
     tint: (x, z) => { const r = Math.hypot(x, z); if (r < 95) return r < 80 ? 0xb9a98a : 0xc9bc96; const a = Math.atan2(z, x), lane = Math.abs(((a / (TAU / 12)) % 1 + 1) % 1 - 0.5) * r * (TAU / 12); return lane < 4 + r * 0.02 ? 0xd8c49a : (Math.floor(x / 20) + Math.floor(z / 20)) % 2 ? FO.grass : FO.grass2; },
     sky: [0x6c7fb8, 0xb7a6c9, 0xf2c9a8], fog: 0xd9c8cf, hemi: [0xf0eaff, 0xd8c8a8], river: MAPS.forest.river,
     look: { ...foLook, tsuP: 0xb8a68c }, rough: { ...MAPS.forest.rough, tsuP: 0.95 }, ground: foGround, fence: [0x6a4a3a, 0xc9a86a, 0x7a8a5a, 0xa86a5a],
     make: { ...foMake,
-      tsuP: (p, k) => { k.cyl(p); const band = [k.plain(0x9a8670, 0.95, { flatShading: true }), k.plain(0xc8b89a, 0.95, { flatShading: true })], r1 = seeded(5);
-        for (let y = 8; y < p.h - 4; y += 9) { const t = k.add(new THREE.TorusGeometry(p.r + 0.25, 0.7 + r1() * 0.5, 5, 40), band[(y / 9) & 1], p.x, y, p.z); t.rotation.x = Math.PI / 2; t.castShadow = false; }
-        for (let i = 0; i < 36; i++) { const a = r1() * TAU, y = 4 + r1() * (p.h - 10), m = k.add(new THREE.DodecahedronGeometry(1.4 + r1() * 1.8, 0), band[i & 1], p.x + Math.cos(a) * (p.r + 0.3), y, p.z + Math.sin(a) * (p.r + 0.3)); m.scale.set(1, 0.6, 1); m.rotation.set(r1() * 3, r1() * 3, 0); m.castShadow = false; }
+      tsuP: (p, k) => { const rb = p.rb || p.r, rw = (y) => rb - ((rb - p.r) * y) / p.h; k.add(new THREE.CylinderGeometry(p.r, rb + ((rb - p.r) * 2) / p.h, p.h + 2, 120), k.mat(p.look), p.x, (p.h - 2) / 2, p.z); const band = [k.plain(0x9a8670, 0.95, { flatShading: true }), k.plain(0xc8b89a, 0.95, { flatShading: true })], r1 = seeded(5);
+        for (let y = 8; y < p.h - 4; y += 9) { const t = k.add(new THREE.TorusGeometry(rw(y) + 0.25, 0.7 + r1() * 0.5, 5, 60), band[(y / 9) & 1], p.x, y, p.z); t.rotation.x = Math.PI / 2; t.castShadow = false; }
+        for (let i = 0; i < 36; i++) { const a = r1() * TAU, y = 4 + r1() * (p.h - 10), m = k.add(new THREE.DodecahedronGeometry(1.4 + r1() * 1.8, 0), band[i & 1], p.x + Math.cos(a) * (rw(y) + 0.3), y, p.z + Math.sin(a) * (rw(y) + 0.3)); m.scale.set(1, 0.6, 1); m.rotation.set(r1() * 3, r1() * 3, 0); m.castShadow = false; }
         const rim = k.add(new THREE.TorusGeometry(p.r - 0.3, 0.55, 8, 72), k.plain(0xfff3d6, 0.5), p.x, p.h + 0.05, p.z); rim.rotation.x = Math.PI / 2;
-        for (let i = 0; i < 9; i++) { const a = (i / 9) * TAU + 0.3, v = k.add(new THREE.CylinderGeometry(0.35, 0.5, p.h * (0.35 + r1() * 0.4), 5), k.plain(0x5f9e4a, 0.9, { flatShading: true }), p.x + Math.cos(a) * (p.r + 0.5), p.h * 0.75, p.z + Math.sin(a) * (p.r + 0.5)); v.castShadow = false; } },
+        for (let i = 0; i < 9; i++) { const a = (i / 9) * TAU + 0.3, v = k.add(new THREE.CylinderGeometry(0.35, 0.5, p.h * (0.35 + r1() * 0.4), 5), k.plain(0x5f9e4a, 0.9, { flatShading: true }), p.x + Math.cos(a) * (rw(p.h * 0.75) + 0.5), p.h * 0.75, p.z + Math.sin(a) * (rw(p.h * 0.75) + 0.5)); v.castShadow = false; } },
     },
     outside: (k) => { k.floor(FO.deep); const r = k.rnd;
       for (let i = 0; i < 40; i++) { const a = (i / 40) * TAU + r() * 0.06, d = 320 + r() * 60; foTree(k, Math.cos(a) * d, 6 + r() * 6, Math.sin(a) * d, 2.4 + r() * 2, i % 3 === 0); k.add(new THREE.CylinderGeometry(1.4, 2, 12, 7), k.plain(FO.trunk, 0.9, { flatShading: true }), Math.cos(a) * d, 0, Math.sin(a) * d); }
@@ -22005,7 +22005,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const m = built[key] || build(key);
     Object.keys(built).forEach((k2) => { built[k2].root.visible = k2 === key; });
     // 名字放在 water（river 是水面的材質設定；之前兩個同名，掉水訊息會變成 [object Object]）
-    world.key = key; world.riverName = MAPS[key].water; world.swim = MAPS[key].swim !== false; /* 第 83 版（Yen）：每張場地的河（牛奶河、巧克力河、噴泉水池…）都跟海盜船的海一樣浮得起來 */ world.pools = MAPS[key].pools || null; world.isles = MAPS[key].isles || null; world.root = m.root; world.prims = m.prims; world.gates = m.prims.filter((p) => p.gate && p.t === 'box'); world.noInks = m.prims.filter((p) => p.noInk && p.t === 'box'); world.noClimb = MAPS[key].noClimb || null; /* 第 133 版：這張圖哪裡不能爬牆 */ world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
+    world.key = key; world.inkUp = !!MAPS[key].inkUp; world.riverName = MAPS[key].water; world.swim = MAPS[key].swim !== false; /* 第 83 版（Yen）：每張場地的河（牛奶河、巧克力河、噴泉水池…）都跟海盜船的海一樣浮得起來 */ world.pools = MAPS[key].pools || null; world.isles = MAPS[key].isles || null; world.root = m.root; world.prims = m.prims; world.gates = m.prims.filter((p) => p.gate && p.t === 'box'); world.noInks = m.prims.filter((p) => p.noInk && p.t === 'box'); world.noClimb = MAPS[key].noClimb || null; /* 第 133 版：這張圖哪裡不能爬牆 */ world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
     world.spawnYaw = MAPS[key].spawnYaw || null; world.lim = m.lim; world.ang = m.ang; world.spawns = m.spawns; world.baseIn = m.baseIn; world.teams = m.ang.length; world.cur = m;
     SC.slab.set(m.slabs); world.hg = MAPS[key].hgrid !== 0 ? world.hgBuild(m.prims) : null; /* 小威 11-25（「換地圖都會卡頓」）：每張地圖都用附近積木格查高度（結果一樣；原本只有超大地圖開，喵喵大街換一次地圖要重算好幾秒） */ world.topBan = MAPS[key].topBan || 0; world.orbitY = MAPS[key].orbitY || 0; world.navReset(MAPS[key].nav, MAPS[key].navStep); /* 第 197 版：血廊的牆頂不能站、電腦會繞路 */
     scene0.environment = m.env; scene0.fog = m.fog;
@@ -31282,8 +31282,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     LEN: 300, // 撐 5 分鐘就贏
     S: 120, NR: 26, DR: 2.4, // 殭屍堆：繞一圈 120 格、往外 26 圈、每圈寬 2.4
     LAYER: 2.4, SLOPE: 8, SIDE: 11, // 每隻疊上去加多高；往外相鄰兩圈最多差多高；左右相鄰最多差多高
-    rate: [[0, 50], [30, 80], [90, 140], [180, 200], [260, 260], [300, 300]], // 每秒衝進來幾隻（照時間內插）
-    wave: { first: 8, gap: [10, 16], n: [[0, 400], [120, 900], [300, 1600]], arc: 0.35, len: 3, focus: 0.55, near: 0.6 }, // focus：下一波有多少機率從上一波附近來（會堆出一座特別高的） // 海嘯大浪：從某個方向一口氣衝進來
+    rate: [[0, 90], [30, 150], [90, 250], [180, 360], [260, 460], [300, 540]], /* Yen 11-25「殭屍量不夠澎湃…大幅增加」：約 1.8 倍 */ // 每秒衝進來幾隻（照時間內插）
+    wave: { first: 8, gap: [10, 16], n: [[0, 800], [120, 1700], [300, 3000]], arc: 0.35, len: 3, focus: 0.55, near: 0.6 }, // focus：下一波有多少機率從上一波附近來（會堆出一座特別高的） // 海嘯大浪：從某個方向一口氣衝進來
     run: { sp: [13, 22], hp: 2, climbK: 0.6 },
     top: { hp: 70, sp: 7.2, bite: 9, gap: 0.75, lose: 28, loseT: 4 }, // 爬上柱頂的殭屍；同時超過 lose 隻持續 loseT 秒＝淹沒
     fly: { hp: 45, sp: 24, bite: 10, goo: 13, gooGap: [3, 6] }, // 蝙蝠鼠（Yen 11-25「蝙蝠來襲改為一波通知，如同氣球鼠」：不再一直補，改成下面 ev 的一波一波）
@@ -31295,7 +31295,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     giant: { first: 35, gap: [42, 58], hp: 2600, sp: 6.5, s: 16, boost: 0.35, slam: 32, slamR: 8, slamGap: 3.6 },
     pileHp: 30, // 殭屍堆表面的一隻要多少傷害
     // Yen 11-25「中央一樣守護阿肥」：柱頂正中間是忠犬阿肥和防護罩。爬上柱頂的殭屍會去咬罩子，罩子破了就輸
-    afei: { shield: 1600, dome: 9, chew: 7, giant: 140, chase: 12 }, // chase：貓離殭屍多近，殭屍會先追貓
+    afei: { shield: 2600, /* 殭屍加倍後罩子也加厚（1600→2600） */ dome: 9, chew: 7, giant: 140, chase: 12 }, // chase：貓離殭屍多近，殭屍會先追貓
     // Yen 11-25「加入神兵並出現在高台上，出現汽車等神兵時可衝下高台去撞殭屍，結束後自動飛回高台」
     hero: { first: 18, gap: [26, 38], max: 2, R: 4.5, ban: ['stun', 'pipe'], leave: ['car', 'spn', 'mech', 'claw', 'brute'], fly: 1.4 },
   });
@@ -31303,11 +31303,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
   // 裝置分級：平板手機、省電畫質用比較小的上限
   const tier = () => (coarse || (SC.perf && SC.perf.q === 'low') ? 'low' : SC.perf && SC.perf.q === 'mid' ? 'mid' : 'high');
-  const CAPS = { high: { run: 9000, pile: 14000 }, mid: { run: 6000, pile: 10000 }, low: { run: 3200, pile: 6000 } };
+  const CAPS = { high: { run: 18000, pile: 26000 }, mid: { run: 10000, pile: 16000 }, low: { run: 5000, pile: 9000 } }; /* Yen 11-25：上限約加倍 */
   let cap = CAPS.high;
   const MAXR = CAPS.high.run, EXTRA = 900, CAPI = CAPS.high.run + CAPS.high.pile + EXTRA;
 
-  let scene = null, colors = null, R = 28, HT = 100, t0 = 0;
+  let scene = null, colors = null, R = 28, RB = 28, HT = 100, t0 = 0;
   const H = (x, z) => SC.world.height(x, z);
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v), lerp = (a, b, k) => a + (b - a) * k, rnd = (a, b) => a + Math.random() * (b - a);
   const tab = (T, t) => { if (t <= T[0][0]) return T[0][1]; for (let i = 1; i < T.length; i++) if (t <= T[i][0]) return lerp(T[i - 1][1], T[i][1], (t - T[i - 1][0]) / (T[i][0] - T[i - 1][0])); return T[T.length - 1][1]; };
@@ -31537,7 +31537,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   TS.stats = () => ({ t: Math.round(G().time), sprites: nI, peak: peakI, run: nR, pile: pileTotal, pileSpr: pileSprN, top: live(TOP).length, fly: live(FLY).length, bal: live(BAL).length, giant: live(GIA).length, pileMax: Math.round(pileMax), kills, fps: Math.round(fpsE), fpsAvg: fpsN ? Math.round(fpsAcc / fpsN) : 0, fpsMin: Math.round(fpsMin), tier: tier(), queue, over: TS.over || 0 });
 
   TS.start = (c) => {
-    scene = c.scene; colors = c.colors; const M = SC.world.MAPS.ztsu; R = M.tsu.R; HT = M.tsu.H; cap = CAPS[tier()];
+    scene = c.scene; colors = c.colors; const M = SC.world.MAPS.ztsu; R = M.tsu.R; RB = M.tsu.B || R; HT = M.tsu.H; cap = CAPS[tier()];
     if (!mesh) makeMesh(); cnt.fill(0); dmgAcc.fill(0); pileDirty = true; pileBuild(); nR = 0; queue = 0; spawnAcc = 0; nPop = 0; popHead = 0;
     TS.targets.forEach(freeT); kills = myKills = giantKills = balKills = 0; over = overT = 0; waveT = CFG.wave.first; waveQ = []; TS.lastWave = null; flyT = 2; shield = CFG.afei.shield; heroT = CFG.hero.first; PK.splice(0).forEach((q) => scene.remove(q.g)); if (SC.zbHero) SC.zbHero.reset(); afeiMake(); evI = 0; card = null; FALL.length = 0; giantT = CFG.giant.first; endAt = 0; TS.over = 0; peakI = 0; fpsMin = 99; fpsAcc = fpsN = 0; lastSay = -9; warnSec = -1;
     scene.add(mesh); scene.add(pileMesh); if (!TS.on) TS.openH0 = SC.world.openH; SC.world.openH = 160; /* 鏡頭要把 100 高的石柱當成實心（預設 40 以上不擋鏡頭） */ TS.on = true; t0 = performance.now(); colors[1].setHex(0x9b4ad8); /* 殭屍的墨水固定紫色 */ if (SC.ink.uniforms) { SC.ink.uniforms.uColB.value.copy(colors[1]); if (SC.ink.uniforms.uCols) SC.ink.uniforms.uCols.value[1].copy(colors[1]); }
@@ -31569,7 +31569,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     for (let i = nR - 1; i >= 0; i--) {
       if (!play) break; let r = rr[i]; const onPile = r < pileEdge; const sp = rsp[i] * (onPile && ry[i] > 1 ? climb : 1); r -= sp * dt; rr[i] = r;
       const a = ra[i]; rx[i] = Math.cos(a) * r; rz[i] = Math.sin(a) * r;
-      if (r <= R + DR * 0.5) { const s = aSec(a); if (cnt[s * NR] * LAYER >= HT - 1) { if (!spawnTop(a)) deposit(s); } else deposit(s); const l = --nR; if (i !== l) { rx[i] = rx[l]; rz[i] = rz[l]; ry[i] = ry[l]; rr[i] = rr[l]; ra[i] = ra[l]; rsp[i] = rsp[l]; rhp[i] = rhp[l]; rk[i] = rk[l]; rph[i] = rph[l]; } continue; }
+      if (r <= Math.max(R + DR * 0.5, RB - ((RB - R) * ry[i]) / HT + 0.6)) { /* 碰到斜牆（底下比較寬）就加進堆 */ const s = aSec(a); if (cnt[s * NR] * LAYER >= HT - 1) { if (!spawnTop(a)) deposit(s); } else deposit(s); const l = --nR; if (i !== l) { rx[i] = rx[l]; rz[i] = rz[l]; ry[i] = ry[l]; rr[i] = rr[l]; ra[i] = ra[l]; rsp[i] = rsp[l]; rhp[i] = rhp[l]; rk[i] = rk[l]; rph[i] = rph[l]; } continue; }
       const gy = r > 118 ? H(rx[i], rz[i]) : 0, py = onPile ? pileY(r, a) : 0; ry[i] = Math.max(gy, py);
     }
     bucket();
@@ -31646,8 +31646,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function giantTick(dt, cats, play) {
     for (const t of GIA) { if (!t.alive) continue; t.flash = Math.max(0, t.flash - dt * 6);
       if (play) {
-        if (t.st === 'walk') { const s = aSec(t.ang); t.r = Math.max(R + DR * 2.5, t.r - CFG.giant.sp * dt); const py = pileY(t.r, t.ang); t.pos.set(Math.cos(t.ang) * t.r, Math.max(t.r > 118 ? H(t.pos.x, t.pos.z) : 0, py * 0.85), Math.sin(t.ang) * t.r);
-          if (t.r <= R + DR * 2.6) { t.boostT -= dt; if (t.boostT <= 0) { t.boostT = CFG.giant.boost; deposit(s, 2); deposit((s + 1) % S, 1); deposit((s + S - 1) % S, 1); } if (cnt[s * NR] * LAYER >= HT - CFG.giant.s * 0.5) { t.st = 'jump'; t.jT = 0; t.j0 = t.pos.clone(); SC.audio.sfx.zhorn && SC.audio.sfx.zhorn(); } } }
+        if (t.st === 'walk') { const s = aSec(t.ang); t.r = Math.max(RB + 2, t.r - CFG.giant.sp * dt); const py = pileY(t.r, t.ang); t.pos.set(Math.cos(t.ang) * t.r, Math.max(t.r > 118 ? H(t.pos.x, t.pos.z) : 0, py * 0.85), Math.sin(t.ang) * t.r);
+          if (t.r <= RB + 2.1) { t.boostT -= dt; if (t.boostT <= 0) { t.boostT = CFG.giant.boost; deposit(s, 2); deposit((s + 1) % S, 1); deposit((s + S - 1) % S, 1); } if (cnt[s * NR] * LAYER >= HT - CFG.giant.s * 0.5) { t.st = 'jump'; t.jT = 0; t.j0 = t.pos.clone(); SC.audio.sfx.zhorn && SC.audio.sfx.zhorn(); } } }
         else if (t.st === 'jump') { t.jT += dt / 1.1; const k = Math.min(1, t.jT), tx = Math.cos(t.ang) * (R - 6), tz = Math.sin(t.ang) * (R - 6); t.pos.set(lerp(t.j0.x, tx, k), lerp(t.j0.y, HT, k) + Math.sin(k * Math.PI) * 14, lerp(t.j0.z, tz, k)); if (k >= 1) { t.st = 'top'; slamFx(t); } }
         else if (t.st === 'top') { t.pos.y = HT; let best = null, bd = 1e9; for (const c of cats) { if (c.pos.y < HT - 4) continue; const d = Math.hypot(c.pos.x - t.pos.x, c.pos.z - t.pos.z); if (d < bd) { bd = d; best = c; } }
           if (!best || bd > CFG.afei.chase * 1.5) { best = AF; bd = Math.max(0.01, Math.hypot(t.pos.x, t.pos.z) - CFG.afei.dome - 3); if (bd < 0.5) best = null; } /* 沒有貓在附近：走去打阿肥 */
@@ -31669,7 +31669,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const aimOut = (o) => { if (!o) return false; const q = o.isPlayer && G().k.aimPt ? G().k.aimPt(o) : o.aim; return !!q && q.y < HT - 2 && Math.hypot(q.x, q.z) > R - 0.5; };
   TS.hitP = (p) => {
     if (!TS.on || TS.over) return false; let r = Math.hypot(p.x, p.z);
-    if (!p.tsLip && p.y > HT - 6 && p.y < HT + 1.5 && r > R - 5 && r < R + 1.5 && p.vx * p.x + p.vz * p.z >= 0 && p.vy < 0) { p.tsLip = aimOut(p.owner) ? 1 : -1; if (p.tsLip > 0 && r < R + 1.6) { const k = (R + 1.6) / (r || 1); p.x *= k; p.z *= k; r = R + 1.6; } } if (r < R - 0.2 || r > R + NR * DR + 1) return false; const a = Math.atan2(p.z, p.x), surf = pileY(r, a); if (surf < 0.5 || p.y > surf + 0.6) return false;
+    if (!p.tsLip && p.y > HT - 6 && p.y < HT + 1.5 && r > R - 24 && r < R + 1.5 && p.vx * p.x + p.vz * p.z >= 0 && p.vy < 0) { p.tsLip = aimOut(p.owner) ? 1 : -1; if (p.tsLip > 0 && r < R + 1.6) { const k = (R + 1.6) / (r || 1); p.x *= k; p.z *= k; r = R + 1.6; } } if (r < R - 0.2 || r > R + NR * DR + 1) return false; const a = Math.atan2(p.z, p.x), surf = pileY(r, a); if (surf < 0.5 || p.y > surf + 0.6) return false;
     const dmg = (p.dmg || 30) * (p.owner && p.owner.ai ? 1 : 1), rad = Math.max(1.5, (p.r || 2) * 0.75);
     pileArea(p.x, surf, p.z, rad, dmg, p.owner); hitRunners(p.x, surf, p.z, rad + 0.8, 2, p.owner, 5);
     SC.fx.burst(p.x, surf + 0.5, p.z, p.color || colors[0], 6, 14, 0.42); if (p.owner && p.owner.isPlayer && SC.ui.hitMarker) SC.ui.hitMarker(false);
@@ -31890,9 +31890,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 站在柱頂邊緣、面向外面往下看：鏡頭慢慢探出柱頂邊緣（瞄準也從這裡算，所以準星照樣對）。不然 100 高的直牆，牆腳完全被柱頂擋住
   TS.lean = (cam, F, vd, dt) => {
     const d = Math.hypot(F.pos.x, F.pos.z) || 1, ux = F.pos.x / d, uz = F.pos.z / d, hl = Math.hypot(vd.x, vd.z) || 1, out = (vd.x * ux + vd.z * uz) / hl;
-    const want = F.alive && d > R - 9 && F.pos.y > HT - 3 ? clamp((-vd.y - 0.3) / 0.45, 0, 1) * clamp((out - 0.2) / 0.5, 0, 1) * clamp((d - (R - 9)) / 5, 0, 1) : 0;
-    TS.leanK = SC.damp(TS.leanK || 0, want, want > (TS.leanK || 0) ? 5 : 8, dt); const k = TS.leanK; if (k < 0.01) return;
-    const rc = cam.pos.x * ux + cam.pos.z * uz, push = Math.max(0, R + 5 - rc) * k; cam.pos.x += ux * push; cam.pos.z += uz * push; cam.pos.y += 4 * k;
+    // Yen 11-25「射擊視角不夠正下方很難射到」：離邊緣 24 以內、往外往下看就探出去；鏡頭沿著看的方向移到柱子邊緣外面 7 格、抬高，準星直直對到牆腳
+    const vx = vd.x / hl, vz = vd.z / hl, cx = cam.pos.x, cz = cam.pos.z, bq = cx * vx + cz * vz, cq = cx * cx + cz * cz - (R + 7) * (R + 7), disc = bq * bq - cq, tE = disc > 0 ? -bq + Math.sqrt(disc) : 0;
+    const want = F.alive && !F.tsuFly && d > R - 24 && F.pos.y > HT - 3 && tE > 0 && tE < 36 ? clamp((-vd.y - 0.22) / 0.33, 0, 1) * clamp((out + 0.1) / 0.4, 0, 1) * clamp((d - (R - 24)) / 6, 0, 1) : 0;
+    TS.leanK = SC.damp(TS.leanK || 0, want, want > (TS.leanK || 0) ? 6 : 8, dt); const k = TS.leanK; if (k < 0.01) return; TS.leanT = tE;
+    cam.pos.x += vx * (TS.leanT || 0) * k; cam.pos.z += vz * (TS.leanT || 0) * k; cam.pos.y += 7 * k; void ux; void uz;
     if (F.cat && k > 0.5) F.cat.group.visible = false;
   };
   TS.ff = 0; TS.fast = (sec, step = 0.05) => { const r = SC.debug.renderer, f = r.render; r.render = () => {}; TS.ff = 1; try { for (let t = 0; t < sec; t += step) SC.game.frame(step); } finally { r.render = f; TS.ff = 0; } return TS.stats(); }; /* 測試用：不畫畫面快轉 */
