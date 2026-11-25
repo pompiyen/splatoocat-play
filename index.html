@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v307';</script><script>window.SC_BUILD='d3d1963da90d';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v308';</script><script>window.SC_BUILD='457403e49dc1';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -24948,7 +24948,28 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       }).catch(one));
     });
   }
-  SC.relay = { use: async (n) => (n === 'room' ? { join, peek } : null), board, peek };
+  // 玩家狀態頁（Yen 2026-11-25「請秀出所有人的遊戲上線與試玩、連線狀態」）：一次看全部房間的 retain presence（`<APP>/+/p/+`），
+  // 只留 fresh 秒內有心跳的（離開沒清掉的舊紀錄不算），回傳 { 房名: [presence…] }。只讀，不發任何東西。
+  function scan(ms, fresh) {
+    const out = {}, lim = (fresh || 30) * 1000;
+    const onMsg = (topic, text) => {
+      const parts = topic.split('/'); if (parts.length !== 4 || parts[0] !== APP || parts[2] !== 'p') return;
+      const m0 = out[parts[1]] || (out[parts[1]] = new Map()), id = parts[3]; if (!text) { m0.delete(id); return; }
+      let m; try { m = JSON.parse(text); } catch (e) { return; }
+      if (!m || typeof m.p !== 'object' || !m.p || typeof m.q !== 'number' || Math.abs(Date.now() - (m.t || 0)) > lim) return;
+      const o = m0.get(id); if (!o || m.q > o.q) m0.set(id, { q: m.q, p: m.p });
+    };
+    return new Promise((res) => {
+      const conns = []; let done = false, left = BROKERS().length, up = 0;
+      const fin = () => { if (done) return; done = true; conns.forEach((c) => c.close()); const r = {}; for (const k in out) if (out[k].size) r[k] = [...out[k].values()].map((o) => o.p); res({ rooms: r, up }); };
+      const one = () => { if (--left <= 0) setTimeout(fin, 600); };
+      setTimeout(fin, ms || 5000);
+      BROKERS().forEach((url) => open(url, APP + '/peek/w', onMsg, () => {}).then((c) => {
+        if (done) { c.close(); return; } conns.push(c); up++; c.onSubAck = one; c.sub(APP + '/+/p/+');
+      }).catch(one));
+    });
+  }
+  SC.relay = { use: async (n) => (n === 'room' ? { join, peek } : null), board, peek, scan };
 })();
 
 // 連線對戰：用 Claude Artifact 的 room 能力，只靠 presence 同步（每個進房的人都能送，不需要編輯權限）。
@@ -44355,13 +44376,28 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const fr = { code: '', list: [], busy: false, msg: '', ok: false };
   const friends = (() => {
     let uid = null, beatT = 0, pollT = 0, lastR = null, prof = null;
+    // 玩家狀態（Yen 2026-11-25「請秀出所有人的遊戲上線與試玩、連線狀態」）：名片多記 md＝現在在做什麼、pm＝累計遊玩分鐘、pg＝打完幾場。
+    // 只有作者的玩家狀態頁讀得到全部（firestore.rules 的 profiles list）。規則還沒更新時寫新欄位會被拒，就退回舊的四個欄位（xok=false），好友上線照常。
+    // 遊玩時間先記在這台（sc-pstat，依帳號分開），雲端的跟這台的取比較大的，所以規則晚一點更新也不會少算。
+    let xok = true, lastMd = '', mdAt = 0, pst = { s: 0, g: 0 }, prevSt = '';
+    const PST = 'sc-pstat', pstRead = () => { try { return JSON.parse(localStorage.getItem(PST) || '{}') || {}; } catch (e) { return {}; } };
+    const pstSave = () => { if (!uid) return; try { const o = pstRead(); o[uid] = { s: Math.round(pst.s), g: pst.g }; localStorage.setItem(PST, JSON.stringify(o)); } catch (e) {} };
+    const doing = () => {
+      const G = SC.game, T = SC.town, n = SC.net;
+      if (T && T.on) return 'town';
+      if (!G || G.demo || G.state === 'boot') return curRoom() ? 'room' : 'home';
+      const rule = (G.opts && G.opts.net && G.opts.net.rule) || G.rule || '';
+      return String(G.mode || '') + (rule ? ':' + rule : '') + (G.mode === 'net' && n && n.ranked ? ':ranked' : '') + (G.opts && G.opts.tsu ? ':tsunami' : '');
+    };
     const curRoom = () => { const n = SC.net; return n && n.code && (n.state === 'joining' || n.state === 'lobby') && /^(\d{4}|Q\d{1,2})$/.test(n.code) ? n.code : ''; };
     const newCode = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => CODE_CH[b % CODE_CH.length]).join('');
     const beat = async () => {
       if (!uid || document.visibilityState === 'hidden') return;
       try {
         const { db, F } = await load(); const r = curRoom();
-        await F.setDoc(F.doc(db, 'profiles', uid), { n: account.name(), c: fr.code, on: F.serverTimestamp(), r }); lastR = r;
+        const base = { n: account.name(), c: fr.code, on: F.serverTimestamp(), r }, md = doing().slice(0, 24);
+        if (xok) { try { await F.setDoc(F.doc(db, 'profiles', uid), { ...base, md, pm: Math.floor(pst.s / 60), pg: pst.g }, { merge: true }); lastR = r; lastMd = md; mdAt = Date.now(); pstSave(); return; } catch (e) { if (!/permission/i.test(String(e && (e.code || e.message)))) throw e; xok = false; } }
+        await F.setDoc(F.doc(db, 'profiles', uid), base); lastR = r; lastMd = md; mdAt = Date.now(); pstSave();
       } catch (e) { /* 下次再報到 */ }
     };
     const start = async (id) => {
@@ -44369,6 +44405,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
       try {
         const { db, F } = await load(); const snap = await F.getDoc(F.doc(db, 'profiles', id));
         prof = snap.exists() ? snap.data() : null;
+        { const loc = pstRead()[id] || {}; pst = { s: Math.max((prof && prof.pm | 0) * 60, loc.s | 0), g: Math.max(prof && prof.pg | 0, loc.g | 0) }; }
         if (prof && prof.c) fr.code = prof.c;
         else for (let i = 0; i < 5 && !fr.code; i++) { // 第一次登入：建一個沒人用過的好友碼
           const c = newCode(), ref = F.doc(db, 'codes', c);
@@ -44382,7 +44419,14 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     };
     const stop = () => { uid = null; fr.code = ''; fr.list = []; clearInterval(beatT); clearInterval(pollT); rail.paint(); strip.paint(); };
     // 房號變了（進房、離開）就馬上報到，朋友才看得到
-    setInterval(() => { if (uid && fr.code && curRoom() !== lastR) beat(); }, 3000);
+    setInterval(() => { if (uid && fr.code && (curRoom() !== lastR || (doing().slice(0, 24) !== lastMd && Date.now() - mdAt > 15000))) beat(); }, 3000);
+    // 每 5 秒：畫面開著、在對戰／小鎮裡就算遊玩時間；對戰結束（變成 ended）就算一場
+    setInterval(() => {
+      if (!uid) return; const G = SC.game, st = G && !G.demo ? G.state : '';
+      if (st === 'ended' && prevSt && prevSt !== 'ended') pst.g++;
+      prevSt = st; const d = doing();
+      if (document.visibilityState === 'visible' && d !== 'home' && d !== 'room') pst.s += 5;
+    }, 5000);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') beat(); });
     const refresh = async () => {
       if (!uid) return;
@@ -44597,6 +44641,10 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 .ac-err{color:#c2185b}
 .ac-row .tier{justify-content:space-between;padding:0 16px}.ac-row .tier b{color:#e5306b;font-size:19px}.ac-row .tier small{font-size:12px;color:#7a6f96;font-weight:700}.ac-row .tier:disabled{cursor:default;opacity:1;background:#fff8d6}
 .ac-row .pp{background:#ffc439}.ac-two{grid-template-columns:1fr 1fr}.ac-three{grid-template-columns:1fr 1fr 1fr}.ac-row .ap{background:#000;color:#fff;border-color:#000}.apw{display:inline-flex;align-items:center;gap:1px;font:600 20px/1 -apple-system,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.3px}.apw svg{width:19px;height:19px;margin-top:-4px}.ch-rep{background:#fff4d6;border-radius:10px;padding:6px 8px;margin-top:6px!important}.ch-rep b{display:block;font-size:12px;color:#b5651d}.ch-rep.new{outline:3px solid #ff4f7b}.ch-list li.paid{border-color:#ffc439}.ch-rb{margin-top:6px;font-size:13px;padding:4px 10px;border-radius:10px;border:2px solid #ddd;background:#fff;cursor:pointer}.ch-rf{display:grid;gap:6px;margin-top:6px}.ch-rf textarea{min-height:60px;border:2px solid #ddd;border-radius:10px;padding:6px;font:inherit;background:#fff;color:#1b1430}.ch-rf button{justify-self:end;padding:6px 14px;border-radius:10px;border:0;background:#ff4f7b;color:#fff;font-weight:700;cursor:pointer}.ch-mine{position:relative}.frq{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top));transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#fff;color:#1b1430;border:4px solid #1b1430;border-radius:22px;box-shadow:0 5px 0 #000;padding:10px 12px;width:min(440px,calc(100vw - 24px));animation:frqIn .3s ease-out}.frq[hidden]{display:none}@keyframes frqIn{from{transform:translate(-50%,-30px);opacity:0}}.frq-a{flex:none;width:52px;height:52px;border-radius:50%;background:#ff9f1c;color:#fff;display:grid;place-items:center;font:700 24px/1 var(--f-display,sans-serif);border:3px solid #1b1430}.frq-t{flex:1;min-width:0;display:grid}.frq-t b{font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.frq-t span{font-size:14px}.frq-y,.frq-n{flex:none;width:56px;height:56px;border-radius:50%;border:3px solid #1b1430;color:#fff;font:700 26px/1 sans-serif;cursor:pointer;box-shadow:0 3px 0 #000}.frq-y{background:#2fbf71}.frq-n{background:#ff4f5e}.frr{position:absolute;right:max(6px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 5px;border-radius:22px;background:rgba(20,12,40,.55);border:2px solid rgba(255,255,255,.35)}.frr[hidden]{display:none}.frr-h{width:26px;height:26px;color:#fff;display:block}.frr-h svg{width:100%;height:100%}.frr-c{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:0;cursor:pointer;position:relative;color:#fff;width:58px}.frr-a{position:relative;width:46px;height:46px;border-radius:50%;background:hsl(var(--h),70%,58%);border:3px solid #fff;box-shadow:0 3px 0 #000;display:grid;place-items:center;font:700 20px/1 var(--f-display,sans-serif);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.35)}.frr-d{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#3ddc84;border:2px solid #fff}.frr-go{position:absolute;left:-8px;top:-8px;width:22px;height:22px;border-radius:50%;background:#3ddc84;color:#fff;font-size:11px;line-height:18px;border:2px solid #fff;animation:frrp 1s ease-in-out infinite}@keyframes frrp{50%{transform:scale(1.2)}}.frr-c.in .frr-a{border-color:#3ddc84}.frr-c small{font-size:11px;max-width:58px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.frr-tip{position:absolute;right:62px;top:8px;white-space:nowrap;background:#fff;color:#1b1430;font-style:normal;font-size:13px;font-weight:700;padding:5px 9px;border-radius:10px;box-shadow:0 3px 0 #000}@media (max-width:700px){#m-title.frr-on .title-card{padding-right:66px}}.ch-new{margin-left:6px;background:#ff4f7b;color:#fff;font-style:normal;font-size:11px;padding:2px 6px;border-radius:8px}.ac-row .give{background:#ff4f7b;color:#fff}.ppw{font-style:italic;font-weight:900;color:#003087;font-size:19px}.ppw i{color:#009cde}
+.pl-bars,.pl-kv,.pl-tl{list-style:none;padding:0;margin:4px 0 0;display:grid;gap:4px}.pl-bars li{display:grid;grid-template-columns:7.5em 1fr auto;gap:8px;align-items:center;font-size:12.5px}.pl-bars i{display:block;height:10px;border-radius:5px;background:linear-gradient(90deg,#ff5fa2 var(--w),#eee var(--w))}.pl-kv li{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;border-bottom:1px solid #eee;padding:2px 0}.pl-kv span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pl-tl li{border:2px solid #eee;border-radius:12px;padding:6px 10px;font-size:12.5px}.pl-tl span,.pl-tl small{display:block;color:#7a6f96}.pl-tl small{color:#1b1430;margin-top:2px}.pl-lk{background:none;border:0;padding:0;font:inherit;font-weight:900;color:#c0307a;text-decoration:underline;cursor:pointer;text-align:left}
+.pl-sec{margin:12px 0 4px;font-weight:900}.pl-rooms,.pl-list{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:6px}.pl-rooms li{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;border:2px solid #eee;border-radius:12px;padding:6px 10px}.pl-rooms small{grid-column:2;color:#7a6f96}
+.pl-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}.pl-sum div{border:2px solid #eee;border-radius:12px;padding:6px;text-align:center}.pl-sum b{display:block;font-size:20px}.pl-sum span{font-size:11.5px;color:#7a6f96}.pl-sum .on b{color:#1a9b4b}
+.pl-list li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:2px solid #eee;border-radius:12px;padding:6px 10px}.pl-list li.on{border-color:#8fd9a8}.pl-list li:not(.on) .fl-dot{display:none}.pl-t{min-width:0}.pl-t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pl-t small{display:block;font-size:11.5px;color:#7a6f96}.pl-d{opacity:.8}.pl-n{display:grid;grid-template-columns:auto auto;gap:0 4px;align-items:baseline;text-align:right;font-size:12px}.pl-n b{font-size:15px}.pl-n span{color:#7a6f96}
 .ch-in{width:100%;min-height:76px;background:#fff;color:#1b1430;margin-top:10px;border:2px solid #1b1430;border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical;box-sizing:border-box}
 .ac-more{width:100%;margin-top:12px;min-height:44px;border-radius:12px;border:2px dashed #7a6f96;background:#faf8ff;font:inherit;font-size:14px;font-weight:800;color:#1b1430;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:0 12px;gap:8px;text-align:left}
 .ch-list{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}.ch-list li{border:2px solid #eee;border-radius:12px;padding:8px 10px}.ch-list li div{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.ch-list small{color:#7a6f96;font-size:11.5px;text-align:right}.ch-list p{margin:4px 0 0!important;white-space:pre-wrap;word-break:break-word}
@@ -44642,6 +44690,33 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const repBy = (c) => { if (!c.rb || c.rb === 'admin') return '💬 作者回覆'; const v = Object.values(CONFIG.devs || {}), i = /^dev(\d+)$/.test(c.rb) ? +c.rb.slice(3) - 1 : 0; return '💬 ' + (v[i] || v[0] || '系統開發者') + ' 回覆'; };
   const KTAG = (c) => (c.k === 'bug' ? '🐞 Debug' : PAYTAG[c.pay] || PAYTAG['']);
   const isAdmin = () => !!(account.user && CONFIG.contact && account.user.email && account.user.email.toLowerCase() === CONFIG.contact.toLowerCase());
+  // ---------- 玩家狀態（Yen 2026-11-25「請秀出所有人的遊戲上線與試玩、連線狀態」，只有作者看得到）----------
+  // 全部登入玩家的名片（profiles：名字、最後上線、在做什麼、房號、累計遊玩分鐘、場數）＋公開中繼站上現在有人的連線房間。
+  // 規則只讓作者列出 profiles（isCheerAdmin）；沒登入的玩家沒有名片，只會出現在連線房間的人數裡。
+  const pl = { rows: null, rooms: null, up: 0, err: '', at: 0, tab: 'list', days: 7, ev: null, evErr: '', sel: '' };
+  const MODE_N = { net: '連線', versus: '單機', boss: '貓咪歷險', sandbox: '練習', walk: '散步' };
+  const RULE_N = { turf: '塗地戰', knockout: '擊倒戰', zombie: '殭屍戰', mix: '積分賽', conquest: '佔領戰', tsunami: '殭屍海嘯', ranked: '積分賽' };
+  const mdName = (md) => !md ? '' : md === 'town' ? '沐沐小鎮' : md === 'home' ? '首頁' : md === 'room' ? '連線房間等人' : md.split(':').map((x, i) => (i ? RULE_N[x] : MODE_N[x]) || x).filter((x, i, a) => a.indexOf(x) === i).join('・');
+  const ago = (t) => { if (!t) return '—'; const m = Math.floor((Date.now() - t) / 60000); return m < 1 ? '剛剛' : m < 60 ? m + ' 分鐘前' : m < 1440 ? Math.floor(m / 60) + ' 小時前' : Math.floor(m / 1440) + ' 天前'; };
+  // 📊 數據（09zy_track.js 記的每次打開的紀錄 ev/{日期}/s/{場次}）
+  pl.loadEv = async () => {
+    pl.ev = null; pl.evErr = ''; if (view === 'players') paint();
+    try { const { db, F } = await load(); pl.ev = SC.track && SC.track.load ? await SC.track.load(db, F, pl.days) : []; }
+    catch (e) { pl.ev = []; pl.evErr = /permission/i.test(String(e && (e.code || e.message))) ? '讀不到數據：Firestore 規則還沒換成新版。' : '連不上，等一下再試。'; }
+    if (view === 'players') paint();
+  };
+  pl.json = () => { try { const b = new Blob([JSON.stringify({ at: new Date().toISOString(), days: pl.days, players: pl.rows || [], sessions: pl.ev || [] }, null, 1)], { type: 'application/json' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'spalacat-data-' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); } catch (e) {} };
+  pl.load = async () => {
+    pl.err = ''; pl.rows = null; pl.rooms = null; paint();
+    const roomsP = SC.relay && SC.relay.scan ? SC.relay.scan(5000, 30).catch(() => null) : Promise.resolve(null);
+    try {
+      const { db, F } = await load(); const snap = await F.getDocs(F.collection(db, 'profiles'));
+      pl.rows = snap.docs.map((d) => { const x = d.data(); return { uid: d.id, n: x.n || '?', t: tsOf(x.on), r: x.r || '', md: x.md || '', pm: Number.isFinite(x.pm) ? x.pm : null, pg: Number.isFinite(x.pg) ? x.pg : null }; }).sort((a, b) => b.t - a.t);
+    } catch (e) { pl.rows = []; pl.err = /permission/i.test(String(e && (e.code || e.message))) ? '讀不到全部玩家：Firebase 主控台的 Firestore 規則還沒換成新版（web/firebase/firestore.rules）。' : '連不上，等一下再按重新整理。'; }
+    pl.at = Date.now(); if (view === 'players') paint();
+    if (pl.tab === 'data') pl.loadEv();
+    const sc = await roomsP; pl.rooms = sc ? sc.rooms : {}; pl.up = sc ? sc.up : 0; if (view === 'players') paint();
+  };
   cheer.send = async (pay) => {
     const u = account.user, m = cheer.text.trim().slice(0, CHEER_MAX); if (!u || !m || cheer.busy) return false;
     if (Date.now() - cheer.sentAt < 30000) { cheer.msg = '剛剛送過了，等 30 秒再送一次。'; cheer.ok = false; paint(); return false; }
@@ -44729,7 +44804,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 
   const close = () => { if (wrap) { if (view === 'friends') { friends.watch(false); fr.tab = ''; } wrap.remove(); wrap = null; view = ''; } };
   account.db = useFb ? () => load() : null; // 給 09y_ranked.js 的每週排行榜用
-  account.open = (v) => open(v || 'acc'); account.cloud = () => cloud.push();
+  account.open = (v) => open(v || 'acc'); account.view = () => (wrap ? view || 'donate' : ''); // 09zy_track.js 記路徑用 account.cloud = () => cloud.push();
   if (SC.i18n && SC.i18n.onChange) SC.i18n.onChange.push(() => { if (wrap) paint(); }); // 換語言：開著的帳號／好友／愛心面板重畫（ATM 那排只有中文才有）
   const open = (v) => {
     { const keep = fr.tab; close(); fr.tab = keep; } view = v; err = ''; fr.msg = ''; fr.rmAsk = ''; if (v === 'friends') { friends.watch(true); if (!fr.tab) fr.tab = asks.pend().length ? 'req' : 'list'; } if (v === 'donate' && account.user) cheer.loadMine();
@@ -44781,6 +44856,40 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
         if (!dev) h += `<p class="ac-note">標「愛心贊助」的留言只代表對方按了贊助按鈕，有沒有真的付款請到 PayPal 的交易明細核對。</p>`;
       }
       h += `<div class="ac-row"><button type="button" data-ch="back">← 回愛心</button></div>`;
+    } else if (view === 'players') {
+      h += `<h2>👥 玩家狀態</h2>`;
+      if (isAdmin()) h += `<div class="fl-tabs"><button type="button" data-pt="list" class="${pl.tab === 'list' ? 'on' : ''}">🐾 玩家與房間</button><button type="button" data-pt="data" class="${pl.tab === 'data' ? 'on' : ''}">📊 數據</button></div>`;
+      if (!isAdmin()) h += `<p>只有作者看得到。</p>`;
+      else if (pl.tab === 'data') {
+        h += `<div class="fl-tabs ch-tabs">${[1, 7, 30].map((d) => `<button type="button" data-pd="${d}" class="${pl.days === d ? 'on' : ''}">${d === 1 ? '今天' : d + ' 天'}</button>`).join('')}</div>`;
+        if (pl.evErr) h += `<p class="ac-err">${esc(pl.evErr)}</p>`;
+        if (!pl.ev) h += `<p class="ac-note">讀取中…</p>`;
+        else if (SC.track && SC.track.html) { const names = {}; (pl.rows || []).forEach((r) => (names[r.uid] = r.n)); h += SC.track.html(pl.ev, names, esc, pl.sel, pl.days); }
+        h += `<p class="ac-note">每次打開頁面記一筆：裝置、從哪裡來、走過的畫面和時間、開打打完、按鈕、贊助點擊、錯誤。沒登入的人用裝置編號認；同一台裝置登入過，之前沒登入的紀錄也算那個帳號。</p><div class="ac-row"><button type="button" data-ch="pljson">⬇️ 下載這段期間的原始資料（JSON）</button></div>`;
+      } else {
+        if (pl.err) h += `<p class="ac-err">${esc(pl.err)}</p>`;
+        const R = pl.rooms, names = R ? Object.keys(R).sort() : [], ppl = names.reduce((s, k) => s + R[k].length, 0);
+        h += `<p class="pl-sec">🌐 現在的連線房間</p>`;
+        if (!R) h += `<p class="ac-note">看連線中繼站中…（約 5 秒）</p>`;
+        else if (!pl.up) h += `<p class="ac-err">連不上連線中繼站，看不到房間。</p>`;
+        else if (!names.length) h += `<p class="ac-note">現在沒有人在連線房間裡。</p>`;
+        else {
+          h += `<p class="ac-sub">${names.length} 間房、${ppl} 人（快速配對的房間不帶名字）</p><ul class="pl-rooms">`;
+          names.forEach((k) => { const ps = R[k], host = ps.find((p) => p.h && p.h.st), st = host ? host.h.st : '', nm = ps.map((p) => p.n).filter(Boolean);
+            h += `<li><b translate="no">${esc(k.replace(/^sc-/, ''))}</b><span>${ps.length} 人${st === 'play' ? '・對戰中' : st === 'end' ? '・看結果' : '・等人'}${host && host.h.rule ? '・' + esc(RULE_N[host.h.rule] || host.h.rule) : ''}</span>${nm.length ? `<small translate="no">${esc(nm.join('、'))}</small>` : ''}</li>`; });
+          h += `</ul>`;
+        }
+        h += `<p class="pl-sec">🐾 登入過的玩家</p>`;
+        if (!pl.rows) h += `<p class="ac-note">讀取中…</p>`;
+        else if (pl.rows.length) {
+          const now = Date.now(), on = pl.rows.filter((r) => now - r.t < ONLINE_MS).length, d1 = pl.rows.filter((r) => now - r.t < 864e5).length, d7 = pl.rows.filter((r) => now - r.t < 7 * 864e5).length;
+          const pm = pl.rows.reduce((s, r) => s + (r.pm || 0), 0), pg = pl.rows.reduce((s, r) => s + (r.pg || 0), 0);
+          h += `<div class="pl-sum"><div><b>${pl.rows.length}</b><span>玩家</span></div><div class="on"><b>${on}</b><span>現在在線</span></div><div><b>${d1}</b><span>24 小時內</span></div><div><b>${d7}</b><span>7 天內</span></div><div><b>${pm}</b><span>遊玩分鐘</span></div><div><b>${pg}</b><span>打完場數</span></div></div>`;
+          h += `<ul class="pl-list">${pl.rows.map((r) => { const live = now - r.t < ONLINE_MS; return `<li class="${live ? 'on' : ''}"><span class="fl-av" style="--h:${hueOf(r.uid)}" translate="no">${esc(iniOf(r.n))}<i class="fl-dot"></i></span><div class="pl-t"><b translate="no">${esc(r.n)}</b><small>${live ? '🟢 在線' : '最後上線 ' + ago(r.t)}${r.t ? `<span class="pl-d">（${new Date(r.t).toLocaleString()}）</span>` : ''}</small><small>${r.md ? (live ? '正在：' : '最後在：') + esc(mdName(r.md)) : '還沒有活動紀錄（舊版）'}${live && r.r ? '・房間 <span translate="no">' + esc(r.r) + '</span>' : ''}</small></div><div class="pl-n"><b>${r.pm == null ? '—' : r.pm}</b><span>分鐘</span><b>${r.pg == null ? '—' : r.pg}</b><span>場</span></div></li>`; }).join('')}</ul>`;
+          h += `<p class="ac-note">遊玩分鐘和場數從這個版本開始記（畫面開著、在對戰或小鎮裡才算）。沒登入的玩家沒有名片，只會出現在上面的連線房間裡。${pl.at ? '讀取時間 ' + new Date(pl.at).toLocaleTimeString() : ''}</p>`;
+        } else if (!pl.err) h += `<p class="ac-note">還沒有玩家。</p>`;
+      }
+      h += `<div class="ac-row ac-two"><button type="button" data-ch="plre">🔄 重新整理</button><button type="button" data-ch="back">← 回愛心</button></div>`;
     } else if (view === 'mine') {
       h += `<h2>📜 我的留言紀錄</h2>`;
       if (!cheer.mine) h += `<p>讀取中…</p>`;
@@ -44825,7 +44934,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
       if (zh && CONFIG.donate.length) h += `<button type="button" class="ac-more" data-ch="more" aria-expanded="${cheer.more}">ATM、超商贊助（限台灣）<span>${cheer.more ? '▴' : '▾'}</span></button>` + (cheer.more ? tiers + (CONFIG.donateNote ? `<p class="ac-note">${esc(CONFIG.donateNote)}</p>` : '') : '');
       if (useFb && u2) h += `<div class="ac-row"><button type="button" class="ch-mine" data-ch="mine">📜 我的留言紀錄${cheer.mine && cheer.mine.length ? `<span> (${cheer.mine.length})</span>` : ''}${cheer.newReply() ? `<i class="ch-new">有新回覆</i>` : ''}</button></div>`;
       h += `<div class="ac-row"><button type="button" class="ch-log" data-ch="log">📰 更新日誌${logNew() ? `<i>NEW</i>` : ''}</button></div>`; /* Yen 11-23：更新日誌 */
-      if (isAdmin()) h += `<div class="ac-row"><button type="button" data-ch="inbox">📬 收到的留言</button></div>`;
+      if (isAdmin()) h += `<div class="ac-row ac-two"><button type="button" data-ch="inbox">📬 收到的留言</button><button type="button" data-ch="players">👥 玩家狀態</button></div>`;
       else if (devName()) h += `<div class="ac-row"><button type="button" data-ch="inbox">🐞 Debug 留言（開發者）</button></div>`;
       if (account.shop.ready()) {
         h += `<p>${account.user ? '用信用卡或其他方式付款（Xsolla）：' : '登入後也可以用 Xsolla 付款：'}</p><div class="ac-row">${CONFIG.xsolla.items.map((it) => `<button type="button" class="d" data-buy="${esc(it.sku)}"${account.user ? '' : ' disabled'}>${I_HEART}${esc(it.name)}</button>`).join('')}</div>`;
@@ -44851,7 +44960,10 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     wrap.querySelectorAll('[data-ck]').forEach((b) => (b.onclick = () => { cheer.kind = b.dataset.ck; paint(); }));
     wrap.querySelectorAll('[data-cf]').forEach((b) => (b.onclick = () => { cheer.filter = b.dataset.cf; paint(); }));
     const cin = wrap.querySelector('#ch-in'); if (cin) { cin.addEventListener('input', () => { cheer.text = cin.value; }); cin.addEventListener('keydown', (e) => e.stopPropagation()); }
-    wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'give') { cheer.give = !cheer.give; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'mine') { view = 'mine'; cheer.seenAt = seen(); try { localStorage.setItem(SEEN, String(Date.now())); } catch (e) {} paint(); cheer.loadMine(); } else if (c === 'back') { view = 'donate'; paint(); } else if (c === 'log') { view = 'log'; logN = 60; const L = SC.CHANGELOG || []; try { if (L.length) localStorage.setItem(LOGSEEN, L[0][0] + L.length); } catch (e) {} paint(); } else if (c === 'logmore') { logN += 80; paint(); } }));
+    wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'give') { cheer.give = !cheer.give; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'mine') { view = 'mine'; cheer.seenAt = seen(); try { localStorage.setItem(SEEN, String(Date.now())); } catch (e) {} paint(); cheer.loadMine(); } else if (c === 'back') { view = 'donate'; paint(); } else if (c === 'log') { view = 'log'; logN = 60; const L = SC.CHANGELOG || []; try { if (L.length) localStorage.setItem(LOGSEEN, L[0][0] + L.length); } catch (e) {} paint(); } else if (c === 'logmore') { logN += 80; paint(); } else if (c === 'players' || c === 'plre') { view = 'players'; pl.load(); } else if (c === 'pljson') pl.json(); }));
+    wrap.querySelectorAll('[data-pt]').forEach((b) => (b.onclick = () => { pl.tab = b.dataset.pt; pl.sel = ''; if (pl.tab === 'data' && !pl.ev) pl.loadEv(); else paint(); }));
+    wrap.querySelectorAll('[data-pd]').forEach((b) => (b.onclick = () => { pl.days = +b.dataset.pd; pl.sel = ''; pl.loadEv(); }));
+    wrap.querySelectorAll('[data-tp]').forEach((b) => (b.onclick = () => { pl.sel = b.dataset.tp; paint(); const c = wrap && wrap.querySelector('.ac-card'); if (c) c.scrollTop = 0; }));
     wrap.querySelectorAll('[data-rp]').forEach((b) => (b.onclick = () => { const c = (cheer.inbox || []).find((x) => x.id === b.dataset.rp); if (c) { c.edit = true; paint(); const t = wrap.querySelector(`[data-rt="${c.id}"]`); if (t) t.focus(); } }));
     wrap.querySelectorAll('[data-rt]').forEach((t) => t.addEventListener('keydown', (e) => e.stopPropagation()));
     wrap.querySelectorAll('[data-rs]').forEach((b) => (b.onclick = () => { const t = wrap.querySelector(`[data-rt="${b.dataset.rs}"]`); if (t && t.value.trim()) { b.disabled = true; cheer.reply(b.dataset.rs, t.value); } }));
@@ -45593,6 +45705,188 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const O = ['en', 'ja', 'ko'], X = ['es', 'pt', 'fr', 'de', 'it', 'ru', 'tr', 'id', 'vi', 'th'];
   I.add(SC.CHANGELOG.filter((e) => e[3]).map((e) => [e[2], ...O.map((l) => e[3][l] || e[3].en || e[2])]));
   if (I.addL) X.forEach((l) => I.addL(l, SC.CHANGELOG.filter((e) => e[3] && (e[3][l] || e[3].en)).map((e) => [e[2], e[3][l] || e[3].en])));
+})();
+
+// 玩家數據追蹤（Yen 2026-11-25「包含firebase cloudflare GA 等後台資料都抓取 要能完整追蹤玩家帳號行為 路徑 時間 付費等等未來商用時必要與建議之完整數據，不要等到想要某個數據時來不及」）
+// 每次打開頁面＝一個「場次」（session）。記：裝置／瀏覽器／語言／從哪裡來（referrer、utm_*）、登入帳號、走過的畫面（路徑）和每一處待了幾秒、
+// 開打／打完（模式、規則、地圖、輸贏、幾秒）、按了哪些按鈕、贊助按鈕點擊、錯誤。
+// 存到 Firestore ev/{台北日期 YYYYMMDD}/s/{場次 id}：同一份文件邊玩邊覆寫（最多每 2 分鐘一次，離開畫面時再補一次），所以一個人玩一小時大約 30 次寫入。
+// 只有作者（isCheerAdmin）讀得到，在愛心面板 → 👥 玩家狀態 → 📊 數據 看，可以下載 JSON。沒登入的玩家用這台裝置的隨機編號（sc-did）認人，不記名字、Email。
+// GA4、Cloudflare Web Analytics：在 CFG 填上 ID 就會一起送（同一批事件，GA 那邊帶 user_id＝帳號 uid）。
+(() => {
+  const CFG = {
+    ga: '', // GA4 評估 ID，例 'G-XXXXXXXXXX'（Firebase 主控台 → 專案設定 → 整合 → Google Analytics 開啟後拿到）
+    cf: '', // Cloudflare Web Analytics 的 token（Cloudflare → Analytics & Logs → Web Analytics → Add a site → 拿 JS 片段裡的 token）
+  };
+  const T = (SC.track = { on: false });
+  // ---------- 作者的數據頁（09z_account.js 玩家狀態 → 📊 數據 呼叫）----------
+  const dayOf = (t) => { const d = new Date(t + 8 * 3600e3); return d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, '0') + String(d.getUTCDate()).padStart(2, '0'); };
+  T.load = async (db, F, days) => { const out = []; for (let i = 0; i < days; i++) { const d = dayOf(Date.now() - i * 864e5); const snap = await F.getDocs(F.collection(db, 'ev', d, 's')); snap.docs.forEach((x) => { const v = x.data(); v.id = x.id; v.at = v.at && v.at.toMillis ? v.at.toMillis() : 0; out.push(v); }); } return out; };
+  const W_N = { home: '首頁', town: '沐沐小鎮', 'town:farm': '菜園', 'room:quick': '快速配對房間', 'room:friend': '好友房間', other: '其他' };
+  const M_N = { net: '連線', versus: '單機', boss: '貓咪歷險', sandbox: '練習', walk: '散步' }, R_N = { turf: '塗地戰', knockout: '擊倒戰', zombie: '殭屍戰', mix: '積分賽', conquest: '佔領戰', tsunami: '殭屍海嘯', ranked: '積分賽', result: '看結果' };
+  const wName = (w) => { w = String(w).replace(/_/g, ':'); if (W_N[w]) return W_N[w]; const p = w.split(':'); if (p[0] === 'play') return p.slice(1).map((x, i) => (i ? R_N[x] : M_N[x]) || x).filter((x, i, a) => x && a.indexOf(x) === i).join('・'); if (p[0] === 'panel') return '面板・' + ({ acc: '帳號', friends: '好友', donate: '愛心', inbox: '留言', players: '玩家狀態', log: '更新日誌', mine: '我的留言' }[p[1]] || p[1]); if (p[0] === 'menu') return '選單・' + ({ mode: '選模式', setup: '模式設定', help: '說明', stk: '貼紙本', devtip: '裝置小提示', pick: '選角', pause: '暫停' }[p[1]] || p[1]); return w; };
+  T.wName = wName;
+  const fmtS = (s) => (s >= 3600 ? (s / 3600).toFixed(1) + ' 小時' : s >= 60 ? Math.round(s / 60) + ' 分' : (s | 0) + ' 秒');
+  const top = (m, n) => Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, n || 10);
+  // 把分散的場次對到同一個人：帳號 uid 優先；這台裝置（did）只要有一次登入過，它所有沒登入的場次也算那個帳號的
+  T.people = (rows) => {
+    const d2u = {}; rows.forEach((r) => { const u = r.uid || r.au; if (u && r.did) d2u[r.did] = d2u[r.did] || u; });
+    const P = {}; rows.forEach((r) => { const u = r.uid || r.au || d2u[r.did] || ''; const k = u ? 'u:' + u : 'd:' + r.did; const p = P[k] || (P[k] = { k, uid: u, dids: new Set(), s: [], dur: 0, gm: 0, win: 0, pay: 0, last: 0, first: Infinity, dev: '' }); p.dids.add(r.did); p.s.push(r); p.dur += r.dur || 0; p.gm += r.gm || 0; p.win += r.win || 0; p.pay += r.pay || 0; p.last = Math.max(p.last, r.ls || 0); p.first = Math.min(p.first, r.st || 0); p.dev = p.dev || [r.dev && r.dev.os, r.dev && r.dev.br].filter(Boolean).join(' '); });
+    // 沒登入、清過資料換了新編號的裝置：同樣的系統＋瀏覽器＋螢幕＋時區＋語言，只當「可能是同一台」提示，不自動合併
+    const sig = (r) => r.dev ? [r.dev.os, r.dev.br, r.dev.w + 'x' + r.dev.h, r.dev.dpr, r.dev.tz, r.dev.nl].join('|') : '';
+    const bySig = {}; Object.values(P).forEach((p) => { const sg = sig(p.s[0]); if (sg) (bySig[sg] = bySig[sg] || []).push(p); });
+    Object.values(bySig).forEach((l) => { if (l.length > 1) l.forEach((p) => (p.alike = l.filter((q) => q !== p).map((q) => q.k))); });
+    return Object.values(P).sort((a, b) => b.last - a.last);
+  };
+  T.html = (rows, names, esc, sel, days) => {
+    const nm = (p) => (p.uid ? names[p.uid] || '帳號 ' + p.uid.slice(0, 6) : '訪客 ' + [...p.dids][0].slice(0, 6));
+    const people = T.people(rows); let h = '';
+    if (sel) { const p = people.find((x) => x.k === sel); if (!p) return '<p class="ac-note">找不到這個人。</p>';
+      h += `<p class="pl-sec" translate="no">${esc(nm(p))}</p><p class="ac-sub">${p.uid ? '已登入帳號' : '未登入訪客'}・${p.dids.size} 台裝置・${p.s.length} 次・共 ${fmtS(p.dur)}・打完 ${p.gm} 場（贏 ${p.win}）${p.pay ? '・贊助點擊 ' + p.pay : ''}${p.alike ? `・<b>可能同一人：${p.alike.length}</b>` : ''}</p>`;
+      if (p.alike) h += `<p class="ac-note">同樣裝置特徵（系統、瀏覽器、螢幕、時區、語言）的其他紀錄：${p.alike.map((k) => `<button type="button" class="pl-lk" data-tp="${esc(k)}">${esc(k.slice(2, 8))}</button>`).join(' ')}</p>`;
+      h += `<ul class="pl-tl">${p.s.sort((a, b) => b.st - a.st).map((r) => { const path = []; (r.ev || []).forEach((e) => { const [t, k, v] = String(e).split('~'); if (k === 'w') path.push(wName(v)); else if (k === 'e') { const q = v.split('|'); path.push(['❌', '🏆', '🤝'][+q[3]] ? (['❌', '🏆', '🤝'][+q[3]] + ' ' + fmtS(+q[4])) : '🏁'); } else if (k === 'p') path.push('💰' + v.split('|')[0]); else if (k === 'a') path.push(v === 'out' ? '登出' : '🔑登入'); else if (k === 'q') path.push('🚪中離'); else if (k === 'i' && v !== 'back') path.push('💤'); });
+        const pp = path.filter((x, i) => x !== path[i - 1]); return `<li><b>${new Date(r.st).toLocaleString()}</b><span>${fmtS(r.dur || 0)}・${esc([r.dev && r.dev.os, r.dev && r.dev.br, r.lg, r.v].filter(Boolean).join(' '))}${r.ref ? '・來自 ' + esc(r.ref) : ''}${r.utm && r.utm !== '//' ? '・' + esc(r.utm) : ''}</span><small>${esc(pp.slice(0, 60).join(' → '))}${pp.length > 60 ? ' …' : ''}</small></li>`; }).join('')}</ul>`;
+      return h + `<div class="ac-row"><button type="button" data-tp="">← 回數據總覽</button></div>`; }
+    if (!rows.length) return `<p class="ac-note">這 ${days} 天還沒有紀錄（從這個版本開始記）。</p>`;
+    const S = rows.length, dur = rows.reduce((s, r) => s + (r.dur || 0), 0), dv = new Set(rows.map((r) => r.did)).size, nd = rows.filter((r) => r.nd).length, sg = rows.filter((r) => r.uid || r.au).length;
+    const played = rows.filter((r) => (r.ev || []).some((e) => String(e).split('~')[1] === 'm')).length, fin = rows.filter((r) => r.gm > 0).length, pay = rows.reduce((s, r) => s + (r.pay || 0), 0);
+    const reg = people.filter((p) => p.uid).length, durs = rows.map((r) => r.dur || 0).sort((a, b) => a - b), med = durs[durs.length >> 1] || 0;
+    const back = people.filter((p) => p.s.length > 1 || p.s.some((r) => (r.nv || 1) > 1)).length;
+    h += `<div class="pl-sum"><div><b>${people.length}</b><span>人（${reg} 登入）</span></div><div><b>${dv}</b><span>裝置（${nd} 台新）</span></div><div><b>${S}</b><span>次打開</span></div><div><b>${fmtS(dur)}</b><span>總時間</span></div><div><b>${fmtS(med)}</b><span>每次中位數</span></div><div><b>${back}</b><span>回訪的人</span></div></div>`;
+    h += `<p class="pl-sec">漏斗</p><ul class="pl-bars">${[['打開', S], ['開打', played], ['打完一場', fin], ['有登入', sg], ['點贊助', rows.filter((r) => r.pay).length]].map(([k, n]) => `<li><span>${k}</span><i style="--w:${Math.round((n / S) * 100)}%"></i><b>${n}（${Math.round((n / S) * 100)}%）</b></li>`).join('')}</ul>`;
+    const pt = {}; rows.forEach((r) => Object.entries(r.pt || {}).forEach(([k, v]) => { const n = wName(k); pt[n] = (pt[n] || 0) + v; }));
+    h += `<p class="pl-sec">時間花在哪裡</p><ul class="pl-bars">${top(pt, 12).map(([k, v], i, a) => `<li><span>${esc(k)}</span><i style="--w:${Math.round((v / a[0][1]) * 100)}%"></i><b>${fmtS(v)}</b></li>`).join('')}</ul>`;
+    const ms = {}; rows.forEach((r) => (r.ev || []).forEach((e) => { const [, k, v] = String(e).split('~'); if (k !== 'e') return; const q = v.split('|'), n = wName('play:' + q[0] + ':' + q[1]); const o = ms[n] || (ms[n] = [0, 0, 0]); o[0]++; if (q[3] === '1') o[1]++; o[2] += +q[4] || 0; }));
+    if (Object.keys(ms).length) h += `<p class="pl-sec">打完的場次</p><ul class="pl-kv">${Object.entries(ms).sort((a, b) => b[1][0] - a[1][0]).map(([k, o]) => `<li><span>${esc(k)}</span><b>${o[0]} 場・贏 ${Math.round((o[1] / o[0]) * 100)}%・平均 ${fmtS(o[2] / o[0])}</b></li>`).join('')}</ul>`;
+    const kv = (title, m) => { const e = top(m, 8); return e.length ? `<p class="pl-sec">${title}</p><ul class="pl-kv">${e.map(([k, v]) => `<li><span translate="no">${esc(k || '（直接打開）')}</span><b>${v}</b></li>`).join('')}</ul>` : ''; };
+    const cnt = (f) => { const m = {}; rows.forEach((r) => { const k = f(r); m[k] = (m[k] || 0) + 1; }); return m; };
+    h += kv('從哪裡來', cnt((r) => r.ref + (r.utm && r.utm !== '//' ? ' ' + r.utm : ''))) + kv('裝置', cnt((r) => r.dev ? r.dev.os + ' ' + r.dev.br + (r.dev.sa ? '（主畫面 App）' : '') : '?')) + kv('語言', cnt((r) => r.lg || '?')) + kv('版本', cnt((r) => r.v || '?'));
+    if (pay) { const pm = {}; rows.forEach((r) => (r.ev || []).forEach((e) => { const [, k, v] = String(e).split('~'); if (k === 'p') pm[v] = (pm[v] || 0) + 1; })); h += kv('贊助按鈕點擊（實際付款要看綠界／PayPal 後台）', pm); }
+    // 更細的：載入、效能、操作、時段、回訪間隔、中途離開
+    const X = rows.map((r) => r.sx || {}), avg = (f) => { const v = X.map(f).filter((x) => x > 0); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0; };
+    h += `<p class="pl-sec">體驗與效能</p><ul class="pl-kv"><li><span>網頁載入（中位）</span><b>${(() => { const v = X.map((x) => x.ld).filter((x) => x > 0).sort((a, b) => a - b); return v.length ? (v[v.length >> 1] / 1000).toFixed(1) + ' 秒' : '—'; })()}</b></li><li><span>打開到第一次操作（平均）</span><b>${avg((x) => x.ok) ? (avg((x) => x.ok) / 1000).toFixed(1) + ' 秒' : '—'}</b></li><li><span>對戰畫面每秒格數（平均／最差平均）</span><b>${Math.round(avg((x) => x.fps)) || '—'}／${Math.round(avg((x) => x.fpsLo)) || '—'}</b></li><li><span>每秒格數低於 30 的次數</span><b>${X.filter((x) => x.fpsLo && x.fpsLo < 30).length}</b></li><li><span>中途離開對戰</span><b>${X.reduce((s, x) => s + (x.quit || 0), 0)} 次</b></li><li><span>閒置超過 1 分鐘（總計）</span><b>${fmtS(X.reduce((s, x) => s + (x.idle || 0), 0))}</b></li></ul>`;
+    h += kv('操作方式', cnt((r) => { const i = (r.sx && r.sx.inp) || ''; return [i.includes('t') && '觸控', i.includes('m') && '滑鼠', i.includes('k') && '鍵盤', i.includes('g') && '手把'].filter(Boolean).join('＋') || '沒有操作'; }));
+    h += kv('網路', cnt((r) => (r.sx && r.sx.net) || '?')) + kv('顯示晶片', cnt((r) => (r.sx && r.sx.gpu) || '?'));
+    { const hr = {}; rows.forEach((r) => { if (r.sx && r.sx.hr != null) { const k = String(r.sx.hr).padStart(2, '0') + ' 點'; hr[k] = (hr[k] || 0) + (r.dur || 0); } }); const e = Object.entries(hr).sort(); if (e.length) { const mx = Math.max(...e.map((x) => x[1])); h += `<p class="pl-sec">幾點在玩（玩家當地時間）</p><ul class="pl-bars">${e.map(([k, v]) => `<li><span>${k}</span><i style="--w:${Math.round((v / mx) * 100)}%"></i><b>${fmtS(v)}</b></li>`).join('')}</ul>`; } }
+    h += kv('距離上次來', cnt((r) => { const g = r.sx ? r.sx.gap : -1; return g < 0 ? '第一次來' : g < 1 ? '1 小時內' : g < 24 ? '1 天內' : g < 72 ? '3 天內' : g < 168 ? '1 週內' : '超過 1 週'; }));
+    const er = {}; rows.forEach((r) => (r.ev || []).forEach((e) => { const [, k, v] = String(e).split('~'); if (k === 'x') er[v] = (er[v] || 0) + 1; })); h += kv('錯誤', er);
+    const ck = {}; rows.forEach((r) => (r.ev || []).forEach((e) => { const [, k, v] = String(e).split('~'); if (k === 'c') ck[v] = (ck[v] || 0) + 1; })); h += kv('最常按的按鈕', ck);
+    h += `<p class="pl-sec">每個人（點名字看路徑）</p><ul class="pl-list">${people.slice(0, 200).map((p) => `<li class="${Date.now() - p.last < 150000 ? 'on' : ''}"><div class="pl-t"><button type="button" class="pl-lk" data-tp="${esc(p.k)}" translate="no">${esc(nm(p))}</button><small>${p.uid ? '登入' : '訪客'}・${esc(p.dev)}・${p.dids.size} 台・最後 ${new Date(p.last).toLocaleString()}${p.alike ? '・⚠️ 可能同一人' : ''}</small></div><div class="pl-n"><b>${p.s.length}</b><span>次</span><b>${Math.round(p.dur / 60)}</b><span>分</span><b>${p.gm}</b><span>場</span></div></li>`).join('')}</ul>`;
+    return h;
+  };
+  if (!window.SC_PUBLIC || !/(^|\.)spalacat\.com$|^pompiyen\.github\.io$/.test(location.hostname) || /[?&]sc-notrack\b/.test(location.search) || navigator.webdriver) return; // 只記正式網站上的真人；本機測試、smoke 不記
+  T.on = true;
+  const now = () => Date.now(), t0 = now();
+  const rid = (n) => Array.from(crypto.getRandomValues(new Uint8Array(n)), (b) => 'abcdefghijklmnopqrstuvwxyz0123456789'[b % 36]).join('');
+  const day = (t) => { const d = new Date(t + 8 * 3600e3); return d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, '0') + String(d.getUTCDate()).padStart(2, '0'); };
+  let did = '', fresh = 0; try { did = localStorage.getItem('sc-did') || ''; if (!/^[a-z0-9]{12}$/.test(did)) { did = rid(12); fresh = 1; localStorage.setItem('sc-did', did); } } catch (e) { did = rid(12); fresh = 1; }
+  let nv = 0; try { nv = (+localStorage.getItem('sc-visits') || 0) + 1; localStorage.setItem('sc-visits', String(nv)); } catch (e) {}
+  const sid = day(t0) + '_' + rid(10);
+  const qs = new URLSearchParams(location.search), utm = ['utm_source', 'utm_medium', 'utm_campaign'].map((k) => (qs.get(k) || '').slice(0, 30)).join('/');
+  const ua = navigator.userAgent || '', dt = (SC.devtip && SC.devtip.info) || {};
+  const os = /iPhone|iPod/.test(ua) ? 'iPhone' : /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? 'iPad' : /Android/.test(ua) ? (/Mobile/.test(ua) ? 'Android手機' : 'Android平板') : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? 'Mac' : /CrOS/.test(ua) ? 'ChromeOS' : /Linux/.test(ua) ? 'Linux' : '其他';
+  let ref = ''; try { ref = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {} if (ref === location.hostname) ref = '';
+  const dev = { os, br: dt.app || dt.br || '', tab: dt.tablet ? 1 : 0, tch: dt.coarse ? 1 : 0, sa: (navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches)) ? 1 : 0, w: screen.width | 0, h: screen.height | 0, dpr: Math.round((devicePixelRatio || 1) * 10) / 10, tz: (Intl.DateTimeFormat().resolvedOptions().timeZone || '').slice(0, 40), nl: (navigator.language || '').slice(0, 12) };
+  // 更細的（Yen 11-25「把數據追蹤做到最細緻、完整、無死角」）：載入速度、硬體、網路、上次來是幾天前、當地幾點、操作方式、畫面每秒格數、閒置、中途離開
+  let lastV = 0; try { lastV = +localStorage.getItem('sc-lastv') || 0; localStorage.setItem('sc-lastv', String(t0)); } catch (e) {}
+  const nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {}, cn = navigator.connection || {};
+  const sx = { gap: lastV ? Math.round((t0 - lastV) / 3600e3 * 10) / 10 : -1, hr: new Date(t0).getHours(), wd: new Date(t0).getDay(), mem: navigator.deviceMemory || 0, cpu: navigator.hardwareConcurrency || 0, net: String(cn.effectiveType || '').slice(0, 8), sd: cn.saveData ? 1 : 0,
+    ld: Math.round(nav.domContentLoadedEventEnd || 0), ok: 0, inp: '', kb: 0, pad: 0, fps: 0, fpsLo: 0, idle: 0, quit: 0, ori: (screen.orientation && screen.orientation.type || '').slice(0, 20), gpu: '' };
+  try { const c = document.createElement('canvas').getContext('webgl'), x = c && c.getExtension('WEBGL_debug_renderer_info'); sx.gpu = x ? String(c.getParameter(x.UNMASKED_RENDERER_WEBGL)).replace(/\s*\(.*$/, '').slice(0, 40) : ''; } catch (e) {}
+  // ev：[秒（從打開算起）, 種類, 內容]。種類：w＝換到哪個畫面、m＝開打、e＝打完、c＝按鈕、p＝贊助點擊、a＝帳號、x＝錯誤、h＝離開畫面、v＝回到畫面
+  const S = { sx, ev: [], drop: 0, pt: {}, mt: 0, gm: 0, win: 0, pay: 0, err: 0, uid: '', dirty: true, saved: 0, wrote: 0 };
+  const sec = () => Math.round((now() - t0) / 1000);
+  const add = (k, v) => { if (S.ev.length >= 500) { S.drop++; return; } S.ev.push([sec(), k, String(v == null ? '' : v).slice(0, 80)]); S.dirty = true; ga(k, v); };
+  T.add = add;
+  // 現在在哪裡（路徑用）
+  const lang = () => (SC.i18n && SC.i18n.lang) || '';
+  const where = () => {
+    const G = SC.game, Tn = SC.town, n = SC.net;
+    if (Tn && Tn.on) return 'town' + (Tn.farm ? ':farm' : '');
+    if (G && !G.demo && G.state !== 'boot') { const rule = (G.opts && G.opts.net && G.opts.net.rule) || G.rule || ''; return 'play:' + (G.mode || '') + (rule ? ':' + rule : '') + (G.mode === 'net' && n && n.ranked ? ':ranked' : '') + (G.opts && G.opts.tsu ? ':tsunami' : '') + (G.state === 'ended' ? ':result' : ''); }
+    if (n && n.code && (n.state === 'joining' || n.state === 'lobby')) return 'room' + (n.quick ? ':quick' : ':friend');
+    const v = SC.account && SC.account.view ? SC.account.view() : ''; if (v) return 'panel:' + v;
+    for (const id of ['m-help', 'm-stk', 'm-devtip', 'm-pick', 'm-pause']) { const e = document.getElementById(id); if (e && !e.hidden && e.offsetParent !== null) return 'menu:' + id.slice(2); }
+    const hm = document.getElementById('home'); if (hm && !hm.hidden && hm.offsetParent !== null) return 'home';
+    const t = document.getElementById('m-title'); if (t && !t.hidden) return t.classList.contains('step-mode') ? 'menu:mode' : 'menu:setup';
+    return 'other';
+  };
+  let cur = '', curAt = now(), lastSt = '', playAt = 0;
+  const tick = () => {
+    const w = document.visibilityState === 'hidden' ? cur : where(), t = now();
+    if (w !== cur) { if (cur) S.pt[cur] = (S.pt[cur] || 0) + Math.round((t - curAt) / 1000); cur = w; curAt = t; add('w', w); }
+    else if (t - curAt > 30000) { S.pt[cur] = (S.pt[cur] || 0) + Math.round((t - curAt) / 1000); curAt = t; }
+    const G = SC.game, st = G && !G.demo ? G.state : '';
+    if (st === 'play' && lastSt !== 'play' && lastSt !== 'countdown' || st === 'countdown' && lastSt !== 'countdown') { playAt = t; add('m', [G.mode, (G.opts && G.opts.net && G.opts.net.rule) || G.rule || '', SC.world && SC.world.key || '', G.opts && G.opts.weapon || '', G.opts && G.opts.roster || '', G.opts && G.opts.difficulty || ''].join('|')); }
+    if (st === 'ended' && lastSt && lastSt !== 'ended') {
+      const me = typeof G.player === 'function' ? G.player() : G.player, won = G.bossResult ? (G.bossResult.fail ? 0 : 1) : G.winner === 'tie' ? 2 : me && G.winner != null ? (G.winner === me.team ? 1 : 0) : -1;
+      S.gm++; if (won === 1) S.win++; const secs = playAt ? Math.round((t - playAt) / 1000) : 0; S.mt += secs;
+      add('e', [G.mode, (G.opts && G.opts.net && G.opts.net.rule) || G.rule || '', SC.world && SC.world.key || '', won, secs, me ? me.kos | 0 : '', me ? me.deaths | 0 : ''].join('|'));
+    }
+    // 中途離開：開打了還沒打完就回到首頁、小鎮或關掉
+    if (lastSt && lastSt !== 'ended' && (lastSt === 'play' || lastSt === 'countdown') && !st) { sx.quit++; add('q', Math.round((t - playAt) / 1000) + 's'); }
+    if (st === 'play' && document.visibilityState === 'visible') { fpsN++; } // 每秒抽樣一次，下面 rAF 算格數
+    lastSt = st;
+    if (t - lastIn > 60000 && !idle) { idle = true; idleAt = t; add('i', cur); } 
+    const u = SC.account && SC.account.user, uid = u ? u.uid : '';
+    if (uid !== S.uid) { add('a', uid ? 'in:' + (u.via || '') : 'out'); S.uid = uid; if (uid) S.anyUid = uid; gaUser(uid); save(true); }
+    if (S.dirty && t - S.saved > 120000 && S.ev.length > 2) save();
+  };
+  // 畫面每秒格數（對戰中）：平均和最低的 10 秒
+  let fpsN = 0, fr = 0, frT = now(), fpsSum = 0, fpsCnt = 0; const loop = () => { fr++; const t = now(); if (t - frT >= 10000) { const f = Math.round(fr * 1000 / (t - frT)); if (SC.game && !SC.game.demo && SC.game.state === 'play' && document.visibilityState === 'visible') { fpsSum += f; fpsCnt++; sx.fps = Math.round(fpsSum / fpsCnt); sx.fpsLo = sx.fpsLo ? Math.min(sx.fpsLo, f) : f; } fr = 0; frT = t; } requestAnimationFrame(loop); }; requestAnimationFrame(loop);
+  // 操作方式和閒置（只記用了哪一種，不記按了什麼字）
+  let lastIn = now(), idle = false, idleAt = 0; const seen = (k) => { lastIn = now(); if (idle) { idle = false; sx.idle += Math.round((lastIn - idleAt) / 1000); add('i', 'back'); } if (k && !sx.inp.includes(k)) { sx.inp = (sx.inp + k).slice(0, 8); S.dirty = true; } if (!sx.ok) { sx.ok = Math.round(lastIn - t0); } };
+  addEventListener('pointerdown', (e) => seen(e.pointerType === 'touch' ? 't' : e.pointerType === 'pen' ? 'p' : 'm'), true);
+  addEventListener('keydown', () => { sx.kb = 1; seen('k'); }, true);
+  addEventListener('gamepadconnected', () => { sx.pad = 1; seen('g'); add('c', 'gamepad'); });
+  addEventListener('online', () => add('n', 'online')); addEventListener('offline', () => add('n', 'offline'));
+  if (screen.orientation) screen.orientation.addEventListener('change', () => add('o', screen.orientation.type));
+  document.addEventListener('fullscreenchange', () => add('f', document.fullscreenElement ? 'on' : 'off'));
+  // 按鈕：記 id 或 data-* 的名字和值（不記按鈕上的字，因為可能是別人的名字）
+  document.addEventListener('click', (e) => {
+    const b = e.target && e.target.closest ? e.target.closest('button,a,[role=button],[data-mode]') : null; if (!b) return;
+    if (b.dataset.pay || b.dataset.buy) { S.pay++; add('p', (b.dataset.pay || 'xsolla:' + b.dataset.buy) + '|' + (b.textContent || '').trim().slice(0, 20)); save(true); return; }
+    let k = b.id || ''; if (!k) { const d = Object.keys(b.dataset || {}).find((x) => !/^(h|uid|rm|rmask|inv|qy|qn|join|rp|rs|rt)$/.test(x)); if (d) k = d + '=' + String(b.dataset[d]).slice(0, 24); }
+    if (!k && b.closest('[id]')) k = '@' + b.closest('[id]').id; if (k) add('c', k);
+  }, true);
+  addEventListener('error', (e) => { if (S.err >= 20) return; S.err++; add('x', ((e && e.message) || 'error') + ' @' + String((e && e.filename) || '').split('/').pop() + ':' + ((e && e.lineno) | 0)); });
+  addEventListener('unhandledrejection', (e) => { if (S.err >= 20) return; S.err++; add('x', 'promise: ' + String(e && e.reason && (e.reason.message || e.reason)).slice(0, 70)); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { tick(); add('h', cur); save(true); } else add('v', where()); });
+  addEventListener('pagehide', () => { if (lastSt === 'play' || lastSt === 'countdown') { sx.quit++; add('q', 'close ' + Math.round((now() - playAt) / 1000) + 's'); } add('h', 'close'); save(true); });
+  // 寫到 Firestore（帳號模組載好的那一份）
+  let busy = false, again = false, okRules = true;
+  const save = async (force) => {
+    if (!okRules || !SC.account || !SC.account.db) return; if (busy) { again = true; return; }
+    if (!force && !S.dirty) return; busy = true; S.dirty = false; S.saved = now();
+    try {
+      const { db, F } = await SC.account.db(); const t = now(); const pt = { ...S.pt }; if (cur) pt[cur] = (pt[cur] || 0) + Math.round((t - curAt) / 1000);
+      const ptk = Object.keys(pt).slice(0, 60), pto = {}; ptk.forEach((k) => (pto[k.replace(/[.\/]/g, '_')] = pt[k]));
+      await F.setDoc(F.doc(db, 'ev', day(t0), 's', sid), { d: day(t0), did, uid: S.uid, au: S.anyUid || '', nd: fresh, nv, v: String(window.SC_VER || '').slice(0, 16), lg: String(lang()).slice(0, 8), ref: ref.slice(0, 60), utm, dev, st: t0, ls: t, dur: Math.round((t - t0) / 1000), pt: pto, gm: S.gm, win: S.win, mt: S.mt, pay: S.pay, err: S.err, sx: { ...sx }, ev: S.ev.map((x) => x.join('~')), drop: S.drop, at: F.serverTimestamp() });
+      S.wrote++;
+    } catch (e) { if (/permission/i.test(String(e && (e.code || e.message)))) okRules = false; else S.dirty = true; }
+    busy = false; if (again) { again = false; save(); }
+  };
+  // ---------- GA4 / Cloudflare（填了 ID 才載入）----------
+  let gaOn = false;
+  function ga(k, v) {
+    if (!gaOn || !window.gtag) return; const p = String(v || '').split('|');
+    if (k === 'w') gtag('event', 'page_view', { page_title: v, page_location: location.origin + '/#' + v });
+    else if (k === 'm') gtag('event', 'level_start', { level_name: p.slice(0, 3).join(':'), weapon: p[3] || '' });
+    else if (k === 'e') gtag('event', 'level_end', { level_name: p.slice(0, 3).join(':'), success: p[3] === '1', duration_s: +p[4] || 0 });
+    else if (k === 'p') gtag('event', 'begin_checkout', { payment_type: p[0], item_name: p[1] || '' });
+    else if (k === 'a') gtag('event', v === 'out' ? 'logout' : 'login', { method: p[0].slice(3) });
+    else if (k === 'x') gtag('event', 'exception', { description: v, fatal: false });
+    else if (k === 'c') gtag('event', 'ui_click', { target: v });
+  }
+  function gaUser(uid) { if (gaOn && window.gtag) gtag('set', { user_id: uid || null }); }
+  if (/^G-[A-Z0-9]{4,}$/.test(CFG.ga)) {
+    window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
+    gtag('js', new Date()); gtag('config', CFG.ga, { send_page_view: false, client_id: did }); gaOn = true;
+    const s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + CFG.ga; document.head.appendChild(s);
+  }
+  if (/^[0-9a-f]{32}$/.test(CFG.cf)) { const s = document.createElement('script'); s.defer = true; s.src = 'https://static.cloudflareinsights.com/beacon.min.js'; s.setAttribute('data-cf-beacon', JSON.stringify({ token: CFG.cf })); document.head.appendChild(s); }
+  add('s', [nv, ref, utm].join('|'));
+  setInterval(tick, 1000); setTimeout(() => save(true), 15000);
 })();
 
 // 介面外框（小威 2026-11-23）：首頁以外的選單頁（全部模式、各模式的出戰準備）跟首頁用同一套外框，讓玩家一眼知道自己在哪、怎麼回去。
