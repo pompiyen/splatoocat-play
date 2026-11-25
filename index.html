@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v316';</script><script>window.SC_BUILD='784f9eaeccf0';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v317';</script><script>window.SC_BUILD='ef17499efdbb';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1601,8 +1601,18 @@ html:is([data-lang="en"], [data-lang="es"], [data-lang="pt"], [data-lang="fr"], 
 .portrait .tw-rng-g { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .tw-wpn .wi { width: 30px; height: 30px; display: block; }
 .tw-rng .tw-cl-open { display: block; margin: 0 auto 10px; font-size: 18px; }
-.tw-fade { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 9999; transition: opacity .35s ease-in; }
-.tw-fade.on { opacity: 1; pointer-events: auto; }
+.tw-fade { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+.tw-fade.on { pointer-events: auto; }
+.tw-fade .ir { position: absolute; left: 50%; top: 50%; width: 170vmax; height: 170vmax; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 200vmax #2b2238, inset 0 0 0 0 #ffd23f; transition: width .5s cubic-bezier(.25, 1.5, .5, 1), height .5s cubic-bezier(.25, 1.5, .5, 1); }
+.tw-fade.on .ir { width: 0; height: 0; box-shadow: 0 0 0 200vmax #2b2238, inset 0 0 0 6px #ffd23f; transition: width .42s cubic-bezier(.6, 0, .8, .3), height .42s cubic-bezier(.6, 0, .8, .3); }
+.tw-fade .pw { position: absolute; left: 50%; top: 50%; font-size: min(22vmin, 120px); line-height: 1; transform: translate(-50%, -50%) scale(0) rotate(-120deg); opacity: 0; transition: transform .2s ease-in, opacity .15s; filter: drop-shadow(0 6px 0 rgba(0,0,0,.35)); }
+.tw-fade.on .pw { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; transition: transform .45s cubic-bezier(.3, 1.8, .5, 1) .3s, opacity .1s .3s; }
+.tw-fade .st { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: #ffd23f; opacity: 0; }
+.tw-fade .s2 { background: #ff6fa8; } .tw-fade .s3 { background: #2fc8ff; } .tw-fade .s4 { background: #8bff6a; }
+.tw-fade.on .st { animation: twSpark .6s ease-out .42s forwards; }
+.tw-fade.on .s1 { --dx: -90px; --dy: -70px; } .tw-fade.on .s2 { --dx: 95px; --dy: -60px; } .tw-fade.on .s3 { --dx: -80px; --dy: 75px; } .tw-fade.on .s4 { --dx: 85px; --dy: 80px; }
+@keyframes twSpark { 0% { opacity: 1; transform: translate(0, 0) scale(.4); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .tw-fade .ir, .tw-fade.on .ir { transition-duration: .2s; } .tw-fade.on .st { animation: none; } }
 .tw-clh { position: absolute; left: 50%; top: calc(64px + var(--sat)); transform: translateX(-50%); background: var(--navy); color: #fff; border: 3px solid #fff; border-radius: 16px; padding: 4px 14px; box-shadow: var(--pop); font-size: 20px; display: flex; align-items: baseline; gap: 10px; pointer-events: none; z-index: 2; white-space: nowrap; }
 .tw-clh[hidden] { display: none; }
 .tw-clh b { color: #ffb35a; } .tw-clh small { font-size: 14px; opacity: .85; }
@@ -38390,7 +38400,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const pos = new V3(0, 0, 24), vel = new V3(); let face = Math.PI, yaw = 0, camYaw = 0, goal = null, goalSpot = null, near = null, keys = {}, enterLock = 0, hintT = 0;
   const spots = [], solids = [], picks = [], anim = [], npcs = [];
   const TIPS = ['底下的「積分賽」一按就配對！', '有空就去探險小徑走走，打打小怪物。', '鬼鬼屋要找朋友一起守住阿肥！', '釣魚池和菜園正在蓋，快好了！', '第一次玩？先去氣球帳篷學玩法。', '愛心小舖可以看到每次更新了什麼。', '練習場可以跟電腦練習塗地。'];
-  const BOUND = 88, SPEED = 15; /* 第 3 百多版：U 形小鎮的邊界改成圓角方形（SE），高地上的菜園、靶場、探險小徑都走得到 */
+  const BOUND = 102, SPEED = 15; /* 第 3 百多版：U 形小鎮的邊界改成圓角方形（SE），高地上的菜園、靶場、探險小徑都走得到 */
 
   // ───────── 小工具 ─────────
   const MC = new Map();
@@ -38459,64 +38469,133 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // o.shut：沒開＝門關著、釘兩片交叉木板、窗戶的木百葉全部關上、燈籠是暗的、招牌褪色、牆比較灰。回傳屋頂網格（我的家要換屋頂顏色）。
   const heartShape = () => { const hs = new THREE.Shape(); hs.moveTo(0, -1); hs.bezierCurveTo(-0.2, -0.75, -1.3, -0.3, -1.3, 0.35); hs.bezierCurveTo(-1.3, 1.05, -0.4, 1.25, 0, 0.6); hs.bezierCurveTo(0.4, 1.25, 1.3, 1.05, 1.3, 0.35); hs.bezierCurveTo(1.3, -0.3, 0.2, -0.75, 0, -1); return hs; };
   const teeShape = () => { const ts = new THREE.Shape(); ts.moveTo(-0.6, -1); ts.lineTo(0.6, -1); ts.lineTo(0.6, 0.35); ts.lineTo(1.2, 0.05); ts.lineTo(1.5, 0.55); ts.lineTo(0.75, 1); ts.quadraticCurveTo(0, 0.6, -0.75, 1); ts.lineTo(-1.5, 0.55); ts.lineTo(-1.2, 0.05); ts.lineTo(-0.6, 0.35); ts.lineTo(-0.6, -1); return ts; };
-  // 第 3 百多版（Yen 11-25「房子可能結構過度複雜 朝他射變超卡…請重新設計規劃房子建模，找出又美觀又能極省資源的最佳解方…小鎮風格改勇者鬥惡龍遊戲風」）：
-  //   RPG 冒險村莊風的小屋（原創）：大面低多邊形、每一面一個顏色、不用貼圖、不磨圓角。整棟（石基、牆、木柱、門窗框、煙囪、木桶、招牌架）合成一個網格（頂點顏色），
-  //   屋頂一個網格（我的家要換屋頂顏色），亮著的窗和門一個網格，招牌另外會晃。一棟約 400 個三角形、4 次繪製（以前約 100 個零件、上萬個三角形）。
-  //   子彈打到房子要對模型做碰撞檢查，三角形少了就不卡（以前射房子每格多花好幾毫秒）。山牆朝前、陡屋頂、圓拱木門、十字窗、木招牌。
+  // 第 3 百多版（Yen 11-25「建築風格感還是太差，請以附圖設計風格為參考」＋「建築物再寬些有多種特色變化不要都長一樣的呆板感」）：
+  //   童話繪本風的小屋（原創）：圓角的奶油色灰泥牆、底下一圈圓圓的石頭、屋簷下一道木頭腰帶，屋頂是厚厚鼓鼓、邊緣捲起來的「枕頭屋頂」，
+  //   前面一個小山牆（圓形十字窗）、圓拱木門配石頭門框、拱形窗和花草窗台、壁燈。每棟可以有不同的寬度、側翼（左／右／兩邊）、圓塔、門廊，所以不會長一樣。
+  //   還是合成少少幾個網格（牆身一個、屋頂一個、亮的窗一個、招牌一個），一棟約一兩千個三角形；法線按角度圓滑（小於 50 度的面連成圓的，方角保留）。
   const LPQ = new THREE.Quaternion(), LPE = new THREE.Euler(), LPS = new V3(1, 1, 1);
   const lpM = (x, y, z, rx = 0, ry = 0, rz = 0) => new THREE.Matrix4().compose(new V3(x, y, z), LPQ.setFromEuler(LPE.set(rx, ry, rz)), LPS);
-  function lpGeo(parts) { // [幾何, 顏色, 位置矩陣] → 一個有頂點顏色的網格幾何（每面平的法線）
-    let n = 0; const gs = parts.map(([g, c, m]) => { const q = g.index ? g.toNonIndexed() : g.clone(); g.dispose(); if (m) q.applyMatrix4(m); q.computeVertexNormals(); n += q.attributes.position.count; return [q, new THREE.Color(c)]; });
+  function crease(q, ct = 0.64) { // 同一個位置、面的方向差不到 50 度的頂點，法線平均起來（看起來圓滑）；方角維持方的
+    const p = q.attributes.position.array, n = q.attributes.normal.array, cnt = p.length / 3, B = new Map(), out = new Float32Array(n.length);
+    for (let i = 0; i < cnt; i++) { const k = Math.round(p[i * 3] * 400) + ',' + Math.round(p[i * 3 + 1] * 400) + ',' + Math.round(p[i * 3 + 2] * 400); let L = B.get(k); if (!L) B.set(k, (L = [])); L.push(i); }
+    B.forEach((L) => { for (const i of L) { let x = 0, y = 0, z = 0; for (const j of L) { const d = n[i * 3] * n[j * 3] + n[i * 3 + 1] * n[j * 3 + 1] + n[i * 3 + 2] * n[j * 3 + 2]; if (d > ct) { x += n[j * 3]; y += n[j * 3 + 1]; z += n[j * 3 + 2]; } } const l = Math.hypot(x, y, z); if (l > 1e-6) { out[i * 3] = x / l; out[i * 3 + 1] = y / l; out[i * 3 + 2] = z / l; } else { out[i * 3] = n[i * 3]; out[i * 3 + 1] = n[i * 3 + 1]; out[i * 3 + 2] = n[i * 3 + 2]; } } });
+    q.attributes.normal.array.set(out);
+  }
+  function lpGeo(parts) { // [幾何, 顏色, 位置矩陣] → 一個有頂點顏色的網格幾何
+    let n = 0; const gs = parts.map(([g, c, m]) => { const q = g.index ? g.toNonIndexed() : g.clone(); g.dispose(); if (m) q.applyMatrix4(m); q.deleteAttribute('normal'); q.computeVertexNormals(); crease(q); n += q.attributes.position.count; return [q, new THREE.Color(c)]; });
     const P = new Float32Array(n * 3), N = new Float32Array(n * 3), C = new Float32Array(n * 3); let i = 0;
     gs.forEach(([q, c]) => { const k = q.attributes.position.count; P.set(q.attributes.position.array, i * 3); N.set(q.attributes.normal.array, i * 3); for (let j = 0; j < k; j++) { C[(i + j) * 3] = c.r; C[(i + j) * 3 + 1] = c.g; C[(i + j) * 3 + 2] = c.b; } i += k; q.dispose(); });
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(P, 3)); g.setAttribute('normal', new THREE.BufferAttribute(N, 3)); g.setAttribute('color', new THREE.BufferAttribute(C, 3)); g.computeBoundingSphere(); return g;
   }
-  const LPMAT = () => mat(0xffffff, { vertexColors: true, flatShading: true, rough: 0.85 });
+  const LPMAT = () => mat(0xffffff, { vertexColors: true, rough: 0.85 });
   const lpMesh = (parts, m, parent) => { const o = new THREE.Mesh(lpGeo(parts), m); o.castShadow = !low; o.receiveShadow = false; parent.add(o); return o; };
   const BX = (w, h, d) => new THREE.BoxGeometry(w, h, d), CY = (r1, r2, h, n) => new THREE.CylinderGeometry(r1, r2, h, n);
+  const rrS = (w, d, r) => { const s = new THREE.Shape(), x = w / 2, y = d / 2; s.moveTo(-x + r, -y); s.lineTo(x - r, -y); s.absarc(x - r, -y + r, r, -Math.PI / 2, 0, false); s.lineTo(x, y - r); s.absarc(x - r, y - r, r, 0, Math.PI / 2, false); s.lineTo(-x + r, y); s.absarc(-x + r, y - r, r, Math.PI / 2, Math.PI, false); s.lineTo(-x, -y + r); s.absarc(-x + r, -y + r, r, Math.PI, Math.PI * 1.5, false); return s; };
+  const RRB = (w, d, r, h, hole) => { const s = rrS(w, d, r); if (hole) s.holes.push(rrS(w - hole * 2, d - hole * 2, Math.max(0.05, r - hole))); const g = new THREE.ExtrudeGeometry(s, { depth: h, bevelEnabled: false, curveSegments: 3 }); g.rotateX(-Math.PI / 2); return g; }; // 圓角方形的牆，從 y=0 往上長 h
+  const ARC = (r, h) => { const g = new THREE.CylinderGeometry(r, r, h, 8, 1, false, Math.PI / 2, Math.PI); g.rotateX(Math.PI / 2); return g; }; // 上半圓（拱門、拱窗頂）
+  const qp = (a, c, b, t) => [(1 - t) * (1 - t) * a[0] + 2 * (1 - t) * t * c[0] + t * t * b[0], (1 - t) * (1 - t) * a[1] + 2 * (1 - t) * t * c[1] + t * t * b[1]];
+  const puffS = (hz, rh, th) => { const s = new THREE.Shape(), ih = hz - th * 1.3, ir = rh - th; s.moveTo(-hz, 0); s.quadraticCurveTo(-hz * 0.55, rh * 0.93, 0, rh); s.quadraticCurveTo(hz * 0.55, rh * 0.93, hz, 0); s.lineTo(ih, 0); s.quadraticCurveTo(ih * 0.55, ir * 0.93, 0, ir); s.quadraticCurveTo(-ih * 0.55, ir * 0.93, -ih, 0); s.lineTo(-hz, 0); return s; }; // 枕頭屋頂的斷面：兩邊鼓鼓的厚倒 V
+  const PUFF = (hz, rh, th, L) => { const g = new THREE.ExtrudeGeometry(puffS(hz, rh, th), { depth: L, bevelEnabled: true, bevelThickness: 0.3, bevelSize: 0.3, bevelSegments: 2, curveSegments: 5 }); return g; }; // 沿 z 擠出（0..L），邊緣圓圓捲起來
+  const gableS = (hz, rh, th, half, base) => { const ih = hz - th * 1.3, ir = rh - th, L = [], A = [-ih, 0], C = [-ih * 0.55, ir * 0.93], E = [0, ir]; for (let i = 0; i <= 8; i++) L.push(qp(A, C, E, i / 8)); const R = L.slice(0, 8).reverse().map(([x, y]) => [-x, y]); const pts = [...L, ...R].filter(([x, y]) => Math.abs(x) < half && y > base); const s = new THREE.Shape(); s.moveTo(-half, base); pts.forEach(([x, y]) => s.lineTo(x, y + 0.14)); s.lineTo(half, base); s.lineTo(-half, base); return s; }; // 山牆：屋頂內側曲線下面那塊牆
+  const LATHE = (r, h, th) => { const P = []; for (let i = 0; i <= 6; i++) { const u = i / 6; P.push(new THREE.Vector2(r * (1 - u) * (1 - u * 0.25) + 0.02, h * (1 - Math.pow(1 - u, 1.6)))); } P.unshift(new THREE.Vector2(r + 0.25, -0.15), new THREE.Vector2(r + 0.1, -th * 0.6)); return new THREE.LatheGeometry(P.reverse(), 10); }; // 圓塔的鼓鼓尖帽
   const cottage = (g, o = {}) => {
-    const w = o.w || 8, d = o.d || 7, Y = 5.4, rh = o.rh || 5.2, shut = !!o.shut, fz = d / 2;
-    const wallC = shut ? shade(o.wall || 0xfff3dc, 0.88) : o.wall || 0xfff3dc, roofC = o.roof || 0xc8643c, TIM = 0x6b4428, TIM2 = 0x4e3020, STONE = 0x9a9187, STONE2 = 0x7f776e, DOOR = shut ? 0x5e5248 : o.door || 0x8a5a32;
-    const P = [], GL = [], R = [], add = (geo, c, ...m) => P.push([geo, c, lpM(...m)]);
-    // 石頭地基（前面兩階石階）、牆、四角木柱、腰帶木梁、屋簷木梁
-    add(BX(w + 0.9, 0.9, d + 0.9), STONE, 0, 0.45, 0); add(BX(3.2, 0.3, 1.3), STONE2, 0, 0.15, fz + 1.0); add(BX(2.6, 0.3, 0.8), STONE, 0, 0.45, fz + 0.75);
-    add(BX(w, Y - 0.9, d), wallC, 0, 0.9 + (Y - 0.9) / 2, 0);
-    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => add(BX(0.55, Y - 0.9, 0.55), TIM, sx * w / 2, 0.9 + (Y - 0.9) / 2, sz * d / 2));
-    [-1, 1].forEach((sz) => add(BX(w + 0.1, 0.35, 0.22), TIM, 0, 3.0, sz * (fz + 0.02)));
-    [-1, 1].forEach((sx) => add(BX(0.22, 0.35, d + 0.1), TIM, sx * (w / 2 + 0.02), 3.0, 0));
-    add(BX(w + 0.5, 0.45, d + 0.5), TIM2, 0, Y + 0.1, 0);
-    // 山牆朝前：前後兩面三角牆（牆色）＋中間一根木柱、圓窗
-    { const tri = new THREE.Shape(); tri.moveTo(-w / 2, 0); tri.lineTo(w / 2, 0); tri.lineTo(0, rh); tri.lineTo(-w / 2, 0); [-1, 1].forEach((sz) => { add(new THREE.ExtrudeGeometry(tri, { depth: 0.3, bevelEnabled: false }), wallC, 0, Y + 0.3, sz * fz - 0.15); add(BX(0.3, rh * 0.8, 0.12), TIM, 0, Y + 0.3 + rh * 0.4, sz * (fz + 0.18)); }); }
-    { const ring = CY(0.72, 0.72, 0.2, 8); add(ring, TIM2, 0, Y + 0.3 + rh * 0.36, fz + 0.2, Math.PI / 2); GL.push([CY(0.52, 0.52, 0.22, 8), 0, lpM(0, Y + 0.3 + rh * 0.36, fz + 0.24, Math.PI / 2)]); }
-    // 陡斜屋頂（兩大片，往外伸出屋簷）＋屋脊
-    const hw = w / 2 + 0.95, a = Math.atan2(rh, w / 2), L = hw / Math.cos(a) + 0.25, D = d + 1.8;
-    [-1, 1].forEach((sx) => R.push([BX(L, 0.42, D), roofC, lpM(sx * hw / 2, Y + 0.35 + rh - (hw / 2) * Math.tan(a), 0, 0, 0, -sx * a)]));
-    add(BX(0.55, 0.5, D + 0.1), shade(roofC, 0.62), 0, Y + 0.45 + rh, 0, 0, 0, Math.PI / 4);
-    // 石頭煙囪
-    add(BX(1.15, rh + 0.6, 1.15), STONE2, w * 0.24, Y + (rh + 0.6) / 2 + 0.6, -d * 0.18); add(BX(1.45, 0.35, 1.45), STONE, w * 0.24, Y + rh + 1.05, -d * 0.18);
-    // 圓拱木門（門框＋半圓拱）：開著的店門半開、裡面亮著；關著的店門關上、釘兩片木板
-    const DW = 2.0, DH = 2.5, dy = 0.9;
-    add(BX(DW + 0.6, DH, 0.3), TIM, 0, dy + DH / 2, fz + 0.06); add(CY(DW / 2 + 0.3, DW / 2 + 0.3, 0.3, 8, 1), TIM, 0, dy + DH, fz + 0.06, Math.PI / 2);
-    if (shut) { add(BX(DW, DH, 0.2), DOOR, 0, dy + DH / 2, fz + 0.16); add(CY(DW / 2, DW / 2, 0.2, 8), DOOR, 0, dy + DH, fz + 0.16, Math.PI / 2); [-1, 1].forEach((k) => add(BX(DW * 1.4, 0.3, 0.12), 0x9a7a5a, 0, dy + DH * 0.55, fz + 0.32, 0, 0, k * 0.7)); }
-    else { GL.push([BX(DW, DH, 0.06), 0, lpM(0, dy + DH / 2, fz + 0.25)]); GL.push([CY(DW / 2, DW / 2, 0.06, 8), 0, lpM(0, dy + DH, fz + 0.25, Math.PI / 2)]); /* 門開著：裡面亮著（貼在門框前面） */
-      const hx = -DW / 2, an = 1.35; add(BX(DW, DH + 0.5, 0.18), DOOR, hx + Math.cos(an) * DW / 2, dy + (DH + 0.5) / 2, fz + 0.3 + Math.sin(an) * DW / 2, 0, -an, 0); }
-    // 前面兩扇十字窗（開店亮燈；關店是關上的木窗板）、兩側各一扇
-    const win = (x, y, z, ry) => { add(BX(1.7, 1.7, 0.28), TIM, x, y, z, 0, ry, 0); if (shut) add(BX(1.5, 1.5, 0.3), shade(o.shutter || 0x6f7f74, 0.8), x, y, z + (ry ? 0 : 0.05), 0, ry, 0); else { const ox = ry ? Math.sign(x) * 0.06 : 0, oz = ry ? 0 : 0.06; GL.push([BX(1.3, 1.3, 0.3), 0, lpM(x + ox, y, z + oz, 0, ry, 0)]); add(BX(0.14, 1.3, 0.34), TIM2, x + ox * 1.5, y, z + oz * 1.5, 0, ry, 0); add(BX(1.3, 0.14, 0.34), TIM2, x + ox * 1.5, y, z + oz * 1.5, 0, ry, 0); add(BX(1.9, 0.18, 0.5), TIM, x + ox * 2, y - 0.95, z + oz * 2, 0, ry, 0); } };
-    [-1, 1].forEach((s) => { win(s * w * 0.3, 2.6, fz + 0.06, 0); win(s * (w / 2 + 0.06), 2.6, 0, Math.PI / 2); });
+    const w = o.w || 8.6, d = o.d || 6.4, Y = o.Y || 4.8, rh = o.rh || 3.8, th = 0.75, dr = 0.5, shut = !!o.shut, fz = d / 2, ws = o.wing == null ? 0 : o.wing, bay = o.bay !== false, tw = o.tower || 0;
+    const wallC = shut ? shade(o.wall || 0xfff3dc, 0.9) : o.wall || 0xfff3dc, roofC = o.roof || 0xb8433e, TIM = o.tim || 0x6b4428, TIM2 = 0x4e3020, STONE = o.stone || 0xc9c0b2, STONE2 = shade(o.stone || 0xc9c0b2, 0.82), DOOR = shut ? 0x5e5248 : o.door || 0x8a5a32;
+    const P = [], GL = [], R = [], add = (geo, c, ...m) => P.push([geo, c, lpM(...m)]), xs = (g.userData.xs = g.userData.xs || []);
+    const stone = (x, z, s, k) => { const q = new THREE.IcosahedronGeometry(s, 0); q.scale(1.3, 0.72, 0.95); add(q, k % 2 ? STONE2 : STONE, x, s * 0.5 + 0.05, z, 0, k * 1.3, 0); };
+    const cw = Math.min(4.2, w * 0.44), bd = 2.2, bz = fz + 0.1, zf = bay ? bz + bd / 2 : fz; // 前面小山牆的寬、深；門所在的牆面 z
+    // 主屋：石頭基座（圓角）、灰泥牆、屋簷下木頭腰帶
+    add(RRB(w + 0.5, d + 0.5, 1.1, 0.95), STONE, 0, 0, 0); add(RRB(w, d, 0.9, Y - 0.9), wallC, 0, 0.9, 0); add(RRB(w + 0.18, d + 0.18, 0.99, 0.42, 0.22), TIM, 0, Y - 0.42, 0);
+    // 主屋頂：枕頭屋頂，屋脊沿 x，兩側山牆（牆色）＋小圓窗
+    const hz = fz + 1.3, Lr = w + 0.5; { const q = PUFF(hz, rh, th, Lr); q.translate(0, 0, -Lr / 2); R.push([q, roofC, lpM(0, Y - dr, 0, 0, Math.PI / 2, 0)]); }
+    [-1, 1].forEach((sx) => { add(new THREE.ExtrudeGeometry(gableS(hz, rh, th, fz, dr), { depth: 0.3, bevelEnabled: false }), wallC, sx > 0 ? w / 2 - 0.3 : -w / 2, Y - dr, 0, 0, Math.PI / 2, 0);
+      if (ws === sx || ws === 2 || tw === sx) return; const vy = Y + (rh - th - dr) * 0.42; add(new THREE.TorusGeometry(0.42, 0.11, 4, 10), TIM2, sx * (w / 2 + 0.05), vy, 0, 0, Math.PI / 2, 0); GL.push([CY(0.36, 0.36, 0.1, 10), 0, lpM(sx * (w / 2 + 0.02), vy, 0, 0, 0, Math.PI / 2)]); });
+    const top = Y - dr + rh + 0.3;
+    // 前面的小山牆（凸出來的門廳）：牆、石基、腰帶、小屋頂、圓形十字窗
+    const gw = [0, Y + (rh * 0.74 - th - dr) * 0.5 + 0.1, zf + 0.12];
+    if (bay) { add(RRB(cw + 0.5, bd + 0.5, 0.6, 0.95), STONE, 0, 0, bz); add(RRB(cw, bd, 0.45, Y - 0.9), wallC, 0, 0.9, bz); add(RRB(cw + 0.18, bd + 0.18, 0.54, 0.42, 0.22), TIM, 0, Y - 0.42, bz);
+      const hz2 = cw / 2 + 0.8, rh2 = rh * 0.74, z0 = 0.4, L2 = zf + 0.5 - z0; R.push([PUFF(hz2, rh2, 0.68, L2), roofC, lpM(0, Y - dr, z0)]);
+      add(new THREE.ExtrudeGeometry(gableS(hz2, rh2, 0.68, cw / 2, dr), { depth: 0.3, bevelEnabled: false }), wallC, 0, Y - dr, zf - 0.3);
+      if (!o.noWin) { add(new THREE.TorusGeometry(0.55, 0.13, 4, 12), TIM2, gw[0], gw[1], gw[2] - 0.05); GL.push([CY(0.48, 0.48, 0.1, 12), 0, lpM(gw[0], gw[1], gw[2] - 0.08, Math.PI / 2)]); add(BX(0.1, 1.0, 0.16), TIM2, gw[0], gw[1], gw[2]); add(BX(1.0, 0.1, 0.16), TIM2, gw[0], gw[1], gw[2]); } }
+    // 側翼（矮一點的小屋，左、右或兩邊）
+    const wings = ws === 2 ? [-1, 1] : ws ? [ws] : [];
+    wings.forEach((sx) => { const ww = o.ww || 3.4, wd = d - 1.6, Yw = Y - 1.2, wx = sx * (w / 2 + ww / 2 - 0.25), wz = -0.5, hz3 = wd / 2 + 0.9, rh3 = 2.2, Lw = ww + 0.1;
+      add(RRB(ww + 0.4, wd + 0.4, 0.6, 0.95), STONE, wx, 0, wz); add(RRB(ww, wd, 0.5, Yw - 0.9), wallC, wx, 0.9, wz); add(RRB(ww + 0.16, wd + 0.16, 0.58, 0.36, 0.2), TIM, wx, Yw - 0.36, wz);
+      { const q = PUFF(hz3, rh3, 0.6, Lw); q.translate(0, 0, -Lw / 2); R.push([q, roofC, lpM(wx + sx * 0.25, Yw - 0.4, wz, 0, Math.PI / 2, 0)]); }
+      add(new THREE.ExtrudeGeometry(gableS(hz3, rh3, 0.6, wd / 2, 0.4), { depth: 0.3, bevelEnabled: false }), wallC, sx > 0 ? wx + ww / 2 - 0.3 : wx - ww / 2, Yw - 0.4, wz, 0, Math.PI / 2, 0);
+      win(wx, 2.3, wz + wd / 2 + 0.04, 0, 1, 1.0); win(wx + sx * (ww / 2 + 0.04), 2.3, wz, sx, 0, 1.0);
+      for (let k = 0; k < 3; k++) stone(wx + (k - 1) * ww * 0.34, wz + wd / 2 + 0.25, 0.42 + (k % 2) * 0.1, k);
+      xs.push([wx + sx * 0.4, wz, Math.max(ww, wd) * 0.55, Yw + rh3]); });
+    // 圓塔（前面角落）：圓牆、石基、鼓鼓的尖帽、小窗
+    if (tw) { const tx = tw * (w / 2 - 0.2), tz = fz - 0.3, tr = 1.55, tH = Y + 1.6; add(CY(tr + 0.25, tr + 0.3, 0.95, 12), STONE, tx, 0.47, tz); add(CY(tr, tr, tH - 0.9, 12), wallC, tx, 0.9 + (tH - 0.9) / 2, tz); add(new THREE.TorusGeometry(tr + 0.06, 0.2, 4, 12), TIM, tx, tH - 0.2, tz, Math.PI / 2);
+      R.push([LATHE(tr + 0.45, 3.4, 0.5), roofC, lpM(tx, tH, tz)]); add(CY(0.08, 0.08, 1.1, 5), 0x2b2238, tx, tH + 3.7, tz); add(new THREE.IcosahedronGeometry(0.2, 0), 0xffd23f, tx, tH + 4.3, tz);
+      const ang = tw * 0.55; win(tx + Math.sin(ang) * (tr + 0.02), Y - 0.3, tz + Math.cos(ang) * (tr + 0.02), Math.sin(ang), Math.cos(ang), 0.9);
+      xs.push([tx, tz, tr + 0.4, tH + 3]); }
+    // 石頭煙囪（圓的）
+    const cx = (o.chim || (ws === 1 || tw === 1 ? -1 : 1)) * w * 0.27, cz = -d * 0.2, ct = Y - dr + rh + 1.3; add(CY(0.58, 0.66, ct - Y, 8), STONE2, cx, (ct + Y) / 2, cz); add(CY(0.78, 0.74, 0.34, 8), STONE, cx, ct + 0.1, cz);
+    // 圓拱木門＋石頭門框；開著的店門半開、裡面亮著，關著的店門關上釘兩片木板
+    const DW = 1.7, DH = 2.0, dy = 0.95;
+    add(new THREE.TorusGeometry(DW / 2 + 0.22, 0.24, 5, 8, Math.PI), STONE, 0, dy + DH, zf + 0.06); [-1, 1].forEach((k) => add(BX(0.44, DH, 0.44), STONE, k * (DW / 2 + 0.22), dy + DH / 2, zf + 0.06));
+    if (shut) { add(BX(DW, DH, 0.2), DOOR, 0, dy + DH / 2, zf + 0.02); add(ARC(DW / 2, 0.2), DOOR, 0, dy + DH, zf + 0.02); [-1, 1].forEach((k) => add(BX(DW * 1.35, 0.26, 0.12), 0x9a7a5a, 0, dy + DH * 0.55, zf + 0.2, 0, 0, k * 0.7)); }
+    else { GL.push([BX(DW, DH, 0.06), 0, lpM(0, dy + DH / 2, zf + 0.02)]); GL.push([ARC(DW / 2, 0.06), 0, lpM(0, dy + DH, zf + 0.02)]); const hx = -DW / 2, an = 1.3; add(BX(DW, DH + 0.6, 0.16), DOOR, hx + Math.cos(an) * DW / 2, dy + (DH + 0.6) / 2, zf + 0.12 + Math.sin(an) * DW / 2, 0, -an, 0); }
+    add(BX(2.8, 0.32, 1.3), STONE2, 0, 0.16, zf + 0.85); add(BX(2.3, 0.32, 0.8), STONE, 0, 0.48, zf + 0.55); // 石階
+    // 拱形窗（開店亮燈、十字窗格、窗台花草；關店是關上的木窗板）
+    function win(x, y, z, nx, nz, s = 1) { const ry = Math.atan2(nx, nz), W = 1.2 * s, Hh = 1.1 * s, o2 = (k) => [x + nx * k, z + nz * k];
+      { const [a, b] = o2(0); add(BX(W + 0.3, Hh, 0.24), TIM, a, y, b, 0, ry, 0); const q = ARC(W / 2 + 0.15, 0.24); add(q, TIM, a, y + Hh / 2, b, 0, ry, 0); }
+      if (shut) { const [a, b] = o2(0.08); add(BX(W, Hh, 0.2), shade(o.shutter || 0x6f7f74, 0.8), a, y, b, 0, ry, 0); add(ARC(W / 2, 0.2), shade(o.shutter || 0x6f7f74, 0.8), a, y + Hh / 2, b, 0, ry, 0); return; }
+      { const [a, b] = o2(0.07); GL.push([BX(W, Hh, 0.16), 0, lpM(a, y, b, 0, ry, 0)]); GL.push([ARC(W / 2, 0.16), 0, lpM(a, y + Hh / 2, b, 0, ry, 0)]); }
+      { const [a, b] = o2(0.17); add(BX(0.1, Hh + W / 2, 0.08), TIM2, a, y + W / 4, b, 0, ry, 0); add(BX(W, 0.1, 0.08), TIM2, a, y + 0.1, b, 0, ry, 0); }
+      { const [a, b] = o2(0.3); add(BX(W + 0.5, 0.32, 0.5), TIM, a, y - Hh / 2 - 0.12, b, 0, ry, 0); for (let k = -1; k <= 1; k++) { const px = a + Math.cos(ry) * k * W * 0.36, pz = b - Math.sin(ry) * k * W * 0.36; add(new THREE.IcosahedronGeometry(0.3, 0), k ? 0x58b84a : 0x6fd04a, px, y - Hh / 2 + 0.15, pz); if (k) add(new THREE.IcosahedronGeometry(0.12, 0), o.flower || INK[k > 0 ? 0 : 3], px + Math.cos(ry) * 0.12, y - Hh / 2 + 0.38, pz + 0.1); } } }
+    // 主屋正面的窗（寬的房子兩邊各兩扇）、兩側的窗
+    const fx0 = bay ? cw / 2 + 0.55 : DW / 2 + 1.3;
+    [-1, 1].forEach((s) => { const lim = tw === s ? w / 2 - 3.0 : w / 2 - 0.5, span = lim - fx0, n = span > 3.6 ? 2 : span > 1.6 ? 1 : 0; for (let i = 0; i < n; i++) win(s * (n === 1 ? fx0 + span / 2 : fx0 + span * (0.27 + i * 0.46)), 2.55, fz + 0.04, 0, 1);
+      if (!wings.includes(s)) win(s * (w / 2 + 0.04), 2.55, -0.4, s, 0); });
+    // 石頭基座外面一圈圓石頭
+    let sk = 0; for (let x = -w / 2 + 0.5; x <= w / 2 - 0.4; x += 1.25) { if (Math.abs(x) < (bay ? cw / 2 + 0.3 : DW / 2 + 0.5)) continue; stone(x, fz + 0.3, 0.45 + (sk % 3) * 0.08, sk++); }
+    if (bay) [-1, 1].forEach((k) => stone(k * (cw / 2 - 0.2), zf + 0.3, 0.5, sk++));
+    [-1, 1].forEach((sx) => { if (wings.includes(sx)) return; for (let z = -d / 2 + 0.6; z < d / 2; z += 1.4) stone(sx * (w / 2 + 0.3), z, 0.45 + (sk % 3) * 0.08, sk++); });
     // 招牌：牆上一根鐵架，掛一塊木牌（店的顏色＋圖示），會輕輕晃
-    { const sx = w / 2 - 0.4, sy = 4.4; add(BX(0.14, 0.14, 1.7), 0x2b2238, sx, sy, fz + 0.85); const bd = new THREE.Group(); bd.position.set(sx, sy - 0.95, fz + 1.45); g.add(bd);
-      const sb = new THREE.Mesh(lpGeo([[BX(0.16, 1.4, 1.4), shut ? 0x9a948c : o.sign || 0xffd23f, null], [BX(0.12, 1.6, 1.6), TIM2, lpM(-0.04, 0, 0)], [BX(0.06, 0.5, 0.06), 0x2b2238, lpM(0, 0.9, -0.4)], [BX(0.06, 0.5, 0.06), 0x2b2238, lpM(0, 0.9, 0.4)]]), LPMAT()); sb.castShadow = !low; bd.add(sb);
-      if (o.icon && !shut) o.icon(bd); if (!shut) anim.push((tt) => { bd.rotation.x = Math.sin(tt * 1.3 + w) * 0.08; }); }
-    if (!shut) { // 營業中：門口兩盞燈、木桶和木箱、兩盆花
-      [-1, 1].forEach((k) => { const x = k * (DW / 2 + 0.55); add(BX(0.5, 0.12, 0.5), 0x2b2238, x, dy + DH + 1.05, fz + 0.45); GL.push([BX(0.38, 0.5, 0.38), 0, lpM(x, dy + DH + 0.75, fz + 0.45)]); });
-      add(CY(0.55, 0.5, 1.1, 8), 0x9a6a3e, -w * 0.37, 1.45, fz + 1.2); add(CY(0.57, 0.57, 0.1, 8), TIM2, -w * 0.37, 1.7, fz + 1.2); add(CY(0.57, 0.57, 0.1, 8), TIM2, -w * 0.37, 1.15, fz + 1.2);
-      add(BX(0.9, 0.9, 0.9), 0xb5834e, w * 0.37, 1.35, fz + 1.15, 0, 0.3, 0); add(BX(0.95, 0.12, 0.95), TIM2, w * 0.37, 1.82, fz + 1.15, 0, 0.3, 0);
-      [-1, 1].forEach((k) => { const x = k * (DW / 2 + 0.5); add(CY(0.36, 0.28, 0.5, 6), 0xc0603a, x, 1.15, fz + 1.35); add(new THREE.IcosahedronGeometry(0.42, 0), 0x58b84a, x, 1.6, fz + 1.35); add(new THREE.IcosahedronGeometry(0.15, 0), INK[k > 0 ? 0 : 3], x + 0.2, 1.85, fz + 1.55); }); }
-    else add(BX(1.3, 0.5, 0.1), 0x8a7a6a, 0, dy + DH + 0.75, fz + 0.3, 0, 0, 0.08); // 「休息中」小木牌
+    { const ss = o.signSide || 1, sx = ss * (w / 2 - 0.45) - (tw === ss ? ss * 2.2 : 0), sy = 3.9; add(BX(0.14, 0.14, 1.7), 0x2b2238, sx, sy, fz + 0.85); const bd2 = new THREE.Group(); bd2.position.set(sx, sy - 0.95, fz + 1.45); g.add(bd2);
+      const sb = new THREE.Mesh(lpGeo([[BX(0.16, 1.4, 1.4), shut ? 0x9a948c : o.sign || 0xffd23f, null], [BX(0.12, 1.6, 1.6), TIM2, lpM(-0.04, 0, 0)], [BX(0.06, 0.5, 0.06), 0x2b2238, lpM(0, 0.9, -0.4)], [BX(0.06, 0.5, 0.06), 0x2b2238, lpM(0, 0.9, 0.4)]]), LPMAT()); sb.castShadow = !low; bd2.add(sb);
+      if (o.icon && !shut) o.icon(bd2); if (!shut) anim.push((tt) => { bd2.rotation.x = Math.sin(tt * 1.3 + w) * 0.08; }); }
+    // 門口兩盞壁燈（開店亮著）
+    [-1, 1].forEach((k) => { const x = k * (DW / 2 + 0.72), z = zf + 0.3, y = dy + DH + 0.45; add(BX(0.12, 0.12, 0.5), 0x2b2238, x, y + 0.42, z - 0.12); add(CY(0.3, 0.22, 0.14, 6), 0x2b2238, x, y + 0.34, z); (shut ? P : GL).push([CY(0.2, 0.2, 0.46, 6), shut ? 0x5a5560 : 0, lpM(x, y, z)]); });
+    if (!shut) { // 營業中：門口的木桶、花盆
+      const bx2 = -(fx0 + 0.5); add(CY(0.55, 0.5, 1.1, 8), 0x9a6a3e, bx2, 0.6, zf + 1.3); add(CY(0.57, 0.57, 0.1, 8), TIM2, bx2, 0.85, zf + 1.3); add(CY(0.57, 0.57, 0.1, 8), TIM2, bx2, 0.3, zf + 1.3);
+      [-1, 1].forEach((k) => { const x = k * (DW / 2 + 1.0); add(CY(0.36, 0.28, 0.5, 6), 0xc0603a, x, 0.25, zf + 1.5); add(new THREE.IcosahedronGeometry(0.42, 1), 0x58b84a, x, 0.75, zf + 1.5); add(new THREE.IcosahedronGeometry(0.15, 0), INK[k > 0 ? 0 : 3], x + 0.2, 1.05, zf + 1.65); }); }
+    else add(BX(1.3, 0.5, 0.1), 0x8a7a6a, 0, dy + DH + 0.75, zf + 0.2, 0, 0, 0.08); // 「休息中」小木牌
     lpMesh(P, LPMAT(), g);
     if (GL.length) { const gm = lpMesh(GL, shut ? mat(0x3a4252) : glow(0xffcf7a), g); gm.castShadow = false; }
-    const rm = lpMesh(R, mat(roofC, { flatShading: true, rough: 0.7 }), g); return [rm];
+    const rm = lpMesh(R, mat(roofC, { rough: 0.62 }), g); const out = [rm]; out.top = top; out.chim = [cx, ct + 0.4, cz]; out.gw = gw; out.zf = zf; return out;
   };
+  // 第 3 百多版（Yen 11-25「我的家左右兩側不要空著，兩邊放物件或做擺設，不要變成可以走的路」）：
+  //   左邊是柴房（斜屋頂小棚、堆好的木柴、劈柴的樹墩、一排圓圓的矮樹籬），右邊是白色小圍籬圍起來的花園、石頭水井、信箱。兩邊都是實心的，走不過去。
+  function homeSides(g) {
+    const P = [], add = (geo, c, ...m) => P.push([geo, c, lpM(...m)]), WD = 0x8a5a32, WD2 = 0x6b4428, LOG = 0xb9844e, LF = [0x58b84a, 0x6fd04a, 0x4fa845], xs = (g.userData.xs = g.userData.xs || []);
+    const bush = (x, z, r, k) => { const q = new THREE.IcosahedronGeometry(r, 1); q.scale(1, 0.8, 1); add(q, LF[k % 3], x, r * 0.75, z); };
+    // 左：柴房
+    { const X = -8.2; add(BX(4.6, 0.3, 3.4), 0x9a9187, X, 0.15, -1.6); [[-2.1, -3.1], [2.1, -3.1], [-2.1, -0.1], [2.1, -0.1]].forEach(([x, z]) => add(CY(0.16, 0.18, z < -1 ? 3.6 : 2.7, 6), WD2, X + x, z < -1 ? 1.8 : 1.35, z - 0.0));
+      add(BX(4.6, 3.2, 0.2), WD, X, 1.6, -3.3); const rf = BX(5.2, 0.28, 4.0); add(rf, 0xa0522d, X, 3.3, -1.6, 0.26, 0, 0);
+      for (let r = 0; r < 3; r++) for (let i = 0; i < 4 - r; i++) { add(CY(0.36, 0.36, 3.2, 8), i % 2 ? LOG : shade(LOG, 0.88), X - 1.5 + r * 0.38 + i * 0.76, 0.66 + r * 0.62, -2.2, 0, 0, Math.PI / 2); }
+      add(CY(0.55, 0.62, 0.8, 8), 0x9a6a3e, X - 1.2, 0.4, 1.6); add(CY(0.5, 0.5, 0.06, 8), 0xe2c08a, X - 1.2, 0.82, 1.6); add(BX(0.12, 0.9, 0.12), WD2, X - 1.0, 1.15, 1.6, 0, 0, -0.5); add(BX(0.5, 0.3, 0.08), 0x8a8f9a, X - 0.72, 1.55, 1.6, 0, 0, -0.5);
+      [[-9.6, 2.6, 0.9], [-8.2, 3.0, 1.0], [-6.8, 2.8, 0.85], [-10.2, 0.6, 0.95], [-10.4, -1.6, 0.9]].forEach(([x, z, r], k) => bush(x, z, r, k));
+      xs.push([-8.2, -1.4, 3.2, 4.2], [-8.6, 2.0, 2.4, 2.5]); }
+    // 右：花園、水井、信箱
+    { const X = 8.0, x0 = 5.9, x1 = 10.2, z0 = -0.2, z1 = 3.6, F = 0xfff7ea;
+      for (let x = x0; x <= x1 + 0.01; x += 0.72) [z0, z1].forEach((z) => add(BX(0.16, 0.9, 0.16), F, x, 0.45, z)); for (let z = z0 + 0.72; z < z1 - 0.1; z += 0.72) [x0, x1].forEach((x) => add(BX(0.16, 0.9, 0.16), F, x, 0.45, z));
+      [z0, z1].forEach((z) => add(BX(x1 - x0, 0.1, 0.1), F, (x0 + x1) / 2, 0.7, z)); [x0, x1].forEach((x) => add(BX(0.1, 0.1, z1 - z0), F, x, 0.7, (z0 + z1) / 2));
+      add(BX(x1 - x0 - 0.3, 0.2, z1 - z0 - 0.3), 0x7a5232, (x0 + x1) / 2, 0.1, (z0 + z1) / 2);
+      const FC = [0xff6fa8, 0xffd23f, 0xffffff, 0xa56bff, 0xff7a4f]; let k = 0; for (let x = x0 + 0.7; x < x1 - 0.3; x += 0.9) for (let z = z0 + 0.6; z < z1 - 0.3; z += 0.9) { add(new THREE.IcosahedronGeometry(0.34, 0), LF[k % 3], x, 0.42, z); add(new THREE.IcosahedronGeometry(0.17, 0), FC[k % 5], x + 0.08, 0.78, z + 0.05); k++; }
+      const wx = X + 0.4, wz = -2.6; add(CY(1.05, 1.15, 1.1, 10), 0xc9c0b2, wx, 0.55, wz); add(new THREE.TorusGeometry(1.0, 0.16, 4, 10), 0xb0a698, wx, 1.12, wz, Math.PI / 2); add(CY(0.85, 0.85, 0.06, 10), 0x46c2f0, wx, 0.98, wz);
+      [-1, 1].forEach((s) => add(BX(0.18, 2.4, 0.18), WD2, wx + s * 0.95, 2.2, wz)); add(BX(2.3, 0.14, 0.14), WD2, wx, 2.9, wz); const r2 = BX(2.6, 0.18, 1.5); [-1, 1].forEach((s) => add(r2.clone(), 0xa0522d, wx, 3.55, wz + s * 0.55, s * 0.55, 0, 0)); r2.dispose();
+      add(CY(0.24, 0.2, 0.36, 8), 0x8a8f9a, wx + 0.3, 2.45, wz);
+      add(BX(0.14, 1.2, 0.14), WD2, 5.2, 0.6, 7.6); add(BX(0.55, 0.45, 0.8), 0x3a8fd0, 5.2, 1.4, 7.6); add(ARC(0.275, 0.8), 0x3a8fd0, 5.2, 1.62, 7.6, 0, Math.PI / 2, 0); add(BX(0.05, 0.35, 0.12), 0xff4f5a, 5.5, 1.75, 7.8);
+      bush(10.6, -1.4, 0.9, 0); bush(10.8, 4.6, 0.8, 1);
+      xs.push([8.0, 1.7, 2.7, 1.2], [8.4, -2.6, 1.7, 3.6]); }
+    lpMesh(P, LPMAT(), g);
+  }
+  // 第 3 百多版：房子側翼、圓塔、我的家兩側擺設也算實心（g.userData.xs 是房子裡的座標，換成小鎮座標加進去）
+  const xSol = (g) => { const L = g.userData.xs; if (!L || !L.length) return; g.updateMatrixWorld(true); const K = g.scale.x; L.forEach(([x, z, r, top]) => { const v = g.localToWorld(new V3(x, 0, z)); solids.push({ x: v.x, z: v.z, r: r * K, top: g.position.y + top * K }); }); };
   const sign = (g, x, z, c) => { mesh(new THREE.CylinderGeometry(0.18, 0.18, 2.4, 6), mat(0x8a5a32, { map: SC.townArt.tx('wood', 0.5, 1) }), x, 1.2, z, g); mesh(new THREE.BoxGeometry(3.4, 1.6, 0.2), mat(0x9a6a3e, { map: SC.townArt.wood() }), x, 2.6, z - 0.05, g); mesh(new THREE.BoxGeometry(3.2, 1.4, 0.25), mat(c || 0xfff3d6), x, 2.6, z, g); };
 
   // ───────── 各建築 ─────────
@@ -38551,8 +38630,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       anim.push((tt) => { ghost.position.y = 9 + Math.sin(tt * 1.7) * 0.6; ghost.position.x = 5.5 + Math.sin(tt * 0.6) * 1.5; });
     },
     sandbox(g) { // 教學站（第 3 百多版：18 世紀鄉村小屋，營業中）：水藍牆、藍瓦的小學堂，屋頂綁著一串氣球
-      cottage(g, { wall: 0xe6f6ff, roof: 0x2f6fb0, sign: 0xff6fa8, awn: '#ff6fa8', shutter: 0x2f6fb0, icon: (bd) => { [-1, 1].forEach((k) => { const b = mesh(new THREE.SphereGeometry(0.4, 10, 8), mat(0xff6fa8), k * 0.1, 0.05, 0, bd); b.scale.y = 1.2; }); } });
-      for (let i = 0; i < 5; i++) { const a = (i / 5) * Math.PI * 2, bx = Math.cos(a) * 1.6, bz = Math.sin(a) * 1.6 - 1.4; const bl = mesh(new THREE.SphereGeometry(0.75, 12, 10), mat(INK[i], { emissive: INK[i], emissiveIntensity: 0.15 }), 2.6 + bx, 16.2 + (i % 2) * 0.6, bz, g); bl.scale.y = 1.2; const st = mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.4, 3), mat(0xffffff), 2.6 + bx * 0.5, 14.6, -1.4 + bz * 0.5 + 0.7, g); void st; anim.push((tt) => { bl.position.y = 16.2 + (i % 2) * 0.6 + Math.sin(tt * 1.6 + i) * 0.25; }); }
+      const C = cottage(g, { w: 9.2, wing: -1, wall: 0xe6f6ff, roof: 0x2f6fb0, sign: 0xff6fa8, shutter: 0x2f6fb0, icon: (bd) => { [-1, 1].forEach((k) => { const b = mesh(new THREE.SphereGeometry(0.4, 10, 8), mat(0xff6fa8), k * 0.1, 0.05, 0, bd); b.scale.y = 1.2; }); } });
+      for (let i = 0; i < 5; i++) { const a = (i / 5) * Math.PI * 2, bx = Math.cos(a) * 1.6, bz = Math.sin(a) * 1.6 - 1.4; const bl = mesh(new THREE.SphereGeometry(0.75, 12, 10), mat(INK[i], { emissive: INK[i], emissiveIntensity: 0.15 }), C.chim[0] + bx, C.chim[1] + 3.2 + (i % 2) * 0.6, C.chim[2] + 1.4 + bz, g); bl.scale.y = 1.2; const st = mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.4, 3), mat(0xffffff), C.chim[0] + bx * 0.5, C.chim[1] + 1.6, C.chim[2] + 1.4 + bz * 0.5, g); void st; anim.push((tt) => { bl.position.y = C.chim[1] + 3.2 + (i % 2) * 0.6 + Math.sin(tt * 1.6 + i) * 0.25; }); }
     },
     net(g) { // 連線站：大電視牆的小亭子，天線會閃
       mesh(new THREE.BoxGeometry(8, 1, 5), mat(0x5d6b8a), 0, 0.5, 0, g);
@@ -38572,14 +38651,14 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       mesh(new THREE.BoxGeometry(1.8, 2.6, 0.3), mat(0x2b2238), 0, 1.3, 4.8, g);
     },
     heart(g) { // 愛心補給站（第 3 百多版：18 世紀鄉村小屋，營業中）：粉紅灰泥牆、紅陶瓦，二樓中間一顆會跳的大愛心
-      cottage(g, { wall: 0xffe3ea, roof: 0xb8433e, sign: 0xff4f7b, awn: '#ff4f7b', shutter: 0xb83b6a, icon: (bd) => { const hs = heartShape(); [-1, 1].forEach((k) => { const m = mesh(new THREE.ExtrudeGeometry(hs, { depth: 0.08, bevelEnabled: false }), mat(0xffffff), k * 0.09, 0, 0, bd); m.scale.setScalar(0.42); m.rotation.y = k * Math.PI / 2; }); } });
-      const ht = mesh(new THREE.ExtrudeGeometry(heartShape(), { depth: 0.4, bevelEnabled: false }), mat(0xff2f6e, { emissive: 0xff2f6e, emissiveIntensity: 0.3 }), 0, 4.95, 3.85, g); anim.push((tt) => { const s2 = 0.9 + Math.max(0, Math.sin(tt * 4)) * 0.12; ht.scale.set(s2, s2, 1); });
+      const C = cottage(g, { w: 9, wing: 1, noWin: true, wall: 0xffe3ea, roof: 0xb8433e, sign: 0xff4f7b, shutter: 0xb83b6a, signSide: -1, icon: (bd) => { const hs = heartShape(); [-1, 1].forEach((k) => { const m = mesh(new THREE.ExtrudeGeometry(hs, { depth: 0.08, bevelEnabled: false }), mat(0xffffff), k * 0.09, 0, 0, bd); m.scale.setScalar(0.42); m.rotation.y = k * Math.PI / 2; }); } });
+      const ht = mesh(new THREE.ExtrudeGeometry(heartShape(), { depth: 0.4, bevelEnabled: false }), mat(0xff2f6e, { emissive: 0xff2f6e, emissiveIntensity: 0.3 }), C.gw[0], C.gw[1] - 0.05, C.gw[2] - 0.1, g); anim.push((tt) => { const s2 = (0.9 + Math.max(0, Math.sin(tt * 4)) * 0.12) * 0.5; ht.scale.set(s2, s2, 1); });
     },
     stk(g) { // 貼紙庫（第 3 百多版：18 世紀鄉村小屋，營業中）：淡紫牆、深紫瓦，門口窗戶貼滿貼紙，屋頂上一張會轉的大貼紙
-      cottage(g, { wall: 0xeee6ff, roof: 0x5b3aa8, sign: 0xffd23f, awn: '#8a5cff', shutter: 0x5b3aa8, icon: (bd) => { [-1, 1].forEach((k) => { const st = mesh(new THREE.CircleGeometry(0.45, 5), mat(0xff4f9a, { side: THREE.DoubleSide }), k * 0.09, 0, 0, bd); st.rotation.y = k * Math.PI / 2; }); } });
-      for (let i = 0; i < 8; i++) { const st = mesh(new THREE.CircleGeometry(0.22 + (i % 3) * 0.06, i % 2 ? 5 : 10), mat(INK[i % 6], { side: THREE.DoubleSide }), (i < 4 ? -2.4 : 2.4) + ((i % 4) - 1.5) * 0.45, 1.6 + (i % 2) * 0.55, 3.75, g); st.rotation.z = i * 0.7; }
-      const big = new THREE.Group(); big.position.set(0, 14.2, 0); g.add(big); const bs = new THREE.Mesh(new THREE.CircleGeometry(1.6, 5), mat(0xffd23f, { side: THREE.DoubleSide })); big.add(bs); const cr = new THREE.Mesh(new THREE.CircleGeometry(0.7, 5), mat(0xff4f9a, { side: THREE.DoubleSide })); cr.position.z = 0.02; big.add(cr);
-      mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.6, 6), mat(0x5b3aa8), 0, 12.6, 0, g); anim.push((tt) => { big.rotation.y = tt * 0.9; big.position.y = 14.2 + Math.sin(tt * 2) * 0.2; });
+      const C = cottage(g, { w: 10.4, tower: 1, rh: 4.2, wall: 0xeee6ff, roof: 0x5b3aa8, sign: 0xffd23f, shutter: 0x5b3aa8, signSide: -1, icon: (bd) => { [-1, 1].forEach((k) => { const st = mesh(new THREE.CircleGeometry(0.45, 5), mat(0xff4f9a, { side: THREE.DoubleSide }), k * 0.09, 0, 0, bd); st.rotation.y = k * Math.PI / 2; }); } });
+      for (let i = 0; i < 8; i++) { const st = mesh(new THREE.CircleGeometry(0.22 + (i % 3) * 0.06, i % 2 ? 5 : 10), mat(INK[i % 6], { side: THREE.DoubleSide }), (i < 4 ? -1 : 1) * (1.5 + (i % 2) * 0.22), 1.3 + (i % 4) * 0.5, C.zf + 0.3, g); st.rotation.z = i * 0.7; }
+      const big = new THREE.Group(); big.position.set(0, C.top + 2.4, 0); g.add(big); const bs = new THREE.Mesh(new THREE.CircleGeometry(1.6, 5), mat(0xffd23f, { side: THREE.DoubleSide })); big.add(bs); const cr = new THREE.Mesh(new THREE.CircleGeometry(0.7, 5), mat(0xff4f9a, { side: THREE.DoubleSide })); cr.position.z = 0.02; big.add(cr);
+      mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.6, 6), mat(0x5b3aa8), 0, C.top + 0.7, 0, g); anim.push((tt) => { big.rotation.y = tt * 0.9; big.position.y = C.top + 2.4 + Math.sin(tt * 2) * 0.2; });
     },
     range(g) { // 第 247 版：靶場。朝廣場這邊是一道矮櫃台（站在櫃台前往後打），左邊是有條紋遮雨棚的武器架小攤；櫃台後面是靶道，一排靶子，打中會往後倒、過一下再彈起來
       const wood = mat(0xc98c55, { map: SC.townArt.wood() }), dark = mat(0x6b3f22);
@@ -38607,15 +38686,15 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       anim.push((tt, dt) => { rangeFrame(tt, dt || 1 / 60); clFrame(Math.min(0.05, dt || 1 / 60)); });
     },
     wear(g) { // 喵喵服飾店（第 3 百多版：18 世紀鄉村小屋，營業中）：粉紅牆、紫瓦、門口兩隻穿衣服的木頭假貓，屋頂上一件會轉的大 T 恤
-      cottage(g, { wall: 0xfbe6f2, roof: 0x6a4cc8, sign: 0xa56bff, awn: '#a56bff', shutter: 0x8a5cff, noBoard: true, icon: (bd) => { [-1, 1].forEach((k) => { const m = mesh(new THREE.ExtrudeGeometry(teeShape(), { depth: 0.06, bevelEnabled: false }), mat(0xffffff), k * 0.09, 0, 0, bd); m.scale.setScalar(0.32); m.rotation.y = k * Math.PI / 2; }); } });
-      [-3.3, 3.3].forEach((x, i) => { const m = new THREE.Group(); m.position.set(x, 0.3, 5.6); g.add(m); mesh(new THREE.CylinderGeometry(0.5, 0.6, 0.25, 12), mat(0x8a5a32), 0, 0.12, 0, m); mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.2, 6), mat(0x8a5a32), 0, 0.8, 0, m); mesh(new THREE.SphereGeometry(0.55, 12, 10), mat(0xf2e2c8), 0, 1.75, 0, m); mesh(new THREE.SphereGeometry(0.42, 12, 10), mat(0xf2e2c8), 0, 2.55, 0, m);
+      const C = cottage(g, { w: 9.6, tower: -1, wall: 0xfbe6f2, roof: 0x6a4cc8, sign: 0xa56bff, shutter: 0x8a5cff, icon: (bd) => { [-1, 1].forEach((k) => { const m = mesh(new THREE.ExtrudeGeometry(teeShape(), { depth: 0.06, bevelEnabled: false }), mat(0xffffff), k * 0.09, 0, 0, bd); m.scale.setScalar(0.32); m.rotation.y = k * Math.PI / 2; }); } });
+      [-3.3, 3.3].forEach((x, i) => { const m = new THREE.Group(); m.position.set(x * 1.25, 0.3, 6.6); g.add(m); mesh(new THREE.CylinderGeometry(0.5, 0.6, 0.25, 12), mat(0x8a5a32), 0, 0.12, 0, m); mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.2, 6), mat(0x8a5a32), 0, 0.8, 0, m); mesh(new THREE.SphereGeometry(0.55, 12, 10), mat(0xf2e2c8), 0, 1.75, 0, m); mesh(new THREE.SphereGeometry(0.42, 12, 10), mat(0xf2e2c8), 0, 2.55, 0, m);
         if (i) { const sc = mesh(new THREE.TorusGeometry(0.4, 0.13, 6, 16), mat(0xff3b4f, { rough: 0.9 }), 0, 2.1, 0, m); sc.rotation.x = Math.PI / 2; mesh(new THREE.CylinderGeometry(0.4, 0.42, 0.45, 14), mat(0x2b2238, { rough: 0.4 }), 0, 3.05, 0, m); } else { mesh(new THREE.CylinderGeometry(0.75, 0.78, 0.05, 18), mat(0xf2d27a), 0, 2.85, 0, m); mesh(new THREE.CylinderGeometry(0.36, 0.4, 0.3, 14), mat(0xf2d27a), 0, 3.0, 0, m); } });
-      const tee = mesh(new THREE.ExtrudeGeometry(teeShape(), { depth: 0.25, bevelEnabled: true, bevelSize: 0.06, bevelThickness: 0.06, bevelSegments: 1 }), mat(0xff6fa8, { rough: 0.6 }), 0, 0, 0, g); tee.geometry.translate(0, 0, -0.125); tee.position.set(0, 14.4, 0); anim.push((tt) => { tee.rotation.y = tt * 0.8; tee.position.y = 14.4 + Math.sin(tt * 2) * 0.2; });
-      mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.6, 6), mat(0x8a5cff), 0, 12.8, 0, g);
+      const tee = mesh(new THREE.ExtrudeGeometry(teeShape(), { depth: 0.25, bevelEnabled: true, bevelSize: 0.06, bevelThickness: 0.06, bevelSegments: 1 }), mat(0xff6fa8, { rough: 0.6 }), 0, 0, 0, g); tee.geometry.translate(0, 0, -0.125); tee.position.set(0, C.top + 2.4, 0); anim.push((tt) => { tee.rotation.y = tt * 0.8; tee.position.y = C.top + 2.4 + Math.sin(tt * 2) * 0.2; });
+      mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.6, 6), mat(0x8a5cff), 0, C.top + 0.7, 0, g);
     },
     task(g) { // 任務所（第 3 百多版：18 世紀鄉村小屋，營業中）：門口旁邊立著原本的任務布告欄
-      cottage(g, { wall: 0xfff0d6, roof: 0x8a5a32, sign: 0xff8a5a, awn: '#ff8a5a', shutter: 0x6b3f22, noBoard: true, icon: (bd) => { [-1, 1].forEach((k) => { const p = mesh(new THREE.PlaneGeometry(0.55, 0.65), mat(0xfff3d6, { side: THREE.DoubleSide }), k * 0.09, 0, 0, bd); p.rotation.y = k * Math.PI / 2; }); } });
-      const tb = new THREE.Group(); tb.position.set(-3.4, 0, 5.4); tb.scale.setScalar(0.6); tb.rotation.y = 0.35; g.add(tb); B.taskBoard(tb);
+      cottage(g, { w: 11, wing: 1, rh: 4.4, Y: 5.2, wall: 0xfff0d6, roof: 0x8a5a32, sign: 0xff8a5a, shutter: 0x6b3f22, stone: 0xb9b2a6, icon: (bd) => { [-1, 1].forEach((k) => { const p = mesh(new THREE.PlaneGeometry(0.55, 0.65), mat(0xfff3d6, { side: THREE.DoubleSide }), k * 0.09, 0, 0, bd); p.rotation.y = k * Math.PI / 2; }); } });
+      const tb = new THREE.Group(); tb.position.set(-4.4, 0, 6.6); tb.scale.setScalar(0.6); tb.rotation.y = 0.35; g.add(tb); B.taskBoard(tb);
     },
     taskBoard(g) { // 任務布告欄：木頭看板上釘著彩色紙條
       [-2.6, 2.6].forEach((x) => { mesh(new THREE.CylinderGeometry(0.24, 0.28, 4.6, 8), mat(0x8a5a32, { map: SC.townArt.tx('wood', 0.5, 1.5) }), x, 2.3, 0, g); mesh(new THREE.BoxGeometry(0.9, 0.5, 0.9), mat(0xe2dbd0, { map: SC.townArt.stone(), rough: 0.85 }), x, 0.25, 0, g); });
@@ -38636,12 +38715,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       sign(g, 4.2, 12.6, 0xfff3d6);
     },
     home(g) { // 我的家（第 3 百多版：18 世紀鄉村小屋）：屋頂是自己挑的墨水顏色，煙囪冒煙，門口有小圍籬
-      const HR = cottage(g, { wall: 0xfff3dc, roof: 0xff8a2a, door: 0x8a5a32, sign: 0xffb35a, awn: '#ff8a2a', noBoard: true, icon: (bd) => { [-1, 1].forEach((k) => { const m = mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.06, 12), mat(0xffffff), k * 0.09, -0.1, 0, bd); m.rotation.z = Math.PI / 2; }); } });
+      const HR = cottage(g, { w: 9.6, rh: 4.2, wall: 0xfff3dc, roof: 0xff8a2a, door: 0x8a5a32, sign: 0xffb35a, icon: (bd) => { [-1, 1].forEach((k) => { const m = mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.06, 12), mat(0xffffff), k * 0.09, -0.1, 0, bd); m.rotation.z = Math.PI / 2; }); } });
       homeRoof = mat(0xff8a2a, { map: SC.townArt.tx('shingle', 2, 2), rough: 0.6, home: 1 }); HR.forEach((m) => { m.material = homeRoof; });
-      const puffs = []; for (let i = 0; i < 4; i++) { const p = mesh(new THREE.SphereGeometry(0.6, 8, 6), mat(0xffffff, { transparent: true, opacity: 0.8 }), 2.6, 14, -1.4, g); p.castShadow = false; puffs.push(p); }
-      anim.push((tt) => puffs.forEach((p, i) => { const u = (tt * 0.35 + i / 4) % 1; p.position.set(2.6 + u * 1.5, 14 + u * 5, -1.4 - u * 0.8); p.scale.setScalar(0.6 + u * 1.4); p.material.opacity = 0.85 * (1 - u); }));
-      for (let i = -3; i <= 3; i++) if (i) mesh(new THREE.BoxGeometry(0.22, 1, 0.22), mat(0xffffff), i * 1.4, 0.5, 6.6, g);
-      [-1, 1].forEach((s) => mesh(new THREE.BoxGeometry(3.2, 0.14, 0.14), mat(0xffffff), s * 2.8, 0.8, 6.6, g));
+      const [cx, cy, cz] = HR.chim, puffs = []; for (let i = 0; i < 4; i++) { const p = mesh(new THREE.SphereGeometry(0.6, 8, 6), mat(0xffffff, { transparent: true, opacity: 0.8 }), cx, cy, cz, g); p.castShadow = false; puffs.push(p); }
+      anim.push((tt) => puffs.forEach((p, i) => { const u = (tt * 0.35 + i / 4) % 1; p.position.set(cx + u * 1.5, cy + u * 5, cz - u * 0.8); p.scale.setScalar(0.6 + u * 1.4); p.material.opacity = 0.85 * (1 - u); }));
+      for (let i = -3; i <= 3; i++) if (i) mesh(new THREE.BoxGeometry(0.22, 1, 0.22), mat(0xffffff), i * 1.4, 0.5, 7.4, g);
+      [-1, 1].forEach((s) => mesh(new THREE.BoxGeometry(3.2, 0.14, 0.14), mat(0xffffff), s * 2.8, 0.8, 7.4, g));
+      homeSides(g);
     },
     farm(g) { // 菜園（下一版開放）：三排田、小芽、圍籬、稻草人
       for (let r = 0; r < 3; r++) { mesh(new THREE.BoxGeometry(11, 0.6, 2.4), mat(0x8a5a32), 0, 0.3, -4 + r * 3.6, g); for (let k = 0; k < 6; k++) { const x = -4.5 + k * 1.8, z = -4 + r * 3.6; mesh(new THREE.ConeGeometry(0.35, 0.9, 5), mat(0x6fd04a), x, 1, z, g); if ((k + r) % 3 === 0) mesh(new THREE.SphereGeometry(0.42, 8, 6), mat([0xff6a3a, 0xffd23f, 0xb04aff][r]), x, 0.75, z + 0.4, g); } }
@@ -38669,57 +38749,58 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   //   中間是放大三倍的貓神大雕像廣場；西、北、東三面八棟 18 世紀鄉村小屋圍成 U 形（門都朝廣場），南邊開口出去是我的家和釣魚池。
   //   有作用的五棟（教學站、貼紙庫、任務所、服飾店、愛心補給站）是營業中的樣子；另外三棟（麵包坊、鐘錶行、花店）門窗都關著。
   //   北邊兩棟中間的大路接坡道上二樓高地（西邊菜園、東邊靶場），二樓中間再一道坡道上三樓高地（探險小徑）。
-  const U = (deg) => { const a = (deg * Math.PI) / 180; return { x: Math.round(Math.cos(a) * 42 * 10) / 10, z: Math.round(-Math.sin(a) * 42 * 10) / 10 }; };
+  const U = (deg, r = 56) => { const a = (deg * Math.PI) / 180; return { x: Math.round(Math.cos(a) * r * 10) / 10, z: Math.round(-Math.sin(a) * r * 10) / 10 }; }; // 第 3 百多版（Yen 11-25「廣場再放大…不要都長一樣的呆板感」）：營業的店圍著廣場一圈，沒開的店在外面第二排、從空隙看得到，像真的村子
   const SPOTS = [
-    { k: 'boss', n: '探險小徑', s: '打怪物、爬塔、闖迷宮', i: '🌿', x: 0, z: -88, r: 5, y: 8, sc: 1.3, south: true, walk: { gz: 0.6, hw: 2.1 } }, /* Yen 11-25：冒險門改成探險小徑（小品）；三樓高地 */
-    { k: 'sandbox', n: '教學站', s: '教學試玩', i: '🎈', ...U(205), r: 6, y: 13.2, sc: 2, top: 6.5 },
-    { k: 'stk', n: '貼紙庫', s: '貼紙本', i: '📒', ...U(175), r: 6, y: 13.2, sc: 2, top: 6.5 },
-    { k: 'task', n: '任務所', s: '每日任務', i: '📋', ...U(115), r: 6, y: 13.2, sc: 2, top: 6.5 },
-    { k: 'wear', n: '喵喵服飾店', s: '用代幣買衣服', i: '👗', ...U(5), r: 6, y: 13.2, sc: 2, top: 6.5 }, /* 第 286 版（Yen「新增服飾店，可用代幣購買服裝」）：09th_wear.js */
-    { k: 'heart', n: '愛心補給站', s: '贊助和更新日誌', i: '❤️', ...U(-25), r: 6, y: 13.2, sc: 2, top: 6.5 },
-    { k: 'home', n: '我的家', s: '換貓咪', i: '🏠', x: 26, z: 56, r: 6, y: 13.2, sc: 2, top: 6.5 },
-    { k: 'fish', n: '釣魚池', s: '掛機釣魚賺代幣', i: '🎣', x: -28, z: 54, r: 10.5, y: 5, water: true }, /* 第 284 版（Yen「開啟釣魚玩法，可掛機賺代幣」）：09tg_fish.js */
-    { k: 'farm', n: '菜園', s: '種菜、偷菜', i: '🥕', x: -44, z: -72, r: 7.5, y: 7, south: true, walk: { gz: 3.6, hw: 1.7 } }, /* 二樓高地西邊 */
-    { k: 'range', n: '靶場', s: '打靶、射飛盤', i: '🎯', x: 44, z: -66, r: 4.5, y: 7.5, top: 1.2, sc: 0.9, south: true, walk: { gz: 0.3, hw: 1.75 } }, /* 第 247 版：靶場；第 3 百多版搬到二樓高地東邊，靶道往北 */
+    { k: 'boss', n: '探險小徑', s: '打怪物、爬塔、闖迷宮', i: '🌿', x: 0, z: -98, r: 5, y: 8, sc: 1.3, south: true, walk: { gz: 0.6, hw: 2.1 } }, /* Yen 11-25：冒險門改成探險小徑（小品）；三樓高地 */
+    { k: 'sandbox', n: '教學站', s: '教學試玩', i: '🎈', ...U(212, 58), r: 6, y: 13.2, sc: 2, top: 6.5 },
+    { k: 'stk', n: '貼紙庫', s: '貼紙本', i: '📒', ...U(171, 60), r: 6, y: 13.2, sc: 2, top: 6.5 },
+    { k: 'task', n: '任務所', s: '每日任務', i: '📋', ...U(132, 58), r: 6, y: 13.2, sc: 2, top: 6.5 },
+    { k: 'wear', n: '喵喵服飾店', s: '用代幣買衣服', i: '👗', ...U(8, 60), r: 6, y: 13.2, sc: 2, top: 6.5 }, /* 第 286 版（Yen「新增服飾店，可用代幣購買服裝」）：09th_wear.js */
+    { k: 'heart', n: '愛心補給站', s: '贊助和更新日誌', i: '❤️', ...U(-32, 58), r: 6, y: 13.2, sc: 2, top: 6.5 },
+    { k: 'home', n: '我的家', s: '換貓咪', i: '🏠', x: 32, z: 84, r: 6, y: 13.2, sc: 2, top: 6.5 },
+    { k: 'fish', n: '釣魚池', s: '掛機釣魚賺代幣', i: '🎣', x: -40, z: 68, r: 10.5, y: 5, water: true }, /* 第 284 版（Yen「開啟釣魚玩法，可掛機賺代幣」）：09tg_fish.js */
+    { k: 'farm', n: '菜園', s: '種菜、偷菜', i: '🥕', x: -50, z: -76, r: 7.5, y: 7, south: true, walk: { gz: 3.6, hw: 1.7 }, area: { hx: 8.2, z0: -6.4, z1: 4.4 } }, /* Yen 11-25「進入菜園領域即切換不用強制從門進去」：從哪一邊走進菜園的範圍都會切換 */ /* 二樓高地西邊 */
+    { k: 'range', n: '靶場', s: '打靶、射飛盤', i: '🎯', x: 50, z: -74, r: 4.5, y: 7.5, top: 1.2, sc: 0.9, south: true, walk: { gz: 0.3, hw: 1.75 } }, /* 第 247 版：靶場；第 3 百多版搬到二樓高地東邊，靶道往北 */
   ];
   // 沒有作用的店面（門窗關著）：麵包坊、鐘錶行、花店
-  const DECO = [{ ...U(145), wall: 0xf6e3c8, roof: 0x9a4a32 }, { ...U(65), wall: 0xe8e0d0, roof: 0x4a5a6a }, { ...U(35), wall: 0xf0e4ea, roof: 0x7a5a8a }];
+  const DECO = [{ ...U(191, 76), wall: 0xf0e4ea, roof: 0x7a5a8a, o: { w: 8.6, bay: false, tower: -1, rh: 4.2 } }, { ...U(42, 72), wall: 0xe8e0d0, roof: 0x4a5a6a, o: { w: 8.8, tower: 1, wing: -1 } }, { ...U(-12, 76), wall: 0xf6e3c8, roof: 0x9a4a32, o: { w: 10.4, bay: false, wing: -1, rh: 3.4 } }];
   SPOTS.forEach((s) => { const K = s.sc || 1; s.r *= K; s.y *= K; if (s.top != null) s.top *= K; }); // 第 282 版（Yen「小鎮包含菜園的建築物變大兩倍」）：房子放大兩倍，冒險門和帳篷 1.6 倍（太大會壓到坡道和小溪）
   // ───────── 地形 ─────────
   const sm = (a, b, x) => { const u = SC.clamp((x - a) / (b - a), 0, 1); return u * u * (3 - 2 * u); };
   const segD = (x, z, ax, az, bx, bz) => { const dx = bx - ax, dz = bz - az, u = SC.clamp(((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1), 0, 1); return Math.hypot(ax + dx * u - x, az + dz * u - z); };
   const polyD = (x, z, P) => { let d = 1e9; for (let i = 0; i + 1 < P.length; i++) d = Math.min(d, segD(x, z, P[i][0], P[i][1], P[i + 1][0], P[i + 1][1])); return d; };
-  const STREAM = [], POND = { x: -28, z: 54, r: 11 }; /* 第 3 百多版（Yen 11-25 U 形小鎮）：小溪和木橋拿掉，釣魚池在廣場南邊、U 形開口的西側 */
-  const BRIDGE = { x0: 900, x1: 901, z0: 0, z1: 1, y: 0.55 }, WATER_Y = -0.7, TOP = { up: 6, hill: 12 };
+  const STREAM = [[-108, 40], [-90, 47], [-72, 56], [-56, 64], [-40, 68], [-24, 63], [-6, 56], [12, 56], [30, 59], [48, 64], [66, 62], [86, 54], [108, 50]], POND = { x: -40, z: 68, r: 11 }; /* 第 3 百多版（Yen 11-25「原本的小溪流再加回來」）：小溪從西邊山裡流出來，穿過釣魚池，橫過廣場南邊（家在溪的對岸），兩座拱木橋過溪，往東流進山裡 */
+  const BRIDGES = [{ x: -4, z: 56.4, L: 17, w: 4.6 }, { x: 25, z: 58.2, L: 17, w: 4 }], WATER_Y = -0.7, TOP = { up: 6, hill: 12 };
   const rp = (a, b, x) => { const u = SC.clamp((x - a) / (b - a), 0, 1); return 0.5 * (u + u * u * (3 - 2 * u)); }; // 坡道：一半直線一半緩起緩停，最陡的地方也走得上去（對戰的角色一步只能跨 1.6）
+  const PLZ = 34; // 廣場半徑
   const SE = (x, z) => Math.sqrt(Math.sqrt(x * x * x * x + z * z * z * z)); // 圓角方形的距離：小鎮外圈的山圍成圓角方形，四個角落比較寬
   function baseH(x, z) {
     const ax = Math.abs(x);
     // 第 3 百多版（Yen 11-25「菜園、靶場放在二樓高地，探險小徑一樣三樓高地」）：廣場北邊一道坡道上二樓高地（整排），二樓中間再一道坡道上三樓高地
-    const w1 = SC.lerp(1.8, 8, 1 - sm(5, 9, ax)); let h = TOP.up * rp(-52 + w1, -52 - w1, z); // 二樓高地（中間是坡道）
-    const w2 = SC.lerp(1.8, 7.5, 1 - sm(4, 8, ax)); h += (TOP.hill - TOP.up) * rp(-70.5 + w2, -70.5 - w2, z) * (1 - sm(20, 23, ax)); // 三樓高地（探險小徑）
+    const w1 = SC.lerp(1.8, 8, 1 - sm(5, 9, ax)); let h = TOP.up * rp(-64 + w1, -64 - w1, z); // 二樓高地（中間是坡道）
+    const w2 = SC.lerp(1.8, 7.5, 1 - sm(4, 8, ax)); h += (TOP.hill - TOP.up) * rp(-82 + w2, -82 - w2, z) * (1 - sm(20, 23, ax)); // 三樓高地（探險小徑）
     const r = Math.hypot(x, z * 0.92);
-    h += Math.sin(x * 0.09 + 0.7) * Math.cos(z * 0.08) * 0.5 * sm(34, 48, r) * (1 - sm(62, 72, r)) * (1 - sm(40, 46, -z)); // 草地輕輕起伏（高地上不起伏）
-    const rr = SE(x, z * 0.95); h += 22 * sm(92, 118, rr) + 6 * Math.sin(x * 0.07 + 1) * Math.cos(z * 0.06) * sm(96, 116, rr); // 外圈的山
+    h += Math.sin(x * 0.09 + 0.7) * Math.cos(z * 0.08) * 0.5 * sm(44, 56, r) * (1 - sm(76, 86, r)) * (1 - sm(52, 58, -z)); // 草地輕輕起伏（高地上不起伏）
+    const rr = SE(x, z * 0.95); h += 22 * sm(106, 132, rr) + 6 * Math.sin(x * 0.07 + 1) * Math.cos(z * 0.06) * sm(110, 130, rr); // 外圈的山
     const k = Math.max(1 - sm(2, 4.6, polyD(x, z, STREAM)), 1 - sm(POND.r - 3, POND.r + 1.5, Math.hypot(x - POND.x, z - POND.z)));
     if (k > 0) h = SC.lerp(h, -2.6, k);
     return h;
   }
   const PADS = [];
   function H(x, z) { let h = baseH(x, z); for (const p of PADS) { const d = Math.hypot(x - p.x, z - p.z); if (d < p.r + 4) h = SC.lerp(h, p.h, 1 - sm(p.r, p.r + 4, d)); } return h; }
-  const onBridge = (x, z) => x > BRIDGE.x0 && x < BRIDGE.x1 && z > BRIDGE.z0 && z < BRIDGE.z1;
-  const walkH = (x, z) => (onBridge(x, z) ? Math.max(H(x, z), BRIDGE.y) : H(x, z));
+  const brY = (x, z) => { for (const b of BRIDGES) if (Math.abs(x - b.x) < b.w / 2 && Math.abs(z - b.z) < b.L / 2) return 0.5 + Math.cos(((z - b.z) / b.L) * Math.PI) * 0.45; return -9; }; // 拱木橋的橋面高度（不在橋上回 -9）
+  const walkH = (x, z) => Math.max(H(x, z), brY(x, z));
   // 第 217 版：菜園是另一個場景（09tf_farm.js 的 SC.farm.zone），走路、跳、鏡頭都共用這裡的程式；Z 是現在所在的場景（null＝小鎮）
   let Z = null;
   const zW = (x, z) => (Z ? Z.H(x, z) : walkH(x, z));
-  const zOut = (x, z) => (Z ? Z.out(x, z) : SE(x, z) > 90);
+  const zOut = (x, z) => (Z ? Z.out(x, z) : SE(x, z) > 104);
   const zOkStep = (x0, z0, x1, z1) => { if (!Z) return okStep(x0, z0, x1, z1); const h1 = zW(x1, z1); if (h1 < -0.45 || zOut(x1, z1)) return false; return Math.abs(h1 - zW(x0, z0)) <= Math.hypot(x1 - x0, z1 - z0) * 0.95 + 0.03; };
   const zSol = () => (Z ? Z.solids : solids);
   const zSpots = () => (Z ? Z.spots : SPOTS);
-  function okStep(x0, z0, x1, z1) { const h1 = walkH(x1, z1); if (h1 < -0.45 || SE(x1, z1) > 90) return false; const d = Math.hypot(x1 - x0, z1 - z0); return Math.abs(h1 - walkH(x0, z0)) <= d * 0.95 + 0.03; }
+  function okStep(x0, z0, x1, z1) { const h1 = walkH(x1, z1); if (h1 < -0.45 || SE(x1, z1) > 104) return false; const d = Math.hypot(x1 - x0, z1 - z0); return Math.abs(h1 - walkH(x0, z0)) <= d * 0.95 + 0.03; }
   function canLine(a, b) { const L = Math.hypot(b.x - a.x, b.z - a.z), n = Math.max(1, Math.ceil(L / 0.8)); let px = a.x, pz = a.z; for (let i = 1; i <= n; i++) { const x = a.x + ((b.x - a.x) * i) / n, z = a.z + ((b.z - a.z) * i) / n; if (!okStep(px, pz, x, z) || blocked(x, z, 0.9)) return false; px = x; pz = z; } return true; }
   // 走路的路網：廣場一圈、兩道坡道、木橋、小丘的緩坡（點遠的地方時，沿著這些點繞過去）
-  const NODES = [[24, 0], [-24, 0], [0, 24], [0, -24], [17, 17], [-17, 17], [17, -17], [-17, -17], [0, -34], [0, -45], [0, -61], [0, -80], [-20, -60], [20, -60], [-42, -58], [42, -58], [-60, -60], [60, -60], [0, 36], [14, 42], [-14, 42], [-30, 34], [30, 34], [-34, 40], [36, 42]].map(([x, z]) => new V3(x, 0, z));
+  const NODES = [[30, 0], [-30, 0], [0, 30], [0, -30], [21, 21], [-21, 21], [21, -21], [-21, -21], [0, -44], [0, -56], [0, -73], [0, -92], [-22, -72], [22, -72], [-36, -72], [36, -72], [-66, -74], [66, -74], [0, 40], [-4, 46], [-4, 67], [25, 48], [25, 69], [20, 76], [-24, 44], [-38, 50], [-54, 54], [24, 40], [40, 44], [58, 46], [-16, 66], [-58, 78]].map(([x, z]) => new V3(x, 0, z));
   let EDGES = null;
   function route(a, b) {
     if (canLine(a, b)) return [b.clone()];
@@ -38737,18 +38818,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     cam = new THREE.PerspectiveCamera(50, 1, 0.5, 500);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x88a070, low ? 1.15 : 1.0)); if (!low) SC.townArt.env(R); /* 第 268 版：一般畫質的建築材質有柔和的環境反光（只給建築，不給地面和貓） */
     sun = new THREE.DirectionalLight(0xffffff, 1.5); sun.position.set(30, 60, 25); scene.add(sun); scene.add(sun.target);
-    if (!low) { sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); const sc = sun.shadow.camera; sc.left = sc.bottom = -95; sc.right = sc.top = 95; sc.near = 10; sc.far = 180; sun.shadow.bias = -0.0015; }
+    if (!low) { sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); const sc = sun.shadow.camera; sc.left = sc.bottom = -110; sc.right = sc.top = 110; sc.near = 10; sc.far = 210; sun.shadow.bias = -0.0015; }
     const root = new THREE.Group(); scene.add(root);
     // 每棟房子腳下整平；門口
-    PADS.push({ x: 0, z: 0, r: 28, h: 0 }); /* 第 3 百多版：神像大三倍，廣場也放大（半徑 26） */
+    PADS.push({ x: 0, z: 0, r: 36, h: 0 }); BRIDGES.forEach((b) => [-1, 1].forEach((k) => PADS.push({ x: b.x, z: b.z + (k * b.L) / 2, r: 1.6, h: 0 }))); /* 第 3 百多版（Yen 11-25「廣場再放大」）：廣場半徑 26 → 34 */
     SPOTS.forEach((s) => { const L = Math.hypot(s.x, s.z); s.dx = s.south ? 0 : -s.x / L; s.dz = s.south ? 1 : -s.z / L; s.gy = s.water ? 0 : baseH(s.x, s.z); if (!s.water) PADS.push({ x: s.x, z: s.z, r: s.r + 2, h: s.gy }); s.door = new V3(s.x + s.dx * (s.r + 2.6), 0, s.z + s.dz * (s.r + 2.6));
       if (s.walk) { const K = s.sc || 1; s.gate = { x: s.x + s.dx * s.walk.gz * K, z: s.z + s.dz * s.walk.gz * K, nx: s.dx, nz: s.dz, hw: s.walk.hw * K, al: 1e9 }; s.door.set(s.gate.x + s.dx * 4.5, 0, s.gate.z + s.dz * 4.5); return; } /* 第 3 百多版（Yen 11-25「…直接穿過門後螢幕漸黑後進入」）：走進去的門沒有圓柱擋，門口兩邊的柱子不算實體，不會卡在門側 */
       if (!s.water) solids.push({ x: s.x, z: s.z, r: s.r, top: s.gy + (s.top != null ? s.top : s.y - 1) }); });
-    DECO.forEach((q) => { q.gy = baseH(q.x, q.z); PADS.push({ x: q.x, z: q.z, r: 14, h: q.gy }); solids.push({ x: q.x, z: q.z, r: 12, top: q.gy + 6.5 * 2 }); });
+    DECO.forEach((q) => { q.gy = baseH(q.x, q.z); PADS.push({ x: q.x, z: q.z, r: 15, h: q.gy }); solids.push({ x: q.x, z: q.z, r: 12, top: q.gy + 6.5 * 2 }); });
     solids.push({ x: 0, z: 0, r: 14 });
     // 路：從廣場沿著能走的路線到每個門口（自動算出來，所以路一定走得通）
     // 第 3 百多版（Yen 11-25「朝房子的路徑應該變小，朝小徑的路徑應該變寬闊，兩者交換」）：往房子的石板路變窄，往二樓、三樓高地（菜園、靶場、探險小徑）的大路變寬
-    const PATHS = SPOTS.map((s) => { const P = [new V3(0, 0, 25), ...(route(new V3(0, 0, 25), s.door) || [s.door])]; P.w = s.gate ? 2.6 : -0.6; return P; });
+    const PATHS = SPOTS.map((s) => { const a0 = new V3(s.door.x, 0, s.door.z).setLength(PLZ - 3), P = [a0, ...(route(a0, s.door) || [s.door])]; P.w = s.gate ? 2.6 : -0.6; return P; });
     const onPath = (x, z) => { let d = 1e9; for (const P of PATHS) for (let i = 0; i + 1 < P.length; i++) d = Math.min(d, segD(x, z, P[i].x, P[i].z, P[i + 1].x, P[i + 1].z) - P.w); return d; };
     // 地面（一整片，有高低、顏色照草地／路／崖壁／沙）
     const SZ = 270, SEG = low ? 150 : 210, gg = new THREE.PlaneGeometry(SZ, SZ, SEG, SEG); gg.rotateX(-Math.PI / 2);
@@ -38758,27 +38839,28 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const x = pa.getX(i), z = pa.getZ(i), h = H(x, z); pa.setY(i, h);
       const sl = Math.max(Math.abs(H(x + 0.8, z) - H(x - 0.8, z)), Math.abs(H(x, z + 0.8) - H(x, z - 0.8))) / 1.6, r = Math.hypot(x, z);
       c.copy(C.grass).lerp(C.grass2, 0.5 + 0.5 * Math.sin(x * 0.21 + z * 0.17) * Math.cos(z * 0.13));
-      const rr = SE(x, z * 0.95); if (h > 16 && rr > 88) c.lerp(C.mtn, SC.clamp((h - 16) / 10, 0, 1));
-      if (sl > 1.1 && rr >= 92) c.lerp(C.rock2, 0.45);
-      if (r < 26) { c.copy(C.plaza); pav[i] = 1; } else if (r < 27.4) c.copy(C.rim);
-      else { const pd = onPath(x, z); if (pd < 2.7 && rr < 90) { c.lerp(C.path, 1 - sm(2.1, 2.7, pd)); pav[i] = 1 - sm(1.6, 2.5, pd); } }
-      if (sl > 0.75 && rr < 92) c.copy(cTmp.copy(C.rock).lerp(C.rock2, 0.5 + 0.5 * Math.sin(h * 2.3)));
+      const rr = SE(x, z * 0.95); if (h > 16 && rr > 102) c.lerp(C.mtn, SC.clamp((h - 16) / 10, 0, 1));
+      if (sl > 1.1 && rr >= 106) c.lerp(C.rock2, 0.45);
+      if (r < PLZ) { c.copy(C.plaza); pav[i] = 1; } else if (r < PLZ + 1.4) c.copy(C.rim);
+      else { const pd = onPath(x, z); if (pd < 2.7 && rr < 104) { c.lerp(C.path, 1 - sm(2.1, 2.7, pd)); pav[i] = 1 - sm(1.6, 2.5, pd); } }
+      if (sl > 0.75 && rr < 106) c.copy(cTmp.copy(C.rock).lerp(C.rock2, 0.5 + 0.5 * Math.sin(h * 2.3)));
       if (h < 0.15 && h > -0.9 && (polyD(x, z, STREAM) < 6 || Math.hypot(x - POND.x, z - POND.z) < POND.r + 3)) c.copy(C.sand); if (h <= -0.9) c.copy(C.bed);
       cols[i * 3] = c.r; cols[i * 3 + 1] = c.g; cols[i * 3 + 2] = c.b;
     }
     gg.setAttribute('color', new THREE.BufferAttribute(cols, 3)); gg.computeVertexNormals(); gg.setAttribute('aPave', new THREE.BufferAttribute(pav, 1)); /* 第 268 版：廣場和小路鋪石磚 */
     const ground = new THREE.Mesh(gg, inkMat()); /* 第 216 版：地面可以塗墨水 */ ground.receiveShadow = !low; ground.userData.ground = true; root.add(ground); picks.push(ground);
     // 水：一整片水面放在低處，小溪和池塘挖下去的地方就看得到
-    const water = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshLambertMaterial({ color: 0x46c2f0, transparent: true, opacity: 0.86, depthWrite: false })); water.rotation.x = -Math.PI / 2; water.position.y = WATER_Y; root.add(water);
+    const water = new THREE.Mesh(new THREE.PlaneGeometry(240, 240), new THREE.MeshLambertMaterial({ color: 0x46c2f0, transparent: true, opacity: 0.86, depthWrite: false })); water.rotation.x = -Math.PI / 2; water.position.y = WATER_Y; root.add(water);
     anim.push((tt) => { water.material.color.setHSL(0.55, 0.82, 0.6 + Math.sin(tt * 0.8) * 0.02); });
     // 台地崖壁下冒出來的小瀑布
     if (STREAM.length) { const wc = document.createElement('canvas'); wc.width = 16; wc.height = 64; const x = wc.getContext('2d'); for (let i = 0; i < 16; i++) { x.fillStyle = i % 3 ? '#8fe3ff' : '#e9fbff'; x.fillRect(i, 0, 1, 64); } for (let y = 0; y < 64; y += 8) { x.fillStyle = 'rgba(255,255,255,.55)'; x.fillRect(0, y, 16, 2); }
-      const tx = new THREE.CanvasTexture(wc); tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.repeat.set(2, 1.5); const wf = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 5.6), new THREE.MeshBasicMaterial({ map: tx, transparent: true, opacity: 0.92 })); wf.position.set(STREAM[0][0], 1.9, STREAM[0][1] - 1.2); root.add(wf); anim.push((tt, dt) => { tx.offset.y += dt * 1.6; });
-      for (let i = 0; i < 4; i++) { const f = mesh(new THREE.SphereGeometry(0.7, 8, 6), mat(0xffffff), 0, 0, 0, root); f.castShadow = false; anim.push((tt) => { f.position.set(STREAM[0][0] - 1.5 + i, WATER_Y + 0.15 + Math.abs(Math.sin(tt * 4 + i * 1.3)) * 0.4, STREAM[0][1] + 0.3); }); } }
-    // 木橋（過小溪到西邊草原）
-    if (BRIDGE.x0 < 500) { const bx = (BRIDGE.x0 + BRIDGE.x1) / 2, bz = (BRIDGE.z0 + BRIDGE.z1) / 2, L = BRIDGE.x1 - BRIDGE.x0, br = new THREE.Group(); br.position.set(bx, 0, bz); root.add(br);
-      for (let i = 0; i < 12; i++) { const u = i / 11 - 0.5, y = BRIDGE.y + Math.cos(u * Math.PI) * 0.35 - 0.12; mesh(new THREE.BoxGeometry(L / 12 - 0.12, 0.3, BRIDGE.z1 - BRIDGE.z0), mat(i % 2 ? 0xc08a52 : 0xb07a46, { map: SC.townArt.wood() }), u * L, y, 0, br); }
-      [-1, 1].forEach((sd) => { for (let i = 0; i < 5; i++) { const u = i / 4 - 0.5; mesh(new THREE.CylinderGeometry(0.14, 0.14, 1.3, 6), mat(0x7a4a2a), u * L * 0.9, BRIDGE.y + 0.9 + Math.cos(u * Math.PI) * 0.3, sd * 2, br); } const rl = mesh(new THREE.BoxGeometry(L * 0.92, 0.16, 0.16), mat(0x7a4a2a), 0, BRIDGE.y + 1.6, sd * 2, br); void rl; }); }
+      const tx = new THREE.CanvasTexture(wc); tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.repeat.set(2, 1.5); const wf = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 5.6), new THREE.MeshBasicMaterial({ map: tx, transparent: true, opacity: 0.92 })); const fdx = STREAM[1][0] - STREAM[0][0], fdz = STREAM[1][1] - STREAM[0][1], fl0 = Math.hypot(fdx, fdz), fux = fdx / fl0, fuz = fdz / fl0; wf.position.set(STREAM[0][0] - fux * 1.2, 1.9, STREAM[0][1] - fuz * 1.2); wf.rotation.y = Math.atan2(fux, fuz); root.add(wf); [[-3.2, 0.4, 2.2], [3.2, 0.6, 2.4], [-2.6, 3.6, 1.6], [2.8, 3.4, 1.7], [0, 5.6, 2.6], [-4.6, -1.6, 1.4], [4.6, -1.4, 1.5]].forEach(([u, y, r], k) => { const rk = mesh(new THREE.DodecahedronGeometry(r, 0), mat(k % 2 ? 0xa59c90 : 0x8f877c, { flatShading: true }), STREAM[0][0] - fux * 1.6 + fuz * u, y, STREAM[0][1] - fuz * 1.6 - fux * u, root); rk.rotation.set(k, k * 2, 0); }); /* 泉水從山腳的石頭堆裡流出來 */ anim.push((tt, dt) => { tx.offset.y += dt * 1.6; });
+      for (let i = 0; i < 4; i++) { const f = mesh(new THREE.SphereGeometry(0.7, 8, 6), mat(0xffffff), 0, 0, 0, root); f.castShadow = false; anim.push((tt) => { f.position.set(STREAM[0][0] + fuz * (i - 1.5) + fux * 0.3, WATER_Y + 0.15 + Math.abs(Math.sin(tt * 4 + i * 1.3)) * 0.4, STREAM[0][1] - fux * (i - 1.5) + fuz * 0.3); }); } }
+    // 拱木橋（第 3 百多版：小溪加回來，兩座橋過溪，往家和釣魚池那邊）
+    BRIDGES.forEach((b) => { const br = new THREE.Group(); br.position.set(b.x, 0, b.z); root.add(br); const L = b.L, n = 14, wd = mat(0xc08a52, { map: SC.townArt.wood() }), wd2 = mat(0xb07a46, { map: SC.townArt.wood() }), dk = mat(0x7a4a2a);
+      for (let i = 0; i < n; i++) { const u = (i + 0.5) / n - 0.5, y = 0.5 + Math.cos(u * Math.PI) * 0.45 - 0.16, pl = mesh(new THREE.BoxGeometry(b.w, 0.3, L / n - 0.1), i % 2 ? wd : wd2, 0, y, u * L, br); pl.rotation.x = Math.atan((Math.sin(u * Math.PI) * 0.45 * Math.PI) / L); }
+      [-1, 1].forEach((sd) => { for (let i = 0; i < 6; i++) { const u = i / 5 - 0.5; mesh(new THREE.CylinderGeometry(0.15, 0.15, 1.3, 6), dk, (sd * b.w) / 2, 0.5 + Math.cos(u * Math.PI) * 0.45 + 0.55, u * L * 0.94, br); }
+        const pts = []; for (let i = 0; i <= 10; i++) { const u = i / 10 - 0.5; pts.push(new V3((sd * b.w) / 2, 0.5 + Math.cos(u * Math.PI) * 0.45 + 1.15, u * L * 0.94)); } mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 12, 0.11, 5), dk, 0, 0, 0, br); }); });
     // 第 219 版（Yen 14:11「地上不要有不可蓋掉的其他墨」）：原本固定的裝飾墨痕拿掉，改成第一次來時在地上噴真的墨水（可以蓋掉、可以潛）
     // 第 278 版（Yen「小鎮噴水池改為貓神大雕像，移除環繞原本噴水池的路燈」）：廣場中間是貓神大雕像。
     // 石頭台階＋台座上坐著一隻白石貓神，閉著眼睛微笑，右手舉著一支沾了墨水的大畫筆，頭後面一圈金色光環，尾巴繞著台座。整座雕像都能塗。
@@ -38813,25 +38895,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (!low) for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2 + Math.PI / 8, x = Math.cos(a) * 4.25, z = Math.sin(a) * 4.25; mesh(new THREE.SphereGeometry(0.3, 8, 6), mat(INK[k % 6]), x, 0.95, z, fo); mesh(new THREE.SphereGeometry(0.4, 8, 6), mat(0x63c94f), x, 0.8, z, fo); } }
     // 高地邊緣的小木欄（坡道那裡空出來）：二樓高地的整排崖邊、三樓高地的前緣和兩側
     { const fm = mat(0xfff3d6), post = (x, z, h) => mesh(new THREE.BoxGeometry(0.22, 1.1, 0.22), fm, x, h + 0.55, z, root), rail = (x, z, h, L, rx) => { mesh(new THREE.BoxGeometry(rx ? 0.16 : L, 0.16, rx ? L : 0.16), fm, x, h + 0.9, z, root); };
-      for (let x = -84; x <= 84; x += 3) { if (Math.abs(x) < 10) continue; const z = -54.8, h = H(x, z); if (h < TOP.up - 0.3 || SE(x, z) > 88) continue; post(x, z, h); if (x + 3 <= 84 && Math.abs(x + 3) >= 10 && SE(x + 3, z) <= 88) rail(x + 1.5, z, h, 3); }
-      for (let x = -19; x <= 19; x += 3) { if (Math.abs(x) < 9) continue; const z = -72.6, h = H(x, z); if (h < TOP.hill - 0.3) continue; post(x, z, h); if (x + 3 <= 19 && Math.abs(x + 3) >= 9) rail(x + 1.5, z, h, 3); }
-      [-1, 1].forEach((sx) => { for (let z = -73; z >= -88; z -= 3) { const x = sx * 20.2, h = H(x, z); if (h < TOP.hill - 0.3) continue; post(x, z, h); if (z - 3 >= -88) rail(x, z - 1.5, h, 3, true); } }); }
+      for (let x = -99; x <= 99; x += 3) { if (Math.abs(x) < 10) continue; const z = -66.8, h = H(x, z); if (h < TOP.up - 0.3 || SE(x, z) > 101) continue; post(x, z, h); if (x + 3 <= 99 && Math.abs(x + 3) >= 10 && SE(x + 3, z) <= 101) rail(x + 1.5, z, h, 3); }
+      for (let x = -19; x <= 19; x += 3) { if (Math.abs(x) < 9) continue; const z = -84.1, h = H(x, z); if (h < TOP.hill - 0.3) continue; post(x, z, h); if (x + 3 <= 19 && Math.abs(x + 3) >= 9) rail(x + 1.5, z, h, 3); }
+      [-1, 1].forEach((sx) => { for (let z = -85; z >= -100; z -= 3) { const x = sx * 20.2, h = H(x, z); if (h < TOP.hill - 0.3) continue; post(x, z, h); if (z - 3 >= -100) rail(x, z - 1.5, h, 3, true); } }); }
 
     // 樹（低多邊形，一次畫完）：草地上、山上，不擋路、不在水裡
     const TREES = []; let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < 3000 && TREES.length < (low ? 70 : 120); i++) { const a = rnd() * Math.PI * 2, d = 30 + rnd() * 88, x = Math.cos(a) * d, z = Math.sin(a) * d, h = H(x, z); if (h < 0.1 || onPath(x, z) < 4.5 || blocked(x, z, 4) || (Math.abs(x - 44) < 15 && z < -54) || (Math.abs(x) < 24 && z < -50) || d < 34 || (SE(x, z) < 64 && rnd() < 0.7) || (d < 84 && rnd() < 0.3)) continue; TREES.push([x, h, z, 0.85 + rnd() * 0.6]); if (d < 74) solids.push({ x, z, r: 1.6 }); }
+    for (let i = 0; i < 3000 && TREES.length < (low ? 70 : 120); i++) { const a = rnd() * Math.PI * 2, d = 38 + rnd() * 96, x = Math.cos(a) * d, z = Math.sin(a) * d, h = H(x, z); if (h < 0.1 || onPath(x, z) < 4.5 || blocked(x, z, 4) || (Math.abs(x - 50) < 15 && z < -66) || (Math.abs(x) < 24 && z < -62) || d < 40 || polyD(x, z, STREAM) < 7 || (SE(x, z) < 76 && rnd() < 0.7) || (d < 96 && rnd() < 0.3)) continue; TREES.push([x, h, z, 0.85 + rnd() * 0.6]); if (d < 88) solids.push({ x, z, r: 1.6 }); }
     { const n = TREES.length, tk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.5, 0.7, 3, 6), mat(0x8a5a32), n), cr = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(3, 0), new THREE.MeshLambertMaterial({ flatShading: true }), n), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sv = new V3(), cc = new THREE.Color();
       TREES.forEach(([x, y, z, s], i) => { q.identity(); tk.setMatrixAt(i, m4.compose(new V3(x, y + 1.5 * s, z), q, sv.set(s, s, s))); q.setFromEuler(new THREE.Euler(0, i, 0)); cr.setMatrixAt(i, m4.compose(new V3(x, y + 4.6 * s, z), q, sv.set(s, s * 1.1, s))); cr.setColorAt(i, cc.setHex([0x4fb84a, 0x63c94f, 0x3fa645, 0x7ad35a, 0xff9ac2][i % 9 === 4 ? 4 : i % 4])); });
       tk.castShadow = cr.castShadow = !low; root.add(tk, cr); wallT.push(tk, cr); }
     // 花：家門口和廣場邊
-    { const F = []; for (let i = 0; i < 120 && F.length < 46; i++) { const near = i % 2 ? [26, 52, 11] : [0, 0, 30], a = rnd() * Math.PI * 2, d = near[2] * (0.75 + rnd() * 0.3), x = near[0] + Math.cos(a) * d, z = near[1] + Math.sin(a) * d, h = H(x, z); if (h < 0 || onPath(x, z) < 3 || blocked(x, z, 1)) continue; F.push([x, h, z]); }
+    { const F = []; for (let i = 0; i < 120 && F.length < 46; i++) { const near = i % 2 ? [32, 80, 12] : [0, 0, 38], a = rnd() * Math.PI * 2, d = near[2] * (0.75 + rnd() * 0.3), x = near[0] + Math.cos(a) * d, z = near[1] + Math.sin(a) * d, h = H(x, z); if (h < 0 || onPath(x, z) < 3 || blocked(x, z, 1)) continue; F.push([x, h, z]); }
       const fl = new THREE.InstancedMesh(new THREE.SphereGeometry(0.38, 6, 4), new THREE.MeshLambertMaterial(), F.length), m4 = new THREE.Matrix4(), cc = new THREE.Color(); F.forEach(([x, y, z], i) => { fl.setMatrixAt(i, m4.makeTranslation(x, y + 0.35, z)); fl.setColorAt(i, cc.setHex([0xff6fa8, 0xffd23f, 0xffffff, 0xa56bff][i % 4])); }); fl.castShadow = false; root.add(fl); }
     // 雲
     const clMat = new THREE.MeshLambertMaterial({ vertexColors: true }); /* 第 219 版（Yen 14:22「天上的雲也可噴塗」）：雲用頂點顏色，噴到哪裡就染上那個顏色 */
     for (let i = 0; i < 7; i++) { const cl = new THREE.Group(); [[0, 0, 4], [3.5, -0.6, 3], [-3.5, -0.8, 3], [1.5, 1.6, 2.6]].forEach(([x, y, r]) => { const gm = new THREE.SphereGeometry(r, 16, 12), n = gm.attributes.position.count; gm.setAttribute('color', new THREE.BufferAttribute(new Float32Array(n * 3).fill(1), 3)); const m = mesh(gm, clMat, x, y, 0, cl); m.castShadow = false; cloudMs.push(m); }); cl.position.set(-120 + i * 40, 50 + (i % 3) * 6, -70 - (i % 2) * 50); cl.scale.setScalar(1 + (i % 3) * 0.3); scene.add(cl); const sp = 1.2 + (i % 3) * 0.5; anim.push((tt, dt) => { cl.position.x += dt * sp; if (cl.position.x > 160) cl.position.x = -160; }); }
     // 入口建築
-    SPOTS.forEach((s) => { const g = new THREE.Group(); faceIn(g, s.x, s.z); if (s.south) g.rotation.y = 0; g.position.y = s.gy; root.add(g); B[s.k](g); if (s.sc) g.scale.setScalar(s.sc); g.userData.spot = s; picks.push(g); wallT.push(g); s.g = g; s.door.y = walkH(s.door.x, s.door.z); });
-    DECO.forEach((q) => { const g = new THREE.Group(); faceIn(g, q.x, q.z); g.position.y = q.gy; root.add(g); cottage(g, { shut: true, wall: q.wall, roof: q.roof }); g.scale.setScalar(2); wallT.push(g); });
+    SPOTS.forEach((s) => { const g = new THREE.Group(); faceIn(g, s.x, s.z); if (s.south) g.rotation.y = 0; g.position.y = s.gy; root.add(g); B[s.k](g); if (s.sc) g.scale.setScalar(s.sc); g.userData.spot = s; picks.push(g); wallT.push(g); s.g = g; s.door.y = walkH(s.door.x, s.door.z); xSol(g); });
+    DECO.forEach((q) => { const g = new THREE.Group(); faceIn(g, q.x, q.z); g.position.y = q.gy; root.add(g); cottage(g, { shut: true, wall: q.wall, roof: q.roof, ...q.o }); g.scale.setScalar(2); wallT.push(g); xSol(g); });
     wallT.push(fo);
     // 第 268 版：建築細節變多了，不會動的零件依材質合併成一個網格，平板不會因為 draw call 變多而變卡（會動的東西先跑一次動畫找出來，不合併）
     { const keep = new Set(), snap = new Map(), cand = []; const scan = (p) => p.children.forEach((o) => { if (o.isMesh && !o.isInstancedMesh && !o.children.length && o.material && o.material.userData.town && !o.material.transparent && !cloudMs.includes(o) && o !== water) cand.push(o); else if (o.isGroup && !o.isScene) scan(o); }); scan(root);
@@ -38980,8 +39062,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   let gateBusy = 0, lastGate = null, fadeEl = null;
   function gateTick(dt) {
     wpnBtn();
-    if (Z || gateBusy > 0) { gateBusy = Math.max(0, gateBusy - dt); return; }
+    if (gateBusy > 0) { gateBusy = Math.max(0, gateBusy - dt); return; }
+    if (Z) { if (Z.exitAt && Z.exitAt(pos)) zoneOut(); return; } /* Yen 11-25「出菜園…改成從門出然後切換畫面」：走出菜園的拱門就轉場回小鎮 */
     for (const s of SPOTS) { const G = s.gate; if (!G) continue;
+      if (s.area) { const A = s.area, lx = pos.x - s.x, lz = pos.z - s.z, inA = Math.abs(lx) < A.hx && lz > A.z0 && lz < A.z1 && Math.abs(pos.y - s.gy) < 3.5; if (inA && A.was === false) { A.was = true; gateGo(s); return; } A.was = inA; continue; }
       const rx = pos.x - G.x, rz = pos.z - G.z, al = rx * G.nx + rz * G.nz, lat = rx * G.nz - rz * G.nx, was = G.al; G.al = al;
       if (Math.abs(pos.y - s.gy) > 3.5) { G.al = 1e9; continue; }
       const vin = -(vel.x * G.nx + vel.z * G.nz);
@@ -38989,15 +39073,18 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (was > 0 && was < 4 && al <= 0 && Math.abs(lat) < G.hw + 0.4) { gateGo(s); return; }
     }
   }
-  function fade(on) { if (!fadeEl) { if (!on) return; fadeEl = document.createElement('div'); fadeEl.className = 'tw-fade'; document.body.appendChild(fadeEl); } fadeEl.classList.toggle('on', !!on); }
+  // 第 3 百多版（Yen 11-25「切換畫面的轉場再加些遊戲動畫感」）：圓形光圈縮起來（像遊戲換關），中間蹦出一個轉一圈的貓掌印，再從中間彈開
+  function fade(on) { if (!fadeEl) { if (!on) return; fadeEl = document.createElement('div'); fadeEl.className = 'tw-fade'; fadeEl.innerHTML = '<i class="ir"></i><b class="pw" aria-hidden="true">🐾</b><i class="st s1"></i><i class="st s2"></i><i class="st s3"></i><i class="st s4"></i>'; document.body.appendChild(fadeEl); void fadeEl.offsetWidth; } fadeEl.classList.toggle('on', !!on); }
+  function zoneOut() { gateBusy = 1.5; path = null; pathSpot = null; fade(1); try { SC.audio.sfx.ui && SC.audio.sfx.ui(); } catch (e) {} setTimeout(() => { if (Z && SC.farm && Z === SC.farm.zone) SC.farm.leave(true); else setZone(null); setTimeout(() => fade(0), 220); }, 450); }
+  T.exitZone = () => { if (gateBusy > 0 && fadeEl && fadeEl.classList.contains('on')) return; zoneOut(); };
   function gateGo(s) {
     gateBusy = 1.5; lastGate = s; path = null; pathSpot = null; fade(1); try { SC.audio.sfx.ui && SC.audio.sfx.ui(); } catch (e) {}
     setTimeout(() => {
       if (!T.on) { fade(0); return; }
       if (s.k === 'range') { const G = s.gate; lastGate = null; pos.set(G.x - G.nx * 3, 0, G.z - G.nz * 3); pos.y = walkH(pos.x, pos.z); vel.set(0, 0, 0); face = yaw = Math.atan2(-G.nx, -G.nz); camPitch = -0.04; last.copy(pos); fp = null; arReset = true; setTimeout(() => clPanel(), 200); }
       else T.enter(s.k);
-      setTimeout(() => fade(0), s.k === 'farm' ? 260 : 140);
-    }, 380);
+      setTimeout(() => fade(0), s.k === 'farm' ? 260 : 160);
+    }, 450);
   }
   T._gate = (k) => { const s = SPOTS.find((q) => q.k === k); return s && s.gate; }; // 測試用
   // 第 214 版（Yen 13:11）：電腦上走到門口跳出「進入」時，自動放開滑鼠，可以直接點；離開門口、按鈕消失時再鎖回去，變回原本轉視角的操作
@@ -40067,6 +40154,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ["離開靶場，射飛盤結束", "You left the range, clay shooting over", "マト場をはなれたので終了", "사격장을 떠나서 끝났어요", "Saliste del campo: fin del tiro al plato", "Você saiu do estande: fim do tiro ao prato", "Tu as quitté le stand : ball-trap terminé", "Schießstand verlassen, Tontauben beendet", "Hai lasciato il poligono: fine del tiro al piattello", "Ты ушёл с полигона — игра окончена", "Atış alanından çıktın, oyun bitti", "Kamu keluar dari lapangan tembak, permainan selesai", "Rời trường bắn, trò bắn đĩa kết thúc", "ออกจากสนามยิงแล้ว จบเกมยิงจานบิน"],
     ["再玩一次", "Play again", "もう一回", "한 번 더", "Otra vez", "De novo", "Rejouer", "Nochmal", "Ancora", "Ещё раз", "Tekrar oyna", "Main lagi", "Chơi lại", "เล่นอีกครั้ง"],
     ["我的最佳 {n}", "My best {n}", "自己ベスト {n}", "내 최고 {n}", "Mi mejor {n}", "Meu melhor {n}", "Mon record {n}", "Mein Bestwert {n}", "Il mio record {n}", "Мой рекорд {n}", "En iyim {n}", "Terbaikku {n}", "Kỷ lục của tôi {n}", "สถิติของฉัน {n}"],
+    ["走出拱門", "Walk out through the arch", "アーチから外へ出よう", "아치 밖으로 걸어 나가기", "Sal por el arco", "Saia pelo arco", "Sortez par l’arche", "Durch den Bogen hinausgehen", "Esci dall’arco", "Выйди через арку", "Kemerden dışarı yürü", "Keluar lewat gapura", "Đi ra qua cổng vòm", "เดินออกทางซุ้มประตู"],
     ["打靶、射飛盤", "Targets & clay shooting", "マトあて・クレー射撃", "표적·클레이 사격", "Dianas y tiro al plato", "Alvos e tiro ao prato", "Cibles et ball-trap", "Zielscheiben & Tontauben", "Bersagli e piattelli", "Мишени и тарелочки", "Hedefler ve kil güvercin", "Sasaran & tembak piringan", "Bia và bắn đĩa", "เป้าและยิงจานบิน"]].forEach((r) => { I.add([r.slice(0, 4)]); if (I.addL) ["es", "pt", "fr", "de", "it", "ru", "tr", "id", "vi", "th"].forEach((l, k) => I.addL(l, [[r[0], r[4 + k]]])); });
   I.add([["設定", "Settings", "設定", "설정"], ["回到小鎮", "Back to town", "町にもどる", "마을로 돌아가기"]]);
   Object.entries({ es: ["Ajustes", "Volver al pueblo"], pt: ["Configurações", "Voltar à vila"], fr: ["Réglages", "Retour au village"], de: ["Einstellungen", "Zurück ins Dorf"], it: ["Impostazioni", "Torna al villaggio"], ru: ["Настройки", "Назад в городок"], tr: ["Ayarlar", "Kasabaya dön"], id: ["Pengaturan", "Kembali ke kota"], vi: ["Cài đặt", "Về thị trấn"], th: ["ตั้งค่า", "กลับเมือง"] }).forEach(([l, v]) => I.addL(l, [["設定", v[0]], ["回到小鎮", v[1]]]));
@@ -40293,7 +40381,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const water = new THREE.Mesh(new THREE.CircleGeometry(POND.r + 1.5, 28), new THREE.MeshLambertMaterial({ color: 0x46c2f0, transparent: true, opacity: 0.88 })); water.rotation.x = -Math.PI / 2; water.position.set(POND.x, -0.7, POND.z); root.add(water);
     for (let i = 0; i < 3; i++) { const d = new THREE.Group(); root.add(d); mesh(geo('dk', () => new THREE.SphereGeometry(0.6, 8, 6)), mat(0xffe14a), 0, 0, 0, d).scale.set(1, 0.8, 1.3); mesh(geo('dkh', () => new THREE.SphereGeometry(0.38, 8, 6)), mat(0xffe14a), 0, 0.55, 0.55, d); mesh(geo('dkb', () => new THREE.ConeGeometry(0.15, 0.35, 4)), mat(0xff8a2a), 0, 0.5, 0.95, d).rotation.x = Math.PI / 2; anim.push((t) => { const a = t * 0.25 + i * 2.1; d.position.set(POND.x + Math.cos(a) * 4.5, -0.45 + Math.sin(t * 2 + i) * 0.05, POND.z + Math.sin(a) * 4.5); d.rotation.y = -a; }); }
     // 入口：回小鎮的拱門
-    spot({ k: 'town', n: '回沐沐小鎮', s: '', i: '🏠', x: 0, z: 52, y: 8, dx: 0, dz: 47, btn: '回去' });
+    spot({ k: 'town', n: '回沐沐小鎮', s: '走出拱門', i: '🏠', x: 0, z: 52, y: 8, dx: 0, dz: 47, btn: '' }); /* Yen 11-25「出菜園…改成從門出然後切換畫面」：不用按按鈕，走出拱門就回小鎮 */
     [-4.5, 4.5].forEach((x) => { mesh(new THREE.CylinderGeometry(0.5, 0.6, 7, 8), mat(0xfff3d6), x, 3.5, 52, root); solids.push({ x, z: 52, r: 0.8 }); });
     const ar = mesh(new THREE.TorusGeometry(4.5, 0.55, 8, 24, Math.PI), mat(0xff6fa8), 0, 7, 52, root); void ar;
     { const c = document.createElement('canvas'); c.width = 512; c.height = 128; const x = c.getContext('2d'); x.fillStyle = '#fff3d6'; x.fillRect(0, 0, 512, 128); x.strokeStyle = '#ff6fa8'; x.lineWidth = 14; x.strokeRect(7, 7, 498, 114); x.fillStyle = '#5a3a2a'; x.font = 'bold 64px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('🥕 ' + tr('沐沐菜園') + ' 🍅', 256, 68, 480); const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace;
@@ -40495,7 +40583,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const big = (i) => { const P = plots[i]; return S.canMax ? plots.filter((Q) => Math.abs(Q.x - P.x) < 7 && Math.abs(Q.z - P.z) < 7).map((Q) => Q.i) : [i]; };
   function act(k) {
     if (!F.on) return false; const now = Date.now();
-    if (k === 'town') { F.leave(true); return true; }
+    if (k === 'town') { if (T().exitZone) T().exitZone(); else F.leave(true); return true; }
     if (k === 'yd') { toast('🐷 ' + tr('這是阿肥的菜園，{n} 的田在中間那一片').replace('{n}', guest ? guest.n : '')); return true; } // 第 232 版（Yen 17:44）：以前在阿肥的菜園按 E 會掉到選單、又被送回自己家
     if (guest && OWNK.includes(k)) return true; // 第 228 版（Yen 16:49）：朋友菜園裡只能偷菜，倉庫、種子、訂單、水井、雞舍都不開
     if (k === 'barn' || k === 'shop' || k === 'order') { openPanel(k); return true; }
@@ -40665,7 +40753,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   F.hitBy = (name, took) => { if (!guest) return; const n = bag.length, g = guest; gGive(); guest = null; try { const b = bans(); b[g.uid] = Date.now() + BAN_MS; Object.keys(b).forEach((k) => { if (b[k] < Date.now()) delete b[k]; }); localStorage.setItem(BAN, JSON.stringify(b)); } catch (e) {} lockT = Date.now() + BAN_MS; sfx('hit', 0.8); hudSync(); T().setZone(null);
     const tk = took && took.c ? took.c : [], tm = took && took.m ? took.m : 0; T()._ui().say('🥅 ' + tr('被 {n} 的網子抓到了！').replace('{n}', name || '?') + ' ' + (n ? tr('籃子裡的 {c} 個菜還給主人').replace('{c}', n) + ' ' : '') + (tk.length ? tr('還被反偷了 {k} 個菜').replace('{k}', tk.length) + ' ' + tk.map((c) => CROP[c].i).join('') + ' ' : '') + (tm ? tr('被沒收 {m} 代幣').replace('{m}', tm) + ' ' : '') + tr('30 分鐘內不能再進他的菜園')); };
   F.liveInfo = () => { if (!S) load(); return { p: encPlots(), u: S.plots.map((x) => (x.u ? 1 : 0)).join('') }; };
-  F.zone = { H, out, collide: (p, pad) => collide(p, pad), get solids() { return solids; }, get spots() { return spots; }, get scene() { return scene; }, get sun() { return sun; }, near, act, frame, leave: () => { F.on = false; if (guest) gOut(); flush(); if (ov) closeOv(); }, enterZone: () => { F.on = true; } };
+  F.zone = { H, out, exitAt: (p) => p.z > 51.2 && Math.abs(p.x) < 4.1, collide: (p, pad) => collide(p, pad), get solids() { return solids; }, get spots() { return spots; }, get scene() { return scene; }, get sun() { return sun; }, near, act, frame, leave: () => { F.on = false; if (guest) gOut(); flush(); if (ov) closeOv(); }, enterZone: () => { F.on = true; } };
   F.open = () => {
     if (!S) load(); if (!built) build();
     const V = SC.town._visit, hi = V && SC.town.visiting() && V.hostFarm ? V.hostFarm() : null; /* 第 224 版：在朋友的小鎮走進菜園＝朋友的菜園 */
@@ -45288,6 +45376,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-26", "", "沐沐小鎮重新規劃：廣場更大、原本的小溪加回來（兩座拱木橋，家在溪對岸），房子改成童話繪本風（鼓鼓的枕頭屋頂、圓角灰泥牆、圓石基座、拱門拱窗），每棟寬度和側翼、圓塔、山牆都不一樣；我的家兩側有柴房和花園水井；走進菜園範圍就進去、走出拱門就回小鎮，轉場改成圓形光圈加貓掌印",
+      { en: "MooMoo Town replanned: a bigger plaza, the stream is back (two arched wooden bridges, your home across the water), houses rebuilt in a storybook style (puffy pillow roofs, rounded plaster walls, round-stone bases, arched doors and windows) and each one is different (width, side wings, round towers, gables); a woodshed and a garden with a well beside your home; walk into the farm from any side and out through its arch, with a new circle-wipe and paw-print transition", ja: "沐沐の町を作り直し：広場が大きく、小川が復活（アーチの木の橋が2つ、家は川の向こう）、家は絵本風（ふっくらした屋根、丸い漆喰の壁、丸い石の土台、アーチの扉と窓）で一軒ずつ幅・はなれ・丸い塔・切妻が違う。家の両側に薪小屋と井戸のある花壇。畑はどこからでも入れて、アーチから出ると町へ。切り替えは丸く閉じる演出と肉球マーク", ko: "무무 마을 새 설계: 광장이 더 넓어지고 개울이 돌아왔어요(아치 나무다리 2개, 집은 개울 건너편). 집은 동화책 풍(폭신한 베개 지붕, 둥근 회벽, 둥근 돌 기초, 아치 문과 창)으로 집마다 폭·별채·둥근 탑·박공이 달라요. 내 집 양옆에 장작 헛간과 우물 정원. 밭은 어느 쪽으로든 들어가고 아치로 나오면 마을로, 전환은 동그라미 화면 전환과 발바닥 도장", es: "Pueblo MooMoo rediseñado: plaza más grande, vuelve el arroyo (dos puentes de madera en arco, tu casa al otro lado), casas de cuento (tejados mullidos, paredes redondeadas, base de piedras redondas, puertas y ventanas en arco), cada una distinta (ancho, alas, torres redondas, hastiales); leñera y jardín con pozo junto a tu casa; entra a la granja por cualquier lado y sal por su arco, con nueva transición de círculo y huella", pt: "Vila MooMoo replanejada: praça maior, o riacho voltou (duas pontes de madeira em arco, sua casa do outro lado), casas em estilo livro de histórias (telhados fofos, paredes arredondadas, base de pedras redondas, portas e janelas em arco), cada uma diferente (largura, alas, torres redondas, frontões); depósito de lenha e jardim com poço ao lado da sua casa; entre na fazenda por qualquer lado e saia pelo arco, com nova transição de círculo e pegada", fr: "Village MooMoo repensé : place plus grande, le ruisseau est de retour (deux ponts de bois en arc, ta maison sur l’autre rive), maisons façon livre d’images (toits dodus, murs arrondis, socle de galets, portes et fenêtres en arc), toutes différentes (largeur, ailes, tours rondes, pignons) ; bûcher et jardin avec puits près de ta maison ; on entre dans la ferme par n’importe quel côté et on sort par l’arche, avec une nouvelle transition en cercle et empreinte de patte", de: "MooMoo-Dorf neu geplant: größerer Platz, der Bach ist zurück (zwei gewölbte Holzbrücken, dein Haus am anderen Ufer), Häuser im Bilderbuchstil (pralle Kissendächer, runde Putzwände, Rundsteinsockel, Bogentüren und -fenster), jedes anders (Breite, Seitenflügel, Rundtürme, Giebel); Holzschuppen und Garten mit Brunnen neben deinem Haus; in den Hof von jeder Seite hinein und durch den Bogen hinaus, mit neuem Kreis-Übergang und Pfotenabdruck", it: "Villaggio MooMoo riprogettato: piazza più grande, torna il ruscello (due ponti di legno ad arco, la tua casa sull’altra riva), case da libro illustrato (tetti a cuscino, muri arrotondati, base di sassi tondi, porte e finestre ad arco), ognuna diversa (larghezza, ali, torri tonde, frontoni); legnaia e giardino con pozzo accanto alla tua casa; si entra nell’orto da ogni lato e si esce dall’arco, con nuova transizione a cerchio e impronta", ru: "Городок МуМу перестроен: площадь больше, вернулся ручей (два арочных деревянных моста, твой дом на другом берегу), дома в сказочном стиле (пухлые крыши-подушки, округлые стены, основание из круглых камней, арочные двери и окна), все разные (ширина, флигели, круглые башни, фронтоны); у твоего дома дровяник и сад с колодцем; на ферму можно зайти с любой стороны и выйти через арку, новый переход кругом с отпечатком лапы", tr: "MooMoo Kasabası yeniden planlandı: daha büyük meydan, dere geri döndü (iki kemerli tahta köprü, evin karşı kıyıda), masal kitabı tarzı evler (kabarık yastık çatılar, yuvarlak sıva duvarlar, yuvarlak taş temel, kemerli kapı ve pencereler), her biri farklı (genişlik, yan kanat, yuvarlak kule, üçgen cephe); evinin yanında odunluk ve kuyulu bahçe; çiftliğe her yandan girilir, kemerden çıkılır; yeni daire ve pati izi geçişi", id: "Kota MooMoo ditata ulang: alun-alun lebih besar, sungai kecil kembali (dua jembatan kayu melengkung, rumahmu di seberang), rumah bergaya buku cerita (atap bantal yang gembung, dinding plester membulat, dasar batu bulat, pintu dan jendela lengkung), tiap rumah berbeda (lebar, sayap, menara bulat, atap pelana); gudang kayu dan taman bersumur di samping rumahmu; masuk kebun dari sisi mana saja dan keluar lewat gapura, dengan transisi lingkaran dan jejak kaki baru", vi: "Thị trấn MooMoo quy hoạch lại: quảng trường rộng hơn, con suối trở lại (hai cây cầu gỗ cong, nhà bạn ở bờ bên kia), nhà kiểu truyện tranh (mái gối phồng, tường vữa bo tròn, nền đá tròn, cửa và cửa sổ vòm), mỗi nhà một khác (bề ngang, chái, tháp tròn, đầu hồi); cạnh nhà bạn có kho củi và vườn có giếng; vào nông trại từ phía nào cũng được và ra qua cổng vòm, chuyển cảnh vòng tròn với dấu chân mèo mới", th: "จัดผังเมืองมูมูใหม่: ลานกว้างขึ้น ลำธารกลับมา (สะพานไม้โค้งสองแห่ง บ้านของเราอยู่อีกฝั่ง) บ้านสไตล์นิทาน (หลังคานุ่มฟู ผนังปูนโค้งมน ฐานหินกลม ประตูและหน้าต่างโค้ง) แต่ละหลังไม่เหมือนกัน (ความกว้าง ปีกข้าง หอคอยกลม หน้าจั่ว) ข้างบ้านเรามีโรงฟืนและสวนกับบ่อน้ำ เดินเข้าสวนผักได้ทุกด้านและออกทางซุ้มประตู พร้อมฉากเปลี่ยนแบบวงกลมและรอยเท้าแมว" }],
     ["2026-11-25", "", "沐沐小鎮的房子重做成冒險 RPG 村莊風：山牆朝前的陡屋頂、圓拱木門、十字窗、木招牌、木桶，大面低多邊形、每面一個顏色；朝房子噴墨不會再卡（碰撞檢查快了約 10 倍）；往房子的路變窄、往高地小徑的大路變寬",
       { en: "MooMoo Town houses rebuilt in an adventure-RPG village style: steep front-gabled roofs, arched wooden doors, cross-paned windows, wooden signs and barrels, in big flat-colored low-poly faces; spraying ink at houses no longer lags (hit checks about 10x faster); paths to the houses are narrower and the main road up to the highland trails is wider", ja: "沐沐の町の家を冒険RPGの村風に作り直し：正面が三角の急な屋根、アーチの木の扉、十字の窓、木の看板やたる。大きな面のローポリで面ごとに一色。家にインクを撃ってもカクつかなくなりました（当たり判定が約10倍速く）。家への道はせまく、高台の小道への大通りは広く", ko: "무무 마을의 집을 모험 RPG 마을풍으로 새로 지었어요: 앞쪽 박공의 가파른 지붕, 아치형 나무문, 십자 창문, 나무 간판과 통. 큰 면의 로우폴리에 면마다 한 색. 집에 잉크를 쏴도 더 이상 끊기지 않아요(충돌 검사 약 10배 빨라짐). 집으로 가는 길은 좁게, 고지 오솔길로 가는 큰길은 넓게", es: "Las casas del pueblo MooMoo, rehechas al estilo de aldea de RPG de aventuras: tejados empinados con hastial al frente, puertas de madera en arco, ventanas de cruz, carteles y barriles de madera, en low-poly de caras grandes con un color por cara; disparar tinta a las casas ya no da tirones (detección de impactos unas 10 veces más rápida); los caminos a las casas son más estrechos y el camino principal hacia los senderos de las terrazas, más ancho", pt: "As casas da vila MooMoo foram refeitas no estilo de vila de RPG de aventura: telhados íngremes com empena na frente, portas de madeira em arco, janelas em cruz, placas e barris de madeira, em low-poly de faces grandes com uma cor por face; atirar tinta nas casas não trava mais (detecção de acertos cerca de 10x mais rápida); caminhos para as casas mais estreitos e a estrada principal para as trilhas no alto mais larga", fr: "Les maisons du village MooMoo refaites en style village de RPG d’aventure : toits pentus à pignon en façade, portes en bois cintrées, fenêtres à croisillons, enseignes et tonneaux en bois, en low-poly à grandes faces d’une seule couleur ; tirer de l’encre sur les maisons ne rame plus (détection des impacts environ 10 fois plus rapide) ; les chemins vers les maisons sont plus étroits et la grande route vers les sentiers en hauteur plus large", de: "Die Häuser im MooMoo-Dorf neu im Stil eines Abenteuer-RPG-Dorfs: steile Giebeldächer nach vorn, gewölbte Holztüren, Sprossenfenster, Holzschilder und Fässer, als Low-Poly mit großen, einfarbigen Flächen; auf Häuser sprühen ruckelt nicht mehr (Treffertest etwa 10-mal schneller); Wege zu den Häusern schmaler, die Hauptstraße zu den Pfaden auf der Anhöhe breiter", it: "Le case del villaggio MooMoo rifatte in stile villaggio da RPG d’avventura: tetti ripidi con timpano davanti, porte di legno ad arco, finestre a croce, insegne e botti di legno, in low-poly a grandi facce di un solo colore; sparare inchiostro sulle case non scatta più (controllo dei colpi circa 10 volte più veloce); i sentieri verso le case sono più stretti e la strada principale verso i sentieri in quota più larga", ru: "Дома в городке МуМу переделаны в стиле деревни из приключенческой RPG: крутые крыши с фронтоном спереди, арочные деревянные двери, окна с крестовиной, деревянные вывески и бочки, крупные плоские low-poly грани по одному цвету; стрельба краской по домам больше не тормозит (проверка попаданий примерно в 10 раз быстрее); дорожки к домам уже, а главная дорога к тропам на возвышенности шире", tr: "MooMoo Kasabası'nın evleri macera RPG köyü tarzında yeniden yapıldı: önden üçgen alınlıklı dik çatılar, kemerli ahşap kapılar, haç pencereler, ahşap tabelalar ve fıçılar; her yüzü tek renk büyük yüzlü low-poly; evlere mürekkep sıkınca artık takılma yok (isabet kontrolü yaklaşık 10 kat hızlı); evlere giden yollar daraldı, yüksek patikalara giden ana yol genişledi", id: "Rumah di Kota MooMoo dibuat ulang bergaya desa RPG petualangan: atap curam dengan gevel menghadap depan, pintu kayu melengkung, jendela silang, papan nama dan tong kayu, low-poly bermuka besar dengan satu warna per muka; menembak tinta ke rumah tidak lagi patah-patah (cek tabrakan sekitar 10x lebih cepat); jalan ke rumah lebih sempit dan jalan utama ke jalur dataran tinggi lebih lebar", vi: "Nhà ở thị trấn MooMoo được làm lại theo phong cách làng RPG phiêu lưu: mái dốc đầu hồi phía trước, cửa gỗ vòm, cửa sổ chữ thập, biển gỗ và thùng gỗ, low-poly mặt lớn mỗi mặt một màu; bắn mực vào nhà không còn giật (kiểm tra va chạm nhanh khoảng 10 lần); đường vào nhà hẹp lại, đường lớn lên các lối mòn trên cao rộng hơn", th: "บ้านในเมืองมูมูทำใหม่เป็นสไตล์หมู่บ้านเกม RPG ผจญภัย: หลังคาชันจั่วหันหน้า ประตูไม้โค้ง หน้าต่างกากบาท ป้ายไม้และถังไม้ แบบโลว์โพลีหน้าใหญ่หน้าละสี ยิงหมึกใส่บ้านไม่กระตุกแล้ว (ตรวจการชนเร็วขึ้นราว 10 เท่า) ทางไปบ้านแคบลง ถนนใหญ่ขึ้นไปทางเดินบนที่สูงกว้างขึ้น" }],
     ["2026-11-26", "", "愛心面板改成公告：遊戲還在優化，尚未開始接受贊助。歡迎用 Debug 留言回報 bug、用愛心留言分享點子，常常上來玩就是最大的支持",
