@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v311';</script><script>window.SC_BUILD='7be21c29ddf2';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v312';</script><script>window.SC_BUILD='d76fd89160d3';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -38357,7 +38357,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const pos = new V3(0, 0, 24), vel = new V3(); let face = Math.PI, yaw = 0, camYaw = 0, goal = null, goalSpot = null, near = null, keys = {}, enterLock = 0, hintT = 0;
   const spots = [], solids = [], picks = [], anim = [], npcs = [];
   const TIPS = ['底下的「積分賽」一按就配對！', '有空就去探險小徑走走，打打小怪物。', '鬼鬼屋要找朋友一起守住阿肥！', '釣魚池和菜園正在蓋，快好了！', '第一次玩？先去氣球帳篷學玩法。', '愛心小舖可以看到每次更新了什麼。', '練習場可以跟電腦練習塗地。'];
-  const BOUND = 64, SPEED = 15;
+  const BOUND = 88, SPEED = 15; /* 第 3 百多版：U 形小鎮的邊界改成圓角方形（SE），高地上的菜園、靶場、探險小徑都走得到 */
 
   // ───────── 小工具 ─────────
   const MC = new Map();
@@ -38640,15 +38640,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const segD = (x, z, ax, az, bx, bz) => { const dx = bx - ax, dz = bz - az, u = SC.clamp(((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1), 0, 1); return Math.hypot(ax + dx * u - x, az + dz * u - z); };
   const polyD = (x, z, P) => { let d = 1e9; for (let i = 0; i + 1 < P.length; i++) d = Math.min(d, segD(x, z, P[i][0], P[i][1], P[i + 1][0], P[i + 1][1])); return d; };
   const STREAM = [], POND = { x: -28, z: 54, r: 11 }; /* 第 3 百多版（Yen 11-25 U 形小鎮）：小溪和木橋拿掉，釣魚池在廣場南邊、U 形開口的西側 */
-  const BRIDGE = { x0: 900, x1: 901, z0: 0, z1: 1, y: 0.55 }, WATER_Y = -0.7, TOP = { up: 7, hill: 15 };
+  const BRIDGE = { x0: 900, x1: 901, z0: 0, z1: 1, y: 0.55 }, WATER_Y = -0.7, TOP = { up: 6, hill: 12 };
+  const rp = (a, b, x) => { const u = SC.clamp((x - a) / (b - a), 0, 1); return 0.5 * (u + u * u * (3 - 2 * u)); }; // 坡道：一半直線一半緩起緩停，最陡的地方也走得上去（對戰的角色一步只能跨 1.6）
   const SE = (x, z) => Math.sqrt(Math.sqrt(x * x * x * x + z * z * z * z)); // 圓角方形的距離：小鎮外圈的山圍成圓角方形，四個角落比較寬
   function baseH(x, z) {
     const ax = Math.abs(x);
     // 第 3 百多版（Yen 11-25「菜園、靶場放在二樓高地，探險小徑一樣三樓高地」）：廣場北邊一道坡道上二樓高地（整排），二樓中間再一道坡道上三樓高地
-    const w1 = SC.lerp(1.8, 6.5, 1 - sm(5, 9, ax)); let h = TOP.up * sm(-52 + w1, -52 - w1, z); // 二樓高地（中間是坡道）
-    const w2 = SC.lerp(1.8, 7, 1 - sm(4, 8, ax)); h += (TOP.hill - TOP.up) * sm(-70 + w2, -70 - w2, z) * (1 - sm(20, 23, ax)); // 三樓高地（探險小徑）
+    const w1 = SC.lerp(1.8, 8, 1 - sm(5, 9, ax)); let h = TOP.up * rp(-52 + w1, -52 - w1, z); // 二樓高地（中間是坡道）
+    const w2 = SC.lerp(1.8, 7.5, 1 - sm(4, 8, ax)); h += (TOP.hill - TOP.up) * rp(-70.5 + w2, -70.5 - w2, z) * (1 - sm(20, 23, ax)); // 三樓高地（探險小徑）
     const r = Math.hypot(x, z * 0.92);
-    h += Math.sin(x * 0.09 + 0.7) * Math.cos(z * 0.08) * 0.5 * sm(34, 48, r) * (1 - sm(62, 72, r)) * (1 - sm(-44, -50, -z)); // 草地輕輕起伏
+    h += Math.sin(x * 0.09 + 0.7) * Math.cos(z * 0.08) * 0.5 * sm(34, 48, r) * (1 - sm(62, 72, r)) * (1 - sm(40, 46, -z)); // 草地輕輕起伏（高地上不起伏）
     const rr = SE(x, z * 0.95); h += 22 * sm(92, 118, rr) + 6 * Math.sin(x * 0.07 + 1) * Math.cos(z * 0.06) * sm(96, 116, rr); // 外圈的山
     const k = Math.max(1 - sm(2, 4.6, polyD(x, z, STREAM)), 1 - sm(POND.r - 3, POND.r + 1.5, Math.hypot(x - POND.x, z - POND.z)));
     if (k > 0) h = SC.lerp(h, -2.6, k);
@@ -38789,7 +38790,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       by.forEach((L) => { if (L.length < 2) return; let n = 0; const gs = L.map((o) => { const g = (o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone()).applyMatrix4(o.matrixWorld); n += g.attributes.position.count; return g; });
         const P = new Float32Array(n * 3), N = new Float32Array(n * 3), U = new Float32Array(n * 2); let i = 0; gs.forEach((g) => { const c = g.attributes.position.count; P.set(g.attributes.position.array, i * 3); if (g.attributes.normal) N.set(g.attributes.normal.array, i * 3); if (g.attributes.uv) U.set(g.attributes.uv.array, i * 2); i += c; g.dispose(); });
         const mg = new THREE.BufferGeometry(); mg.setAttribute('position', new THREE.BufferAttribute(P, 3)); mg.setAttribute('normal', new THREE.BufferAttribute(N, 3)); mg.setAttribute('uv', new THREE.BufferAttribute(U, 2)); mg.computeBoundingSphere();
-        const m = new THREE.Mesh(mg, L[0].material); m.castShadow = L[0].castShadow; m.receiveShadow = L[0].receiveShadow; L.forEach((o) => o.parent.remove(o)); root.add(m); }); }
+        const m = new THREE.Mesh(mg, L[0].material); m.castShadow = L[0].castShadow; m.receiveShadow = L[0].receiveShadow; L.forEach((o) => { o.parent.remove(o); PHYS.push(o); }); root.add(m); }); } /* 拿掉的原本零件留著給「真正形狀」量屋頂高度用（合併後的大網格跨好幾棟，不能拿來量） */
     // 第 260 版（Yen 23:59「所有物件都要能塗」）：木橋、路燈、欄杆、花、瀑布下的水花石……全部都打得到、塗得到（雲、水、地形另外處理）
     root.children.forEach((c) => { if (wallT.includes(c) || c === water) return; let ok = false, bad = false; c.traverse((o) => { if (!o.isMesh) return; if (cloudMs.includes(o)) bad = true; const m = o.material; if (m && (m.isMeshLambertMaterial || m.userData.town) && !m.transparent) ok = true; }); if (ok && !bad) wallT.push(c); });
     inkInit(root);
@@ -38832,7 +38833,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const blocked = (x, z, pad) => solids.some((s) => Math.hypot(x - s.x, z - s.z) < s.r + pad);
   function collide(p, pad) {
     for (const s of solids) { const dx = p.x - s.x, dz = p.z - s.z, d = Math.hypot(dx, dz), m = s.r + pad; if (d < m && d > 1e-4) { p.x = s.x + (dx / d) * m; p.z = s.z + (dz / d) * m; } }
-    const d = Math.hypot(p.x, p.z); if (d > BOUND) { p.x *= BOUND / d; p.z *= BOUND / d; }
+    const d = SE(p.x, p.z); if (d > BOUND) { p.x *= BOUND / d; p.z *= BOUND / d; }
   }
   // 點名牌：沿著路網自己走過去（一動搖桿就取消）
   let path = null, pathSpot = null;
@@ -39332,11 +39333,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ARN.ink = { stamp: arStamp, ownerAt: (x, z) => (ownInk(x, z) ? 1 : 0), dent, dentTick };
   // 第 288 版（Yen 11-25「潛墨爬房子」）：房子、雕像、帳篷的真正形狀（從上往下打射線量出來的屋頂高度，0.6 公尺一格，第一次用到才量）。
   // 對戰的角色把它當成牆和屋頂：撞得到、站得上去、潛墨爬得上去（爬牆、翻上牆頂、在牆上橫移都是對戰的 wallClimb）
+  const PHYS = [];
   const RC = new Map(), RG = 0.6, rcO = new V3(), rcD = new V3(0, -1, 0); let rSol = null;
   function roofSet() {
     const sp = new THREE.Sphere(); rSol = solids.map((s) => ({ s, list: [] }));
     wallT.forEach((w) => { w.updateMatrixWorld(true); w.traverse((o) => { if (!o.isMesh || !o.geometry || (o.material && o.material.transparent)) return; const g = o.geometry; if (!g.boundingSphere) g.computeBoundingSphere(); sp.copy(g.boundingSphere).applyMatrix4(o.matrixWorld); if (o.isInstancedMesh || sp.radius > 45) return;
       for (const e of rSol) if (Math.hypot(sp.center.x - e.s.x, sp.center.z - e.s.z) < e.s.r + sp.radius) e.list.push(o); }); });
+    PHYS.forEach((o) => { const g = o.geometry; if (!g.boundingSphere) g.computeBoundingSphere(); sp.copy(g.boundingSphere).applyMatrix4(o.matrixWorld); for (const e of rSol) if (Math.hypot(sp.center.x - e.s.x, sp.center.z - e.s.z) < e.s.r + sp.radius) e.list.push(o); });
   }
   function roofH(x, z) {
     if (Z || !wallT.length) return -99; if (!rSol) roofSet(); let best = -99;
@@ -39383,7 +39386,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const wet = swimming(); ARN.dive = false;
     SC.game.arena.step(ARN, dt, wet ? swimExt : null); arRan = true;
     face = a.yaw; onGround = a.onGround; jumps = a.jumps; vy = a.vel.y;
-    { const d = Math.hypot(pos.x, pos.z); if (d > BOUND) { pos.x *= BOUND / d; pos.z *= BOUND / d; } } if (!wet) waterFx(dt, false, false, 0); arHudUpd(a); /* 第 288 版：房子改用真正的形狀擋（對戰的牆），不再用圓圈推開 */
+    { const d = SE(pos.x, pos.z); if (d > BOUND) { pos.x *= BOUND / d; pos.z *= BOUND / d; } } if (!wet) waterFx(dt, false, false, 0); arHudUpd(a); /* 第 288 版：房子改用真正的形狀擋（對戰的牆），不再用圓圈推開 */
     if (a.onGround && pos.y > -4) last.copy(pos);
     if (a.nextShotAt !== arShotAt) { const was = arShotAt; arShotAt = a.nextShotAt; if (was !== -1) { mzl.set(pos.x, pos.y + 2.2, pos.z); cam.getWorldDirection(aimD); skyShot(); } } /* 對著雲開槍：一道墨水射上天（小鎮才有） */
     animSt = { speed: a.onGround ? a.speed || 0 : 0, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged || (wet && ARN.dive), pitch: a.pitch || 0, firing: !!a.ctl.fire, rolling: !!a.rolling, charge: 0, t };
@@ -39472,7 +39475,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (best) best.t = bt; return best;
   }
   function arBlocked(a, x, z) {
-    const d = Math.hypot(x, z); if (d > BOUND && d > Math.hypot(a.pos.x, a.pos.z)) return true;
+    const d = SE(x, z); if (d > BOUND && d > SE(a.pos.x, a.pos.z)) return true;
     return false;
   }
   // 打到房子、樹、雕像：照對戰牆面墨水的形狀（SC.wallInk.volPattern：一團主墨＋旁邊小團＋往下流），噴進小鎮的 3D 墨水格
@@ -39792,7 +39795,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   T.setZone = (z, at) => { if (!T.on) T.show(); setZone(z, at); };
   T.zone = () => Z; T._house = (...a) => house(...a); T._face = (f) => { face = f; arReset = true; }; T._look = (y, p) => { yaw = y; if (p != null) camPitch = p; arReset = true; }; /* 比照實戰：對戰的鏡頭下一格照這個方向重設 */ T._low = () => low; T._mesh = (...a) => mesh(...a); T._mat = (c, o) => mat(c, o);
   T._ui = () => ({ hud, lblBox, prompt, say, click, walkTo: (p, s) => walkTo(p, s) });
-  T._route = (a, b) => route(a, b); T._camera = () => cam; T.spots = SPOTS; T._rt = RT; T._shots = () => shots; T._aim = () => [aimPoint().clone(), mzl.clone(), face, yaw]; T._pos = pos; T._walkTo = walkTo; T._H = walkH; T._view = (x, z, yw, pt) => { pos.set(x, zW(x, z), z); yaw = yw; face = yw; if (pt != null) camPitch = pt; arReset = true; fp = null; last.copy(pos); };
+  T._route = (a, b) => route(a, b); T._topW = (x, z) => topW(x, z); T._camera = () => cam; T.spots = SPOTS; T._rt = RT; T._shots = () => shots; T._aim = () => [aimPoint().clone(), mzl.clone(), face, yaw]; T._pos = pos; T._walkTo = walkTo; T._H = walkH; T._view = (x, z, yw, pt) => { pos.set(x, zW(x, z), z); yaw = yw; face = yw; if (pt != null) camPitch = pt; arReset = true; fp = null; last.copy(pos); };
 
   // ───────── 多國語言 ─────────
   const I = SC.i18n;
