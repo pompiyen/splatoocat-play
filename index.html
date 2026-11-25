@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v295';</script><script>window.SC_BUILD='430b3fff60bc';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v296';</script><script>window.SC_BUILD='929a4c2cfaf6';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -29499,7 +29499,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (g.state === 'play') { SC.ui.banner('連續打倒 150 隻！每個人 +15 代幣！', 2.2, true); SC.audio.sfx.koGot && SC.audio.sfx.koGot(); } }
   Z.buffOf = (a) => a && a.buffUntil > G().time && Z.on ? a.buffK : -1;
   function dropPow(near, kk) { /* 第 124 版（Yen「每過一段時間神兵會散落在四處」）：整張地圖到處都會掉（不只城裡）；也會掉齒輪 */
-    if (Z.pows.length >= POW.max) return; for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = near ? DOME_R + 7 + Math.random() * 12 : MP.drop[0] + Math.random() * MP.drop[1], x = DX + Math.cos(a) * r, z = DZ + Math.sin(a) * r, h = H(x, z); if (near ? h < CY - 2 : h < -1 || h > CY + 3) continue; if (MP.lim && Math.hypot(x, z) > MP.lim) continue; Z.pows.push({ id: powId++, k: kk != null ? kk : !near && Math.random() < POW.gearDrop ? GEAR : powK(), x, z, life: POW.life, born: G().time }); return; }
+    if (Z.pows.length >= POW.max) return; for (let tr = 0; tr < 16; tr++) { const a = Math.random() * TAU, r = near ? POW_IN + Math.random() * 12 : Math.max(POW_IN, MP.drop[0] + Math.random() * MP.drop[1]), x = DX + Math.cos(a) * r, z = DZ + Math.sin(a) * r, h = H(x, z); if (near ? h < CY - 2 : h < -1 || h > CY + 3) continue; if (MP.lim && Math.hypot(x, z) > MP.lim) continue; Z.pows.push({ id: powId++, k: kk != null ? kk : !near && Math.random() < POW.gearDrop ? GEAR : powK(), x, z, life: POW.life, born: G().time }); return; }
+    if (near) dropPow(false, kk); /* 第 289 版：城裡找不到地方 → 改掉在外面 */
   }
   /* 小威 11-24（「上 buff 可以是跑出 buff 怪，血量不能太少，打掉全隊都能上 buff，頻率跟現在一樣多」）：
      原本定時掉在地上的暫時道具，改成從老鼠洞跑出「buff 怪」（頭上頂著道具圖示、身上一圈那個顏色的光）。打倒牠，全隊都拿到那個 buff。
@@ -29508,7 +29509,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function spawnBuffZ() { const IT = SC.zbItem; if (!IT || !IT.bfRand) return false; let z = null; try { z = spawnAt(TI[BFZ.ty], (Math.random() * NH()) | 0, true); } catch (e) { z = null; } if (!z) return false;
     z.bf = IT.bfRand() + 1; z.gold = false; z.hunt = false; z.max = z.hp = Math.round(BFZ.hp * (dif.hp || 1)); return true; }
   const powK = () => (Math.random() * (SC.zbHero ? SC.zbHero.K.length : POW_COL.length - 1)) | 0; /* 第 171 版：神兵換成一套四種（07z_zombie_hero.js 的 K） */
-  function dropAt(x, z, k) { if (Z.pows.length >= POW.max || H(x, z) < -1) return; Z.pows.push({ id: powId++, k, x, z, life: POW.life, born: G().time }); }
+  const POW_IN = DOME_R + 14; /* 第 289 版（Yen 11-25「修正神兵會出現在阿肥防護罩內的問題」）：神兵、道具、齒輪一律掉在防護罩外面至少 14 格（原本城裡那種離罩子 7 格，隔著透明罩子看起來像在罩子裡、也常被咬罩子的殭屍圍住） */
+  function dropAt(x, z, k) { { const d = Math.hypot(x - DX, z - DZ); if (d < POW_IN) { const a = d > 0.01 ? Math.atan2(z - DZ, x - DX) : Math.random() * TAU; x = DX + Math.cos(a) * POW_IN; z = DZ + Math.sin(a) * POW_IN; } } if (Z.pows.length >= POW.max || H(x, z) < -1) return; Z.pows.push({ id: powId++, k, x, z, life: POW.life, born: G().time }); }
   function claimPow(pk, a) { // 碰到神兵：自己這台馬上拿到手上；裁判把地上的收掉（別台先藏起來、通知裁判）
     if (pk.claimed || !SC.zbHero) return; if (SC.zbItem && SC.zbItem.is(pk.k)) { SC.zbItem.give(a, pk.k); if (auth()) { firePow(pk, a); return; } pk.claimed = G().time; ctx.sendHit(a, -pk.id, 0, 'W01'); return; } /* 第 182 版：暫時道具 */ if (pk.k === GEAR) { if (a.gearC) return; a.gearC = 1; if (a.isPlayer) { SC.ui.banner('拿到齒輪了！拿去放在砲台上', 1.8, true); SC.audio.sfx.spReady && SC.audio.sfx.spReady(); } ctx.burst(pk.x, H(pk.x, pk.z) + 3, pk.z, new THREE.Color(0xc0c8d8), 20, 18, 0.5); if (auth()) { firePow(pk, a); return; } pk.claimed = G().time; ctx.sendHit(a, -pk.id, 0, 'W01'); return; } /* 第 128 版（Yen「炮台碎片要撿了拿去放在炮台上」）：撿到先拿著（頭上一個齒輪），走到砲台塔旁邊才裝上去 */
     if (a.heroS === pk.k) { a.heroE = SC.zbHero.K[pk.k].t; SC.zbHero.unstow(a); } else SC.zbHero.equip(a, pk.k);
@@ -30404,6 +30406,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     camera.position.set(DX + Math.sin(a) * D, 30 * S, DZ + Math.cos(a) * D); camera.up.set(0, 1, 0); camera.lookAt(DX, 8 * S - COURT + CY, DZ); camera.updateProjectionMatrix(); return true;
   };
   Z.result = null;
+  Z.dbgPow = (near, n) => { const o = []; for (let i = 0; i < (n || 1); i++) { Z.pows.length = 0; dropPow(near); if (Z.pows[0]) o.push([Z.pows[0].x, Z.pows[0].z]); } Z.pows.length = 0; if (near === 2) for (const [x, z] of o) Z.pows.push({ id: powId++, k: powK(), x, z, life: 99, born: G().time }); return { o, DX, DZ, R: DOME_R, drop: MP.drop }; }; /* 測試用 */
   Z.dbgDuck = () => duck; /* 第 207 版：測試用（截圖阿肥） */
   Z.dbgMake = (k, x, zz, o) => make(TI[k], x, zz, o || { ph: 1 }); /* 第 175 版：測試用，叫出指定的殭屍 */
   Z.swKillsN = () => swKills; /* 第 191 版 */
@@ -30527,7 +30530,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   /* 第 125 版（Yen「讓使用者在進行遊戲的時候不用進行思考就知道下一步要怎麼做」）：畫面上永遠只有一個「下一步」指標。
      順序：小鴨被咬（大紅箭頭，原本的）＞ 祭壇（站上去集氣）＞ 齒輪（開機槍）＞ 神兵（手上沒有時）＞ 最後魔王。
      東西在畫面裡：頭上一個會跳的圖示泡泡＋往下的箭頭；不在畫面裡：泡泡貼在畫面邊上，箭頭指過去。 */
-  const GUIDE_TXT = { shop: '去買東西', perk: '選升級', cp: '站上去', bar: '修路障', alt: '站上去', gear: '撿齒輪', pow: '撿神兵', tank: '打魔王', tur: '放上砲台' };
+  const GUIDE_TXT = { shop: '去買東西', perk: '選升級', cp: '站上去', bar: '修路障', alt: '站上去', gear: '撿齒輪', pow: '撿神兵', item: '撿道具', tank: '打魔王', tur: '放上砲台' };
   let guideEl = null, guideAt = 0, guideGoal = null; const gv = new V3();
   function guidePick(g, p) {
     if (!p || !p.alive || p.zbHold) return null; const px = p.pos.x, pz = p.pos.z, A = Z.alt;
@@ -30539,7 +30542,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (A.life > 0.6 && Math.hypot(px - A.x, pz - A.z) > ALT.R * 0.75) return { k: 'alt', ic: BUFF_IC[A.k] || '⭐', x: A.x, y: H(A.x, A.z) + 4, z: A.z };
     const hasHero = SC.zbHero && SC.zbHero.has(p), turFull = Z.tur.every((t) => t > TUR.max - TUR.T); let best = null, bd = 1e9;
     for (const q of Z.pows) { if (q.claimed) continue; const gear = q.k === GEAR; if (gear ? turFull || p.gearC : hasHero) continue; const d = Math.hypot(q.x - px, q.z - pz) * (gear ? 0.75 : 1); if (d < bd) { bd = d; best = q; } }
-    if (best) return { k: best.k === GEAR ? 'gear' : 'pow', ic: best.k === GEAR ? '⚙️' : (SC.zbHero && SC.zbHero.K[best.k] || {}).ic || '🎁', x: best.x, y: H(best.x, best.z) + 5, z: best.z, id: best.id };
+    if (best) return { k: best.k === GEAR ? 'gear' : SC.zbItem && SC.zbItem.is(best.k) ? 'item' : 'pow', /* 第 289 版：地上的道具指標寫「撿道具」，不再寫「撿神兵」 */ ic: best.k === GEAR ? '⚙️' : (SC.zbHero && SC.zbHero.K[best.k] || {}).ic || '🎁', x: best.x, y: H(best.x, best.z) + 5, z: best.z, id: best.id };
     const tk = Z.list.find((z) => (TY[z.ty].k === 'tank' || TY[z.ty].k === 'drill') && z.st !== 'dead' && !z.predDead); if (tk) return { k: 'tank', ic: '👊', x: tk.x, y: tk.y + 9 * TY[tk.ty].s, z: tk.z, tk };
     return null;
   }
@@ -35066,7 +35069,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   ]);
   const D = (IT.D = { first: 8, gap: 9, gapR: 5, batch: 2, killP: 0.03, /* 第 196 版（Yen「道具給的量都多一點大方一點」）：第一次 12→8 秒、每 14～22→9～14 秒、一次掉 2 個、打倒殭屍掉道具 1.5%→3%、效果時間 15→20 秒（護盾 10→14） */ atk: 1.6, bigR: 7, bigK: 0.5, reach: 1.4, spd: 1.35, rate: 0.55, draw: 1.8 }); // 一場 5 分鐘大約 15～20 個
   Object.assign(D, { first: 14, gap: 22, gapR: 8, batch: 1, killP: 0 }); /* 小威 11-24（「Buff：打掉一隻跟大胃王一樣大隻的怪才會給」「怪可以出多一些，但必須是單人吃才有」）：buff 只從 buff 大鼠來，每 22～30 秒一隻（一回合 2～3 隻），打倒殭屍不再掉道具 */
-  const BF_NAME = { atk: '大劍鼠', ink: '墨水桶鼠', big: '爆爆鼠', spd: '飛毛腿鼠', rate: '快手鼠', dbl: '雙槍鼠', shd: '盾牌鼠', hp: '愛心鼠', jmp: '跳跳鼠' }; IT.bfName = (i) => BF_NAME[(K[i] || {}).k] || 'buff 大鼠'; /* 小威 11-24：一種 buff 一種鼠 */
+  const BF_NAME = { atk: '大劍鼠', ink: '墨水桶鼠', big: '爆爆鼠', spd: '飛毛腿鼠', rate: '快手鼠', dbl: '雙槍鼠', shd: '盾牌鼠', hp: '愛心鼠', jmp: '跳跳鼠' }; IT.bfName = (i) => BF_NAME[(K[i] || {}).k] || '道具大鼠'; /* 小威 11-24：一種 buff 一種鼠 */
   const KI = {}; K.forEach((q, i) => (KI[q.k] = i));
   const on = () => G() && G().rule === 'zombie';
   IT.is = (k) => k >= BASE && k < BASE + K.length;
@@ -35101,7 +35104,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const g = G(); if (!g || !g.actors || !K[i] || !on()) return; const p = g.player && g.player(), team = p ? p.team : 0;
     for (const a of g.actors) if (a.team === team && !a.isTarget && !a.gone) apply(a, i, !!a.isPlayer);
     const c = new THREE.Color(K[i].col); if (SC.fx && Number.isFinite(x)) { SC.fx.burst(x, (y || 0) + 3, z, c, 50, 30, 0.8); if (SC.fx.ring) SC.fx.ring(x, (y || 0) + 0.4, z, c, 14, 0.5); }
-    if (p && SC.ui && SC.ui.tip) SC.ui.tip('打倒 buff 怪，全隊都變強了！', 2.5);
+    if (p && SC.ui && SC.ui.tip) SC.ui.tip('打倒道具鼠，全隊都變強了！', 2.5);
   }
   IT.teamGive = (i, x, y, z) => { teamApply(i, x, y, z); const g = G(), p = g && g.player && g.player(); if (p && SC.zsk && SC.zsk.send) SC.zsk.send(p, 'tbf', x, y, z, 0, i); }; // 裁判那台：自己這台先上，再告訴別台
   IT.teamNet = (i, x, y, z) => teamApply(i | 0, x, y, z);
@@ -35190,7 +35193,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     ['無敵護盾！', 'Invincible Shield!', 'むてきシールド！', '무적 실드!'],
     ['體力全滿！', 'Full Health!', 'たいりょくまんたん！', '체력 회복!'],
     ['跳躍 +1！', 'Extra Jump!', 'ジャンプ+1！', '점프 +1!'],
-    ['打倒 buff 怪，全隊都變強了！', 'Buff monster down! Your whole team got stronger!', 'バフモンスターをたおした！チーム全員パワーアップ！', '버프 몬스터 처치! 팀 전체가 강해졌어!'],
+    ['打倒道具鼠，全隊都變強了！', 'Item Mouse down! Your whole team got stronger!', 'アイテムネズミをたおした！チーム全員パワーアップ！', '아이템 쥐 처치! 팀 전체가 강해졌어!'], /* 第 289 版（Yen 11-25「加值性的神兵請直接改名叫做道具」）：buff → 道具 */
+    ['道具大鼠', 'Item Mouse', 'アイテムネズミ', '아이템 쥐'], ['撿道具', 'Grab item', 'アイテムをひろう', '아이템 줍기'],
   ]);
   const LI = { // 其他語言（順序跟 K 一樣）
     es: ['¡Más ataque!', '¡Tinta infinita!', '¡Área mayor!', '¡Más velocidad!', '¡Disparo rápido!', '¡Disparos dobles!', '¡Escudo invencible!', '¡Salud completa!', '¡Salto extra!'],
@@ -35204,6 +35208,19 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     vi: ['Tăng tấn công!', 'Mực vô hạn!', 'Mở rộng phạm vi!', 'Tăng tốc!', 'Bắn nhanh!', 'Đạn gấp đôi!', 'Khiên bất tử!', 'Hồi đầy máu!', 'Thêm một lần nhảy!'],
     th: ['พลังโจมตีเพิ่ม!', 'หมึกไม่จำกัด!', 'ระยะกว้างขึ้น!', 'วิ่งเร็วขึ้น!', 'ยิงรัว!', 'กระสุนสองเท่า!', 'โล่อมตะ!', 'เลือดเต็ม!', 'กระโดดเพิ่ม!'],
   };
+  const LX = { /* 第 289 版：道具大鼠、打倒道具鼠、撿道具 */
+    es: ["Ratón de objetos", "¡Ratón de objetos derrotado! ¡Todo tu equipo es más fuerte!", "Coger objeto"],
+    pt: ["Rato de itens", "Rato de itens derrotado! Toda a equipe ficou mais forte!", "Pegar item"],
+    fr: ["Souris à objet", "Souris à objet vaincue ! Toute ton équipe est plus forte !", "Prendre l'objet"],
+    de: ["Item-Maus", "Item-Maus besiegt! Dein ganzes Team ist stärker!", "Item nehmen"],
+    it: ["Topo oggetto", "Topo oggetto sconfitto! Tutta la squadra è più forte!", "Prendi oggetto"],
+    ru: ["Мышь-предмет", "Мышь-предмет побеждена! Вся команда стала сильнее!", "Взять предмет"],
+    tr: ["Eşya Faresi", "Eşya Faresi yenildi! Bütün takım güçlendi!", "Eşya al"],
+    id: ["Tikus Item", "Tikus Item kalah! Seluruh tim jadi lebih kuat!", "Ambil item"],
+    vi: ["Chuột vật phẩm", "Hạ được chuột vật phẩm! Cả đội mạnh hơn!", "Nhặt vật phẩm"],
+    th: ["หนูไอเทม", "ล้มหนูไอเทมได้! ทั้งทีมแข็งแกร่งขึ้น!", "หยิบไอเทม"],
+  };
+  if (SC.i18n && SC.i18n.addL) Object.keys(LX).forEach((l) => SC.i18n.addL(l, ['道具大鼠', '打倒道具鼠，全隊都變強了！', '撿道具'].map((z, i) => [z, LX[l][i]])));
   if (SC.i18n && SC.i18n.addL) Object.keys(LI).forEach((l) => SC.i18n.addL(l, K.map((q, i) => [q.name, LI[l][i]])));
 })();
 
@@ -35487,7 +35504,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const REC = 'sc-zbrec', DEXK = 'sc-zbdex';
   const load = (k) => { try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; } };
   const save = (k, o) => { try { localStorage.setItem(k, JSON.stringify(o)); } catch (e) { /* 私密模式：這次記不住 */ } };
-  const DEX = (SH.DEX = [['walk', '殭屍鼠'], ['run', '跑跑鼠'], ['fat', '胖胖鼠'], ['balloon', '氣球鼠'], ['dig', '鑽地鼠'], ['mini', '小果凍鼠'], ['boom', '炸彈鼠'], ['jelly', '果凍鼠'], ['tongue', '舌頭鼠'], ['charge', '衝撞鼠'], ['spit', '吐毒鼠'], ['lid', '鍋蓋鼠'], ['inky', '噴墨鼠'], ['heal', '澆水鼠'], ['pogo', '彈簧鼠'], ['bfm', 'buff 大鼠'], ['big', '大胃王'], ['mama', '鼠媽媽'], ['armor', '鐵甲大鼠'], ['mag', '磁鐵鼠'], ['king', '起司寶寶大王'], ['drill', '鑽牆鼠'], ['tank', '肌肉坦克鼠']]);
+  const DEX = (SH.DEX = [['walk', '殭屍鼠'], ['run', '跑跑鼠'], ['fat', '胖胖鼠'], ['balloon', '氣球鼠'], ['dig', '鑽地鼠'], ['mini', '小果凍鼠'], ['boom', '炸彈鼠'], ['jelly', '果凍鼠'], ['tongue', '舌頭鼠'], ['charge', '衝撞鼠'], ['spit', '吐毒鼠'], ['lid', '鍋蓋鼠'], ['inky', '噴墨鼠'], ['heal', '澆水鼠'], ['pogo', '彈簧鼠'], ['bfm', '道具大鼠'], ['big', '大胃王'], ['mama', '鼠媽媽'], ['armor', '鐵甲大鼠'], ['mag', '磁鐵鼠'], ['king', '起司寶寶大王'], ['drill', '鑽牆鼠'], ['tank', '肌肉坦克鼠']]);
   function dexSee(k) { if (!DEX.some((d) => d[0] === k)) return; const o = load(DEXK); if (o[k]) return; o[k] = 1; save(DEXK, o); newDex.push(k); const nm = (DEX.find((d) => d[0] === k) || [])[1]; if (SC.ui && SC.ui.tip) SC.ui.tip('📖 圖鑑新發現：' + nm + '！（' + Object.keys(o).length + ' / ' + DEX.length + '）', 2.6); }
   const icon = (k) => { const Z = Zb(), t = Z.TYk && Z.TYk(k), ev = ['walk', 'run', 'fat', 'mini', 'bfm'].includes(k); return ev && t ? Z.mouseIcon('#' + t.body.toString(16).padStart(6, '0')) : Z.icon(k); };
   const DIFS = ['easy', 'normal', 'hard', 'crazy', 'hell', 'mad', 'ultra'], difName = (k) => (SC.DIFFICULTY && SC.DIFFICULTY[k] && SC.DIFFICULTY[k].name) || k;
@@ -35531,7 +35548,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       ['去買東西', 'Go shop', 'かいものへ', '쇼핑하러'], ['選升級', 'Pick upgrade', 'アップグレード', '업그레이드'],
       ['氣球之夜', 'Balloon Night', 'ふうせんのよる', '풍선의 밤'], ['跑跑鼠暴走', 'Runner Rush', 'はしりネズミだいそうそう', '달리기 쥐 폭주'], ['地底突襲', 'Underground Ambush', 'ちていきしゅう', '지하 기습'], ['果凍大爆發', 'Jelly Explosion', 'ゼリーだいばくはつ', '젤리 대폭발'], ['炸彈鼠派對', 'Bomb Mouse Party', 'ばくだんネズミパーティー', '폭탄 쥐 파티'], ['胖胖鼠大遊行', 'Chubby Parade', 'ぽっちゃりネズミのパレード', '통통 쥐 퍼레이드'],
       ['起司寶寶大王', 'King Cheese Baby', 'チーズベビーキング', '치즈 아기 대왕'], ['雙胃王', 'Double Big Eaters', 'ダブルおおぐい', '더블 대식가'], ['鼠媽媽＋磁鐵鼠', 'Mama Mouse + Magnet Mouse', 'ママネズミ＋じしゃくネズミ', '엄마 쥐 + 자석 쥐'], ['雙鐵甲大鼠', 'Double Iron Mice', 'ダブルてっこうネズミ', '더블 철갑 쥐'],
-      ['大劍鼠', 'Big Sword Mouse', 'だいけんネズミ', '대검 쥐'], ['墨水桶鼠', 'Ink Bucket Mouse', 'インクバケツネズミ', '잉크통 쥐'], ['爆爆鼠', 'Boom Mouse', 'バクバクネズミ', '펑펑 쥐'], ['飛毛腿鼠', 'Speedy Mouse', 'しゅんそくネズミ', '날쌘 쥐'], ['快手鼠', 'Quick Paw Mouse', 'はやうちネズミ', '빠른손 쥐'], ['雙槍鼠', 'Twin Blaster Mouse', 'にちょうネズミ', '쌍권총 쥐'], ['盾牌鼠', 'Shield Mouse', 'たてネズミ', '방패 쥐'], ['愛心鼠', 'Heart Mouse', 'ハートネズミ', '하트 쥐'], ['跳跳鼠', 'Bouncy Mouse', 'ぴょんぴょんネズミ', '깡총 쥐'], ['buff 大鼠', 'Buff Mouse', 'バフネズミ', '버프 쥐'],
+      ['大劍鼠', 'Big Sword Mouse', 'だいけんネズミ', '대검 쥐'], ['墨水桶鼠', 'Ink Bucket Mouse', 'インクバケツネズミ', '잉크통 쥐'], ['爆爆鼠', 'Boom Mouse', 'バクバクネズミ', '펑펑 쥐'], ['飛毛腿鼠', 'Speedy Mouse', 'しゅんそくネズミ', '날쌘 쥐'], ['快手鼠', 'Quick Paw Mouse', 'はやうちネズミ', '빠른손 쥐'], ['雙槍鼠', 'Twin Blaster Mouse', 'にちょうネズミ', '쌍권총 쥐'], ['盾牌鼠', 'Shield Mouse', 'たてネズミ', '방패 쥐'], ['愛心鼠', 'Heart Mouse', 'ハートネズミ', '하트 쥐'], ['跳跳鼠', 'Bouncy Mouse', 'ぴょんぴょんネズミ', '깡총 쥐'], ['道具大鼠', 'Item Mouse', 'アイテムネズミ', '아이템 쥐'],
       ['殭屍鼠', 'Zombie Mouse', 'ゾンビネズミ', '좀비 쥐'], ['跑跑鼠', 'Runner Mouse', 'はしりネズミ', '달리기 쥐'], ['胖胖鼠', 'Chubby Mouse', 'ぽっちゃりネズミ', '통통 쥐'], ['氣球鼠', 'Balloon Mouse', 'ふうせんネズミ', '풍선 쥐'], ['鑽地鼠', 'Digger Mouse', 'もぐらネズミ', '땅굴 쥐'], ['小果凍鼠', 'Mini Jelly', 'ちびゼリー', '꼬마 젤리'], ['炸彈鼠', 'Bomb Mouse', 'ばくだんネズミ', '폭탄 쥐'], ['果凍鼠', 'Jelly Mouse', 'ゼリーネズミ', '젤리 쥐'], ['舌頭鼠', 'Tongue Mouse', 'べろネズミ', '혀 쥐'], ['衝撞鼠', 'Charger Mouse', 'とっしんネズミ', '돌진 쥐'], ['吐毒鼠', 'Spitter Mouse', 'どくはきネズミ', '독침 쥐'], ['鍋蓋鼠', 'Pot Lid Mouse', 'なべぶたネズミ', '냄비뚜껑 쥐'], ['噴墨鼠', 'Ink Sprayer Mouse', 'インクふきネズミ', '잉크 분사 쥐'], ['澆水鼠', 'Watering Mouse', 'みずやりネズミ', '물뿌리개 쥐'], ['彈簧鼠', 'Pogo Mouse', 'ばねネズミ', '용수철 쥐'], ['大胃王', 'Big Eater', 'おおぐい', '대식가'], ['鼠媽媽', 'Mama Mouse', 'ママネズミ', '엄마 쥐'], ['鐵甲大鼠', 'Iron Mouse', 'てっこうネズミ', '철갑 쥐'], ['磁鐵鼠', 'Magnet Mouse', 'じしゃくネズミ', '자석 쥐'], ['鑽牆鼠', 'Driller Mouse', 'ドリルネズミ', '드릴 쥐'], ['肌肉坦克鼠', 'Muscle Tank Mouse', 'マッスルタンクネズミ', '근육 탱크 쥐'],
       ['新紀錄！', 'New record!', 'しんきろく！', '신기록!'], ['最高紀錄！', 'Best ever!', 'さいこうきろく！', '최고 기록!'], ['打爆數新紀錄！', 'Most pops ever!', 'たおしたかずしんきろく！', '처치 수 신기록!'],
       ['下次目標：打倒最後魔王，守住阿肥！', 'Next goal: beat the final boss and protect Afei!', 'つぎのもくひょう：ラスボスをたおしてアフェイをまもろう！', '다음 목표: 최종 보스를 쓰러뜨리고 아페이를 지켜!'], ['防護罩留一半以上', 'keep the shield above half', 'シールドをはんぶんいじょうのこす', '보호막 절반 이상 지키기'], ['全隊倒下 3 次以內', 'team KOs 3 or fewer', 'チームのダウン3かいいない', '팀 다운 3번 이하'],
@@ -44544,6 +44561,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-25", "", "殭屍戰：神兵、道具和齒輪一律掉在阿肥防護罩外面一段距離，不會再像在罩子裡；加值型的 buff 改叫「道具」（道具大鼠、地上指標寫「撿道具」）",
+      {"en": "Zombie Battle: hero weapons, items and gears now always land well outside Afei's shield, so they never look stuck inside it; stat boosts are now called items (Item Mouse, and the pointer says Grab item)", "ja": "ゾンビバトル：ヒーローぶき・アイテム・ギアはアフェイのバリアからしっかりはなれた所に出るようになり、バリアの中にあるように見えなくなりました。パワーアップは「アイテム」という名前に（アイテムネズミ、矢印は「アイテムをひろう」）", "ko": "좀비전: 영웅 무기, 아이템, 톱니가 이제 아페이 보호막에서 충분히 떨어진 곳에만 떨어져서 보호막 안에 있는 것처럼 보이지 않아요. 능력치 버프는 '아이템'으로 이름이 바뀌었어요(아이템 쥐, 화살표는 '아이템 줍기')", "es": "Batalla zombi: las armas heroicas, los objetos y los engranajes ahora caen bien lejos del escudo de Afei, así que ya no parecen estar dentro; las mejoras ahora se llaman objetos (Ratón de objetos, y la flecha dice Coger objeto)", "pt": "Batalha Zumbi: armas heroicas, itens e engrenagens agora sempre caem bem longe do escudo do Afei, então não parecem mais estar dentro dele; os bônus agora se chamam itens (Rato de itens, e a seta diz Pegar item)", "fr": "Bataille zombie : les armes héroïques, les objets et les engrenages tombent désormais bien à l'extérieur du bouclier d'Afei, ils ne semblent plus coincés dedans ; les bonus s'appellent maintenant des objets (Souris à objet, et la flèche indique Prendre l'objet)", "de": "Zombie-Kampf: Heldenwaffen, Items und Zahnräder landen jetzt immer ein gutes Stück außerhalb von Afeis Schild und sehen nicht mehr so aus, als lägen sie darin; Verstärkungen heißen jetzt Items (Item-Maus, der Pfeil zeigt Item nehmen)", "it": "Battaglia zombi: armi eroiche, oggetti e ingranaggi ora cadono sempre ben fuori dallo scudo di Afei, quindi non sembrano più dentro; i potenziamenti ora si chiamano oggetti (Topo oggetto, e la freccia dice Prendi oggetto)", "ru": "Битва с зомби: оружие героев, предметы и шестерёнки теперь всегда появляются далеко за щитом Афэя и больше не выглядят так, будто лежат внутри; усиления теперь называются предметами (Мышь-предмет, стрелка пишет «Взять предмет»)", "tr": "Zombi Savaşı: kahraman silahları, eşyalar ve dişliler artık hep Afei'nin kalkanının epey dışına düşüyor, içindeymiş gibi görünmüyor; güçlendirmelerin adı artık eşya (Eşya Faresi, ok da Eşya al diyor)", "id": "Perang Zombi: senjata pahlawan, item, dan roda gigi sekarang selalu jatuh cukup jauh di luar perisai Afei, jadi tidak lagi tampak ada di dalamnya; penguat sekarang disebut item (Tikus Item, dan penunjuk bertuliskan Ambil item)", "vi": "Trận Zombie: vũ khí anh hùng, vật phẩm và bánh răng giờ luôn rơi cách xa khiên của Afei, không còn trông như nằm bên trong; các buff giờ gọi là vật phẩm (Chuột vật phẩm, mũi tên ghi Nhặt vật phẩm)", "th": "ศึกซอมบี้: อาวุธฮีโร่ ไอเทม และเฟือง ตอนนี้จะตกห่างจากโล่ของอาเฟยพอสมควรเสมอ ไม่ดูเหมือนติดอยู่ในโล่อีก; บัฟเพิ่มพลังเปลี่ยนชื่อเป็นไอเทม (หนูไอเทม และลูกศรเขียนว่าหยิบไอเทม)"}],
     ["2026-11-25", "", "服飾店買的衣服和小魷魚帽，現在連線對戰和朋友的小鎮裡其他玩家也看得到；店裡的帽子和小魷魚帽一次只能戴一頂，後戴的算數",
       { en: "Outfits from the Meow Boutique and the Little Squid Hat now show to other players in online matches and friends' towns; you can wear one hat at a time, the last one you put on", ja: "ニャンニャン洋服店の服とちびイカぼうしが、オンライン対戦や友だちの町でほかのプレイヤーにも見えるように。帽子は一度にひとつ、あとからかぶったほうになります", ko: "야옹 옷가게 옷과 꼬마 오징어 모자가 온라인 대전과 친구 마을에서 다른 플레이어에게도 보여요. 모자는 한 번에 하나, 나중에 쓴 모자가 적용돼요", es: "La ropa de la Boutique Miau y el Gorro de calamar ahora se ven para los demás en partidas en línea y en pueblos de amigos; solo un sombrero a la vez: el último que te pongas", pt: "As roupas da Butique Miau e o Chapéu de lula agora aparecem para outros jogadores em partidas online e vilas de amigos; um chapéu por vez: vale o último que você colocar", fr: "Les tenues de la Boutique Miaou et le Bonnet calmar sont maintenant visibles par les autres en ligne et dans les villages d'amis ; un seul chapeau à la fois : le dernier mis", de: "Outfits aus der Miau-Boutique und die Tintenfischmütze sehen jetzt auch andere Spieler online und in Freundesdörfern; nur ein Hut gleichzeitig, der zuletzt aufgesetzte zählt", it: "I vestiti della Boutique Miao e il Cappello calamaro ora si vedono anche dagli altri online e nei paesi degli amici; un solo cappello alla volta: vale l'ultimo indossato", ru: "Наряды из бутика «Мяу» и шапку-кальмар теперь видят другие игроки в онлайн-матчах и в городках друзей; шляпа только одна — та, что надета последней", tr: "Miyav Butik kıyafetleri ve Kalamar şapka artık çevrimiçi maçlarda ve arkadaş kasabalarında diğer oyunculara da görünüyor; aynı anda tek şapka, en son takılan geçerli", id: "Pakaian Butik Meong dan Topi cumi kecil kini terlihat oleh pemain lain di pertandingan online dan kota teman; hanya satu topi sekaligus, yang terakhir dipakai", vi: "Đồ của Tiệm đồ Meo Meo và Mũ mực nhỏ giờ người chơi khác cũng thấy khi đấu online và ở thị trấn bạn bè; mỗi lần chỉ đội một mũ, mũ đội sau cùng được tính", th: "ชุดจากร้านเสื้อผ้าเหมียวและหมวกปลาหมึกน้อย ตอนนี้ผู้เล่นคนอื่นก็เห็นในการแข่งออนไลน์และเมืองของเพื่อน ใส่หมวกได้ทีละใบ ใบที่ใส่ทีหลังจะถูกใช้" }],
     ["2026-11-25", "", "連線聊天的八個快捷短語換成漆貓自己的手繪表情；對戰中的聊天移到右上、訊息移到左下，不再蓋住小地圖",
