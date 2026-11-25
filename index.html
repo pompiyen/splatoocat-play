@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v297';</script><script>window.SC_BUILD='309a243f6826';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v298';</script><script>window.SC_BUILD='11d0d51a9603';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -23357,7 +23357,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     bombPow: -1, isTouch: false, locked: false, sens: 1, catToggle: false, active: false,
   });
   const keys = {};
-  const zsk = () => !!(SC.zsk && SC.zsk.qOn && SC.zsk.qOn()); I.q = false; // 第 163 版：Q 是小招（08z_zskill.js；魔王關照舊是墨水彈）
+  const zsk = () => !!((SC.zsk && SC.zsk.qOn && SC.zsk.qOn()) || (SC.town && SC.town.on && SC.town.qOn && SC.town.qOn())); /* 第 288 版：沐沐小鎮的 Q 也是小招 */ I.q = false; // 第 163 版：Q 是小招（08z_zskill.js；魔王關照舊是墨水彈）
   let canvas, layer, stickEl, nubEl, edgeTurn = 0, edgeArm = false, mouseFire = false, keyCat = false, slots = ['W01', 'W02'];
   const ptr = new Map(); // pointerId → { role, x, y, sx, sy }
   I.lookHeld = () => { for (const q of ptr.values()) if (q.role !== 'stick' && !(q.role === 'cat' && q.drag)) return true; return false; }; // 第 88 版：有手指在瞄準（右邊拖曳或按著射擊鈕）時，輔助瞄準才會跟著對手走
@@ -23371,6 +23371,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   let bombAt = -1;
   const bombDown = () => { if (bombAt < 0) bombAt = performance.now() / 1000; };
   const bombUp = () => { if (bombAt < 0) return; I.bombPow = I.bombHold(); bombAt = -1; I.bomb = true; };
+  I.bombDown = bombDown; I.bombUp = bombUp; // 沐沐小鎮的墨水彈按鈕（09t_town.js）
   I.bombHold = () => (bombAt < 0 ? -1 : SC.clamp((performance.now() / 1000 - bombAt - 0.1) / SC.CFG.BOMB.holdFull, 0, 1));
   // 第 98 版（Yen 11/21 17:36，電腦版）：右鍵開關狙擊鏡（I.scope）；3 換成墨水彈（I.bombSlot），按住左鍵瞄準、放開丟
   I.scope = false; I.bombSlot = false; I.weapon = null;
@@ -33979,15 +33980,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 走路、跳、潛墨、墨水量、五把武器、子彈、塗地形狀、潛墨壓痕、音效、特效、鏡頭、第一人稱全部是對戰的程式；以後改對戰，小鎮自動一樣。
   // 小鎮只提供：地形高度（A.hAct 角色、A.hShot 子彈）、房子樹木靶子朋友（A.hit／A.ray／A.blocked）、自己的墨水圖（A.ink：stamp／ownerAt／dent／dentTick）、物件墨水（A.wallPaint）。
   let AR = null; const arV = new V3(), arO = new V3(), arD = new V3();
-  const AR_W = ['alt', 'gates', 'topBan', 'swim', 'pools', 'raycast', 'noClimb', 'camR', 'openH', 'noInks', 'fenceFade'], AR_I = ['stamp', 'ownerAt', 'dent', 'dentTick'];
+  const AR_W = ['alt', 'gates', 'topBan', 'swim', 'pools', 'raycast', 'noClimb', 'camR', 'openH', 'noInks', 'fenceFade'], AR_I = ['stamp', 'ownerAt', 'dent', 'dentTick'], AR_WI = ['topAt', 'face', 'owner', 'up', 'paint'];
   const camSnap = () => { const o = {}; for (const k in cam) { const v = cam[k]; o[k] = v && v.clone ? v.clone() : v; } return o; };
   const camLoad = (o) => { for (const k in cam) if (!(k in o)) delete cam[k]; for (const k in o) { const v = o[k]; cam[k] = v && v.clone ? v.clone() : v; } };
   const W_RAY = W.raycast, AR_NO = () => {};
   function arIn(A) {
-    const s = { w: AR_W.map((k) => W[k]), i: AR_I.map((k) => INK[k]), by: INK.by, g: [G.state, G.mode, G.rule, G.demo, G.paused, G.actors, G.hit, G.time, G.armorOn, G.cine, G.spec, G.menu, G.replaying, G.camPeek], scene, camera, c: colors.map((c) => c.clone()), q: [projectiles.splice(0), growQ.splice(0), chopQ.splice(0), bombs.splice(0)], cam: camSnap(), aim: scopeAim };
+    const s = { w: AR_W.map((k) => W[k]), i: AR_I.map((k) => INK[k]), wi: AR_WI.map((k) => SC.wallInk[k]), sg: SC.slab.ground, tip: SC.ui.tip, by: INK.by, g: [G.state, G.mode, G.rule, G.demo, G.paused, G.actors, G.hit, G.time, G.armorOn, G.cine, G.spec, G.menu, G.replaying, G.camPeek], scene, camera, c: colors.map((c) => c.clone()), q: [projectiles.splice(0), growQ.splice(0), chopQ.splice(0), bombs.splice(0)], cam: camSnap(), aim: scopeAim };
     W.alt = A.hAct; W.gates = []; W.topBan = 0; W.swim = false; W.pools = null; W.noClimb = null; W.camR = 0; W.openH = 999; W.noInks = []; W.fenceFade = AR_NO;
     W.raycast = (ox, oy, oz, dx, dy, dz, max, open) => { const h0 = W_RAY(ox, oy, oz, dx, dy, dz, max, open), h1 = A.ray(arO.set(ox, oy, oz), arD.set(dx, dy, dz), max, true); return h1 && (!h0 || h1.t < h0.t) ? { x: h1.p.x, y: h1.p.y, z: h1.p.z, t: h1.t, wall: true, gy: H(h1.p.x, h1.p.z) } : h0; };
     INK.stamp = A.ink.stamp; INK.ownerAt = A.ink.ownerAt; INK.dent = A.ink.dent; INK.dentTick = A.ink.dentTick;
+    if (A.wall) { AR_WI.forEach((k) => { SC.wallInk[k] = A.wall[k]; }); SC.slab.ground = A.wall.ground; } if (A.tip) SC.ui.tip = A.tip; /* 房子、雕像的牆：潛墨爬牆用小鎮的（Yen 11-25「潛墨爬房子」） */
     G.state = 'play'; G.mode = 'versus'; G.rule = 'turf'; G.demo = false; G.paused = false; G.actors = [A.a]; G.hit = []; G.time = A.time; G.armorOn = false; G.cine = false; G.spec = false; G.menu = false; G.replaying = null; G.camPeek = null;
     scene = A.scene; camera = A.camera; A.cols.forEach((c, i) => c && colors[i].copy(c)); projectiles.push(...A.q[0]); growQ.push(...A.q[1]); chopQ.push(...A.q[2]); bombs.push(...A.q[3]);
     if (A.cam) camLoad(A.cam); else { cam.yaw = A.yaw != null ? A.yaw : A.a.yaw; cam.pitch = A.pitch != null ? A.pitch : -0.14; cam.zoom = 1; cam.shake = 0; cam.fp = null; cam.dist = 15; cam.fOn = false; cam.kickAt = -9; cam.shk = cam.lift = cam.dk = null; }
@@ -33997,7 +33999,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function arOut(A, s) {
     A.q = [projectiles.splice(0), growQ.splice(0), chopQ.splice(0), bombs.splice(0)]; A.time = G.time; A.cam = camSnap(); A.aim = scopeAim;
-    AR_W.forEach((k, j) => { W[k] = s.w[j]; }); W.raycast = s.w[AR_W.indexOf('raycast')]; AR_I.forEach((k, j) => { INK[k] = s.i[j]; }); INK.by = s.by;
+    AR_W.forEach((k, j) => { W[k] = s.w[j]; }); W.raycast = s.w[AR_W.indexOf('raycast')]; AR_I.forEach((k, j) => { INK[k] = s.i[j]; }); AR_WI.forEach((k, j) => { SC.wallInk[k] = s.wi[j]; }); SC.slab.ground = s.sg; SC.ui.tip = s.tip; INK.by = s.by;
     [G.state, G.mode, G.rule, G.demo, G.paused, G.actors, G.hit, G.time, G.armorOn, G.cine, G.spec, G.menu, G.replaying, G.camPeek] = s.g;
     scene = s.scene; camera = s.camera; s.c.forEach((c, i) => colors[i].copy(c)); projectiles.push(...s.q[0]); growQ.push(...s.q[1]); chopQ.push(...s.q[2]); bombs.push(...s.q[3]); camLoad(s.cam); scopeAim = s.aim; AR = null;
   }
@@ -34010,7 +34012,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const s = arIn(A), a = A.a, now = performance.now() / 1000;
       try {
         G.time += dt; if (!(I.locked || I.isTouch)) { I.lookX = 0; I.lookY = 0; } /* 小鎮：滑鼠沒鎖住時是用來點按鈕的，不轉視角 */
-        controlPlayer(a, dt); a.ctl.select = null; a.ctl.sp = false; a.ctl.q = false; a.sp = 0; /* 小鎮先不開大絕、小招 */
+        controlPlayer(a, dt); a.ctl.select = null; /* 第 288 版起：小鎮也開 F 大絕、Q 小招、墨水彈（Yen 11-25），一樣耗墨 */
         if (A.ctl) A.ctl(a, a.ctl);
         if (a.weapon !== A.weapon && A.weapon) { setWeapon(a, A.weapon); a.switchUntil = 0; }
         if (ext) { ext(a, a.ctl); a.ctl.jump = false; a.ctl.bomb = false; a.prevFire = a.ctl.fire; } else updateActor(a, dt);
@@ -34024,8 +34026,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
     // 朋友：一隻遠端角色（cat 是小鎮裡朋友的貓模型）。netEv：朋友那台送來的對戰事件，照連線對戰的 netApply 重播
     proxy(team, cat, kind) { const b = makeActor('tv' + team, team, kind || 'maomao', false, cat); b.remote = true; b.ai = null; b.alive = true; return b; },
-    netEv(A, b, type, d) { if (!'pwrzgmnb'.includes(type) || type.length !== 1) return; const s = arIn(A); try { G.time = A.time; netApply(b, type, d); } finally { arOut(A, s); } },
+    netEv(A, b, type, d) { if (!G.arena.EV.includes(type) || type.length !== 1) return; const s = arIn(A); try { G.time = A.time; netApply(b, type, d); } finally { arOut(A, s); } },
     cam: () => cam,
+    EV: 'pwrzgmnbSXYqWK', // 小鎮朋友之間轉送的對戰事件（開槍、滾、狙擊、散彈、揮刀、衝刺、墨水彈、大絕、小招）
   };
   function spawnAt(a) { a.alive = true; a.hp = 100; a.vel.set(0, 0, 0); a.onGround = true; a.jumps = 0; a.form = 'biped'; a.submerged = false; a.climb = a.crest = null; if (AR && AR.respawn) AR.respawn(a); }
   // 每一格每隻貓的畫面（位置、閃爍、隱形、受傷、動畫、瞄準線、潛墨壓痕）。沐沐小鎮的貓也用這一段（G.arena）
@@ -38650,6 +38653,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function update(dt) {
     if (!Z && arOn()) return arUpdate(dt); /* 比照實戰：小鎮的貓跑對戰的程式（G.arena） */
+    if (taEl && !taEl.hidden) taEl.hidden = true; /* 菜園沒有大絕、小招 */
     const In = SC.input; In.update(dt);
     if (In.locked || In.isTouch) { yaw -= In.lookX; camPitch = SC.clamp(camPitch - In.lookY, -1.2, 1.2); }
     if (frozT > 0) { frozT = Math.max(0, (frozU - performance.now()) / 1000); if (me && Math.random() < 0.15) me.squash = 0.15; } /* 第 228 版：被阿肥咬住卡住不能動 */
@@ -38811,7 +38815,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       const v = d < 0.62 ? 255 : Math.round(255 * (1 - (d - 0.62) / 0.38)), i = cz * PN + cx, j = i * 4, a = pdata[j + 3];
       if (v < 6) continue; const same = Math.abs(pdata[j] * 255 - rgb[0] * a) + Math.abs(pdata[j + 1] * 255 - rgb[1] * a) + Math.abs(pdata[j + 2] * 255 - rgb[2] * a) < 60 * a;
       const na = same ? Math.max(a, v) : v >= 128 || v > a ? v : a; if (na === a && same) continue;
-      if (land[i] && (a >= 128) !== (na >= 128)) pCount += na >= 128 ? 1 : -1; if (dm[i] && v > 120) { dm[i] = 0; dents.delete(i); dRows[cz] = 1; dPart = true; } /* 噴到墨水，潛墨壓痕被蓋掉（跟對戰一樣） */
+      if (land[i] && (a >= 128) !== (na >= 128)) pCount += na >= 128 ? 1 : -1; if (a < 128 && na >= 128) pGain++; if (dm[i] && v > 120) { dm[i] = 0; dents.delete(i); dRows[cz] = 1; dPart = true; } /* 噴到墨水，潛墨壓痕被蓋掉（跟對戰一樣） */
       pdata[j] = Math.round((rgb[0] * na) / 255); pdata[j + 1] = Math.round((rgb[1] * na) / 255); pdata[j + 2] = Math.round((rgb[2] * na) / 255); pdata[j + 3] = na; if (na >= 128 && wm[i] !== curW) { wm[i] = curW; wRows[cz] = 1; wPart = true; } pRows[cz] = 1;
     }
 
@@ -39031,7 +39035,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function emit(ty, rgb, a) { if (T.net) { try { T.net(ty, rgb, a); } catch (e) {} } }
   const fin = (v, lim) => typeof v === 'number' && isFinite(v) && Math.abs(v) <= lim;
   T.netApply = (ty, rgb, a, who) => {
-    if (typeof ty === 'string' && ty[0] === '@') { if (!T.built || Z || !Array.isArray(a) || a.length > 16 || !Array.isArray(rgb) || rgb.length !== 3 || !rgb.every((v) => fin(v, 255) && v >= 0) || !a.every((v) => fin(v, 1e10))) return; arNet(ty.slice(1), rgb.map((v) => v | 0), a, who); return; } /* 比照實戰：朋友開槍是對戰的事件 */
+    if (typeof ty === 'string' && ty[0] === '@') { if (!T.built || Z || !Array.isArray(a) || a.length > 40 || !Array.isArray(rgb) || rgb.length !== 3 || !rgb.every((v) => fin(v, 255) && v >= 0) || !a.every((v) => fin(v, 1e10))) return; arNet(ty.slice(1), rgb.map((v) => v | 0), a, who); return; } /* 比照實戰：朋友開槍是對戰的事件 */
     if (!T.built || !Array.isArray(a) || !Array.isArray(rgb) || rgb.length !== 3 || !rgb.every((v) => fin(v, 255) && v >= 0) || !a.every((v) => fin(v, 1000))) return;
     rgb = rgb.map((v) => v | 0); const v3 = (i) => new V3(a[i], a[i + 1], a[i + 2]); curW = visiting ? (who === inkHost ? 0 : hashW(who)) : hashW(who || 'x');
     if (ty === 'b' && a.length === 10) { if (shots.length < 400) shot1({ x: a[0], y: a[1], z: a[2], vx: a[3], vy: a[4], vz: a[5], r: SC.clamp(a[6], 0.2, 8), range: a[7], g: a[8], vr: a[9], rgb, rm: who || 1, flash: false }); }
@@ -39090,7 +39094,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 小鎮的貓就是一隻對戰角色：走路、跳、潛墨、墨水量、五把武器、子彈、塗地、潛墨壓痕、音效、特效、鏡頭、第一人稱，每一格都交給
   // 對戰的程式（08_game.js 的 SC.game.arena.step）。小鎮只提供：地形高度、房子樹木靶子朋友（打到哪裡）、自己的墨水圖。以後改對戰，小鎮自動一樣。
   // 菜園（Z）還是用上面原本的走路程式（裡面是抓小偷的網子，不噴墨）。
-  let arRan = false, arReset = true, arShotAt = -1, pendEnter = null, dtex = null, dPart = false, pPart = false, wPart = false, vmB = false, dentT = 0, covT = 0, oUpT = 0, saveQ = false;
+  let pGain = 0, arRan = false, arReset = true, arShotAt = -1, pendEnter = null, dtex = null, dPart = false, pPart = false, wPart = false, vmB = false, dentT = 0, covT = 0, oUpT = 0, saveQ = false;
   const dm = new Uint8Array(PN * PN), dRows = new Uint8Array(PN), pRows = new Uint8Array(PN), wRows = new Uint8Array(PN), dents = new Set(), vBox = [], vmBox = [];
   const DENT = () => (SC.ink && SC.ink.DENT) || { D: 0.42, S: 0.06, decay: 5, every: 0.5 };
   // 潛墨壓痕：跟對戰 03_ink.js 一樣的深度、形狀、平復速度（SC.ink.DENT／dentV），存在 dm（一張單通道的圖），地面著色器用它改法線
@@ -39103,15 +39107,53 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function dentTick(dt) { if (!dents.size || (dentT += dt) < DENT().every) return; dentT = 0; const k = DENT().decay; for (const i of dents) { const v = dm[i] - k; dRows[(i / PN) | 0] = 1; if (v <= 0) { dm[i] = 0; dents.delete(i); } else dm[i] = v; } dPart = true; }
   function dentClear() { dm.fill(0); dents.clear(); dRows.fill(0); if (dtex) dtex.needsUpdate = true; }
-  const ARN = { a: null, q: null, time: 0, cam: null, cols: [0, 1, 2, 3, 4, 5].map(() => new THREE.Color()), weapon: 'W01', dt: 0, dive: false, inShot: false, hAct: (x, z) => gW(x, z), hShot: (x, z) => H(x, z) };
+  const ARN = { a: null, q: null, time: 0, cam: null, cols: [0, 1, 2, 3, 4, 5].map(() => new THREE.Color()), weapon: 'W01', dt: 0, dive: false, inShot: false, hAct: (x, z) => Math.max(gW(x, z), roofH(x, z)), hShot: (x, z) => H(x, z) };
   ARN.ink = { stamp: arStamp, ownerAt: (x, z) => (ownInk(x, z) ? 1 : 0), dent, dentTick };
+  // 第 288 版（Yen 11-25「潛墨爬房子」）：房子、雕像、帳篷的真正形狀（從上往下打射線量出來的屋頂高度，0.6 公尺一格，第一次用到才量）。
+  // 對戰的角色把它當成牆和屋頂：撞得到、站得上去、潛墨爬得上去（爬牆、翻上牆頂、在牆上橫移都是對戰的 wallClimb）
+  const RC = new Map(), RG = 0.6, rcO = new V3(), rcD = new V3(0, -1, 0); let rSol = null;
+  function roofSet() {
+    const sp = new THREE.Sphere(); rSol = solids.map((s) => ({ s, list: [] }));
+    wallT.forEach((w) => { w.updateMatrixWorld(true); w.traverse((o) => { if (!o.isMesh || !o.geometry || (o.material && o.material.transparent)) return; const g = o.geometry; if (!g.boundingSphere) g.computeBoundingSphere(); sp.copy(g.boundingSphere).applyMatrix4(o.matrixWorld); if (o.isInstancedMesh || sp.radius > 45) return;
+      for (const e of rSol) if (Math.hypot(sp.center.x - e.s.x, sp.center.z - e.s.z) < e.s.r + sp.radius) e.list.push(o); }); });
+  }
+  function roofH(x, z) {
+    if (Z || !wallT.length) return -99; if (!rSol) roofSet(); let best = -99;
+    for (const e of rSol) { const s = e.s; if (Math.abs(x - s.x) > s.r || Math.abs(z - s.z) > s.r || Math.hypot(x - s.x, z - s.z) > s.r) continue;
+      const ix = Math.round(x / RG), iz = Math.round(z / RG), k = (ix + 1000) * 4000 + iz + 1000; let v = RC.get(k);
+      if (v === undefined) { rc.set(rcO.set(ix * RG, 90, iz * RG), rcD); rc.far = 140; const h = e.list.length ? rc.intersectObjects(e.list, false)[0] : null; v = h ? h.point.y : -99; RC.set(k, v); }
+      if (v > best) best = v; }
+    return best;
+  }
+  const topW = (x, z) => Math.max(gW(x, z), roofH(x, z));
+  const arWV = new V3(), arWN = new V3();
+  ARN.wall = {
+    topAt: (x, z) => topW(x, z),
+    up: (x, z, y) => roofH(x, z) > y,
+    ground: (x, z, y) => { const r = roofH(x, z); return r > -98 && r <= y ? Math.max(r, gW(x, z)) : gW(x, z); },
+    face(ox, oz, ix, iz, y) { // 從牆外 (ox,oz) 往牆裡 (ix,iz) 找第一個比 y 高的地方＝牆面；法線看四周哪邊是空的
+      const L = Math.hypot(ix - ox, iz - oz), n = Math.max(1, Math.ceil(L / 0.2)); let px = ox, pz = oz;
+      for (let i = 1; i <= n; i++) { const x = ox + ((ix - ox) * i) / n, z = oz + ((iz - oz) * i) / n; if (topW(x, z) > y) {
+        let nx = 0, nz = 0; for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2, cx = Math.cos(a), cz = Math.sin(a); if (topW(x + cx * 1.1, z + cz * 1.1) <= y) { nx += cx; nz += cz; } }
+        let l = Math.hypot(nx, nz); if (l < 0.1) { nx = ox - ix; nz = oz - iz; l = Math.hypot(nx, nz) || 1; } return { x: px, z: pz, nx: nx / l, nz: nz / l }; }
+        px = x; pz = z; }
+      return null;
+    },
+    owner(x, y, z) { // 牆上這附近有沒有墨水（小鎮什麼顏色都能潛，所以有墨水就算自己的）
+      for (let dx = -1.2; dx <= 1.21; dx += 0.6) for (let dz = -1.2; dz <= 1.21; dz += 0.6) { const k = vAt(x + dx, y, z + dz); if (k >= 0 && vdata[k * 4 + 3] >= 110) return 1; }
+      return 0;
+    },
+    paint: (team, x, y, z, nx, nz, r) => arWallPaint(team, { p: arWV.set(x, y, z), n: arWN.set(nx, 0, nz) }, r),
+  };
+  ARN.tip = (m) => say(tr(String(m)));
+  T.qOn = () => arOn() && !Z;
   ARN.hit = arHit; ARN.ray = arRay; ARN.blocked = arBlocked; ARN.wallPaint = arWallPaint; ARN.ctl = arCtl; ARN.vis = arVis; ARN.respawn = (a) => { a.pos.copy(last); }; ARN.ev = null;
   const arOn = () => !!(ARN.a && SC.game && SC.game.arena);
   function arMake(kind) { const GA = SC.game && SC.game.arena; if (!GA || !me) return; const a = GA.actor(me, kind); a.pos = pos; a.vel = vel; a.yaw = face; ARN.a = a; ARN.cam = null; arReset = true; }
   // 每一格：交給對戰跑一格
   function arUpdate(dt) {
     const In = SC.input, a = ARN.a; In.update(dt);
-    In.pause = false; In.pick = null; In.select = null; In.swap = 0; In.bomb = false; In.q = false; In.sp = false; /* Esc 在小鎮是叫出滑鼠；E 是進門；小招、大絕、墨水彈小鎮先不開 */
+    In.pause = false; In.pick = null; In.select = null; In.swap = 0; /* Esc 在小鎮是叫出滑鼠；換武器在靶場 */
     R.getSize(sz); { const asp = sz.x / Math.max(1, sz.y); if (Math.abs(cam.aspect - asp) > 1e-3) { cam.aspect = asp; cam.updateProjectionMatrix(); } }
     if (frozT > 0) frozT = Math.max(0, (frozU - performance.now()) / 1000);
     if (arReset) { arReset = false; a.yaw = face; ARN.cam = null; ARN.yaw = yaw; ARN.pitch = camPitch; vel.set(0, 0, 0); a.onGround = true; a.jumps = 0; a.trailLast = null; a.form = 'biped'; a.submerged = false; a.alive = true; a.visY = pos.y; }
@@ -39120,7 +39162,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const wet = swimming(); ARN.dive = false;
     SC.game.arena.step(ARN, dt, wet ? swimExt : null); arRan = true;
     face = a.yaw; onGround = a.onGround; jumps = a.jumps; vy = a.vel.y;
-    collide(pos, 1.1); if (!wet) waterFx(dt, false, false, 0);
+    { const d = Math.hypot(pos.x, pos.z); if (d > BOUND) { pos.x *= BOUND / d; pos.z *= BOUND / d; } } if (!wet) waterFx(dt, false, false, 0); arHudUpd(a); /* 第 288 版：房子改用真正的形狀擋（對戰的牆），不再用圓圈推開 */
     if (a.onGround && pos.y > -4) last.copy(pos);
     if (a.nextShotAt !== arShotAt) { const was = arShotAt; arShotAt = a.nextShotAt; if (was !== -1) { mzl.set(pos.x, pos.y + 2.2, pos.z); cam.getWorldDirection(aimD); skyShot(); } } /* 對著雲開槍：一道墨水射上天（小鎮才有） */
     animSt = { speed: a.onGround ? a.speed || 0 : 0, onGround: a.onGround, vy: a.vel.y, form: a.form, submerged: a.submerged || (wet && ARN.dive), pitch: a.pitch || 0, firing: !!a.ctl.fire, rolling: !!a.rolling, charge: 0, t };
@@ -39143,6 +39185,33 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     else if (gh < pos.y - 0.8) { a.onGround = false; vel.y = 0; } else { pos.y = gh; vel.y = 0; }
     a.form = a.onGround ? 'cat' : 'biped'; a.submerged = false; a.speed = Math.hypot(vel.x, vel.z); a.pitch = 0; a.rolling = false; a.charge = -1;
   }
+  // 第 288 版：小鎮右邊的墨水量、大絕（F）、小招（Q）、墨水彈（G）按鈕，數字都是對戰角色自己的（一樣耗墨、一樣集大絕）
+  let taEl = null, taK = '';
+  function arHud() {
+    if (taEl || !hud) return taEl; const st = document.createElement('style'); st.textContent = `.tw-act{position:absolute;right:calc(10px + env(safe-area-inset-right,0px));top:44%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:3;pointer-events:none}
+.tw-act>*{pointer-events:auto}.ta-ink{width:14px;height:96px;border-radius:9px;background:rgba(27,20,48,.55);border:2px solid #fff;overflow:hidden;display:flex;align-items:flex-end;box-shadow:0 2px 6px rgba(0,0,0,.25)}.ta-ink i{display:block;width:100%;background:var(--ta,#ff4f9a);transition:height .12s}.ta-ink.low{animation:taLow .5s infinite alternate}
+@keyframes taLow{to{border-color:#ff4f5a}}.tw-act button{position:relative;width:54px;height:54px;border-radius:50%;border:3px solid #fff;background:rgba(27,20,48,.72);color:#fff;font:800 13px/1 system-ui;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 3px 8px rgba(0,0,0,.3);touch-action:none}
+.tw-act button::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(var(--ta,#ff4f9a) calc(var(--p,0)*1%),transparent 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
+.tw-act .ta-sp{width:62px;height:62px}.tw-act .ta-sp.full{background:var(--ta,#ff4f9a);animation:taSp .6s infinite alternate}@keyframes taSp{to{transform:scale(1.1)}}.tw-act .ta-q.cd{opacity:.65}.tw-act svg{width:30px;height:30px}.tw-act kbd{position:absolute;right:-4px;bottom:-4px;background:#fff;color:#1b1430;border-radius:6px;padding:1px 4px;font:800 10px/1.2 system-ui}
+.is-touch .tw-act kbd{display:none}.tw-act .ta-b{display:none}.is-touch .tw-act .ta-b{display:flex}.tw-act b.ta-n{position:absolute;font-size:15px}`; document.head.appendChild(st);
+    taEl = document.createElement('div'); taEl.className = 'tw-act';
+    taEl.innerHTML = `<div class="ta-ink" aria-label="墨水"><i></i></div><button type="button" class="ta-sp" aria-label="大絕"><svg viewBox="0 0 48 48"><path d="M24 3l3 13 12-6-7 11 13 3-13 4 7 11-12-6-3 13-3-13-12 6 7-11-13-4 13-3-7-11 12 6z" fill="#fff" stroke="#1b1430" stroke-width="2"/></svg><kbd>F</kbd></button><button type="button" class="ta-q" aria-label="小招"><svg viewBox="0 0 64 64"></svg><b class="ta-n"></b><kbd>Q</kbd></button><button type="button" class="ta-b" aria-label="墨水彈">${SC.ui && SC.ui.icon ? SC.ui.icon('BOMB') : '💣'}<kbd>G</kbd></button>`;
+    hud.appendChild(taEl); const In = () => SC.input, stop = (e) => { e.preventDefault(); e.stopPropagation(); };
+    taEl.querySelector('.ta-sp').addEventListener('pointerdown', (e) => { stop(e); In().sp = true; });
+    taEl.querySelector('.ta-q').addEventListener('pointerdown', (e) => { stop(e); In().q = true; });
+    const bb = taEl.querySelector('.ta-b'); bb.addEventListener('pointerdown', (e) => { stop(e); if (In().bombDown) In().bombDown(); }); ['pointerup', 'pointercancel', 'pointerleave'].forEach((k) => bb.addEventListener(k, (e) => { stop(e); if (In().bombUp) In().bombUp(); }));
+    return taEl;
+  }
+  function arHudUpd(a) {
+    const el = arHud(); if (!el) return; if (el.hidden) el.hidden = false; const G0 = SC.game, now = (ARN.time || 0), qL = Math.max(0, (a.qAt || 0) - now), qcd = a.qCd || 1, spOn = a.spT != null || Math.max(a.wideUntil || 0, a.xrayUntil || 0, a.sprayUntil || 0) > now;
+    const k = Math.round(a.ink) + '|' + Math.floor(a.sp) + '|' + (spOn ? 1 : 0) + '|' + Math.ceil(qL) + '|' + Math.round((qL / qcd) * 40) + '|' + a.weapon + '|' + myC().join(',');
+    if (k === taK) return; taK = k; void G0;
+    el.style.setProperty('--ta', 'rgb(' + myC().join(',') + ')'); el.style.setProperty('--a', 'rgb(' + myC().join(',') + ')');
+    const ink = el.querySelector('.ta-ink'); ink.firstChild.style.height = SC.clamp(a.ink, 0, 100) + '%'; ink.classList.toggle('low', a.ink < 15);
+    const sp = el.querySelector('.ta-sp'); sp.style.setProperty('--p', spOn ? 100 : Math.floor(a.sp)); sp.classList.toggle('full', !spOn && a.sp >= 100);
+    const q = el.querySelector('.ta-q'), ic = (SC.vsk && SC.vsk[a.weapon] && SC.vsk[a.weapon].icon) || (SC.zsk && SC.zsk.ICON && SC.zsk.ICON[a.weapon]); if (q.dataset.w !== a.weapon) { q.dataset.w = a.weapon; q.querySelector('svg').innerHTML = ic || ''; }
+    q.classList.toggle('cd', qL > 0); q.style.setProperty('--p', qL > 0 ? Math.round((qL / qcd) * 100) : 0); q.querySelector('.ta-n').textContent = qL > 0 ? Math.ceil(qL) : '';
+  }
   function arVis(a) { if (a.onGround && swimming()) a.cat.group.position.y += ARN.dive ? -1.3 : Math.sin(t * 4.2) * 0.13 + 0.15 * Math.max(0, Math.sin(strokeP)); }
   // 鏡頭是對戰算好的；小鎮這邊只同步準心方向、狙擊鏡、擋在中間的牆變半透明
   function arCam() {
@@ -39153,9 +39222,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const arSlot = [], arT0 = { rgb: null, w: 0 };
   function arTeam(team) { if (team && arSlot[team]) return arSlot[team]; arT0.rgb = myC(); arT0.w = myW(); return arT0; }
   function arStamp(team, x, y, z, r) {
-    const c = arTeam(team); curW = c.w; paintAt(x, z, r, c.rgb);
+    const c = arTeam(team), g0 = pGain; curW = c.w; paintAt(x, z, r, c.rgb); const g = pGain - g0, by = SC.ink.by;
+    if (g && by && by.team === team && by.gain) by.gain((g * PC * PC) / (CW().CELL * CW().CELL)); /* 塗地集大絕：小鎮一格比對戰大，換算成對戰的格數 */
     if (!ARN.inShot && !team && ARN.a && (ARN.a.weapon === 'W02' || ARN.a.weapon === 'W05')) rangeArea(x, z, r * 0.6, ARN.cols[0]); /* 滾刷、墨刀塗到靶子底下＝打倒靶子 */
-    return 0;
+    return g;
   }
   const arH = { wall: false, p: new V3(), n: new V3(), cap: 2, t: 0, hitFn: null }, arP0 = new V3(), arP1 = new V3();
   // 子彈這一小段有沒有打到東西（靶子、房子樹木、朋友、自己）
@@ -39178,7 +39248,6 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   }
   function arBlocked(a, x, z) {
     const d = Math.hypot(x, z); if (d > BOUND && d > Math.hypot(a.pos.x, a.pos.z)) return true;
-    for (const s of solids) { const m = s.r + 1.1, dn = Math.hypot(x - s.x, z - s.z); if (dn < m && dn < Math.hypot(a.pos.x - s.x, a.pos.z - s.z)) return true; }
     return false;
   }
   // 打到房子、樹、雕像：照對戰牆面墨水的形狀（SC.wallInk.volPattern：一團主墨＋旁邊小團＋往下流），噴進小鎮的 3D 墨水格
@@ -39200,16 +39269,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (L < 1) { path.shift(); if (!path.length) { const sp = pathSpot; path = null; pathSpot = null; if (sp) { a.yaw = Math.atan2(sp.x - pos.x, sp.z - pos.z); if (!sp.soon) pendEnter = sp.k; } } } else { ctl.mx = dx / L; ctl.mz = dz / L; }
     }
     if (jumpReq) { ctl.jump = true; jumpReq = false; }
-    if (T.pickOpen()) ctl.fire = false; ctl.bomb = false;
+    if (T.pickOpen()) { ctl.fire = false; ctl.bomb = false; ctl.sp = false; ctl.q = false; }
   }
   // 我開的每一下（對戰的連線事件）送給同一個小鎮的朋友；朋友那台用 SC.game.arena.netEv 照對戰的 netApply 重播
-  function arEv(a, type, ...x) { if (a !== ARN.a || !'pwrzgmnb'.includes(type)) return; emit('@' + type, myC(), x); }
+  function arEv(a, type, ...x) { if (a !== ARN.a || !SC.game.arena.EV.includes(type)) return; emit('@' + type, myC(), x); }
   const arPx = new Map(), WOF = { p: 'W01', w: 'W02', r: 'W02', z: 'W03', g: 'W04', m: 'W05', n: 'W05' }; let arPxN = 0;
   function arNet(ty, rgb, d, who) {
-    const GA = SC.game && SC.game.arena; if (!GA || !ARN.a || ty.length !== 1 || !'pwrzgmnb'.includes(ty)) return; const id = who || 'x';
+    const GA = SC.game && SC.game.arena; if (!GA || !ARN.a || ty.length !== 1 || !GA.EV.includes(ty)) return; const id = who || 'x';
     let e = arPx.get(id); if (!e) { if (arPx.size > 12) arPx.clear(); const slot = 1 + (arPxN++ % 5); e = { slot, b: GA.proxy(slot, { name: '', group: new THREE.Group(), recoil: 0, swing: 0, setWeapon() {}, animate() {} }, 'maomao') }; arPx.set(id, e); }
     arSlot[e.slot] = { rgb, w: visiting ? (who === inkHost ? 0 : hashW(who)) : hashW(id) }; ARN.cols[e.slot].setRGB(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
-    const b = e.b; b.weapon = WOF[ty]; if (ty === 'r' || ty === 'n') b.pos.set(d[2], d[4], d[3]); else b.pos.set(d[0], d[1], d[2]);
+    const b = e.b; if (WOF[ty]) b.weapon = WOF[ty]; if (ty === 'r' || ty === 'n') b.pos.set(d[2], d[4], d[3]); else if (d.length >= 3 && 'pwzgmbSXqW'.includes(ty)) b.pos.set(d[0], d[1], d[2]);
     GA.netEv(ARN, b, ty, d);
   }
   // 墨水上傳：跟對戰一樣每一格只送改到的列（地面）和改到的小方塊（3D 墨水格），不再每 0.033／0.12 秒整張重傳
@@ -39332,7 +39401,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if ((e.code === 'KeyE' || e.code === 'Enter') && near && !near.soon && enterLock <= 0) { e.preventDefault(); e.stopPropagation(); if (document.exitPointerLock && document.pointerLockElement) document.exitPointerLock(); T.enter(near.k); }
     else if (e.code === 'KeyC' && !Z && !e.repeat) { e.preventDefault(); e.stopPropagation(); palSet(palEff() + 1); }
     else if (keyNav(e)) { e.preventDefault(); e.stopPropagation(); }
-    else if (e.code === 'KeyE' || e.code === 'KeyQ' || e.code === 'KeyG' || e.code === 'KeyF' || e.code === 'KeyR') e.stopPropagation(); } // 小鎮裡沒有墨水彈和招式
+    else if ((Z || !arOn()) && (e.code === 'KeyE' || e.code === 'KeyQ' || e.code === 'KeyG' || e.code === 'KeyF' || e.code === 'KeyR')) e.stopPropagation(); } // 菜園裡沒有墨水彈和招式；第 288 版（Yen 11-25）：小鎮照對戰，F 大絕、Q 小招、G／E 墨水彈（E 站在門口時是進門）
   // 第 216 版（Yen 13:26「要按 Esc 才能空出滑鼠去點連線對戰，請重理優化整個操作」）：電腦上全部都能用鍵盤，不用放開滑鼠
   //   1 電腦對戰、2 連線對戰、3 積分賽、M 全部模式、E／Enter 進門；Tab 放開／鎖回滑鼠；按住 Alt 暫時放開滑鼠，放手就鎖回去。
   //   按鈕上有小小的按鍵提示（手機不顯示）；Esc 放開滑鼠時不會跳出暫停。
@@ -44688,6 +44757,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-25", "", "沐沐小鎮也能用 F 大絕、Q 小招和墨水彈，一樣會用掉墨水、塗地一樣集大絕；牆上有自己的墨水就能潛墨爬上房子和雕像，站到屋頂上",
+      { en: "MooMoo Town now has the F special, Q skill and ink bombs, using ink and charging your special the same way as in battle; ink a wall and you can ink-dive up houses and the statue and stand on the roofs", ja: "モーモータウンでもFの必殺技、Qのスキル、インクボムが使えるようになりました。インクの消費や必殺技のたまり方はバトルと同じです。壁を自分のインクで塗れば、家や像をインクもぐりで登って屋根に立てます", ko: "무무 마을에서도 F 필살기, Q 스킬, 잉크 폭탄을 쓸 수 있어요. 잉크 소모와 필살기 충전은 대전과 같아요. 벽에 잉크를 칠하면 잠수해서 집과 동상을 올라가 지붕에 설 수 있어요", es: "En el Pueblo MooMoo ya puedes usar el especial F, la habilidad Q y las bombas de tinta, gastando tinta y cargando el especial igual que en batalla; pinta una pared y podrás trepar casas y la estatua buceando en tinta y pararte en los techos", pt: "Na Vila MooMoo agora dá para usar o especial F, a habilidade Q e as bombas de tinta, gastando tinta e carregando o especial como na batalha; pinte uma parede e suba nas casas e na estátua mergulhando na tinta para ficar nos telhados", fr: "Le village MooMoo a maintenant le spécial F, la compétence Q et les bombes d'encre, qui consomment l'encre et chargent le spécial comme en bataille ; encrez un mur pour escalader les maisons et la statue en plongée et vous tenir sur les toits", de: "Im MooMoo-Dorf gibt es jetzt die F-Spezialattacke, die Q-Fähigkeit und Tintenbomben, die wie im Kampf Tinte verbrauchen und die Spezialleiste füllen; färbe eine Wand ein, dann kannst du tauchend an Häusern und der Statue hochklettern und auf den Dächern stehen", it: "Nel Villaggio MooMoo ora ci sono la speciale F, l'abilità Q e le bombe d'inchiostro, che consumano inchiostro e caricano la speciale come in battaglia; colora un muro e potrai arrampicarti in immersione su case e statua e stare sui tetti", ru: "В деревне МуМу теперь есть суперудар F, навык Q и чернильные бомбы — они тратят краску и копят суперудар так же, как в бою; закрась стену и сможешь нырнуть и забраться по домам и статуе на крыши", tr: "MooMoo Kasabası'nda artık F özel saldırısı, Q yeteneği ve mürekkep bombaları var; savaştaki gibi mürekkep harcar ve özel saldırıyı doldurur. Bir duvarı boyarsan mürekkebe dalıp evlere ve heykele tırmanabilir, çatılarda durabilirsin", id: "Di Kota MooMoo sekarang ada jurus F, skill Q, dan bom tinta, yang memakai tinta dan mengisi jurus sama seperti di pertarungan; cat dindingnya dan kamu bisa menyelam memanjat rumah serta patung lalu berdiri di atap", vi: "Thị trấn MooMoo giờ có tuyệt chiêu F, kỹ năng Q và bom mực, tốn mực và tích tuyệt chiêu giống như trong trận; tô mực lên tường là có thể lặn mực leo lên nhà, lên tượng và đứng trên mái", th: "เมืองมูมูตอนนี้ใช้ท่าไม้ตาย F สกิล Q และระเบิดหมึกได้แล้ว ใช้หมึกและสะสมท่าไม้ตายเหมือนในการต่อสู้ ทาหมึกบนกำแพงแล้วดำหมึกปีนขึ้นบ้านและรูปปั้นไปยืนบนหลังคาได้" }],
     ["2026-11-25", "", "殭屍戰：神兵、道具和齒輪一律掉在阿肥防護罩外面一段距離，不會再像在罩子裡；加值型的 buff 改叫「道具」（道具大鼠、地上指標寫「撿道具」）",
       {"en": "Zombie Battle: hero weapons, items and gears now always land well outside Afei's shield, so they never look stuck inside it; stat boosts are now called items (Item Mouse, and the pointer says Grab item)", "ja": "ゾンビバトル：ヒーローぶき・アイテム・ギアはアフェイのバリアからしっかりはなれた所に出るようになり、バリアの中にあるように見えなくなりました。パワーアップは「アイテム」という名前に（アイテムネズミ、矢印は「アイテムをひろう」）", "ko": "좀비전: 영웅 무기, 아이템, 톱니가 이제 아페이 보호막에서 충분히 떨어진 곳에만 떨어져서 보호막 안에 있는 것처럼 보이지 않아요. 능력치 버프는 '아이템'으로 이름이 바뀌었어요(아이템 쥐, 화살표는 '아이템 줍기')", "es": "Batalla zombi: las armas heroicas, los objetos y los engranajes ahora caen bien lejos del escudo de Afei, así que ya no parecen estar dentro; las mejoras ahora se llaman objetos (Ratón de objetos, y la flecha dice Coger objeto)", "pt": "Batalha Zumbi: armas heroicas, itens e engrenagens agora sempre caem bem longe do escudo do Afei, então não parecem mais estar dentro dele; os bônus agora se chamam itens (Rato de itens, e a seta diz Pegar item)", "fr": "Bataille zombie : les armes héroïques, les objets et les engrenages tombent désormais bien à l'extérieur du bouclier d'Afei, ils ne semblent plus coincés dedans ; les bonus s'appellent maintenant des objets (Souris à objet, et la flèche indique Prendre l'objet)", "de": "Zombie-Kampf: Heldenwaffen, Items und Zahnräder landen jetzt immer ein gutes Stück außerhalb von Afeis Schild und sehen nicht mehr so aus, als lägen sie darin; Verstärkungen heißen jetzt Items (Item-Maus, der Pfeil zeigt Item nehmen)", "it": "Battaglia zombi: armi eroiche, oggetti e ingranaggi ora cadono sempre ben fuori dallo scudo di Afei, quindi non sembrano più dentro; i potenziamenti ora si chiamano oggetti (Topo oggetto, e la freccia dice Prendi oggetto)", "ru": "Битва с зомби: оружие героев, предметы и шестерёнки теперь всегда появляются далеко за щитом Афэя и больше не выглядят так, будто лежат внутри; усиления теперь называются предметами (Мышь-предмет, стрелка пишет «Взять предмет»)", "tr": "Zombi Savaşı: kahraman silahları, eşyalar ve dişliler artık hep Afei'nin kalkanının epey dışına düşüyor, içindeymiş gibi görünmüyor; güçlendirmelerin adı artık eşya (Eşya Faresi, ok da Eşya al diyor)", "id": "Perang Zombi: senjata pahlawan, item, dan roda gigi sekarang selalu jatuh cukup jauh di luar perisai Afei, jadi tidak lagi tampak ada di dalamnya; penguat sekarang disebut item (Tikus Item, dan penunjuk bertuliskan Ambil item)", "vi": "Trận Zombie: vũ khí anh hùng, vật phẩm và bánh răng giờ luôn rơi cách xa khiên của Afei, không còn trông như nằm bên trong; các buff giờ gọi là vật phẩm (Chuột vật phẩm, mũi tên ghi Nhặt vật phẩm)", "th": "ศึกซอมบี้: อาวุธฮีโร่ ไอเทม และเฟือง ตอนนี้จะตกห่างจากโล่ของอาเฟยพอสมควรเสมอ ไม่ดูเหมือนติดอยู่ในโล่อีก; บัฟเพิ่มพลังเปลี่ยนชื่อเป็นไอเทม (หนูไอเทม และลูกศรเขียนว่าหยิบไอเทม)"}],
     ["2026-11-25", "", "服飾店買的衣服和小魷魚帽，現在連線對戰和朋友的小鎮裡其他玩家也看得到；店裡的帽子和小魷魚帽一次只能戴一頂，後戴的算數",
