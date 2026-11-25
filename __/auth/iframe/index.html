@@ -3,6 +3,9 @@
 <head>
 <meta name=viewport content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>/* GitHub Pages 會把 /__/auth/handler 轉成 /__/auth/handler/（多一個斜線），Google 只認沒有斜線的網址，所以先把網址改回去 */
+if (/\/$/.test(location.pathname)) history.replaceState(null, "", location.pathname.replace(/\/+$/, "") + location.search + location.hash);
+</script>
 <script type="text/javascript" src="/__/auth/iframe.js"></script>
 <script type="text/javascript" nonce="firebase-auth-helper">
 if (window.fireauth && fireauth.iframe && fireauth.iframe.AuthRelay) {
