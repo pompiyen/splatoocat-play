@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v346';</script><script>window.SC_BUILD='1dfec02976d4';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v347';</script><script>window.SC_BUILD='e521f949cfce';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -24452,13 +24452,28 @@ let chatSeq = 0, chatOut = [], chatAt = -9, chatPrune = 0, chatSeen = {};
 N.chatLog = [];
 N.canType = () => TEXT_IN === 'all' || (TEXT_IN === 'friend' && !N.quick);
 const BADW = /(fuck|shit|bitch|dick|f\*ck|幹你|幹妳|靠北|靠杯|白痴|白癡|智障|去死|他媽|操你|賤|屁眼|雞掰|機掰)/gi;
+const BADW2 = /(?<!\p{L})(?:puta|puto|mierda|joder|cabr[oó]n|pendejo|gilipollas|co[ñn]o|porra|caralho|merda|foda-?se|ot[aá]rio|viado|putain|connard|connasse|salope|encul[eé]|pute|arschloch|schei(?:ß|ss)e|fotze|hurensohn|wichser|schlampe|cazzo|stronzo|vaffanculo|puttana|coglione|troia|amk|siktir|orospu|pi[cç]|yarrak|bangsat|kontol|memek|goblok|tolol|đ[iị]t|dịt|đ[uụ]|dụ|lồn|cặc)(?!\p{L})|バカ|ばか|死ね|しね|クソ|くそ|キモい|きもい|ブス|殺す|ころす|アホ|바보|새끼|시발|씨발|병신|미친|꺼져|좆|блят|бля|сука|хуй|пизд|ебат|мудак|еблан|เหี้ย|สัส|ควย|เย็ด/giu;
+const CONTACT = /(?<![A-Za-z0-9])(?:line|ig|insta(?:gram)?|discord|dc|telegram|tg|wechat|微信|kakao|カカオ|카톡|whats ?app|snap(?:chat)?|tiktok|fb|facebook|臉書|脸书)\s*(?:id\s*)?[:：=＝@＠]\s*[@＠]?[\w.#\-]{3,}|(?<![A-Za-z0-9])(?:line|ig|insta(?:gram)?|discord|dc|telegram|tg|wechat|微信|kakao|カカオ|카톡|whats ?app|snap(?:chat)?|tiktok|fb|facebook|臉書|脸书)\s*(?:id)?\s*[\w.#\-]*[\d_.#][\w.#\-]*|[@＠][\w.\-]{3,}/giu;
 N.cleanText = (t) => String(t == null ? '' : t).replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069<>]/g, '').replace(/\s+/g, ' ').trim()
-.replace(/(https?:\/\/|www\.)\S*|\b[\w-]+(\.[\w-]+)*\.(com|net|org|tw|io|me|ly|gg|cn|jp|kr|app|xyz|link|cc|co)\b\S*/gi, '🚫').replace(/[0-9０-９][0-9０-９\s.\-()]{4,}[0-9０-９]/g, '🚫').replace(BADW, '❤').slice(0, CHAT_MAX);
+.replace(/(https?:\/\/|www\.)\S*|\b[\w-]+(\.[\w-]+)*\.(com|net|org|tw|io|me|ly|gg|cn|jp|kr|app|xyz|link|cc|co)\b\S*/gi, '🚫').replace(/[0-9０-９][0-9０-９\s.\-()]{4,}[0-9０-９]/g, '🚫').replace(CONTACT, '🚫').replace(BADW, '❤').replace(BADW2, '❤').slice(0, CHAT_MAX);
+const RK = { code: '', k: null, topic: '' };
+function roomKey(code) {
+if (RK.code === code) return RK; let a = 0x811c9dc5, b = 0x9e3779b9, c = 0x85ebca6b, d = 0xc2b2ae35; const s = 'spalacat-room|' + code;
+for (let r = 0; r < 20000; r++) for (let i = 0; i < s.length; i++) { a = Math.imul(a ^ s.charCodeAt(i), 16777619); b = Math.imul(b ^ a, 2246822507) ^ (b >>> 13); c = Math.imul(c ^ (b >>> 3), 3266489909) + r; d = (d ^ c ^ (d >>> 11)) >>> 0; }
+const h = (x) => (x >>> 0).toString(36);
+RK.code = code; RK.k = [a >>> 0, b >>> 0, c >>> 0, d >>> 0]; RK.topic = 'sc-k' + h(a ^ d) + h(b ^ c); return RK;
+}
+N.roomTopic = (code) => roomKey(code).topic;
+const b64e = (u) => { let t = ''; u.forEach((x) => (t += String.fromCharCode(x))); return btoa(t); }, b64d = (t) => Uint8Array.from(atob(t), (ch) => ch.charCodeAt(0));
+function xs(k, nonce, bytes) { let [x, y, z, w] = k; x ^= nonce; y ^= Math.imul(nonce, 2654435761); for (let i = 0; i < 8; i++) { const t = x ^ (x << 11); x = y; y = z; z = w; w = (w ^ (w >>> 19) ^ t ^ (t >>> 8)) >>> 0; }
+const o = new Uint8Array(bytes.length); for (let i = 0; i < bytes.length; i++) { if (!(i & 3)) { const t = x ^ (x << 11); x = y; y = z; z = w; w = (w ^ (w >>> 19) ^ t ^ (t >>> 8)) >>> 0; } o[i] = bytes[i] ^ ((w >>> ((i & 3) * 8)) & 255); } return o; }
+const roomEnc = (t) => { if (!N.code || N.quick || !t) return t; const k = roomKey(N.code).k, n = (Math.random() * 0x7fffffff) | 0; return '~e1:' + n.toString(36) + ':' + b64e(xs(k, n, new TextEncoder().encode(String(t)))); };
+const roomDec = (t) => { if (typeof t !== 'string' || !t.startsWith('~e1:')) return t; try { if (!N.code) return ''; const [, n, b] = t.split(':'); return new TextDecoder().decode(xs(roomKey(N.code).k, parseInt(n, 36) | 0, b64d(b))); } catch (e) { return ''; } };
 const chatSend = () => send({ cm: chatOut.map((c) => c.d) });
 N.chat = (type, v) => {
 if (!room || N.state !== 'lobby' || clock - chatAt < 0.8) return false;
 if (type === 'x') { if (!N.canType()) return false; v = N.cleanText(v); if (!v) return false; } else if (!(Number.isInteger(v) && v >= 0 && v < N.STICKERS)) return false;
-chatAt = clock; chatOut.push({ at: clock, d: [++chatSeq, type, v] }); chatOut = chatOut.slice(-4); chatSend();
+chatAt = clock; chatOut.push({ at: clock, d: [++chatSeq, type, type === 'x' ? roomEnc(v) : v] }); chatOut = chatOut.slice(-4); chatSend();
 addChat({ me: true, peer: myPeer, type, v }); return true;
 };
 const addChat = (c) => { N.chatLog.push(c); if (N.chatLog.length > 40) N.chatLog.shift(); if (N.onChat) N.onChat(c); };
@@ -24480,7 +24495,7 @@ const joinR = async (n) => { for (let k = 0; ; k++) { try { return await api.joi
 const send = (patch) => { if (room) room.presence(patch).catch(() => {}); };
 N.clock = () => clock;
 N.played = (id) => done.has(id);
-N.clean = (s) => String(s == null ? '' : s).replace(BADW, '').replace(/[^\p{L}\p{N} _-]/gu, '').trim().slice(0, 8);
+N.clean = (s) => String(s == null ? '' : s).replace(BADW, '').replace(BADW2, '').replace(/[^\p{L}\p{N} _-]/gu, '').trim().slice(0, 8);
 const validH = (h) => (h && typeof h === 'object' && typeof h.id === 'string' && Array.isArray(h.pl) && h.pl.length >= 1 && h.pl.length <= (h.rule === 'conquest' ? 12 : 6) && (h.n == null || (h.n === 2 && h.pl.length <= (h.rule === 'conquest' ? 12 : 6)) || (h.n >= 3 && h.n <= 6 && h.pl.length === h.n))
 && h.pl.every((e) => Array.isArray(e) && typeof e[0] === 'string' && Number.isInteger(e[1]) && e[1] >= 0 && e[1] < (h.n || 2) && Number.isInteger(e[2]) && e[2] >= 0 && e[2] <= (h.rule === 'zombie' || h.rule === 'conquest' ? 5 : 3)) ? h : null);
 const turn = (a, idx, yaw, dir) => {
@@ -24502,10 +24517,10 @@ code = String(code).replace(/\D/g, '').slice(0, 4);
 if (code.length !== 4) { N.msg = '房號是 4 個數字'; return changed(); }
 N.busy = true; N.msg = '連線中…'; changed();
 let r = null, why = '';
-try { r = await joinR('sc-' + code); } catch (e) { why = (e && e.code) || ''; }
+try { r = await joinR(N.roomTopic(code)); } catch (e) { why = (e && e.code) || ''; }
 N.busy = false;
 if (!r) { N.msg = why === 'not_permitted' || why === 'not_granted' ? '這個帳號不能連線，要請房主先邀請你看這個頁面' : window.SC_PUBLIC ? '連不上連線中繼站，檢查一下網路，等一下再試一次' : '連不上房間，等一下再試一次'; return changed(); }
-attach(r, code, 0, false, null, 'sc-' + code);
+attach(r, code, 0, false, null, N.roomTopic(code));
 };
 function attach(r, code, qi, ranked, qrule, rn) {
 N.rn = rn || ''; N.rj = null; N.rjFail = false; chatOut = []; chatSeen = {}; N.chatLog = [];
@@ -24584,7 +24599,7 @@ const u = typeof p.u === 'string' && /^[A-Za-z0-9]{6,40}$/.test(p.u) ? p.u : '';
 const rt = Number.isInteger(p.rt) && p.rt >= 0 && p.rt <= 9 ? p.rt : -1, tl = typeof p.tl === 'string' && /^[a-z0-9]{1,12}$/.test(p.tl) ? p.tl : '';
 const lk = SC.wear && SC.wear.code ? SC.wear.code() : '';
 if (n === prof.n && k === prof.k && p.w === prof.w && u === prof.u && rt === prof.rt && tl === prof.tl && lk === prof.lk) return;
-prof = { n, k, w: p.w, u, rt, tl, lk }; if (N.state === 'lobby') send({ n: N.quick && !N.ranked ? '' : n, k, w: p.w, u, rt, tl, lk });
+prof = { n, k, w: p.w, u, rt, tl, lk }; if (N.state === 'lobby') send({ n: N.quick && !N.ranked ? '' : roomEnc(n), k, w: p.w, u, rt, tl, lk });
 };
 const hostPatch = () => ({ vc: N.vc ? 1 : 0, zb: N.zb ? 1 : 0, zm: N.zmap, df: N.dif, r: N.rule, mp: N.map, tt: N.tri == null ? 0 : N.tri ? 3 : 2, mx: N.mix, cqm: N.cmap, as: N.list.slice(0, N.cqOn() ? 12 : 6).map((r) => [r.peer, N.asg[r.peer] != null ? N.asg[r.peer] : -1]) });
 N.lineup = (rand) => {
@@ -24672,13 +24687,13 @@ const peers = room.peers();
 if (N.state === 'joining') {
 if (clock - joinAt < 1.3) return;
 let maxJ = 0; for (const p of peers) { const j = p.presence && p.presence.j; if (typeof j === 'number' && j > maxJ) maxJ = j; }
-N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : prof.n, k: prof.k, w: prof.w, lk: prof.lk || '', u: prof.u || '', rt: prof.rt == null ? -1 : prof.rt, tl: prof.tl || '', r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build, sd: SID, rj: null });
+N.state = 'lobby'; send({ v: 1, j: Math.max(Date.now(), maxJ + 1), n: N.quick && !N.ranked ? '' : roomEnc(prof.n), k: prof.k, w: prof.w, lk: prof.lk || '', u: prof.u || '', rt: prof.rt == null ? -1 : prof.rt, tl: prof.tl || '', r: null, h: null, sc: null, res: null, mi: null, s: null, e: null, hb: null, qs: null, cm: null, rd: 0, b: N.build, sd: SID, rj: null });
 }
 const list = [];
 for (const p of peers) {
 const q = p.presence || {}; if (p.kind !== 'viewer' || q.v !== 1 || typeof q.j !== 'number') continue;
 const isMe = p.isMe && p.sameTab; if (isMe) myPeer = p.peer;
-list.push({ peer: p.peer, isMe, j: q.j, nick: N.quick && !N.ranked ? '' : N.clean(q.n), kind: KINDS.includes(q.k) ? q.k : 'maomao', lk: typeof q.lk === 'string' ? q.lk.slice(0, 60) : '', q, old: typeof q.b === 'string' ? q.b !== N.build : !!N.build });
+list.push({ peer: p.peer, isMe, j: q.j, nick: N.quick && !N.ranked ? '' : N.clean(roomDec(q.n)), kind: KINDS.includes(q.k) ? q.k : 'maomao', lk: typeof q.lk === 'string' ? q.lk.slice(0, 60) : '', q, old: typeof q.b === 'string' ? q.b !== N.build : !!N.build });
 }
 list.sort((a, b) => a.j - b.j || (a.peer < b.peer ? -1 : 1));
 const host = list[0], h = host ? validH(host.q.h) : null, m = N.match;
@@ -24700,7 +24715,7 @@ cm.slice(-4).forEach((d) => {
 if (!Array.isArray(d) || !Number.isInteger(d[0]) || d[0] <= last) return;
 top = Math.max(top, d[0]);
 if (d[1] === 's' && Number.isInteger(d[2]) && d[2] >= 0 && d[2] < N.STICKERS) addChat({ peer: r.peer, i, type: 's', v: d[2] });
-else if (d[1] === 'x' && N.canType() && typeof d[2] === 'string') { const t = N.cleanText(d[2]); if (t) addChat({ peer: r.peer, i, type: 'x', v: t }); }
+else if (d[1] === 'x' && N.canType() && typeof d[2] === 'string') { const t = N.cleanText(roomDec(d[2])); if (t) addChat({ peer: r.peer, i, type: 'x', v: t }); }
 });
 chatSeen[r.peer] = top;
 });
@@ -45561,6 +45576,8 @@ if (useFb) load().catch(() => { fbp = null; });
 (() => {
 window.SC = window.SC || {};
 SC.CHANGELOG = [
+['2026-11-26', '', '好友房更安全：聊天也會擋日、韓、西、葡、法、德、義、俄、土、印尼、越、泰文常見的罵人話和 LINE／IG／Discord 帳號；好友房的暱稱和聊天加密，房號不再直接出現在連線頻道上',
+{ en: 'Safer friend rooms: chat now also blocks common insults in Japanese, Korean, Spanish, Portuguese, French, German, Italian, Russian, Turkish, Indonesian, Vietnamese and Thai, plus LINE/IG/Discord handles; friend-room nicknames and chat are encrypted and the room code no longer appears in the relay channel', ja: 'フレンド部屋をより安全に：チャットで日本語・韓国語・スペイン語など12言語のよくある悪口と LINE／IG／Discord のIDをブロック；フレンド部屋のニックネームとチャットは暗号化され、部屋番号が通信チャンネルに出なくなった', ko: '친구 방이 더 안전해졌어요: 채팅에서 일본어·한국어·스페인어 등 12개 언어의 흔한 욕설과 LINE/IG/Discord 아이디를 막아요; 친구 방 닉네임과 채팅은 암호화되고 방 번호가 연결 채널에 드러나지 않아요', es: 'Salas de amigos más seguras: el chat bloquea insultos comunes en 12 idiomas más y cuentas de LINE/IG/Discord; los apodos y el chat de la sala van cifrados y el código ya no aparece en el canal', pt: 'Salas de amigos mais seguras: o chat bloqueia xingamentos comuns em mais 12 idiomas e contas de LINE/IG/Discord; apelidos e chat da sala são criptografados e o código não aparece mais no canal', fr: 'Salons d’amis plus sûrs : le chat bloque les insultes courantes dans 12 langues de plus et les identifiants LINE/IG/Discord ; pseudos et chat du salon sont chiffrés et le code n’apparaît plus dans le canal', de: 'Sicherere Freundesräume: der Chat blockiert gängige Beleidigungen in 12 weiteren Sprachen und LINE/IG/Discord-Namen; Spitznamen und Chat sind verschlüsselt und der Raumcode steht nicht mehr im Kanal', it: 'Stanze amici più sicure: la chat blocca insulti comuni in altre 12 lingue e gli account LINE/IG/Discord; soprannomi e chat della stanza sono cifrati e il codice non compare più nel canale', ru: 'Комнаты друзей безопаснее: чат блокирует частые ругательства ещё на 12 языках и аккаунты LINE/IG/Discord; ники и чат в комнате друзей шифруются, а код комнаты больше не виден в канале', tr: 'Daha güvenli arkadaş odaları: sohbet 12 dilde daha yaygın küfürleri ve LINE/IG/Discord hesaplarını engelliyor; oda takma adları ve sohbet şifreleniyor, oda kodu artık kanalda görünmüyor', id: 'Ruang teman lebih aman: chat memblokir kata kasar umum dalam 12 bahasa lagi dan akun LINE/IG/Discord; nama panggilan dan chat ruang dienkripsi dan kode ruang tidak lagi muncul di kanal', vi: 'Phòng bạn bè an toàn hơn: trò chuyện chặn thêm lời chửi phổ biến ở 12 ngôn ngữ và tài khoản LINE/IG/Discord; biệt danh và tin nhắn trong phòng được mã hóa, mã phòng không còn lộ trên kênh', th: 'ห้องเพื่อนปลอดภัยขึ้น: แชตบล็อกคำหยาบที่พบบ่อยอีก 12 ภาษาและบัญชี LINE/IG/Discord; ชื่อเล่นและแชตในห้องเพื่อนถูกเข้ารหัส และเลขห้องไม่โผล่ในช่องสัญญาณอีก' }],
 ['2026-11-26', '', '手機橫式版面：開戰／開始配對鈕縮小貼到角落，不再蓋住分頁和墨水顏色；按鈕上的小字至少 10 px；首頁右上小圖示更好點；「這台裝置怎麼玩最順」的「知道了」不用捲就看得到',
 { en: 'Landscape phone layout: the Start/Find match button is smaller and tucked in the corner so it no longer covers tabs and ink colors; button captions are at least 10 px; the small top-right home icons are easier to tap; the device tips card shows Got it without scrolling', ja: 'スマホ横向きの画面：スタート／マッチ開始ボタンを小さく角に寄せ、タブやインクの色をかくさない；ボタンの小さい字は10px以上；ホーム右上の小さいアイコンを押しやすく；「この端末で快適に遊ぶには」の「わかった」がスクロールなしで見える', ko: '가로 휴대폰 화면: 시작/매칭 시작 버튼을 작게 해서 모서리로 옮겨 탭과 잉크 색을 가리지 않아요; 버튼 작은 글씨는 최소 10px; 홈 오른쪽 위 작은 아이콘을 누르기 쉬워졌어요; 기기 안내 카드의 확인 버튼이 스크롤 없이 보여요', es: 'Móvil en horizontal: el botón de empezar/buscar partida es más pequeño y va en la esquina, sin tapar pestañas ni colores; los textos de los botones miden al menos 10 px; los iconos pequeños de arriba a la derecha son más fáciles de tocar; la tarjeta de consejos muestra Entendido sin desplazarse', pt: 'Celular na horizontal: o botão de começar/buscar partida ficou menor e no canto, sem cobrir abas e cores; textos dos botões com pelo menos 10 px; ícones pequenos do canto superior direito mais fáceis de tocar; o cartão de dicas mostra Entendi sem rolar', fr: 'Téléphone à l’horizontale : le bouton Jouer/Chercher un match est plus petit et dans le coin, sans cacher les onglets ni les couleurs ; les légendes des boutons font au moins 10 px ; les petites icônes en haut à droite sont plus faciles à toucher ; la carte de conseils montre Compris sans défiler', de: 'Handy im Querformat: der Start-/Spielsuche-Knopf ist kleiner und sitzt in der Ecke, ohne Tabs und Tintenfarben zu verdecken; Knopftexte mindestens 10 px; kleine Symbole oben rechts lassen sich leichter tippen; die Geräte-Tipps zeigen Verstanden ohne Scrollen', it: 'Telefono in orizzontale: il pulsante Gioca/Cerca partita è più piccolo e nell’angolo, senza coprire schede e colori; le scritte dei pulsanti sono almeno 10 px; le piccole icone in alto a destra sono più facili da toccare; la scheda dei consigli mostra Ho capito senza scorrere', ru: 'Телефон в горизонтальном режиме: кнопка «Начать/Найти матч» меньше и в углу, не закрывает вкладки и цвета; подписи кнопок не меньше 10 px; маленькие значки справа сверху легче нажать; карточка советов показывает «Понятно» без прокрутки', tr: 'Yatay telefon düzeni: Başla/Maç bul düğmesi küçüldü ve köşeye geçti, sekmeleri ve renkleri kapatmıyor; düğme yazıları en az 10 px; sağ üstteki küçük simgelere dokunmak kolaylaştı; cihaz ipuçları kartında Anladım kaydırmadan görünüyor', id: 'Tata letak ponsel mendatar: tombol Mulai/Cari tanding lebih kecil dan di pojok, tidak menutupi tab dan warna tinta; tulisan tombol minimal 10 px; ikon kecil kanan atas lebih mudah ditekan; kartu tips perangkat menampilkan Mengerti tanpa menggulir', vi: 'Bố cục điện thoại nằm ngang: nút Bắt đầu/Tìm trận nhỏ hơn và nằm ở góc, không che thẻ và màu mực; chữ trên nút tối thiểu 10 px; biểu tượng nhỏ góc trên phải dễ bấm hơn; thẻ mẹo thiết bị hiện nút Đã hiểu không cần cuộn', th: 'จอมือถือแนวนอน: ปุ่มเริ่ม/หาแมตช์เล็กลงและย้ายไปมุม ไม่บังแท็บและสีหมึก; ตัวอักษรบนปุ่มอย่างน้อย 10 px; ไอคอนเล็กมุมขวาบนกดง่ายขึ้น; การ์ดคำแนะนำอุปกรณ์เห็นปุ่มเข้าใจแล้วโดยไม่ต้องเลื่อน' }],
 ['2026-11-26', '', '更快打開：網站上的遊戲檔拿掉註解，第一次下載少約 300 KB；常見的中階安卓手機（例如 Galaxy A5x）改用一般畫質，太慢時還是會自動降低',
