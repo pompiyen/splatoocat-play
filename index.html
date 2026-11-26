@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v325';</script><script>window.SC_BUILD='fee23edfabce';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v326';</script><script>window.SC_BUILD='e60ec151fa39';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -32044,7 +32044,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const q = location.search + location.hash, m = /[?&#]ip3d(?:=(\w+))?/.exec(q);
   if (!m) return;
   const VER = m[1] === 'adult' || m[1] === 'a' ? 'a' : 'q';
-  const PLAY = /[?&]play\b/.test(location.search); // ?ip3d=q&play：整個遊戲（對戰、潛墨、各武器）的貓都換成新造型
+  // v326（Yen「武器系統 潛墨那些功能沒有進來」）：?ip3d=q／?ip3d=adult 直接進單機對戰（3 對 3），整個遊戲的貓都是新造型，武器、潛墨照原本對戰；
+  // ?ip3d=q&play 換造型但停在首頁自己選模式；?ip3d=q&show 是原本的展示場（只看模型和動作）
+  const SHOW = /[?&]show\b/.test(location.search), PLAY = !SHOW, AUTO = !/[?&]play\b/.test(location.search) && !SHOW;
   const T = () => window.THREE, $ = (id) => document.getElementById(id);
   const TEAM_HUE = { pink: 345 / 360, blue: 208 / 360 };
   // 每隻的關節位置（模型已縮放成身高 1、腳踩 y=0、臉朝 +z）
@@ -32307,6 +32309,17 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     tip.textContent = (VER === 'a' ? '擬人版' : 'Q 版') + '新造型試玩中（所有模式的貓都換成新造型，判定不變）';
     tip.style.cssText = 'position:fixed;left:50%;bottom:6px;transform:translateX(-50%);z-index:50;background:#ffffffd9;color:#1d2330;border-radius:9px;padding:4px 10px;font:12px system-ui,sans-serif;pointer-events:none';
     addEventListener('load', () => document.body.appendChild(tip));
+    tip.textContent += '｜按住 Shift 或右下角墨貓鈕潛墨、滑鼠左鍵射擊、Q 小招、F 大絕';
+    if (!AUTO) return;
+    let started = false;
+    const go = () => {
+      const b = $('boot'); if (started) return;
+      if (!b || !b.classList.contains('done') || !SC.game || !SC.game.start || !MODELS['mao_' + VER + '!']) return setTimeout(go, 300);
+      started = true;
+      setTimeout(() => { const h = $('home'); if (h) h.hidden = true; if (SC.home) SC.home.on = false; if (SC.town) SC.town.on = false; const ap = $('app'); if (ap) ap.classList.remove('in-home');
+        try { SC.game.start({ mode: 'versus', demo: false, roster: '3v3' }); } catch (e) { console.warn('ip3d start', e); } }, 600);
+    };
+    addEventListener('load', go);
   }
 
   // ---- 頁面 ----
@@ -32374,8 +32387,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     jb.onpointerdown = (e) => { e.preventDefault(); wantJump = true; };
     const db = wrap.querySelector('[data-demo]'); db.onclick = () => { demo = !demo; demoT = 0; db.style.background = demo ? '#ffe2ec' : '#fff'; };
     wrap.querySelectorAll('[data-c]').forEach((x) => (x.onclick = () => (me = +x.dataset.c)));
-    wrap.querySelector('[data-v]').onclick = () => { location.search = '?ip3d=' + (VER === 'a' ? 'q' : 'adult'); };
-    wrap.querySelector('[data-play]').onclick = () => { location.href = location.pathname + '?ip3d=' + (VER === 'a' ? 'adult' : 'q') + '&play'; };
+    wrap.querySelector('[data-v]').onclick = () => { location.search = '?ip3d=' + (VER === 'a' ? 'q' : 'adult') + '&show'; };
+    wrap.querySelector('[data-play]').onclick = () => { location.href = location.pathname + '?ip3d=' + (VER === 'a' ? 'adult' : 'q'); };
     wrap.querySelector('[data-x]').onclick = () => { location.href = location.pathname; };
     const size = () => { R.setSize(innerWidth, innerHeight, false); C.aspect = innerWidth / innerHeight; C.updateProjectionMatrix(); };
     addEventListener('resize', size); size();
