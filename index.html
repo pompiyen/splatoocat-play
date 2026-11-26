@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v326';</script><script>window.SC_BUILD='e60ec151fa39';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v327';</script><script>window.SC_BUILD='33bfaa1bfddb';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -32042,11 +32042,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 // 只能從網址進來，不在模式清單裡；不連線、不存資料。
 (function () {
   const q = location.search + location.hash, m = /[?&#]ip3d(?:=(\w+))?/.exec(q);
-  if (!m) return;
-  const VER = m[1] === 'adult' || m[1] === 'a' ? 'a' : 'q';
+  // LIVE：Q 版新造型變成所有人的正式造型（Yen 11-26「完成後Q版先更新在一般對戰與小鎮系統內運作」，六隻 Q 版都做好才打開）。?oldcat 可暫時看回舊造型
+  const LIVE = false && !/[?&]oldcat\b/.test(location.search);
+  if (!m && !LIVE) return;
+  const VER = m && (m[1] === 'adult' || m[1] === 'a') ? 'a' : 'q';
   // v326（Yen「武器系統 潛墨那些功能沒有進來」）：?ip3d=q／?ip3d=adult 直接進單機對戰（3 對 3），整個遊戲的貓都是新造型，武器、潛墨照原本對戰；
   // ?ip3d=q&play 換造型但停在首頁自己選模式；?ip3d=q&show 是原本的展示場（只看模型和動作）
-  const SHOW = /[?&]show\b/.test(location.search), PLAY = !SHOW, AUTO = !/[?&]play\b/.test(location.search) && !SHOW;
+  const SHOW = !!m && /[?&]show\b/.test(location.search), PLAY = !SHOW, AUTO = !!m && !/[?&]play\b/.test(location.search) && !SHOW;
   const T = () => window.THREE, $ = (id) => document.getElementById(id);
   const TEAM_HUE = { pink: 345 / 360, blue: 208 / 360 };
   // 每隻的關節位置（模型已縮放成身高 1、腳踩 y=0、臉朝 +z）
@@ -32056,6 +32058,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       tail: [[0.04, 0.2, -0.1], [0.12, 0.22, -0.2], [0.2, 0.3, -0.26], [0.23, 0.46, -0.27]] },
     shuang_q: { src: 208, hip: [0.07, 0.2], knee: 0.1, foot: 0.02, sh: [0.15, 0.42], el: [0.2, 0.33], ha: [0.22, 0.27], sp: [0.22, 0.4, 0.48, 0.7, 0.98],
       tail: [[0.06, 0.22, -0.12], [0.15, 0.25, -0.14], [0.24, 0.35, -0.11], [0.31, 0.46, -0.1]] },
+    banban_q: { src: 345, hip: [0.08, 0.2], knee: 0.1, foot: 0.02, sh: [0.15, 0.42], el: [0.2, 0.32], ha: [0.24, 0.22], sp: [0.22, 0.4, 0.5, 0.72, 0.98],
+      tail: [[0.05, 0.2, -0.12], [0.15, 0.22, -0.2], [0.25, 0.3, -0.22], [0.28, 0.45, -0.2]] },
     mao_a: { src: 345, hip: [0.06, 0.42], knee: 0.22, foot: 0.03, sh: [0.11, 0.64], el: [0.15, 0.5], ha: [0.17, 0.38], sp: [0.44, 0.58, 0.72, 0.84, 0.98],
       tail: [[-0.02, 0.4, -0.08], [-0.08, 0.3, -0.14], [-0.14, 0.2, -0.17], [-0.17, 0.08, -0.17]] },
     shuang_a: { src: 208, hip: [0.06, 0.4], knee: 0.22, foot: 0.03, sh: [0.11, 0.62], el: [0.14, 0.5], ha: [0.15, 0.4], sp: [0.42, 0.56, 0.72, 0.84, 0.98],
@@ -32214,8 +32218,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // 換上新模型；cat.animate 之後依遊戲給的狀態（速度、在不在地上、瞄準角度、潛墨）擺新模型的骨架。武器還是拿在原本的手（位置跟新身材對齊）。
   const GH = VER === 'a' ? 7.4 : 5.8;                        // 新造型在對戰場上的身高（舊的 Q 版貓約 6）
   const HAND = VER === 'a' ? { y: 4.45, z: 1.75 } : { y: 2.45, z: 1.05 }; // 槍拿在新身材的肩膀前面
-  const FUR = { mao: [0xe58a3a, 0xf6e2c6], shuang: [0xeee6dc, 0x5b4033] };
-  const KMAP = { maomao: 'mao', shuang: 'shuang', banban: 'mao', taro: 'mao', mochi: 'shuang', meiqiu: 'shuang' };
+  const FUR = { mao: [0xe58a3a, 0xf6e2c6], shuang: [0xeee6dc, 0x5b4033], banban: [0x8a5a32, 0xf1dfc4], taro: [0xe0762a, 0xfff3e6], mochi: [0x8e8466, 0xe8e0cc], meiqiu: [0x2b2631, 0x3d3745] };
+  // 每隻貓用自己的新模型（web/static/ip3d/<id>_<q|a>.glb）；還沒做好的先借毛毛或雙雙
+  const OWN = { maomao: 'mao', shuang: 'shuang', banban: 'banban', taro: 'taro', mochi: 'mochi', meiqiu: 'meiqiu' };
+  const LEND = { maomao: 'mao', shuang: 'shuang', banban: 'mao', taro: 'mao', mochi: 'shuang', meiqiu: 'shuang' };
+  const HAVE = { q: ['mao', 'shuang', 'banban'], a: ['mao', 'shuang'] };
+  const modelOf = (kind) => { const o = OWN[kind]; return o && HAVE[VER].includes(o) && SKEL[o + '_' + VER] ? o : LEND[kind] || 'mao'; };
   const HIDE = 7;
   // 新潛墨造型「漆塊貓」：一攤切面的隊色油漆，冒出兩隻尖耳朵（耳尖沾漆）、一對亮晶晶的眼睛，後面翹著筆刷尾巴；毛毛耳朵上別小金冠，雙雙別魚骨髮夾
   function makeDive(id) {
@@ -32278,8 +32286,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     d.tail.rotation.z = Math.sin(t * (4 + mv * 8)) * (0.25 + mv * 0.2); d.tail.rotation.x = air ? 0.3 : -mv * 0.4;
   }
   function skinCat(cat, kind) {
-    const id = KMAP[kind] || 'mao', key = id + '_' + VER, M = MODELS[key + '!'];
-    if (!M) return false;
+    const id = modelOf(kind), key = id + '_' + VER, M = MODELS[key + '!'];
+    if (!M) { prep(key).then((m) => (MODELS[key + '!'] = m)).then(flush, (e) => console.warn('ip3d', key, e)); return false; }
     const THREE = T(), body = cat.bodyG, gag = body.parent, root = cat.group, hand = cat.hand;
     const inHand = new Set(); hand.traverse((o) => inHand.add(o));
     body.traverse((o) => { if (o.isMesh && !inHand.has(o)) o.layers.set(HIDE); });
@@ -32299,16 +32307,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     };
     cat.ip3d = k; (SC.ip3dCats = SC.ip3dCats || []).push(cat); return true;
   }
+  const pending = [];
+  function flush() { for (let i = pending.length - 1; i >= 0; i--) { const [c, kd] = pending[i]; if (c.ip3d || skinCat(c, kd)) pending.splice(i, 1); } }
   function skinGame() {
-    const orig = SC.makeCat, pending = [];
+    const orig = SC.makeCat;
     SC.makeCat = (kind) => { const c = orig(kind); if (!skinCat(c, kind)) pending.push([c, kind]); return c; };
-    const ids = ['mao', 'shuang'];
-    Promise.all(ids.map((id) => prep(id + '_' + VER).then((M) => (MODELS[id + '_' + VER + '!'] = M)))).then(() => { while (pending.length) { const [c, kd] = pending.shift(); skinCat(c, kd); } })
-      .catch((e) => console.warn('ip3d', e));
+    prep('mao_' + VER).then((M) => (MODELS['mao_' + VER + '!'] = M)).then(flush, (e) => console.warn('ip3d', e)); // 模型按需要才下載，毛毛先載
     const tip = document.createElement('div');
     tip.textContent = (VER === 'a' ? '擬人版' : 'Q 版') + '新造型試玩中（所有模式的貓都換成新造型，判定不變）';
     tip.style.cssText = 'position:fixed;left:50%;bottom:6px;transform:translateX(-50%);z-index:50;background:#ffffffd9;color:#1d2330;border-radius:9px;padding:4px 10px;font:12px system-ui,sans-serif;pointer-events:none';
-    addEventListener('load', () => document.body.appendChild(tip));
+    if (m) addEventListener('load', () => document.body.appendChild(tip));
     tip.textContent += '｜按住 Shift 或右下角墨貓鈕潛墨、滑鼠左鍵射擊、Q 小招、F 大絕';
     if (!AUTO) return;
     let started = false;
