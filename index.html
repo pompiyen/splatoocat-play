@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v350';</script><script>window.SC_BUILD='161126902d68';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v351';</script><script>window.SC_BUILD='c4bd829a5f9d';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -30879,10 +30879,22 @@ shuang_q: { src: 208, hip: [0.07, 0.2], knee: 0.1, foot: 0.02, sh: [0.15, 0.42],
 tail: [[0.06, 0.22, -0.12], [0.15, 0.25, -0.14], [0.24, 0.35, -0.11], [0.31, 0.46, -0.1]] },
 banban_q: { src: 345, hip: [0.08, 0.2], knee: 0.1, foot: 0.02, sh: [0.15, 0.42], el: [0.2, 0.32], ha: [0.24, 0.22], sp: [0.22, 0.4, 0.5, 0.72, 0.98],
 tail: [[0.05, 0.2, -0.12], [0.15, 0.22, -0.2], [0.25, 0.3, -0.22], [0.28, 0.45, -0.2]] },
+taro_q: { src: 345, hip: [0.07, 0.2], knee: 0.1, foot: 0.02, sh: [0.14, 0.42], el: [0.2, 0.33], ha: [0.24, 0.24], sp: [0.22, 0.4, 0.5, 0.72, 0.98],
+tail: [[0.04, 0.22, -0.1], [0.1, 0.2, -0.2], [0.15, 0.3, -0.3], [0.2, 0.45, -0.38]] },
+mochi_q: { src: 345, hip: [0.09, 0.2], knee: 0.1, foot: 0.02, sh: [0.17, 0.45], el: [0.24, 0.36], ha: [0.3, 0.28], sp: [0.22, 0.42, 0.52, 0.75, 0.98],
+tail: [[0.02, 0.2, -0.1], [0.12, 0.15, 0.05], [0.22, 0.17, 0.18], [0.32, 0.27, 0.24]] },
 mao_a: { src: 345, hip: [0.06, 0.42], knee: 0.22, foot: 0.03, sh: [0.11, 0.64], el: [0.15, 0.5], ha: [0.17, 0.38], sp: [0.44, 0.58, 0.72, 0.84, 0.98],
 tail: [[-0.02, 0.4, -0.08], [-0.08, 0.3, -0.14], [-0.14, 0.2, -0.17], [-0.17, 0.08, -0.17]] },
 shuang_a: { src: 208, hip: [0.06, 0.4], knee: 0.22, foot: 0.03, sh: [0.11, 0.62], el: [0.14, 0.5], ha: [0.15, 0.4], sp: [0.42, 0.56, 0.72, 0.84, 0.98],
 tail: [[-0.02, 0.38, -0.08], [-0.08, 0.28, -0.14], [-0.13, 0.18, -0.17], [-0.16, 0.08, -0.17]] },
+banban_a: { src: 345, hip: [0.06, 0.43], knee: 0.22, foot: 0.03, sh: [0.12, 0.66], el: [0.17, 0.53], ha: [0.21, 0.41], sp: [0.45, 0.6, 0.73, 0.85, 0.98],
+tail: [[0, 0.42, -0.08], [0.05, 0.33, -0.13], [0.1, 0.24, -0.16], [0.16, 0.13, -0.17]] },
+taro_a: { src: 345, hip: [0.07, 0.45], knee: 0.23, foot: 0.03, sh: [0.13, 0.66], el: [0.18, 0.52], ha: [0.21, 0.4], sp: [0.46, 0.6, 0.75, 0.87, 0.98],
+tail: [[-0.02, 0.42, -0.08], [-0.08, 0.33, -0.12], [-0.15, 0.24, -0.15], [-0.21, 0.14, -0.16]] },
+mochi_a: { src: 345, hip: [0.08, 0.44], knee: 0.22, foot: 0.03, sh: [0.14, 0.64], el: [0.19, 0.48], ha: [0.2, 0.34], sp: [0.45, 0.58, 0.72, 0.86, 0.98],
+tail: [[0.02, 0.42, -0.12], [0.08, 0.35, -0.17], [0.15, 0.29, -0.2], [0.22, 0.24, -0.22]] },
+meiqiu_a: { src: 345, hip: [0.07, 0.42], knee: 0.22, foot: 0.03, sh: [0.13, 0.66], el: [0.18, 0.53], ha: [0.21, 0.42], sp: [0.44, 0.58, 0.74, 0.86, 0.98],
+tail: [[0, 0.38, -0.08], [0, 0.3, -0.13], [0, 0.2, -0.15], [0, 0.1, -0.12]] },
 };
 const TEAMC = { pink: 0xe8336f, blue: 0x1e8ee6 };
 const CATS = [{ id: 'mao', name: '毛毛', team: 'pink' }, { id: 'shuang', name: '雙雙', team: 'blue' }];
@@ -31019,7 +31031,7 @@ const HAND = VER === 'a' ? { y: 4.45, z: 1.75 } : { y: 2.45, z: 1.05 };
 const FUR = { mao: [0xe58a3a, 0xf6e2c6], shuang: [0xeee6dc, 0x5b4033], banban: [0x8a5a32, 0xf1dfc4], taro: [0xe0762a, 0xfff3e6], mochi: [0x8e8466, 0xe8e0cc], meiqiu: [0x2b2631, 0x3d3745] };
 const OWN = { maomao: 'mao', shuang: 'shuang', banban: 'banban', taro: 'taro', mochi: 'mochi', meiqiu: 'meiqiu' };
 const LEND = { maomao: 'mao', shuang: 'shuang', banban: 'mao', taro: 'mao', mochi: 'shuang', meiqiu: 'shuang' };
-const HAVE = { q: ['mao', 'shuang', 'banban'], a: ['mao', 'shuang'] };
+const HAVE = { q: ['mao', 'shuang', 'banban', 'taro', 'mochi'], a: ['mao', 'shuang', 'banban', 'taro', 'mochi', 'meiqiu'] };
 const modelOf = (kind) => { const o = OWN[kind]; return o && HAVE[VER].includes(o) && SKEL[o + '_' + VER] ? o : LEND[kind] || 'mao'; };
 const HIDE = 7;
 const WEAR = { q: { hk: 1.15, hy: -0.08, hz: 0, tw: 1, td: 1, ty: 0, tz: 0 }, a: { hk: 0.9, hy: 0, hz: 0, tw: 0.8, td: 0.8, ty: 0, tz: 0 } };
