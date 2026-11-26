@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v324';</script><script>window.SC_BUILD='60d8050ecad9';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v325';</script><script>window.SC_BUILD='fee23edfabce';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -32073,7 +32073,11 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const idx = acc(p.indices, A.componentType === 5123 ? Uint16Array : Uint32Array, 1);
     const pos = acc(p.attributes.POSITION, Float32Array, 3), uv = acc(p.attributes.TEXCOORD_0, Float32Array, 2);
     const [io, il] = view(j.images[0].bufferView);
-    const img = await createImageBitmap(new Blob([new Uint8Array(buf, io, il)], { type: j.images[0].mimeType }), { imageOrientation: 'none' });
+    // Safari 不認得 createImageBitmap 的 imageOrientation:'none'（會丟錯，模型就載不出來）：不帶參數，再不行就用 <img>
+    const blob = new Blob([new Uint8Array(buf, io, il)], { type: j.images[0].mimeType });
+    let img = null;
+    try { if (window.createImageBitmap) img = await createImageBitmap(blob); } catch (e) { img = null; }
+    if (!img) img = await new Promise((ok, no) => { const im = new Image(), u = URL.createObjectURL(blob); im.onload = () => { URL.revokeObjectURL(u); ok(im); }; im.onerror = () => no(new Error('貼圖讀不出來')); im.src = u; });
     return { idx, pos, uv, img };
   }
 
@@ -32310,6 +32314,9 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   async function open() {
     if (on) return; on = true;
     const THREE = T(); const h = $('home'); if (h) h.hidden = true; if (SC.home) SC.home.on = false;
+    // 展示頁蓋在遊戲上面：遊戲本身（首頁、小鎮、背景對戰）先停下來不畫，免得手機平板同時跑兩個 3D 畫面卡住；離開展示頁都是重新載入網頁
+    if (SC.town) SC.town.on = false; if (SC.adv) SC.adv.on = false; if (SC.game) SC.game.frame = () => {};
+    if (SC.debug && SC.debug.renderer) SC.debug.renderer.domElement.style.visibility = 'hidden';
     const wrap = document.createElement('div'); wrap.id = 'ip3d';
     wrap.style.cssText = 'position:fixed;inset:0;z-index:9000;background:#dfe9f5;touch-action:none;font:15px/1.4 system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;color:#1d2330';
     wrap.innerHTML = `<canvas style="position:absolute;inset:0;width:100%;height:100%"></canvas>
