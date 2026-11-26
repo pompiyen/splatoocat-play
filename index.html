@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v341';</script><script>window.SC_BUILD='a86a778ee614';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v342';</script><script>window.SC_BUILD='5e14ba71986b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -22055,6 +22055,34 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   // ---------- 蓋一張場地（第一次用到才蓋） ----------
   let scene0 = null, renderer0 = null, low0 = false;
   const built = {};
+  /* 試玩報告 v317（M4）：對戰場地的靜態小物（甲板木板、欄杆、樹叢、雲…）原本一個一個畫，一張圖 500～1100 次繪圖。
+     同一個父節點底下、同一個材質、不會動的網格，合成一個網格（只合同一層，所以整組搬動、積分賽變形、隱藏整組都照常）。
+     會動的先抓出來：把每一個 tick 跑幾次，位置／旋轉／大小／顯示／材質／頂點有變的都不合。積木本身（p._m）和隊色圈不合。 */
+  const OBR = THREE.Object3D.prototype.onBeforeRender;
+  function mergeStatic(root, prims, ticks) {
+    const keep = new Set(); prims.forEach((p) => (p._m || []).forEach((o) => keep.add(o)));
+    const cand = []; root.updateMatrixWorld(true);
+    root.traverse((o) => { if (o === root || !o.isMesh || o.isInstancedMesh || o.isSkinnedMesh || keep.has(o) || o.children.length || !o.parent || !o.visible) return;
+      const mt = o.material, g = o.geometry; if (!mt || Array.isArray(mt) || mt.transparent || !g || !g.attributes.position || g.morphAttributes.position || o.onBeforeRender !== OBR) return;
+      cand.push(o); });
+    const st = (o) => [o.position.x, o.position.y, o.position.z, o.quaternion.x, o.quaternion.y, o.quaternion.z, o.quaternion.w, o.scale.x, o.scale.y, o.scale.z, o.visible ? 1 : 0, o.material.uuid, o.geometry.uuid, o.geometry.attributes.position.version].join(',');
+    const s0 = cand.map(st), moved = new Set();
+    [0.37, 1.91, 4.3, 9.7].forEach((t) => { ticks.forEach((f) => { try { f(t); } catch (e) {} }); cand.forEach((o, i) => { if (st(o) !== s0[i]) moved.add(o); }); });
+    const by = new Map();
+    cand.forEach((o) => { if (moved.has(o)) return; const g = o.geometry, k = [o.parent.uuid, o.material.uuid, o.castShadow, o.receiveShadow, o.renderOrder, o.frustumCulled, o.layers.mask, Object.keys(g.attributes).sort().join('+')].join('|');
+      let L = by.get(k); if (!L) by.set(k, (L = [])); L.push(o); });
+    let saved = 0;
+    by.forEach((L) => { if (L.length < 2) return; const names = Object.keys(L[0].geometry.attributes), idx = L.every((o) => o.geometry.index);
+      const gs = L.map((o) => { o.updateMatrix(); const g = (idx ? o.geometry.clone() : o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone()).applyMatrix4(o.matrix); return g; });
+      if (!gs.every((g) => names.every((n) => g.attributes[n] && g.attributes[n].itemSize === gs[0].attributes[n].itemSize && !g.attributes[n].isInterleavedBufferAttribute))) { gs.forEach((g) => g.dispose()); return; }
+      const mg = new THREE.BufferGeometry(); let n = 0; gs.forEach((g) => (n += g.attributes.position.count));
+      names.forEach((nm) => { const sz = gs[0].attributes[nm].itemSize, A = new Float32Array(n * sz); let i = 0; gs.forEach((g) => { const a = g.attributes[nm]; A.set(a.array.length === a.count * sz ? a.array : Float32Array.from({ length: a.count * sz }, (_, j) => a.getComponent ? a.getComponent((j / sz) | 0, j % sz) : a.array[j]), i * sz); i += a.count; }); mg.setAttribute(nm, new THREE.BufferAttribute(A, sz, gs[0].attributes[nm].normalized)); });
+      if (idx) { let m = 0; gs.forEach((g) => (m += g.index.count)); const I = n > 65535 ? new Uint32Array(m) : new Uint16Array(m); let j = 0, off = 0; gs.forEach((g) => { const a = g.index.array; for (let q = 0; q < a.length; q++) I[j++] = a[q] + off; off += g.attributes.position.count; }); mg.setIndex(new THREE.BufferAttribute(I, 1)); }
+      gs.forEach((g) => g.dispose()); mg.computeBoundingSphere(); mg.computeBoundingBox();
+      const o0 = L[0], par = o0.parent, mm = new THREE.Mesh(mg, o0.material); mm.castShadow = o0.castShadow; mm.receiveShadow = o0.receiveShadow; mm.renderOrder = o0.renderOrder; mm.frustumCulled = o0.frustumCulled; mm.layers.mask = o0.layers.mask; mm.userData.merged = L.length;
+      par.add(mm); L.forEach((o) => par.remove(o)); saved += L.length - 1; });
+    return saved;
+  }
   function build(key) {
     const D = MAPS[key], prims = primsOf(D), root = new THREE.Group(); root.visible = false; scene0.add(root);
     const lim = D.lim || RECT.lim, ang = D.ang || (D.teams ? teamAng(D.teams) : RECT.ang), bx = D.bx || 108;
@@ -22171,9 +22199,22 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const fm = D.fence.map((c) => plain(c, 0.5)), picket = new THREE.CapsuleGeometry(2.1, 9, 6, 12), capM = D.fenceCap != null ? plain(D.fenceCap, 0.85) : null;
     // 鏡頭跑到木樁後面時，擋在中間的木樁換成半透明（Yen 2026-11-19：靠近圍欄視角會被擋住）
     const ghost = (mt) => { const g = mt.clone(); g.transparent = true; g.opacity = 0.16; g.depthWrite = false; return g; }, fg = fm.map(ghost), capG = capM ? ghost(capM) : null, pickets = [];
-    const place = (x, z, i) => { const y = 4.5 + (i % 2) * 1.2, m = new THREE.Mesh(picket, fm[i % fm.length]); m.position.set(x, y, z); m.castShadow = false; root.add(m); const pk = { x, z, m, solid: m.material, ghost: fg[i % fg.length], c: null, on: false };
-      if (capM) { const c = new THREE.Mesh(new THREE.SphereGeometry(2.4, 12, 6, 0, 6.283, 0, Math.PI / 2), capM); c.position.set(x, y + 6, z); c.scale.y = 0.7; root.add(c); pk.c = c; }
-      pickets.push(pk); };
+    /* 試玩報告 v317（M4）：木樁原本一根一個網格（再加樁頂積雪），一圈 150～300 根就是 150～600 次繪圖。
+       現在同一種顏色的木樁合成一個 InstancedMesh（實心一份、半透明一份），變半透明時把這根從實心那份縮成 0、半透明那份放回原大小。 */
+    const pl = [], capGeo = capM ? new THREE.SphereGeometry(2.4, 12, 6, 0, 6.283, 0, Math.PI / 2) : null;
+    const place = (x, z, i) => { const pk = { x, z, y: 4.5 + (i % 2) * 1.2, ci: i % fm.length, on: false }; pl.push(pk); pickets.push(pk); };
+    const fenceInst = () => {
+      const M4 = new THREE.Matrix4(), Z = new THREE.Matrix4().makeScale(0, 0, 0), Q = new THREE.Quaternion(), V = new THREE.Vector3(), S1 = new THREE.Vector3(1, 1, 1), SC7 = new THREE.Vector3(1, 0.7, 1);
+      const im = (geo, mt, n) => { const m = new THREE.InstancedMesh(geo, mt, n); m.castShadow = false; m.frustumCulled = false; root.add(m); return m; };
+      fm.forEach((_, ci) => { const ks = pl.filter((k) => k.ci === ci); if (!ks.length) return;
+        const sol = im(picket, fm[ci], ks.length), gh = im(picket, fg[ci], ks.length), cs = capM ? im(capGeo, capM, ks.length) : null, cg = capM ? im(capGeo, capG, ks.length) : null;
+        const at = (k, cap) => (cap ? M4.compose(V.set(k.x, k.y + 6, k.z), Q, SC7) : M4.compose(V.set(k.x, k.y, k.z), Q, S1));
+        ks.forEach((k, j) => { sol.setMatrixAt(j, at(k)); gh.setMatrixAt(j, Z); if (cs) { cs.setMatrixAt(j, at(k, true)); cg.setMatrixAt(j, Z); }
+          k.flip = (on) => { sol.setMatrixAt(j, on ? Z : at(k)); gh.setMatrixAt(j, on ? at(k) : Z); sol.instanceMatrix.needsUpdate = gh.instanceMatrix.needsUpdate = true;
+            if (cs) { cs.setMatrixAt(j, on ? Z : at(k, true)); cg.setMatrixAt(j, on ? at(k, true) : Z); cs.instanceMatrix.needsUpdate = cg.instanceMatrix.needsUpdate = true; } }; });
+        [sol, gh, cs, cg].forEach((m) => { if (m) m.instanceMatrix.needsUpdate = true; });
+      });
+    };
     let n = 0;
     if (D.wallFence != null) { const wm = plain(D.wallFence, 0.7); [[0, -lim.z - 2, lim.x * 2 + 8, 4], [0, lim.z + 2, lim.x * 2 + 8, 4], [-lim.x - 2, 0, 4, lim.z * 2 + 8], [lim.x + 2, 0, 4, lim.z * 2 + 8]].forEach(([x, z, w, d]) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, 17, d), wm); m.position.set(x, 7.5, z); root.add(m); }); } // 超大地圖：一整面矮牆，不用幾百根木樁
     else if (lim.r) { const R2 = lim.r + 2.4, m = Math.round((TAU * R2) / 4.4); for (let i = 0; i < m; i++) place(Math.cos((i / m) * TAU) * R2, Math.sin((i / m) * TAU) * R2, i); } // 圓形場地：一圈木樁
@@ -22186,6 +22227,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       for (let x = -HX - 2; x <= HX + 2; x += 4.4) { place(x, -HZ - 2.4, n); place(x, HZ + 2.4, n + 2); n++; }
       for (let z = -HZ + 2; z <= HZ - 2; z += 4.4) { place(-HX - 2.4, z, n); place(HX + 2.4, z, n + 2); n++; }
     }
+    if (pl.length) fenceInst();
 
     const slabs = [];
     (D.houses || []).forEach((h) => [h, { ...h, x: -h.x, z: -h.z, flip: !h.flip }].forEach((q) => { const a = SC.slab.house(q); slabs.push(...a); SC.slab.mesh(a, k, h.cols); }));
@@ -22196,6 +22238,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (D.slabs) { const a = []; D.slabs.forEach((s) => a.push(s, { ...s, x0: -s.x1, x1: -s.x0, z0: -s.z1, z1: -s.z0 })); slabs.push(...a); SC.slab.mesh(a, k, D.slabCols || {}); } // 大威：門楣
     D.outside(k);
     { const _s = new THREE.Vector3(); root.traverse((o) => { if (!o.isMesh || !o.castShadow || !o.geometry) return; if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere(); o.getWorldScale(_s); if (o.geometry.boundingSphere.radius * Math.max(_s.x, _s.y, _s.z) < 1.1) o.castShadow = false; }); } // 小東西不投影子，少畫很多次（效能）
+    if (world.MAP_KEYS.includes(key) && !D.noMerge && !window.SC_NOMERGE) { try { root.userData.merged = mergeStatic(root, prims, ticks); } catch (e) { console.warn('mergeStatic', e); } } /* 試玩報告 v317（M4） */
     if (!low0 && SC.wallInk && SC.wallInk.patchRoot) SC.wallInk.patchRoot(root); /* 第 237 版：樹、石頭、裝飾、建築也讀 3D 墨水格。手機（low）不做：量起來這一項約多 8～12% 的畫面時間，手機只保留牆、柱子、斜坡的墨水 */
     const sky0 = { D, u: sky.material.uniforms, hemi, sun, cloudMats, cloudG };
     return (built[key] = { sky0, root, prims, base: D.base || null, env, fog: new THREE.Fog(D.fog, 260, 620), rings, ticks, vic: D.vic, lim, ang, slabs, pickets, capM, capG, spawns, baseIn: D.baseIn || (D.teams ? RECT.baseIn : bx - 18) });
@@ -22204,11 +22247,25 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   world.build = (scene, renderer, low) => { scene0 = scene; renderer0 = renderer; low0 = low; world.setMap('park'); };
 
   // 換場地。回傳 true 表示真的換了（呼叫的人要重算可以塗的格子）。
+  /* 試玩報告 v317（M3）：蓋過的場地原本全部留在記憶體，連打幾場換了幾張圖，geometry 就從 464 漲到 1744。
+     現在只留首頁的公園、這一張和上一張（換回剛玩過的圖一樣很快），更早的那張把 geometry／材質／貼圖從顯示卡放掉，下次用到再蓋。 */
+  const used = {}; let useN = 0; world.KEEP_MAPS = 3;
+  function evict(cur) {
+    const ks = Object.keys(built).filter((k) => k !== cur && k !== 'park' && k !== SH.key);
+    while (ks.length + 1 + (built.park && cur !== 'park' ? 1 : 0) > world.KEEP_MAPS) {
+      ks.sort((a, b) => (used[a] || 0) - (used[b] || 0)); const k = ks.shift(), m = built[k]; delete built[k]; delete used[k];
+      scene0.remove(m.root); const seen = new Set(), free = (x) => { if (x && x.dispose && !seen.has(x)) { seen.add(x); x.dispose(); } };
+      m.root.traverse((o) => { free(o.geometry); [].concat(o.material || []).forEach((mt) => { Object.keys(mt).forEach((n) => { if (mt[n] && mt[n].isTexture) free(mt[n]); }); free(mt); }); });
+      free(m.env);
+    }
+  }
+  world.builtMaps = () => Object.keys(built);
   world.setMap = (key) => {
     key = MAPS[key] ? key : 'park';
     if (key === world.key) return false;
     const m = built[key] || build(key);
     Object.keys(built).forEach((k2) => { built[k2].root.visible = k2 === key; });
+    used[key] = ++useN; evict(key);
     // 名字放在 water（river 是水面的材質設定；之前兩個同名，掉水訊息會變成 [object Object]）
     world.key = key; world.inkUp = !!MAPS[key].inkUp; world.riverName = MAPS[key].water; world.swim = MAPS[key].swim !== false; /* 第 83 版（Yen）：每張場地的河（牛奶河、巧克力河、噴泉水池…）都跟海盜船的海一樣浮得起來 */ world.pools = MAPS[key].pools || null; world.isles = MAPS[key].isles || null; world.root = m.root; world.prims = m.prims; world.gates = m.prims.filter((p) => p.gate && p.t === 'box'); world.noInks = m.prims.filter((p) => p.noInk && p.t === 'box'); world.noClimb = MAPS[key].noClimb || null; /* 第 133 版：這張圖哪裡不能爬牆 */ world.base = m.base; world.rings = m.rings; world.vic = m.vic; world.ticks = m.ticks;
     world.spawnYaw = MAPS[key].spawnYaw || null; world.lim = m.lim; world.ang = m.ang; world.spawns = m.spawns; world.baseIn = m.baseIn; world.teams = m.ang.length; world.cur = m;
@@ -22234,7 +22291,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     for (const k of m.pickets) {
       let on = false;
       if (fade) { const t = Math.max(-0.15, Math.min(1, ((k.x - cx) * dx + (k.z - cz) * dz) / L2)), ex = cx + dx * t - k.x, ez = cz + dz * t - k.z; const cx2 = k.x - cx, cz2 = k.z - cz; on = ex * ex + ez * ez < 4.2 * 4.2 || cx2 * cx2 + cz2 * cz2 < 13 * 13; } // 擋在中間的、或貼在鏡頭旁邊的
-      if (on !== k.on) { k.on = on; k.m.material = on ? k.ghost : k.solid; if (k.c) k.c.material = on ? m.capG : m.capM; }
+      if (on !== k.on) { k.on = on; if (k.flip) k.flip(on); }
     }
   };
 
@@ -23043,8 +23100,10 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const cv = document.createElement('canvas'); cv.width = 256; cv.height = 96;
     const tagTex = new THREE.CanvasTexture(cv); tagTex.colorSpace = THREE.SRGBColorSpace;
     const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map: tagTex, depthTest: false, transparent: true })); tag.scale.set(5.2, 1.95, 1); tag.position.y = 7.6; tag.renderOrder = 10; root.add(tag);
+    const tagFree = () => { tagTex.dispose(); tag.material.dispose(); }; /* 試玩報告 v317（M3）：換場時把名牌貼圖放掉（每場多 1 張） */
 
     const cat = { group: root, trail, tank, kind: kindId, name: K.name, phase: Math.random() * 6, hand, weapons, weaponId: null, squash: 0, recoil: 0, swing: 0 };
+    cat.tagFree = tagFree;
     cat.head = head; cat.torso = body; cat.topAcc = [crown, band]; // 第 286 版：服飾店的帽子、圍巾、背包掛在這裡（戴帽子時先收起皇冠、頭帶）
     // 被打到時全身閃白一下（Yen 2026-11-19 打擊感）
     const flashMats = [mFur, mLight, mDark, mEar, mTail, mTeam, mTeamGloss].concat(mTat ? [mTat] : []), flashBase = flashMats.map((m) => [m.emissive.clone(), m.emissiveIntensity]); let flashK = 0;
@@ -32679,7 +32738,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     INK.uniforms.uColA.value.copy(colors[0]); INK.uniforms.uColB.value.copy(colors[1]); INK.uniforms.uColC.value.copy(colors[2]); INK.setTeams(G.teams, colors);
     W.setTeamColors(...colors.slice(0, G.teams)); INK.reset(); SC.wallInk.reset(W.noInk);
     const gfree = (o) => o && o.traverse && o.traverse((c) => { if (c.geometry && c.geometry.dispose) c.geometry.dispose(); }); /* 第 141 版（試玩報告）：換場時把舊貓的幾何體從 GPU 放掉，連玩 20 場不再越來越卡 */
-    G.actors.forEach((a) => { gfree(a.cat.group); gfree(a.cat.trail); gfree(a.sight); gfree(a.subArr); gfree(a.spRing); gfree(a.xray);
+    G.actors.forEach((a) => { if (a.cat.tagFree) a.cat.tagFree(); /* 試玩報告 v317（M3） */ gfree(a.cat.group); gfree(a.cat.trail); gfree(a.sight); gfree(a.subArr); gfree(a.spRing); gfree(a.xray);
       if (a.ribbon) { scene.remove(a.ribbon.m); a.ribbon.m.geometry.dispose(); a.ribbon = null; } /* 第 211 版：殭屍模式隊友彩帶 */
       scene.remove(a.cat.group, a.cat.trail); if (a.sight) scene.remove(a.sight); if (a.subArr) scene.remove(a.subArr); if (a.bladeAim) scene.remove(a.bladeAim, a.bladeAim.userData.tip); if (a.spRing) scene.remove(a.spRing); if (a.xray) scene.remove(a.xray); }); SC.swimTrail.clear(); document.body.classList.remove('wlock'); // 第 85 版：上一場絕招的圈、透視剪影、灰武器鈕都清掉
     projectiles.length = 0; growQ.length = 0; chopQ.length = 0; bombs.length = 0; bombMeshes.forEach((m) => (m.visible = false)); RP.buf.length = 0; RP.burst = -1; G.replaying = null; rpBombs(null); kcOff(); if (SC.dmg) SC.dmg.clear();
@@ -48561,6 +48620,8 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ['2026-11-26', '', '更順暢：對戰場地裡不會動的小東西和圍欄木樁合在一起畫，海盜船每一幀少畫一半以上；換場時把舊地圖和名牌從顯示卡放掉，連打很多場也不會越來越卡',
+      { en: 'Smoother: static props and fence posts in battle maps are drawn together (the pirate ship draws less than half as much per frame), and old maps and name tags are freed when the map changes so long sessions stay smooth', ja: 'なめらかに：バトルステージの動かない小物とさくをまとめて描くようにした（海賊船は1フレームの描画が半分以下）；ステージを変えると古いステージと名札をメモリから外すので、長く遊んでも重くならない', ko: '더 부드럽게: 대전 맵의 움직이지 않는 소품과 울타리를 한꺼번에 그려요(해적선은 한 프레임 그리기가 절반 이하); 맵을 바꾸면 예전 맵과 이름표를 메모리에서 비워서 오래 해도 느려지지 않아요', es: 'Más fluido: los objetos fijos y las vallas de los mapas se dibujan juntos (el barco pirata dibuja menos de la mitad por fotograma) y los mapas y etiquetas viejos se liberan al cambiar de mapa', pt: 'Mais fluido: objetos fixos e cercas dos mapas são desenhados juntos (o navio pirata desenha menos da metade por quadro) e mapas e etiquetas antigos são liberados ao trocar de mapa', fr: 'Plus fluide : les décors fixes et les clôtures des cartes sont dessinés ensemble (le bateau pirate dessine moins de la moitié par image) et les anciennes cartes et étiquettes sont libérées au changement de carte', de: 'Flüssiger: feste Deko und Zäune in Kampfkarten werden zusammen gezeichnet (das Piratenschiff zeichnet pro Bild weniger als die Hälfte), alte Karten und Namensschilder werden beim Kartenwechsel freigegeben', it: 'Più fluido: oggetti fissi e recinzioni delle mappe vengono disegnati insieme (la nave pirata disegna meno della metà per fotogramma) e mappe ed etichette vecchie vengono liberate al cambio mappa', ru: 'Плавнее: неподвижные предметы и заборы на картах рисуются вместе (пиратский корабль рисует меньше половины за кадр), а старые карты и таблички с именами освобождаются при смене карты', tr: 'Daha akıcı: savaş haritalarındaki sabit eşyalar ve çitler birlikte çiziliyor (korsan gemisi kare başına yarıdan az çiziyor), harita değişince eski harita ve isim etiketleri bellekten atılıyor', id: 'Lebih mulus: benda diam dan pagar di peta tanding digambar bersama (kapal bajak laut menggambar kurang dari setengah per bingkai), peta dan papan nama lama dibuang saat ganti peta', vi: 'Mượt hơn: đồ vật đứng yên và hàng rào trong bản đồ được vẽ chung (tàu cướp biển vẽ chưa tới một nửa mỗi khung hình), bản đồ và bảng tên cũ được giải phóng khi đổi bản đồ', th: 'ลื่นขึ้น: ของที่ไม่ขยับและรั้วในฉากต่อสู้วาดรวมกัน (เรือโจรสลัดวาดน้อยกว่าครึ่งต่อเฟรม) และเมื่อเปลี่ยนฉากจะคืนหน่วยความจำของฉากเก่าและป้ายชื่อ' }],
     ['2026-11-26', '', '冒險世界變成七條彩脈：每條脈都跟以前整張地圖一樣大，雪山、雲上高原、紅岩台地、丘陵、草原、森林、河谷慢慢過渡；每條脈中央有一座塔，七種不同的解法，解開才看得到那裡的地圖、營火才能傳送；地圖加上目標指引，小地圖跟著你轉；大地圖分塊載入，不會變慢',
       { en: 'Adventure World is now seven color veins, each as big as the whole old map: snowy peaks, cloud highlands, red mesas, hills, plains, forest and river valley blend gradually; each vein has a tower at its center with its own puzzle, and solving it reveals that area on the map and unlocks its campfires for travel; the map gains a target guide and a minimap that turns with you; the world loads in chunks so it stays smooth', ja: '冒険ワールドが7本の彩脈に：1本ずつが前の地図全体と同じ広さ。雪山、雲の高原、赤い岩の台地、丘、草原、森、川の谷がなめらかにつながる。それぞれの真ん中に塔があって、7種類のなぞとき。とくとその地図が見えて、たき火でワープできる。地図に目標ガイド、ミニマップは向きに合わせて回る。地形は少しずつ読みこむので重くならない', ko: '모험 세계가 일곱 갈래 색맥으로: 하나하나가 예전 지도 전체만큼 넓어요. 설산, 구름 고원, 붉은 바위 대지, 언덕, 초원, 숲, 강 골짜기가 자연스럽게 이어져요. 색맥마다 한가운데 탑과 서로 다른 퍼즐이 있고, 풀면 지도가 열리고 모닥불로 이동할 수 있어요. 지도에 목표 안내, 미니맵은 방향 따라 회전. 지형은 조금씩 불러와서 느려지지 않아요', es: 'El Mundo de aventura ahora son siete vetas de color, cada una tan grande como todo el mapa anterior: picos nevados, altiplano de nubes, mesetas rojas, colinas, praderas, bosque y valle fluvial se mezclan poco a poco; cada veta tiene una torre central con su propio acertijo, y resolverla revela la zona en el mapa y desbloquea sus fogatas para viajar; el mapa tiene guía de objetivo y un minimapa que gira contigo; el mundo carga por partes y sigue fluido', pt: 'O Mundo de aventura agora tem sete veios de cor, cada um do tamanho do mapa antigo inteiro: picos nevados, planalto das nuvens, mesetas vermelhas, colinas, campos, floresta e vale do rio se misturam aos poucos; cada veio tem uma torre central com seu próprio enigma, e resolvê-la revela a área no mapa e libera as fogueiras para viajar; o mapa ganhou guia de alvo e um minimapa que gira com você; o mundo carrega em partes e continua fluido', fr: 'Le Monde d’aventure devient sept veines de couleur, chacune aussi grande que toute l’ancienne carte : sommets enneigés, hauts plateaux de nuages, mesas rouges, collines, plaines, forêt et vallée de rivière se fondent peu à peu ; chaque veine a une tour centrale avec sa propre énigme, et la résoudre révèle la zone sur la carte et débloque ses feux de camp pour voyager ; la carte gagne un guide de cible et une mini-carte qui tourne avec toi ; le monde se charge par morceaux et reste fluide', de: 'Die Abenteuerwelt besteht jetzt aus sieben Farbadern, jede so groß wie die ganze alte Karte: Schneegipfel, Wolkenhochland, rote Tafelberge, Hügel, Ebenen, Wald und Flusstal gehen sanft ineinander über; in der Mitte jeder Ader steht ein Turm mit eigenem Rätsel, und wer ihn löst, deckt das Gebiet auf der Karte auf und kann zu seinen Lagerfeuern reisen; die Karte hat jetzt eine Zielanzeige und eine Minikarte, die sich mitdreht; die Welt lädt in Stücken und bleibt flüssig', it: 'Il Mondo dell’avventura ora è fatto di sette vene di colore, ognuna grande quanto tutta la vecchia mappa: cime innevate, altopiano delle nuvole, mesas rosse, colline, pianure, foresta e valle del fiume sfumano piano piano; ogni vena ha una torre al centro con il suo enigma, e risolverla svela la zona sulla mappa e sblocca i falò per viaggiare; la mappa ha una guida all’obiettivo e una minimappa che ruota con te; il mondo si carica a pezzi e resta fluido', ru: 'Мир приключений теперь — семь цветных жил, каждая размером со всю старую карту: снежные пики, облачное нагорье, красные столовые горы, холмы, равнины, лес и речная долина плавно переходят друг в друга; в центре каждой жилы башня со своей загадкой, а разгадав её, открываешь край на карте и костры для перемещения; на карте появился указатель цели и мини-карта, которая поворачивается вместе с тобой; мир подгружается частями и не тормозит', tr: 'Macera Dünyası artık yedi renk damarı, her biri eski haritanın tamamı kadar büyük: karlı zirveler, bulut yaylası, kırmızı platolar, tepeler, ovalar, orman ve nehir vadisi yavaş yavaş birbirine geçiyor; her damarın ortasında kendine özgü bulmacası olan bir kule var, çözünce bölgenin haritası açılıyor ve kamp ateşlerine ışınlanabiliyorsun; haritada hedef göstergesi ve seninle dönen mini harita var; dünya parça parça yüklendiği için akıcı kalıyor', id: 'Dunia Petualangan kini terdiri dari tujuh urat warna, masing-masing seluas seluruh peta lama: puncak bersalju, dataran awan, plato merah, perbukitan, padang, hutan, dan lembah sungai berbaur perlahan; tiap urat punya menara di tengah dengan teka-tekinya sendiri, dan memecahkannya membuka peta daerah itu serta api unggun untuk teleport; peta punya penunjuk target dan peta mini yang ikut berputar; dunia dimuat bertahap jadi tetap mulus', vi: 'Thế giới phiêu lưu giờ là bảy mạch màu, mỗi mạch rộng bằng cả bản đồ cũ: núi tuyết, cao nguyên mây, cao nguyên đá đỏ, đồi, đồng cỏ, rừng và thung lũng sông chuyển dần sang nhau; giữa mỗi mạch có một ngọn tháp với câu đố riêng, giải xong sẽ mở bản đồ vùng đó và cho dịch chuyển tới các đống lửa trại; bản đồ có chỉ dẫn mục tiêu và bản đồ nhỏ xoay theo bạn; thế giới tải từng phần nên vẫn mượt', th: 'โลกผจญภัยกลายเป็นสายสีเจ็ดสาย แต่ละสายใหญ่เท่าแผนที่เดิมทั้งหมด: ภูเขาหิมะ ที่ราบสูงเหนือเมฆ ที่ราบหินแดง เนินเขา ทุ่งหญ้า ป่า และหุบเขาแม่น้ำค่อย ๆ กลืนกัน กลางแต่ละสายมีหอคอยพร้อมปริศนาของตัวเอง ไขได้แล้วแผนที่ที่นั่นจะเปิดและวาร์ปไปกองไฟได้ แผนที่มีตัวชี้เป้าหมายและแผนที่เล็กหมุนตามคุณ โลกโหลดทีละส่วนจึงลื่นเหมือนเดิม' }],
     ['2026-11-26', '', '更省流量：檢查新版本只抓一個很小的檔案，不再每 5 分鐘重新下載整個遊戲；第二次打開就直接用手機裡存好的遊戲',
