@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v338';</script><script>window.SC_BUILD='bfdbaf908862';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v339';</script><script>window.SC_BUILD='cdb7f5612964';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -724,6 +724,7 @@ body.tut-move #t-zone::before { content: ''; position: absolute; left: 70px; bot
 .stk-svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 0 rgba(27, 20, 48, .45)); }
 .stk-new { display: flex; align-items: center; gap: 8px; }
 .stk-new[hidden] { display: none; }
+.stk-new small i { font-style: normal; margin-right: 3px; } /* 試玩報告 v317（Z7）：數字前面寫「貼紙」 */
 .stk-new .stk-pop, .stk-toast .stk-pop { width: 72px; height: 72px; transform: scale(0) rotate(-30deg); animation: stkPop .55s cubic-bezier(.2, 1.8, .4, 1) .8s forwards; }
 .stk-new b, .stk-toast b { font: 900 22px/1 var(--f-body); color: var(--sun); -webkit-text-stroke: 5px var(--navy); paint-order: stroke fill; opacity: 0; animation: stkTxt .4s ease-out 1.2s forwards; transform: scale(0); }
 @keyframes stkTxt { to { opacity: 1; transform: scale(1) rotate(-6deg); } }
@@ -1741,6 +1742,12 @@ html[data-lang^=zh] .chat-stk .emo-b small { white-space: nowrap; letter-spacing
 .ac-notice { background: #fff7e0; border: 2px solid #ffc439; border-radius: 14px; padding: 10px 12px; margin: 8px 0 10px; }
 .ac-notice b { display: block; font-size: 16px; margin-bottom: 4px; }
 .ac-notice p { margin: 6px 0 0 !important; font-size: 14px; line-height: 1.55; }
+
+/* 試玩報告 v317（V4）：複合賽結算的分數拆解 */
+.res-mix { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin: 2px auto 4px; font: 800 clamp(12px, 2.4vmin, 15px)/1.3 var(--f-body); color: #fff; text-shadow: 0 2px 0 var(--navy); }
+.res-mix p { margin: 0; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.res-mix i { width: 11px; height: 11px; border-radius: 50%; background: var(--tc); box-shadow: 0 0 0 2px var(--navy); }
+.res-mix b { color: #ffd23f; font-variant-numeric: tabular-nums; }
 
 </style>
 <div id="app">
@@ -19275,6 +19282,33 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   I.add(R.map((r) => [r[0], r[1], r[2], r[3]])); L.slice(3).forEach((l, k) => I.addL(l, R.map((r) => [r[0], r[4 + k]])));
 })();
 
+// 試玩報告 v317 修正（Yen 11-26 勾選表）新加的字。每列：[中文, en, ja, ko, es, pt, fr, de, it, ru, tr, id, vi, th]
+(() => {
+  const I = SC.i18n, L = ['es', 'pt', 'fr', 'de', 'it', 'ru', 'tr', 'id', 'vi', 'th'];
+  const R = [
+    ['圖鑑', 'Bestiary', 'ずかん', '도감', 'Bestiario', 'Bestiário', 'Bestiaire', 'Bestiarium', 'Bestiario', 'Бестиарий', 'Ansiklopedi', 'Ensiklopedia', 'Bách khoa', 'สมุดภาพ'],
+    ['🐞 不登入直接送出', '🐞 Send without signing in', '🐞 ログインせずに送る', '🐞 로그인 없이 보내기', '🐞 Enviar sin iniciar sesión', '🐞 Enviar sem entrar', '🐞 Envoyer sans se connecter', '🐞 Ohne Anmeldung senden', '🐞 Invia senza accedere', '🐞 Отправить без входа', '🐞 Giriş yapmadan gönder', '🐞 Kirim tanpa masuk', '🐞 Gửi không cần đăng nhập', '🐞 ส่งโดยไม่ต้องเข้าสู่ระบบ'],
+    ['登入後，設定、怪物關和積分賽紀錄會存在雲端，換手機也不會不見；等級、經驗、墨幣目前只存在這台裝置。還能用帳號名字上排行榜。不登入也能照常玩。',
+      'Sign in to keep your settings, monster stage and ranked records in the cloud, even on a new phone. Level, EXP and ink coins are only kept on this device for now. You can also join the leaderboard under your account name. You can play without signing in too.',
+      'ログインすると、設定・モンスターステージ・ランク戦の記録がクラウドに保存され、機種を変えても消えません。レベル・経験値・インクコインは今のところこの端末だけに保存されます。アカウント名でランキングにも載れます。ログインしなくても遊べます。',
+      '로그인하면 설정, 몬스터 스테이지와 랭크전 기록이 클라우드에 저장되어 휴대폰을 바꿔도 사라지지 않아요. 레벨, 경험치, 잉크 코인은 지금은 이 기기에만 저장돼요. 계정 이름으로 순위표에도 올라가요. 로그인하지 않아도 플레이할 수 있어요.',
+      'Al iniciar sesión, tus ajustes y tus récords de monstruos y de clasificatorias se guardan en la nube, aunque cambies de móvil. El nivel, la EXP y las monedas de tinta por ahora solo se guardan en este dispositivo. También puedes salir en la clasificación con tu nombre. Puedes jugar sin iniciar sesión.',
+      'Ao entrar, suas configurações e seus recordes de monstros e de ranqueadas ficam salvos na nuvem, mesmo se trocar de celular. Nível, EXP e moedas de tinta por enquanto ficam só neste aparelho. Você também aparece no placar com o nome da conta. Dá para jogar sem entrar.',
+      'Connecte-toi pour garder tes réglages et tes records de monstres et de classées dans le cloud, même sur un nouveau téléphone. Le niveau, l’EXP et les pièces d’encre restent pour l’instant sur cet appareil. Tu apparais aussi au classement avec ton nom de compte. Tu peux jouer sans te connecter.',
+      'Nach der Anmeldung werden Einstellungen sowie Monster- und Ranglisten-Rekorde in der Cloud gespeichert, auch bei einem neuen Handy. Level, EP und Tintenmünzen bleiben vorerst nur auf diesem Gerät. Du erscheinst außerdem mit deinem Kontonamen in der Bestenliste. Du kannst auch ohne Anmeldung spielen.',
+      'Accedendo, impostazioni e record dei mostri e delle classificate vengono salvati nel cloud, anche se cambi telefono. Livello, EXP e monete d’inchiostro per ora restano solo su questo dispositivo. Puoi anche comparire in classifica con il nome dell’account. Puoi giocare anche senza accedere.',
+      'После входа настройки и рекорды монстров и рейтинговых боёв хранятся в облаке, даже если сменить телефон. Уровень, опыт и чернильные монеты пока хранятся только на этом устройстве. Также можно попасть в таблицу лидеров под именем аккаунта. Играть можно и без входа.',
+      'Giriş yapınca ayarların, canavar ve dereceli rekorların bulutta saklanır; telefon değiştirsen de kaybolmaz. Seviye, TP ve mürekkep paraları şimdilik sadece bu cihazda tutulur. Hesap adınla sıralamaya da girersin. Giriş yapmadan da oynayabilirsin.',
+      'Setelah masuk, pengaturan serta rekor monster dan peringkat disimpan di cloud, meski ganti ponsel. Level, EXP, dan koin tinta untuk sekarang hanya disimpan di perangkat ini. Kamu juga bisa masuk papan peringkat dengan nama akun. Bisa main tanpa masuk juga.',
+      'Khi đăng nhập, cài đặt và kỷ lục quái vật, đấu hạng được lưu trên đám mây, đổi điện thoại cũng không mất. Cấp độ, EXP và xu mực hiện chỉ lưu trên thiết bị này. Bạn còn được lên bảng xếp hạng bằng tên tài khoản. Không đăng nhập vẫn chơi được.',
+      'เมื่อเข้าสู่ระบบ การตั้งค่าและสถิติด่านมอนสเตอร์กับแรงก์จะเก็บไว้บนคลาวด์ เปลี่ยนมือถือก็ไม่หาย ส่วนเลเวล EXP และเหรียญหมึกตอนนี้เก็บไว้ในเครื่องนี้เท่านั้น และยังขึ้นกระดานอันดับด้วยชื่อบัญชีได้ ไม่เข้าสู่ระบบก็เล่นได้'],
+    ['總分', 'Total', 'ごうけい', '총점', 'Total', 'Total', 'Total', 'Gesamt', 'Totale', 'Итого', 'Toplam', 'Total', 'Tổng', 'รวม'],
+    ['擊倒', 'KOs', 'たおした', '쓰러뜨림', 'KO', 'KOs', '', '', '', '', '', '', '', ''],
+  ];
+  SC.pt317 = { add: (rows) => { I.add(rows.map((r) => r.slice(0, 4))); L.forEach((l, k) => I.addL(l, rows.filter((r) => r[4 + k]).map((r) => [r[0], r[4 + k]]))); } };
+  SC.pt317.add(R);
+})();
+
 // 音效以 WebAudio 即時合成；背景音樂由 02b_music.js 即時編曲合成（原創，無第三方取樣）。
 (() => {
   const A = (SC.audio = { ctx: null, muted: false, ready: false, volM: 1, volS: 1 }); /* 第 182 版（Yen）：音樂、音效各自的音量（0～1，玩家在選單調） */
@@ -32609,7 +32643,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
 
   // opts: { kind, weapon, difficulty, mode: 'versus'｜'sandbox'｜'boss'｜'net', roster: '1v1'｜'2v2'｜'3v3', demo, net: SC.net.match }
-  const CPU_W = ['W01', 'W02', 'W04', 'W05', 'W01', 'W06', 'W07'];
+  const CPU_W = ['W01', 'W02', 'W04', 'W05']; /* 試玩報告 v317（V6）：原本後面還有 W01/W06/W07，但挑法只會拿到前 4 個；弓箭只在殭屍模式、電漿槍玩家也不能帶，所以只留這 4 把，跟實際一樣 */
   /* 第 148.2 版（Yen「殭屍噴墨顏色與我方太相近，請選用雙方對比明顯色」）：殭屍墨水從幾個顏色裡挑跟我方「色相差最多、亮度也差最多」的
      （色盲也分得出亮暗）；青翠森林地面是綠的，不挑綠色系。例：我方藍 → 殭屍萊姆綠（森林：橘）；我方粉 → 殭屍薄荷青（森林：深靛藍）；我方黃 → 殭屍紫。 */
   const ZB_INK = [0x8fe04a, 0xff8a14, 0x9b5cff, 0xff2f86, 0x12d6c0, 0x3b2fa0]; /* 不用黃色：地面多半是淺色，黃色在上面不明顯 */
@@ -36240,6 +36274,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 .zs-res .dex span{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:#2b1f4a}
 .zs-res .dex span svg{width:24px;height:24px}
 .zs-res .dex span.no{opacity:.35;font-size:13px;color:#fff}
+.zs-res .dex .dex-l{font-style:normal;font-size:13px;margin:0 4px 0 1px;color:#ffd23f}
 .zs-res .dex span.nw{box-shadow:0 0 0 2px #e6ff2a}
 .zs-st{display:block;font:900 11px/1 var(--f-body);color:#ffd23f;letter-spacing:1px;margin-top:2px}
 @media (max-width:760px),(max-height:520px){#zs-chip{font-size:12px;gap:5px}#zs-chip>*{height:24px;padding:0 8px}#zs-chip .ups{display:none}.zsp-card{width:110px;height:140px}.zsp-card i{font-size:40px}.zsp-card b{font-size:13px}#zs-perk h3{font-size:22px}#zs-shop{width:min(520px,62vw);padding:8px 10px;right:8px;top:8px;transform:none}#zs-shop header{margin-bottom:6px}#zs-shop header b{font-size:18px}#zs-shop header span{font-size:15px;padding:4px 10px}#zs-shop .its{display:grid;grid-template-columns:1fr 1fr;column-gap:6px}#zs-shop .it{height:44px;margin-bottom:5px;grid-template-columns:24px 26px 1fr auto;gap:5px}#zs-shop .it kbd{width:22px;height:22px;font-size:13px;line-height:22px}#zs-shop .it i{font-size:20px}#zs-shop .it b{font-size:12px}#zs-shop .it b small{display:none}#zs-shop .it u{font-size:14px}#zs-shop footer{font-size:11px}}`;
@@ -36320,7 +36355,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const dex = load(DEXK), have = DEX.filter((d) => dex[d[0]]).length;
     const stars = '★'.repeat(st) + '<s>' + '★'.repeat(3 - st) + '</s>';
     el.insertAdjacentHTML('beforeend', `<div class="zs-res"><div class="st"><b>${stars}</b><span>${difName(dk)}</span>${nSt ? '<span class="nw">新紀錄！</span>' : ''}${er ? `<span>♾️ 第 ${er} 回合</span>${nEr ? '<span class="nw">最高紀錄！</span>' : ''}` : ''}${nK ? '<span class="nw">打爆數新紀錄！</span>' : ''}</div><div class="goal">${goal}</div>`
-      + `<div class="dex"><span title="">📖</span>${DEX.map(([k, nm]) => dex[k] ? `<span class="${newDex.includes(k) ? 'nw' : ''}" title="${nm}">${icon(k)}</span>` : '<span class="no">?</span>').join('')}<em>　${have} / ${DEX.length}</em></div></div>`);
+      + `<div class="dex"><span title="">📖</span><i class="dex-l">圖鑑</i>${DEX.map(([k, nm]) => dex[k] ? `<span class="${newDex.includes(k) ? 'nw' : ''}" title="${nm}">${icon(k)}</span>` : '<span class="no">?</span>').join('')}<em>　${have} / ${DEX.length}</em></div></div>`);
   };
   // 選地圖的時候：每張地圖這個難度拿過幾顆星；無盡挑戰顯示最高第幾回合
   setInterval(() => {
@@ -37230,7 +37265,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const LIVES_HTML = ('<i>' + HEART_SVG + '</i>').repeat(3);
   const C = SC.CFG, ui = (SC.ui = {}), $ = (id) => document.getElementById(id);
   const G = () => SC.game;
-  let beatT = 0, lastPh = 1, praiseV = null; let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'easy', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
+  let beatT = 0, lastPh = 1, praiseV = null; let els = {}, bannerT = 0, tipT = 0, sayT = 0, hurtK = 0, hitT = 0, mapT = 0, mapCtx, mapImg, feedItems = [], last = {}, resultsT = -1, lowInkAt = -9, sel = { kind: 'maomao', weapon: 'W01', loadout: ['W01', 'W02'], difficulty: 'normal', mode: 'versus', roster: '2v2', vrule: 'turf', ink: 'random', stage: '2', map: 'random' }, nick = '';
 
   // 貓臉小圖示（SVG，自家角色）
 
@@ -38073,6 +38108,16 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         + `<div class="rp-step"><b class="rp-rank">${rank}</b><div class="rp-kda"><span>${r.k}</span><i>/</i><span>${r.d}</span><i>/</i><span>${r.as}</span></div><small class="rp-kl">K / D / A</small><div class="rp-sub">${sub}</div>${rank === 1 ? '<em class="rp-mvp">MVP</em>' : ''}</div></div>`;
     }).join('');
     box.hidden = false; setTimeout(fitPod, 30);
+    mixLine(g, box);
+  }
+  /* 試玩報告 v317（V4）：複合賽結算把「塗地分＋擊倒分＝總分」分開寫，看得懂為什麼 9 次擊倒還會輸 */
+  function mixLine(g, box) {
+    const old = $('res-mix'); if (old) old.remove();
+    if (g.rule !== 'mix' || !g.mixFinal || !g.final || !g.koFinal || !box.parentNode) return;
+    const v = g.final.v || [g.final.a, g.final.b, g.final.c || 0], n = g.mixFinal.length, K = SC.CFG.MIX_KO || 3;
+    const el = document.createElement('div'); el.id = 'res-mix'; el.className = 'res-mix';
+    el.innerHTML = Array.from({ length: n }, (_, t) => `<p style="--tc:#${g.colors[t].getHexString()}"><i></i><span>塗地</span> <b>${(Math.round((v[t] || 0) * 1000) / 10).toFixed(1)}</b> ＋ <span>擊倒</span> <b>${g.koFinal[t] | 0}×${K}</b> ＝ <span>總分</span> <b>${g.mixFinal[t].toFixed(1)}</b></p>`).join('');
+    box.parentNode.parentNode.insertBefore(el, box.parentNode);
   }
   /* 橫拿手機時按鈕固定在右下角：頒獎台讓出按鈕的寬度，台階寬度跟著剩下的空間算 */
   function fitPod() {
@@ -38085,7 +38130,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   addEventListener('resize', () => setTimeout(fitPod, 60));
   ui.onResults = () => {
     const g = G(), w = g.winner, p = g.player(); resPodium(g); setTimeout(() => SC.sboard && SC.sboard.results(), 0); els['m-results'].classList.toggle('has-pod', false); els['m-results'].classList.toggle('has-rank', !$('res-pod').hidden); els['m-results'].classList.remove('show-board'); $('btn-board').hidden = true; els['res-stats'].classList.remove('has-board'); els['res-stats'].hidden = false; /* 第 174 版：成績直接寫在頒獎台上，不用再按 📊 */ /* 第 140.3 版：成績表先收起來，小朋友先看到誰贏 */ els['m-results'].classList.toggle('boss', g.mode === 'boss'); els['m-results'].classList.toggle('zb', g.rule === 'zombie'); els['m-results'].classList.toggle('is-net', g.mode === 'net' && !SC.net.offline); els['m-results'].classList.toggle('to-set', g.mode === 'versus' || (g.mode === 'net' && !!SC.net.offline)); praiseV = null; els.praise.hidden = true;
-    { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small>${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } /* 第 91 版：每打完一場得到一張貼紙 */ els['res-stats'].classList.remove('has-board'); rank.hide();
+    { const sn = $('stk-new'); sn.hidden = true; if (SC.stk && !g.spec && p) { const got = SC.stk.award(); sn.innerHTML = `<span class="stk-pop">${SC.stk.svg(got.st)}</span>${got.isNew ? '<b>NEW!</b>' : ''}<small><i>貼紙</i> ${got.have} / ${got.total}</small>`; sn.hidden = false; setTimeout(() => SC.audio.sfx.squeak && SC.audio.sfx.squeak(), 900); } } /* 第 91 版：每打完一場得到一張貼紙 */ els['res-stats'].classList.remove('has-board'); rank.hide();
     if (g.mode === 'boss') {
       const r = g.bossResult, sec = Math.round(r.seconds);
       if (r.fail) { // 三條命用完
@@ -47931,6 +47976,7 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
     ['keydown', 'keyup'].forEach((t) => wrap.addEventListener(t, (e) => { e.stopPropagation(); if (e.key === 'Escape') close(); }));
     (document.getElementById('app') || document.body).appendChild(wrap); paint();
   };
+  addEventListener('keydown', (e) => { if (wrap && e.key === 'Escape' && !(e.target && e.target.closest && e.target.closest('.ac-wrap'))) { e.stopPropagation(); e.preventDefault(); close(); } }, true); /* 試玩報告 v317（N9）：面板開著時，焦點不在面板裡按 Esc 也能關 */
   const paint = () => {
     if (accBtn) accBtn.innerHTML = avatar(account.user);
     if (!wrap) return;
@@ -48029,7 +48075,7 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
     } else if (view === 'acc') {
       h += `<h2>${I_USER}帳號</h2>`;
       if (u) h += `<div class="ac-me">${u.photo ? avatar(u) : ''}<div><b translate="no">${esc(account.name())}</b> <button type="button" class="ac-ren" data-n="edit" aria-label="改名字">✏️</button><p>已登入（${u.via.includes('facebook') ? 'Facebook' : u.via.includes('google') ? 'Google' : '帳號'}）</p><p>雲端存檔：開</p></div></div><div class="ac-row"><button type="button" data-a="out">登出</button></div>`;
-      else h += `<p>登入後，設定和怪物關紀錄會存在雲端，換手機也不會不見，還能用帳號名字上排行榜。不登入也能照常玩。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}${P.includes('facebook') ? `<button type="button" class="f" data-a="facebook">${I_F}用 Facebook 登入</button>` : ''}</div><p>在 LINE、Messenger 裡面打開時可能登不進去，請改用 Safari 或 Chrome 打開。</p>`;
+      else h += `<p>登入後，設定、怪物關和積分賽紀錄會存在雲端，換手機也不會不見；等級、經驗、墨幣目前只存在這台裝置。還能用帳號名字上排行榜。不登入也能照常玩。</p><div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}用 Google 登入</button>` : ''}${P.includes('facebook') ? `<button type="button" class="f" data-a="facebook">${I_F}用 Facebook 登入</button>` : ''}</div><p>在 LINE、Messenger 裡面打開時可能登不進去，請改用 Safari 或 Chrome 打開。</p>`;
       if (u && renaming) h += `<div class="fr-add ac-name"><input id="ac-nm" maxlength="8" autocomplete="off" spellcheck="false" placeholder="取個名字（最多 8 個字）" aria-label="名字" value="${esc(account.name())}"><button type="button" data-n="save">好了</button></div><p>好友名單和排行榜會顯示這個名字。</p>`;
       if (err) h += `<p class="ac-err">${esc(err)}</p>`;
     } else {
@@ -48043,9 +48089,11 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
         h += `<div class="fl-tabs ch-kind"><button type="button" data-ck="" class="${bug ? '' : 'on'}">💌 愛心留言</button><button type="button" data-ck="bug" class="${bug ? 'on' : ''}">🐞 Debug 留言</button></div>`; // Yen 11-22：留言分成愛心留言和 Debug 留言（回報問題）
         h += `<textarea id="ch-in" class="ch-in" maxlength="${CHEER_MAX}" placeholder="${bug ? '遇到什麼問題？在哪個畫面、做了什麼？' : '寫一句打氣的話'}" aria-label="${bug ? 'Debug 留言' : '愛心留言'}">${esc(cheer.text)}</textarea>`;
         if (bug) h += `<p class="ac-note ch-ai">🤖 你送出的每一則 Debug 留言都會即時交給 AI 接收，快速收集、評估和整理，每一筆都一定會確實處理。</p>`; /* Yen 11-22 14:07 */
-        if (!u2) h += `<div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}登入後留言</button>` : ''}</div>`;
+        if (!u2 && bug && SC.track && SC.track.on) h += `<div class="ac-row"><button type="button" class="d bugb" data-ch="anon"${cheer.busy ? ' disabled' : ''}>🐞 不登入直接送出</button>${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}登入後留言</button>` : ''}</div>`; /* 試玩報告 v317（N3）：沒登入也能送 Debug 留言 */
+        else if (!u2) h += `<div class="ac-row">${P.includes('google') ? `<button type="button" class="g" data-a="google">${I_G}登入後留言</button>` : ''}</div>`;
         else h += `<div class="ac-row"><button type="button" class="d${bug ? ' bugb' : ''}" data-ch="free"${cheer.busy ? ' disabled' : ''}>${bug ? '🐞 送出 Debug 留言' : '💌 留言'}</button></div>`;
         if (cheer.msg) h += `<p class="${cheer.ok ? 'fr-ok' : 'ac-err'}">${esc(cheer.msg)}</p>`;
+        if (err && !u2) h += `<p class="ac-err">${esc(err)}</p>`; /* 試玩報告 v317（N3）：登入失敗要看得到原因 */
       }
       if (CONFIG.donateOpen && CONFIG.paypal) {
         h += `<div class="ac-row"><a class="d give" data-pay="paypal" href="${esc(CONFIG.paypal)}" target="_blank" rel="noopener">${I_HEART}愛心贊助留言</a></div>`; if (zh) h += `<p class="ac-note">PayPal 不接受台灣境內付款，台灣發行的卡在 PayPal 會被拒絕，請改用下面的 ATM、超商贊助。</p>`; /* Yen 11-22 13:04：台灣卡付 PayPal 失敗 */ // Yen 11-21 20:58：直接開 PayPal 付款頁（那頁本身就有 PayPal、Apple Pay、信用卡）
@@ -48079,7 +48127,7 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
     wrap.querySelectorAll('[data-ck]').forEach((b) => (b.onclick = () => { cheer.kind = b.dataset.ck; paint(); }));
     wrap.querySelectorAll('[data-cf]').forEach((b) => (b.onclick = () => { cheer.filter = b.dataset.cf; paint(); }));
     const cin = wrap.querySelector('#ch-in'); if (cin) { cin.addEventListener('input', () => { cheer.text = cin.value; }); cin.addEventListener('keydown', (e) => e.stopPropagation()); }
-    wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'give') { cheer.give = !cheer.give; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'mine') { view = 'mine'; cheer.seenAt = seen(); try { localStorage.setItem(SEEN, String(Date.now())); } catch (e) {} paint(); cheer.loadMine(); } else if (c === 'back') { view = 'donate'; paint(); } else if (c === 'log') { view = 'log'; logN = 60; const L = SC.CHANGELOG || []; try { if (L.length) localStorage.setItem(LOGSEEN, L[0][0] + L.length); } catch (e) {} paint(); } else if (c === 'logmore') { logN += 80; paint(); } else if (c === 'players' || c === 'plre') { view = 'players'; pl.load(); } else if (c === 'pljson') pl.json(); }));
+    wrap.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => { const c = b.dataset.ch; if (c === 'anon') { const m = cheer.text.trim(); if (!m) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; } else if (Date.now() - cheer.sentAt < 30000) { cheer.ok = false; cheer.msg = '剛剛送過了，等 30 秒再送一次。'; } else if (SC.track && SC.track.bug && SC.track.bug(m)) { cheer.sentAt = Date.now(); cheer.text = ''; cheer.ok = true; cheer.msg = 'Debug 留言送出了！謝謝你幫忙找問題！'; } paint(); return; } /* 試玩報告 v317（N3） */ if (c === 'free') { if (!cheer.text.trim()) { cheer.ok = false; cheer.msg = '先寫一句話再送出喔。'; paint(); return; } cheer.send(''); } else if (c === 'more') { cheer.more = !cheer.more; paint(); } else if (c === 'give') { cheer.give = !cheer.give; paint(); } else if (c === 'inbox') { view = 'inbox'; cheer.inbox = null; paint(); cheer.load(); } else if (c === 'mine') { view = 'mine'; cheer.seenAt = seen(); try { localStorage.setItem(SEEN, String(Date.now())); } catch (e) {} paint(); cheer.loadMine(); } else if (c === 'back') { view = 'donate'; paint(); } else if (c === 'log') { view = 'log'; logN = 60; const L = SC.CHANGELOG || []; try { if (L.length) localStorage.setItem(LOGSEEN, L[0][0] + L.length); } catch (e) {} paint(); } else if (c === 'logmore') { logN += 80; paint(); } else if (c === 'players' || c === 'plre') { view = 'players'; pl.load(); } else if (c === 'pljson') pl.json(); }));
     wrap.querySelectorAll('[data-pt]').forEach((b) => (b.onclick = () => { pl.tab = b.dataset.pt; pl.sel = ''; if (pl.tab === 'data' && !pl.ev) pl.loadEv(); else paint(); }));
     wrap.querySelectorAll('[data-pd]').forEach((b) => (b.onclick = () => { pl.days = +b.dataset.pd; pl.sel = ''; pl.loadEv(); }));
     wrap.querySelectorAll('[data-tp]').forEach((b) => (b.onclick = () => { pl.sel = b.dataset.tp; paint(); const c = wrap && wrap.querySelector('.ac-card'); if (c) c.scrollTop = 0; }));
@@ -48139,6 +48187,8 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ['2026-11-26', '', '試玩修正：複合賽結算寫出「塗地＋擊倒＝總分」；單機對戰預設普通難度；沒登入也能送 Debug 留言；帳號面板按 Esc 就關；帳號說明寫清楚哪些存雲端；殭屍結算多了「圖鑑」和「貼紙」字',
+      { en: 'Playtest fixes: mixed-rule results show paint + KOs = total; solo battles default to Normal; send bug notes without signing in; Esc closes the account panel; the account panel says what is saved in the cloud; zombie results label the Bestiary and stickers', ja: 'テストプレイ修正：ミックスルールの結果に「ぬり＋たおした＝ごうけい」を表示；ひとりバトルは「ふつう」が初期設定；ログインなしでもバグ報告を送れる；Escでアカウント画面が閉じる；クラウドに保存される物を説明；ゾンビ結果に「ずかん」「シール」の文字', ko: '플레이 테스트 수정: 혼합 규칙 결과에 칠하기 + 쓰러뜨림 = 총점 표시; 혼자 대전은 보통 난이도가 기본; 로그인 없이 버그 제보 가능; Esc로 계정 창 닫기; 클라우드에 저장되는 항목 안내; 좀비 결과에 도감·스티커 글자', es: 'Correcciones de prueba: el resultado mixto muestra pintura + KO = total; las partidas en solitario empiezan en Normal; envía errores sin iniciar sesión; Esc cierra el panel de cuenta; el panel explica qué se guarda en la nube; el resultado zombi rotula el bestiario y las pegatinas', pt: 'Correções de teste: o resultado misto mostra pintura + KOs = total; partidas solo começam no Normal; envie bugs sem entrar; Esc fecha o painel da conta; o painel explica o que fica na nuvem; o resultado zumbi indica o bestiário e os adesivos', fr: 'Corrections de test : le résultat mixte affiche peinture + KO = total ; les parties en solo démarrent en Normal ; envoie un bug sans te connecter ; Échap ferme le panneau du compte ; le panneau dit ce qui est gardé dans le cloud ; le résultat zombie nomme le bestiaire et les autocollants', de: 'Testspiel-Korrekturen: Mix-Ergebnisse zeigen Farbe + KOs = Gesamt; Solo-Kämpfe starten auf Normal; Fehler ohne Anmeldung melden; Esc schließt das Kontofenster; das Kontofenster erklärt, was in der Cloud liegt; Zombie-Ergebnis beschriftet Bestiarium und Sticker', it: 'Correzioni di prova: il risultato misto mostra colore + KO = totale; le partite in solitaria partono da Normale; invia bug senza accedere; Esc chiude il pannello account; il pannello dice cosa resta nel cloud; il risultato zombie indica bestiario e adesivi', ru: 'Исправления по тесту: в итогах смешанного режима видно «краска + нокауты = итог»; одиночный бой по умолчанию на «Нормально»; отчёт об ошибке можно отправить без входа; Esc закрывает окно аккаунта; в окне аккаунта сказано, что хранится в облаке; в итогах зомби подписаны бестиарий и наклейки', tr: 'Test düzeltmeleri: karma kural sonucunda boya + KO = toplam yazıyor; tek kişilik savaş Normal ile başlar; giriş yapmadan hata bildir; Esc hesap panelini kapatır; panel bulutta neyin saklandığını söyler; zombi sonucunda ansiklopedi ve çıkartma yazıyor', id: 'Perbaikan uji main: hasil aturan campuran menampilkan cat + KO = total; tanding solo mulai di Normal; kirim laporan bug tanpa masuk; Esc menutup panel akun; panel akun menjelaskan apa yang disimpan di cloud; hasil zombi menamai ensiklopedia dan stiker', vi: 'Sửa sau thử chơi: kết quả luật hỗn hợp ghi sơn + hạ gục = tổng; đấu một mình mặc định Thường; gửi lỗi không cần đăng nhập; Esc đóng bảng tài khoản; bảng tài khoản nói rõ thứ gì lưu trên đám mây; kết quả zombie có chữ bách khoa và nhãn dán', th: 'แก้จากการทดลองเล่น: ผลกติกาผสมแสดง ทาสี + ล้ม = รวม; เล่นคนเดียวเริ่มที่ระดับปกติ; ส่งแจ้งบั๊กได้โดยไม่ต้องเข้าสู่ระบบ; กด Esc ปิดหน้าบัญชี; หน้าบัญชีบอกว่าอะไรเก็บบนคลาวด์; ผลซอมบี้มีคำว่าสมุดภาพและสติกเกอร์' }],
     ['2026-11-26', '', '所有畫面加上景深：近的清楚，遠方慢慢變得朦朧模糊、罩一層淡淡的霧；省電畫質和狙擊開鏡不做',
       { en: 'Depth of field everywhere: nearby stays sharp while the distance turns soft and hazy; off on battery-saver quality and when scoped in', ja: '全画面に被写界深度：近くはくっきり、遠くはぼんやりかすんで見える；省電力画質とスコープ中はなし', ko: '모든 화면에 피사계 심도: 가까운 곳은 선명하고 먼 곳은 뿌옇게 흐려져요; 절전 화질과 조준경 사용 중에는 꺼져요', es: 'Profundidad de campo en todas partes: lo cercano se ve nítido y lo lejano suave y brumoso; desactivada en calidad de ahorro y al usar la mira', pt: 'Profundidade de campo em tudo: o que está perto fica nítido e o distante fica suave e enevoado; desligada na qualidade economia e ao mirar com a luneta', fr: 'Profondeur de champ partout : le proche reste net, le lointain devient doux et brumeux ; désactivée en qualité économie et en visée lunette', de: 'Tiefenschärfe überall: Nahes bleibt scharf, die Ferne wird weich und dunstig; aus bei Energiespar-Qualität und beim Zielfernrohr', it: 'Profondità di campo ovunque: il vicino resta nitido, il lontano diventa morbido e nebbioso; disattivata in qualità risparmio e mirando col cannocchiale', ru: 'Глубина резкости везде: вблизи всё чётко, вдали мягко и в дымке; отключена в экономном качестве и при прицеливании', tr: 'Her ekranda alan derinliği: yakınlar net, uzaklar yumuşak ve puslu; tasarruf kalitesinde ve dürbünle nişan alırken kapalı', id: 'Kedalaman bidang di semua layar: yang dekat tetap tajam, yang jauh jadi lembut dan berkabut; mati di kualitas hemat daya dan saat membidik dengan teropong', vi: 'Độ sâu trường ảnh ở mọi màn hình: gần thì rõ, xa thì mờ và mờ sương; tắt ở chất lượng tiết kiệm và khi ngắm ống ngắm', th: 'ระยะชัดลึกทุกหน้าจอ: ใกล้คมชัด ไกลค่อย ๆ เบลอเป็นหมอกจาง ๆ; ปิดในคุณภาพประหยัดพลังงานและตอนส่องกล้อง' }],
     ["2026-11-26", "", "沐沐小鎮換上太陽谷的風格：傍晚暖陽和桃粉色天空、低多邊形的雲和松樹、奶油色牆配紅陶瓦屋頂和青綠窗板、土橘色崖壁和泥土小路，還多了紅屋頂鐘樓、太陽石碑和橋頭路燈；小鎮裡的自己也是冒險世界的擬人版毛毛／雙雙",
@@ -49027,6 +49077,7 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
     { const hr = {}; rows.forEach((r) => { if (r.sx && r.sx.hr != null) { const k = String(r.sx.hr).padStart(2, '0') + ' 點'; hr[k] = (hr[k] || 0) + (r.dur || 0); } }); const e = Object.entries(hr).sort(); if (e.length) { const mx = Math.max(...e.map((x) => x[1])); h += `<p class="pl-sec">幾點在玩（玩家當地時間）</p><ul class="pl-bars">${e.map(([k, v]) => `<li><span>${k}</span><i style="--w:${Math.round((v / mx) * 100)}%"></i><b>${fmtS(v)}</b></li>`).join('')}</ul>`; } }
     h += kv('距離上次來', cnt((r) => { const g = r.sx ? r.sx.gap : -1; return g < 0 ? '第一次來' : g < 1 ? '1 小時內' : g < 24 ? '1 天內' : g < 72 ? '3 天內' : g < 168 ? '1 週內' : '超過 1 週'; }));
     const er = {}; rows.forEach((r) => (r.ev || []).forEach((e) => { const [, k, v] = String(e).split('~'); if (k === 'x') er[v] = (er[v] || 0) + 1; })); h += kv('錯誤', er);
+    { const bl = []; rows.forEach((r) => { const by = {}; (r.ev || []).forEach((e) => { const [, k, v] = String(e).split('~'); if (k !== 'b') return; const j = v.indexOf('|'); const id = v.slice(0, j); by[id] = (by[id] || '') + v.slice(j + 1); }); Object.values(by).forEach((m) => bl.push([r.ls || r.st || 0, m, r])); }); if (bl.length) h += `<p class="pl-sec">🐞 沒登入的 Debug 留言（${bl.length}）</p><ul class="pl-list">${bl.sort((a, b) => b[0] - a[0]).slice(0, 100).map(([t, m, r]) => `<li><div class="pl-t"><small>${new Date(t).toLocaleString()}・${esc([r.dev && r.dev.os, r.dev && r.dev.br, r.lg, r.v].filter(Boolean).join(' '))}</small></div><p>${esc(m)}</p></li>`).join('')}</ul>`; } /* 試玩報告 v317（N3） */
     const ck = {}; rows.forEach((r) => (r.ev || []).forEach((e) => { const [, k, v] = String(e).split('~'); if (k === 'c') ck[v] = (ck[v] || 0) + 1; })); h += kv('最常按的按鈕', ck);
     h += `<p class="pl-sec">每個人（點名字看路徑）</p><ul class="pl-list">${people.slice(0, 200).map((p) => `<li class="${Date.now() - p.last < 150000 ? 'on' : ''}"><div class="pl-t"><button type="button" class="pl-lk" data-tp="${esc(p.k)}" translate="no">${esc(nm(p))}</button><small>${p.uid ? '登入' : '訪客'}・${esc(p.dev)}・${p.dids.size} 台・最後 ${new Date(p.last).toLocaleString()}${p.alike ? '・⚠️ 可能同一人' : ''}</small></div><div class="pl-n"><b>${p.s.length}</b><span>次</span><b>${Math.round(p.dur / 60)}</b><span>分</span><b>${p.gm}</b><span>場</span></div></li>`).join('')}</ul>`;
     return h;
@@ -49055,6 +49106,7 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
   const sec = () => Math.round((now() - t0) / 1000);
   const add = (k, v) => { if (S.ev.length >= 500) { S.drop++; return; } S.ev.push([sec(), k, String(v == null ? '' : v).slice(0, 80)]); S.dirty = true; ga(k, v); };
   T.add = add;
+  T.bug = (m) => { m = String(m || '').trim().slice(0, 240); if (!m) return false; const id = rid(3); for (let i = 0; i < m.length && i < 240; i += 72) add('b', id + '|' + m.slice(i, i + 72)); save(true); return true; }; /* 試玩報告 v317（N3）：沒登入也能送 Debug 留言，記在這一場的數據裡（作者在玩家狀態頁看得到） */
   // 現在在哪裡（路徑用）
   const lang = () => (SC.i18n && SC.i18n.lang) || '';
   const where = () => {
