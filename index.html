@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v319';</script><script>window.SC_BUILD='6606aa039025';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v320';</script><script>window.SC_BUILD='946b07b455e3';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -32022,6 +32022,215 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const boot = () => { const b = $('boot'); if (!SC.game || !SC.game.k || !b || !b.classList.contains('done')) return setTimeout(boot, 200); setTimeout(() => { const h = $('home'); if (h) h.hidden = true; if (SC.home) SC.home.on = false; const ap = $('app'); if (ap) ap.classList.remove('in-home'); showStart(); if (/[?&]tsunami=go\b/.test(location.search)) go(); }, 400); };
     if (document.readyState === 'complete') boot(); else window.addEventListener('load', boot);
   }
+})();
+
+// IP 角色 3D 試作頁（Yen 2026-11-26「各自開一個隱藏測試頁」）：
+//   spalacat.com/?ip3d=q      Q 版毛毛＋雙雙
+//   spalacat.com/?ip3d=adult  擬人版毛毛＋雙雙
+// 模型：ChatGPT 設定圖 → TRELLIS（MIT）轉 3D → tools/ip3d/clean.py、pack.py 清理壓縮，放在 web/static/ip3d/*.glb，
+// 只有進這兩個網址才會下載，不影響一般遊戲。骨架和權重在這裡依每隻的關節位置自動算（SKEL），動作全部程式產生。
+// 只能從網址進來，不在模式清單裡；不連線、不存資料。
+(function () {
+  const q = location.search + location.hash, m = /[?&#]ip3d(?:=(\w+))?/.exec(q);
+  if (!m) return;
+  const VER = m[1] === 'adult' || m[1] === 'a' ? 'a' : 'q';
+  const T = () => window.THREE, $ = (id) => document.getElementById(id);
+  const TEAM_HUE = { pink: 345 / 360, blue: 208 / 360 };
+  // 每隻的關節位置（模型已縮放成身高 1、腳踩 y=0、臉朝 +z）
+  // hip: 左右腿根 x、高度；knee、foot 高度；sh: 肩 [x,y]；el: 手肘 [x,y]；ha: 手 [x,y]；sp: 腰、胸、脖子、頭中心、頭頂 y；tail: 尾巴關節點
+  const SKEL = {
+    mao_q: { src: 345, hip: [0.07, 0.22], knee: 0.11, foot: 0.02, sh: [0.13, 0.44], el: [0.19, 0.36], ha: [0.22, 0.28], sp: [0.24, 0.42, 0.5, 0.7, 0.98],
+      tail: [[0.04, 0.2, -0.1], [0.12, 0.22, -0.2], [0.2, 0.3, -0.26], [0.23, 0.46, -0.27]] },
+    shuang_q: { src: 208, hip: [0.07, 0.2], knee: 0.1, foot: 0.02, sh: [0.15, 0.42], el: [0.2, 0.33], ha: [0.22, 0.27], sp: [0.22, 0.4, 0.48, 0.7, 0.98],
+      tail: [[0.06, 0.22, -0.12], [0.15, 0.25, -0.14], [0.24, 0.35, -0.11], [0.31, 0.46, -0.1]] },
+    mao_a: { src: 345, hip: [0.06, 0.42], knee: 0.22, foot: 0.03, sh: [0.11, 0.64], el: [0.15, 0.5], ha: [0.17, 0.38], sp: [0.44, 0.58, 0.72, 0.84, 0.98],
+      tail: [[-0.02, 0.4, -0.08], [-0.08, 0.3, -0.14], [-0.14, 0.2, -0.17], [-0.17, 0.08, -0.17]] },
+    shuang_a: { src: 208, hip: [0.06, 0.4], knee: 0.22, foot: 0.03, sh: [0.11, 0.62], el: [0.14, 0.5], ha: [0.15, 0.4], sp: [0.42, 0.56, 0.72, 0.84, 0.98],
+      tail: [[-0.02, 0.38, -0.08], [-0.08, 0.28, -0.14], [-0.13, 0.18, -0.17], [-0.16, 0.08, -0.17]] },
+  };
+  const CATS = [{ id: 'mao', name: '毛毛', team: 'pink' }, { id: 'shuang', name: '雙雙', team: 'blue' }];
+  const H = VER === 'a' ? 1.9 : 1.25; // 場上身高（擬人版高一點）
+
+  // ---- 最小 GLB 讀取（pack.py 輸出：一個 mesh、POSITION/TEXCOORD_0/indices、一張 JPEG）----
+  async function loadGlb(url) {
+    const buf = await (await fetch(url)).arrayBuffer(), dv = new DataView(buf);
+    const jl = dv.getUint32(12, true), j = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 20, jl)));
+    const bo = 20 + jl + 8, view = (i) => { const v = j.bufferViews[i]; return [bo + (v.byteOffset || 0), v.byteLength]; };
+    const acc = (i, C, w) => { const a = j.accessors[i], [o] = view(a.bufferView); return new C(buf.slice(o, o + a.count * w * C.BYTES_PER_ELEMENT)); };
+    const p = j.meshes[0].primitives[0], A = j.accessors[p.indices];
+    const idx = acc(p.indices, A.componentType === 5123 ? Uint16Array : Uint32Array, 1);
+    const pos = acc(p.attributes.POSITION, Float32Array, 3), uv = acc(p.attributes.TEXCOORD_0, Float32Array, 2);
+    const [io, il] = view(j.images[0].bufferView);
+    const img = await createImageBitmap(new Blob([new Uint8Array(buf, io, il)], { type: j.images[0].mimeType }), { imageOrientation: 'none' });
+    return { idx, pos, uv, img };
+  }
+
+  // ---- 骨架 ----
+  // 骨頭：0 root(腰) 1 胸 2 脖子 3 頭 4/5 左右大腿 6/7 小腿 8/9 腳 10/11 上臂 12/13 前臂 14/15 手 16-19 尾巴
+  function bonesOf(k) {
+    const s = SKEL[k], P = [];
+    P[0] = [0, s.sp[0], 0]; P[1] = [0, s.sp[1], 0]; P[2] = [0, s.sp[2], 0]; P[3] = [0, s.sp[3], 0];
+    for (const [i, sg] of [[0, 1], [1, -1]]) {
+      P[4 + i] = [sg * s.hip[0], s.hip[1], 0]; P[6 + i] = [sg * s.hip[0], s.knee, 0.005]; P[8 + i] = [sg * s.hip[0], s.foot, 0.01];
+      P[10 + i] = [sg * s.sh[0], s.sh[1], 0]; P[12 + i] = [sg * s.el[0], s.el[1], 0]; P[14 + i] = [sg * s.ha[0], s.ha[1], 0.01];
+    }
+    s.tail.forEach((t, i) => (P[16 + i] = t));
+    const parent = [-1, 0, 1, 2, 0, 0, 4, 5, 6, 7, 1, 1, 10, 11, 12, 13, 0, 16, 17, 18];
+    // 每根骨頭在算權重時代表的線段（頭→子骨頭；末端往外延伸一點）
+    const seg = P.map((p, i) => { let e;
+      if (i === 3) e = [0, s.sp[4], 0]; else if (i === 8 || i === 9) e = [p[0], 0, p[2] + 0.06];
+      else if (i === 14 || i === 15) e = [p[0] * 1.08, p[1] - 0.06, p[2] + 0.01]; else if (i === 19) e = [p[0] + (p[0] - P[18][0]) * 0.8, p[1] + (p[1] - P[18][1]) * 0.8, p[2] + (p[2] - P[18][2]) * 0.8];
+      else { const c = parent.indexOf(i); e = c >= 0 ? P[c] : p; }
+      return [p, e]; });
+    return { P, parent, seg, s };
+  }
+  function segDist(v, a, b) {
+    const abx = b[0] - a[0], aby = b[1] - a[1], abz = b[2] - a[2], l = abx * abx + aby * aby + abz * abz;
+    let t = l > 1e-9 ? ((v[0] - a[0]) * abx + (v[1] - a[1]) * aby + (v[2] - a[2]) * abz) / l : 0; t = Math.max(0, Math.min(1, t));
+    const dx = v[0] - a[0] - abx * t, dy = v[1] - a[1] - aby * t, dz = v[2] - a[2] - abz * t; return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  }
+  function weights(pos, B) {
+    const n = pos.length / 3, si = new Uint16Array(n * 4), sw = new Float32Array(n * 4), s = B.s, v = [0, 0, 0];
+    const LEG = [4, 5, 6, 7, 8, 9], ARM = [10, 11, 12, 13, 14, 15];
+    for (let i = 0; i < n; i++) {
+      v[0] = pos[i * 3]; v[1] = pos[i * 3 + 1]; v[2] = pos[i * 3 + 2];
+      const d = B.seg.map((sg, b) => {
+        let x = segDist(v, sg[0], sg[1]);
+        if (LEG.includes(b)) { if (v[1] > s.hip[1] + 0.03 || (b % 2 === 0 ? v[0] < -0.005 : v[0] > 0.005)) x += 1; }
+        if (ARM.includes(b)) { if (b % 2 === 0 ? v[0] < s.sh[0] * 0.55 : v[0] > -s.sh[0] * 0.55) x += 1; if (v[1] > s.sh[1] + 0.04) x += 1; }
+        if (b === 3 && v[1] < s.sp[2] - 0.02) x += 1;
+        if (b >= 16 && v[2] > -0.02 && !(Math.abs(v[0]) > Math.abs(B.P[19][0]) * 0.7 && v[2] < 0.05)) x += 0.5;
+        return x; });
+      const ord = d.map((x, b) => [x, b]).sort((p, q2) => p[0] - q2[0]).slice(0, 3);
+      let tot = 0; const w = ord.map(([x]) => { const k = 1 / Math.pow(x + 0.004, 4); tot += k; return k; });
+      for (let k = 0; k < 3; k++) { si[i * 4 + k] = ord[k][1]; sw[i * 4 + k] = w[k] / tot; }
+    }
+    return { si, sw };
+  }
+
+  function hueSwap(mat, src, U) {
+    mat.onBeforeCompile = (sh) => { sh.uniforms.uTeamHue = U;
+      sh.fragmentShader = 'uniform float uTeamHue;\nvec3 ipRgb2hsv(vec3 c){vec4 K=vec4(0.,-1./3.,2./3.,-1.);vec4 p=mix(vec4(c.bg,K.wz),vec4(c.gb,K.xy),step(c.b,c.g));vec4 q=mix(vec4(p.xyw,c.r),vec4(c.r,p.yzx),step(p.x,c.r));float d=q.x-min(q.w,q.y);return vec3(abs(q.z+(q.w-q.y)/(6.*d+1e-10)),d/(q.x+1e-10),q.x);}\nvec3 ipHsv2rgb(vec3 c){vec3 p=abs(fract(c.xxx+vec3(1.,2./3.,1./3.))*6.-3.);return c.z*mix(vec3(1.),clamp(p-1.,0.,1.),c.y);}\n' +
+        sh.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
+        { vec3 sc=pow(max(diffuseColor.rgb,0.),vec3(1./2.2)); vec3 h=ipRgb2hsv(sc); float dh=abs(h.x-${(src / 360).toFixed(4)}); dh=min(dh,1.-dh);
+          float w=smoothstep(.075,.035,dh)*smoothstep(.22,.36,h.y)*smoothstep(.2,.35,h.z);
+          diffuseColor.rgb=mix(diffuseColor.rgb,pow(ipHsv2rgb(vec3(uTeamHue,h.y,h.z)),vec3(2.2)),w); }`); };
+    mat.customProgramCacheKey = () => 'ip3d' + src;
+  }
+
+  async function makeCat(id) {
+    const THREE = T(), key = id + '_' + VER, g = await loadGlb('ip3d/' + key + '.glb'), B = bonesOf(key);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(g.pos, 3)); geo.setAttribute('uv', new THREE.BufferAttribute(g.uv, 2)); geo.setIndex(new THREE.BufferAttribute(g.idx, 1));
+    const { si, sw } = weights(g.pos, B);
+    geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4)); geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sw, 4));
+    geo.computeVertexNormals();
+    const tex = new THREE.Texture(g.img); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4; tex.needsUpdate = true;
+    const U = { value: TEAM_HUE.pink }, mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0, flatShading: true });
+    hueSwap(mat, SKEL[key].src, U);
+    const bones = B.P.map(() => new THREE.Bone());
+    B.P.forEach((p, i) => { const par = B.parent[i], o = par < 0 ? [0, 0, 0] : B.P[par]; bones[i].position.set(p[0] - o[0], p[1] - o[1], p[2] - o[2]); if (par >= 0) bones[par].add(bones[i]); });
+    const mesh = new THREE.SkinnedMesh(geo, mat); mesh.add(bones[0]); mesh.bind(new THREE.Skeleton(bones)); mesh.castShadow = true; mesh.frustumCulled = false;
+    const root = new THREE.Group(); root.add(mesh); mesh.scale.setScalar(H);
+    return { root, mesh, bones, U, key, s: SKEL[key], phase: Math.random() * 6, run: 0, speed: 0, yaw: 0, vx: 0, vz: 0 };
+  }
+
+  // ---- 動作 ----
+  function pose(c, t, dt) {
+    const b = c.bones, r = c.run, ph = t * (VER === 'a' ? 9 : 11) + c.phase, sw = Math.sin(ph), cw = Math.cos(ph);
+    for (const x of b) x.rotation.set(0, 0, 0);
+    const br = Math.sin(t * 2.2 + c.phase);
+    // 待機：呼吸、頭左右看、手微擺；跑步：腿前後、手反向、身體前傾上下彈
+    b[0].position.y = c.s.sp[0] + (1 - r) * br * 0.004 + r * Math.abs(cw) * 0.03;
+    b[0].rotation.y = r * sw * 0.12;
+    b[1].rotation.x = r * 0.18 + (1 - r) * br * 0.03;
+    b[1].rotation.y = -r * sw * 0.16;
+    b[3].rotation.y = (1 - r) * Math.sin(t * 0.7 + c.phase) * 0.35; b[3].rotation.x = (1 - r) * Math.sin(t * 0.9) * 0.05 - r * 0.12;
+    b[3].rotation.z = (1 - r) * Math.sin(t * 0.5 + 1) * 0.06;
+    const legA = VER === 'a' ? 0.75 : 0.6;
+    b[4].rotation.x = -r * sw * legA; b[5].rotation.x = r * sw * legA;
+    b[6].rotation.x = r * Math.max(0, cw) * 0.9; b[7].rotation.x = r * Math.max(0, -cw) * 0.9;
+    b[10].rotation.x = r * sw * 0.7; b[11].rotation.x = -r * sw * 0.7;
+    b[10].rotation.z = (1 - r) * (0.05 + br * 0.03); b[11].rotation.z = -(1 - r) * (0.05 + br * 0.03);
+    b[12].rotation.x = -r * 0.5;  b[13].rotation.x = -r * 0.5;
+    for (let i = 0; i < 4; i++) { const tb = b[16 + i], k = t * (2.4 + r * 5) - i * 0.7 + c.phase; tb.rotation.y = Math.sin(k) * (0.18 + r * 0.12); tb.rotation.x = Math.cos(k * 0.8) * 0.08 + r * 0.06; }
+  }
+
+  // ---- 頁面 ----
+  let on = false;
+  async function open() {
+    if (on) return; on = true;
+    const THREE = T(); const h = $('home'); if (h) h.hidden = true; if (SC.home) SC.home.on = false;
+    const wrap = document.createElement('div'); wrap.id = 'ip3d';
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:9000;background:#dfe9f5;touch-action:none;font:15px/1.4 system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;color:#1d2330';
+    wrap.innerHTML = `<canvas style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+      <div style="position:absolute;left:12px;top:10px;right:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+        <b style="background:#fff;border-radius:8px;padding:6px 10px">${VER === 'a' ? '擬人版' : 'Q 版'} 3D 試作</b>
+        <button data-t="pink">粉紅隊</button><button data-t="blue">藍隊</button><button data-t="mix">原本隊色</button>
+        <button data-c="0">操作毛毛</button><button data-c="1">操作雙雙</button>
+        <button data-v>${VER === 'a' ? '換 Q 版' : '換擬人版'}</button><button data-x>回首頁</button></div>
+      <div id="ip3d-tip" style="position:absolute;left:12px;bottom:12px;right:12px;background:#ffffffcc;border-radius:10px;padding:8px 12px;font-size:13px">WASD／方向鍵或拖曳畫面左半邊走動，右半邊拖曳轉鏡頭。另一隻會跟著你。模型是 AI 轉出來的試作，動作還很簡單。</div>`;
+    document.body.appendChild(wrap);
+    wrap.querySelectorAll('button').forEach((x) => (x.style.cssText = 'border:1px solid #c9d3e2;background:#fff;border-radius:8px;padding:6px 10px;font:inherit;cursor:pointer'));
+    const cv = wrap.querySelector('canvas'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
+    R.setPixelRatio(Math.min(2, devicePixelRatio)); R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
+    R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05; R.outputColorSpace = THREE.SRGBColorSpace;
+    const S = new THREE.Scene(); S.background = new THREE.Color(0xdfe9f5); S.fog = new THREE.Fog(0xdfe9f5, 30, 70);
+    const C = new THREE.PerspectiveCamera(40, 1, 0.05, 200);
+    S.add(new THREE.HemisphereLight(0xffffff, 0x8ea07a, 1.1));
+    const sun = new THREE.DirectionalLight(0xffffff, 2.0); sun.position.set(6, 10, 5); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8 }); S.add(sun); S.add(sun.target);
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(40, 48), new THREE.MeshStandardMaterial({ color: 0xa8d08d, roughness: 0.95 }));
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; S.add(ground);
+    const rnd = (a) => { a = Math.sin(a * 127.1) * 43758.5; return a - Math.floor(a); };
+    for (let i = 0; i < 40; i++) { const a = rnd(i) * 6.28, d = 8 + rnd(i + 9) * 25, k = 0.5 + rnd(i + 3) * 1.2;
+      const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(k, 0), new THREE.MeshStandardMaterial({ color: [0xf2c14e, 0xe8336f, 0x1e8ee6, 0x7cc36a][i % 4], flatShading: true, roughness: 0.8 }));
+      blob.position.set(Math.cos(a) * d, k * 0.6, Math.sin(a) * d); blob.castShadow = blob.receiveShadow = true; S.add(blob); }
+    const cats = [];
+    try { for (const [i, c] of CATS.entries()) { const o = await makeCat(c.id); o.root.position.set(i ? 1.2 : -1.2, 0, 0); o.U.value = TEAM_HUE[c.team]; S.add(o.root); cats.push(o); } }
+    catch (e) { $('ip3d-tip').textContent = '模型載入失敗：' + e.message; return; }
+    window.__ip3dReady = true;
+    let me = 0, camYaw = 0, camPitch = 0.32, last = performance.now(), t = 0;
+    const keys = {}, joy = { x: 0, y: 0, id: null, sx: 0, sy: 0 }, look = { id: null, x: 0, y: 0 };
+    const kd = (e) => { keys[e.code] = e.type === 'keydown'; }; addEventListener('keydown', kd); addEventListener('keyup', kd);
+    cv.addEventListener('pointerdown', (e) => { if (e.clientX < innerWidth / 2 && joy.id === null) Object.assign(joy, { id: e.pointerId, sx: e.clientX, sy: e.clientY, x: 0, y: 0 }); else Object.assign(look, { id: e.pointerId, x: e.clientX, y: e.clientY }); cv.setPointerCapture(e.pointerId); });
+    cv.addEventListener('pointermove', (e) => { if (e.pointerId === joy.id) { joy.x = Math.max(-1, Math.min(1, (e.clientX - joy.sx) / 60)); joy.y = Math.max(-1, Math.min(1, (e.clientY - joy.sy) / 60)); }
+      else if (e.pointerId === look.id) { camYaw -= (e.clientX - look.x) * 0.006; camPitch = Math.max(0.05, Math.min(1.2, camPitch + (e.clientY - look.y) * 0.004)); look.x = e.clientX; look.y = e.clientY; } });
+    const up = (e) => { if (e.pointerId === joy.id) Object.assign(joy, { id: null, x: 0, y: 0 }); if (e.pointerId === look.id) look.id = null; };
+    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+    wrap.querySelectorAll('[data-t]').forEach((x) => (x.onclick = () => cats.forEach((c, i) => (c.U.value = TEAM_HUE[x.dataset.t === 'mix' ? CATS[i].team : x.dataset.t]))));
+    wrap.querySelectorAll('[data-c]').forEach((x) => (x.onclick = () => (me = +x.dataset.c)));
+    wrap.querySelector('[data-v]').onclick = () => { location.search = '?ip3d=' + (VER === 'a' ? 'q' : 'adult'); };
+    wrap.querySelector('[data-x]').onclick = () => { location.href = location.pathname; };
+    const size = () => { R.setSize(innerWidth, innerHeight, false); C.aspect = innerWidth / innerHeight; C.updateProjectionMatrix(); };
+    addEventListener('resize', size); size();
+    window.__ip3d = { cats, set run(v) { cats.forEach((c) => (c.forceRun = v)); }, cam(y, p) { camYaw = y; camPitch = p; } };
+    const SPD = VER === 'a' ? 5.5 : 4.2;
+    R.setAnimationLoop(() => {
+      const now = performance.now(), dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
+      let ix = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + joy.x, iz = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0) + joy.y;
+      const il = Math.hypot(ix, iz); if (il > 1) { ix /= il; iz /= il; }
+      const cy = Math.cos(camYaw), sy = Math.sin(camYaw);
+      cats.forEach((c, i) => {
+        let mx = 0, mz = 0;
+        if (i === me) { mx = ix * cy + iz * sy; mz = -ix * sy + iz * cy; }
+        else { const L = cats[me].root.position, P = c.root.position, dx = L.x - P.x, dz = L.z - P.z, d = Math.hypot(dx, dz); if (d > 2.2) { mx = dx / d * Math.min(1, (d - 2.2) * 1.5); mz = dz / d * Math.min(1, (d - 2.2) * 1.5); } }
+        if (c.forceRun) { mx = Math.sin(c.yaw); mz = Math.cos(c.yaw); }
+        const ml = Math.hypot(mx, mz);
+        if (!c.forceRun) { c.root.position.x += mx * SPD * dt; c.root.position.z += mz * SPD * dt; }
+        const pl = c.root.position, pd = Math.hypot(pl.x, pl.z); if (pd > 34) { pl.x *= 34 / pd; pl.z *= 34 / pd; }
+        if (ml > 0.05) { const want = Math.atan2(mx, mz); let dy = want - c.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); c.yaw += dy * Math.min(1, dt * 10); }
+        c.root.rotation.y = c.yaw; c.run += ((ml > 0.1 ? Math.min(1, ml) : 0) - c.run) * Math.min(1, dt * 8);
+        pose(c, t, dt);
+      });
+      const F = cats[me].root.position, dist = VER === 'a' ? 7 : 5.5;
+      C.position.set(F.x + Math.sin(camYaw) * Math.cos(camPitch) * dist, H * 0.55 + Math.sin(camPitch) * dist, F.z + Math.cos(camYaw) * Math.cos(camPitch) * dist);
+      C.lookAt(F.x, H * 0.5, F.z); sun.position.set(F.x + 6, 10, F.z + 5); sun.target.position.set(F.x, 0, F.z);
+      R.render(S, C);
+    });
+  }
+  const boot = () => { const b = $('boot'); if (!T() || !b || !b.classList.contains('done')) return setTimeout(boot, 200); setTimeout(open, 300); };
+  addEventListener('load', boot);
 })();
 
 // 對戰核心：角色移動、五段跳、墨貓潛行、三種武器＋墨水彈、傷害與重生、AI、鏡頭、回合流程。
