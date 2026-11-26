@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v349';</script><script>window.SC_BUILD='88b62ca91c70';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v350';</script><script>window.SC_BUILD='161126902d68';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1776,6 +1776,9 @@ html[data-lang^=zh] .chat-stk .emo-b small { white-space: nowrap; letter-spacing
 /* 試玩報告 v317（N11）：沒登入時的「先練習（不計分）」小按鈕，在「登入後開始」上面 */
 #ui #m-title #rk-go #rk-prac { order: -1; min-height: 40px; padding: 6px 14px; border-radius: 14px; border: 3px solid #1b1430; background: #fff; color: #1b1430; font: 900 15px/1 var(--f-body); box-shadow: 0 4px 0 #1b1430; cursor: pointer; }
 #ui #m-title #rk-go #rk-prac[hidden] { display: none !important; }
+/* 試玩報告 v317 T5：手機直式小鎮右上角 6 顆圖示照螢幕寬度縮小，⚙️ 不會被擠出畫面 */
+html .portrait .town .tw-tools .tw-ic { width: clamp(32px, calc((100vw - 140px) / 6 - 5px), 40px); height: clamp(32px, calc((100vw - 140px) / 6 - 5px), 40px); font-size: clamp(15px, calc((100vw - 140px) / 13), 19px); }
+html .portrait .town .tw-name { margin-right: -36px; } /* 名牌縮成 0.72 倍後右邊空出來的位置還給圖示 */
 
 </style>
 <div id="app">
@@ -19239,6 +19242,7 @@ const R = [
 ['總分', 'Total', 'ごうけい', '총점', 'Total', 'Total', 'Total', 'Gesamt', 'Totale', 'Итого', 'Toplam', 'Total', 'Tổng', 'รวม'],
 ['🎯 先練習（不計分）', '🎯 Practice first (unranked)', '🎯 まずれんしゅう（記録なし）', '🎯 먼저 연습(점수 없음)', '🎯 Practicar primero (sin puntos)', '🎯 Treinar antes (sem pontos)', '🎯 S’entraîner d’abord (sans points)', '🎯 Erst üben (ohne Wertung)', '🎯 Prima allenati (senza punti)', '🎯 Сначала тренировка (без очков)', '🎯 Önce antrenman (puansız)', '🎯 Latihan dulu (tanpa poin)', '🎯 Luyện tập trước (không tính điểm)', '🎯 ซ้อมก่อน (ไม่นับคะแนน)'],
 ['擊倒', 'KOs', 'たおした', '쓰러뜨림', 'KO', 'KOs', '', '', '', '', '', '', '', ''],
+['歡迎來到小鎮！送你 🪙 {n} 代幣，可以去服飾店買衣服', 'Welcome to town! Here are 🪙 {n} coins. Spend them at the outfit shop', 'まちへようこそ！🪙 {n} コインをプレゼント。ふくやさんで使ってね', '마을에 온 걸 환영해요! 🪙 {n} 코인을 줄게요. 옷 가게에서 써 보세요', '¡Bienvenido al pueblo! Toma 🪙 {n} monedas para la tienda de ropa', 'Bem-vindo à vila! Tome 🪙 {n} moedas para a loja de roupas', 'Bienvenue au village ! Voici 🪙 {n} pièces pour la boutique de tenues', 'Willkommen im Dorf! Hier sind 🪙 {n} Münzen für den Kleiderladen', 'Benvenuto in paese! Ecco 🪙 {n} monete per il negozio di vestiti', 'Добро пожаловать в городок! Держи 🪙 {n} монет для магазина одежды', 'Kasabaya hoş geldin! Kıyafet dükkânı için 🪙 {n} jeton senin', 'Selamat datang di kota! Ini 🪙 {n} koin untuk toko baju', 'Chào mừng đến thị trấn! Tặng bạn 🪙 {n} xu để mua đồ ở tiệm quần áo', 'ยินดีต้อนรับสู่เมือง! รับ 🪙 {n} เหรียญไปซื้อชุดที่ร้านเสื้อผ้าได้เลย'],
 ];
 SC.pt317 = { add: (rows) => { I.add(rows.map((r) => r.slice(0, 4))); L.forEach((l, k) => I.addL(l, rows.filter((r) => r[4 + k]).map((r) => [r[0], r[4 + k]]))); } };
 SC.pt317.add(R);
@@ -36707,20 +36711,22 @@ el.innerHTML = '<div class="card fsg dvt"><h2>這台裝置怎麼玩最順</h2><p
 { const sm = el.querySelector('.dvt-rank small'); sm.textContent = tablet ? '平板螢幕大，觸控也很好瞄；有電腦的話用電腦最順。' : '手機也能玩；螢幕越大越好瞄，有平板或電腦會更順。'; }
 const wh = el.querySelector('.dvt-who'); who().forEach((t, i) => { if (i) wh.append(app ? ' ' : '・'); const sp = document.createElement('span'); sp.textContent = t; wh.appendChild(sp); }); const ul = el.querySelector('.dvt-list');
 L.forEach(([ic, t, s, bl, fn]) => { const li = document.createElement('li'); li.innerHTML = '<i aria-hidden="true"></i><b></b><span></span>'; li.querySelector('i').textContent = ic; li.querySelector('b').textContent = t; li.querySelector('span').textContent = s; if (bl && fn) { const b = document.createElement('button'); b.type = 'button'; b.textContent = bl; b.onclick = (e) => { e.stopPropagation(); try { SC.audio.sfx.ui(); } catch (x) {} fn(); }; li.appendChild(b); } ul.appendChild(li); });
-el.querySelector('[data-x]').onclick = () => { try { SC.audio.sfx.ui(); } catch (x) {} hide(); };
+el.querySelector('[data-x]').onclick = () => { autoOn = false; try { SC.audio.sfx.ui(); } catch (x) {} hide(); };
 el.hidden = false; if (document.pointerLockElement) document.exitPointerLock(); };
 const addBtn = () => { const row = document.querySelector('#pf-card:not([hidden]) .pfs .pfs-b'); if (!row || row.querySelector('.pfs-dev') || !(coarse || app)) return; const b = document.createElement('button'); b.type = 'button'; b.className = 'pfs-dev'; b.innerHTML = '📱 <span>這台裝置怎麼玩最順</span>'; b.onclick = () => { const c = $('pf-card'); if (c) c.hidden = true; DT.show(); }; row.appendChild(b); };
 new MutationObserver(addBtn).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
 const key = 'sc-devtip', seen = () => { try { return app ? sessionStorage.getItem(key) : localStorage.getItem(key); } catch (e) { return '1'; } }, mark = () => { try { (app ? sessionStorage : localStorage).setItem(key, '1'); } catch (e) {} };
-let waitT = 0;
-const auto = setInterval(() => {
+let waitT = 0, auto = 0, autoOn = false;
+const arm = () => { clearInterval(auto); waitT = 0; auto = setInterval(() => {
 if (!(coarse || app) || !window.SC_PUBLIC && !/[?&]devtip\b/.test(location.search)) return clearInterval(auto);
 if (seen()) return clearInterval(auto);
 const busy = document.querySelector('#pf-card:not([hidden]), #m-fsguide:not([hidden]), #m-a2hs:not([hidden]), #m-rejoin:not([hidden]), .ac-wrap, .rkd-ov:not([hidden])');
-if (!(SC.home && SC.home.on) || busy) { waitT = 0; return; }
+if (!(SC.home && SC.home.on) || busy || (SC.town && SC.town.on)) { waitT = 0; return; }
 if ((waitT += 0.5) < 2) return;
-clearInterval(auto); mark(); DT.show();
-}, 500);
+clearInterval(auto); mark(); DT.show(); autoOn = true;
+}, 500); };
+arm();
+DT.defer = () => { if (!autoOn || !el || el.hidden) return; autoOn = false; hide(); try { (app ? sessionStorage : localStorage).removeItem(key); } catch (e) {} arm(); };
 })();
 
 
@@ -37554,7 +37560,7 @@ const zOut = (x, z) => (Z ? Z.out(x, z) : SE(x, z) > 104);
 const zOkStep = (x0, z0, x1, z1) => { if (!Z) return okStep(x0, z0, x1, z1); const h1 = zW(x1, z1); if (h1 < -0.45 || zOut(x1, z1)) return false; return Math.abs(h1 - zW(x0, z0)) <= Math.hypot(x1 - x0, z1 - z0) * 0.95 + 0.03; };
 const zSol = () => (Z ? Z.solids : solids);
 const zSpots = () => (Z ? Z.spots : SPOTS);
-function okStep(x0, z0, x1, z1) { const h1 = walkH(x1, z1); if (h1 < -0.45 || SE(x1, z1) > 104) return false; const d = Math.hypot(x1 - x0, z1 - z0); return Math.abs(h1 - walkH(x0, z0)) <= d * 0.95 + 0.03; }
+function okStep(x0, z0, x1, z1) { const h1 = walkH(x1, z1); if (h1 < -0.45 || SE(x1, z1) > 104) return false; const d = Math.hypot(x1 - x0, z1 - z0); const h0 = walkH(x0, z0); if (Math.abs(h1 - h0) > d * 0.95 + 0.03) return false; const lim = Math.max(h0, h1) + 1.5; return !(walkH(x1 + 1.5, z1) > lim || walkH(x1 - 1.5, z1) > lim || walkH(x1, z1 + 1.5) > lim || walkH(x1, z1 - 1.5) > lim); }
 function canLine(a, b) { const L = Math.hypot(b.x - a.x, b.z - a.z), n = Math.max(1, Math.ceil(L / 0.8)); let px = a.x, pz = a.z; for (let i = 1; i <= n; i++) { const x = a.x + ((b.x - a.x) * i) / n, z = a.z + ((b.z - a.z) * i) / n; if (!okStep(px, pz, x, z) || blocked(x, z, 0.9)) return false; px = x; pz = z; } return true; }
 const NODES = [[30, 0], [-30, 0], [0, 30], [0, -30], [21, 21], [-21, 21], [21, -21], [-21, -21], [0, -44], [0, -56], [0, -73], [0, -92], [-22, -72], [22, -72], [-36, -72], [36, -72], [-66, -74], [66, -74], [0, 40], [-4, 46], [-4, 67], [25, 48], [25, 69], [20, 76], [-24, 44], [-38, 50], [-54, 54], [24, 40], [40, 44], [58, 46], [-16, 66], [-58, 78]].map(([x, z]) => new V3(x, 0, z));
 let EDGES = null;
@@ -37722,7 +37728,12 @@ for (const s of solids) { const dx = p.x - s.x, dz = p.z - s.z, d = Math.hypot(d
 const d = SE(p.x, p.z); if (d > BOUND) { p.x *= BOUND / d; p.z *= BOUND / d; }
 }
 let path = null, pathSpot = null;
-function walkTo(p, spot) { path = (Z ? null : route(pos, p)) || [p.clone()]; pathSpot = spot || null; hintT = 99; }
+function routeFrom(a, b) {
+const r = route(a, b); if (r) return r;
+for (let d = 2; d <= 8; d += 2) for (let k = 0; k < 12; k++) { const an = (k / 12) * Math.PI * 2, q = new V3(a.x + Math.sin(an) * d, 0, a.z + Math.cos(an) * d); if (blocked(q.x, q.z, 0.9) || walkH(q.x, q.z) < -0.45) continue; const r2 = route(q, b); if (r2) return [q, ...r2]; }
+return null;
+}
+function walkTo(p, spot) { path = (Z ? null : routeFrom(pos, p)) || [p.clone()]; pathSpot = spot || null; hintT = 99; }
 let fireWas = false, animSt = null, lungeT = 0, lungeV = 0, fEdge = false, dashUsed = false, rollFrom = 0, zoom = 1;
 T.lunge = (v, t) => { lungeV = v; lungeT = t; };
 let frozT = 0, frozU = 0; T.freeze = (sec) => { frozT = sec; frozU = performance.now() + sec * 1000; }; T.frozen = () => frozT > 0;
@@ -37861,13 +37872,17 @@ SC.fpv.vm(me, cam, scene, { hide: st.form === 'cat' || fe < 1, kick: SC.clamp(me
 if (T._fix) { cam.position.set(...T._fix[0]); cam.lookAt(...T._fix[1]); }
 camTail();
 }
+let lblObs = [], lblObsT = -9;
 function camTail() {
 if (T._fix) { cam.position.set(...T._fix[0]); cam.lookAt(...T._fix[1]); }
 const su = Z ? Z.sun : sun; su.position.set(pos.x * 0.5 + 30, 60, pos.z * 0.5 + 25); su.target.position.set(pos.x * 0.5, 0, pos.z * 0.5);
 const W = sz.x, Hh = sz.y, sw = hud.clientWidth / Math.max(1, W), shh = hud.clientHeight / Math.max(1, Hh);
+if (t - lblObsT > 0.5 || t < lblObsT) { lblObsT = t; const hb = hud.getBoundingClientRect(); lblObs = [...hud.querySelectorAll('.tw-top .tw-name, .tw-tools > *, .hm-back')].filter((e) => e.offsetParent).map((e) => { const r = e.getBoundingClientRect(); return { l: r.left - hb.left, r: r.right - hb.left, t: r.top - hb.top, b: r.bottom - hb.top }; }); }
 for (const sp of zSpots()) { pv.set(sp.x, sp.gy + sp.y, sp.z).project(cam); const dd = Math.hypot(sp.x - pos.x, sp.z - pos.z), vis = !(CL.on && sp.k === 'range') && pv.z < 1 && pv.x > -1.1 && pv.x < 1.1 && pv.y > -1 && pv.y < 1.15 && dd < 95; if (vis !== sp.vis) { sp.vis = vis; sp.el.style.visibility = vis ? '' : 'hidden'; } if (!vis) continue;
-const hw = hud.clientWidth, hh = hud.clientHeight, short = hh < 520, x = SC.clamp(((pv.x + 1) / 2) * W * sw, 64, hw - 64), y = SC.clamp(((1 - pv.y) / 2) * Hh * shh, short ? 64 : 112, hh - (short ? 92 : 150));
-sp.el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%) scale(${(SC.clamp(1.2 - dd / 90, 0.66, 1.05) * SC.clamp(hh / 720, 0.72, 1)).toFixed(2)})`; sp.el.classList.toggle('nr', sp === near); }
+const hw = hud.clientWidth, hh = hud.clientHeight, short = hh < 520, x = SC.clamp(((pv.x + 1) / 2) * W * sw, 64, hw - 64); let y = SC.clamp(((1 - pv.y) / 2) * Hh * shh, short ? 64 : 112, hh - (short ? 92 : 150));
+const sc = SC.clamp(1.2 - dd / 90, 0.66, 1.05) * SC.clamp(hh / 720, 0.72, 1), lw = (sp.el.offsetWidth * sc) / 2 + 4, lh = sp.el.offsetHeight * sc + 12;
+for (let k = 0; k < 3; k++) { let hit = false; for (const o of lblObs) if (x - lw < o.r && x + lw > o.l && y - lh < o.b && y > o.t) { y = o.b + lh; hit = true; } if (!hit) break; }
+sp.el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%) scale(${sc.toFixed(2)})`; sp.el.classList.toggle('nr', sp === near); }
 }
 const tmp = new V3();
 const PX = 86, PN = 384, PC = (PX * 2) / PN, pdata = new Uint8Array(PN * PN * 4), land = new Uint8Array(PN * PN);
@@ -38675,13 +38690,16 @@ if (b) b.click();
 if (k === 'zombie') { const z = document.querySelector('#pick-nm .pick[data-v="zombie"]'); if (z) z.click(); }
 };
 let spawned = false;
+const spawnOut = (s) => {   const y0 = walkH(s.door.x + s.dx * 2, s.door.z + s.dz * 2); for (let d = 9; d > 2; d -= 1) { const x = s.door.x + s.dx * d, z = s.door.z + s.dz * d; if (Math.abs(walkH(x, z) - y0) < 1.5 && !(SC.slab && SC.slab.solid && SC.slab.solid(x, y0 + 1, z))) { let ok = true; for (let e = 2; e < d; e += 1) if (Math.abs(walkH(s.door.x + s.dx * e, s.door.z + s.dz * e) - y0) > 1.5) ok = false; if (ok) return d; } } return 2; };
 T.show = () => {
 if (!R) return; if (!T.built) build(); if (Z) setZone(null); refreshCats(); T.on = true; taK = ''; { const zb = document.getElementById('zq-btn'); if (zb) delete zb.dataset.tw; } try { const ae = document.activeElement; if (ae && ae !== document.body && ae.blur) ae.blur(); } catch (e) {} hud.hidden = false; document.getElementById('app').classList.add('in-town'); enterLock = 0.4;
 ['m-title', 'm-results', 'm-pause'].forEach((id) => { const e = $(id); if (e) e.hidden = true; }); if (SC.catView) SC.catView.hide();
 const back = near || lastGate || (!spawned && SPOTS.find((s) => s.k === 'home')); lastGate = null; gateBusy = 0.6; fade(0); spawned = true;
-if (back) { pos.set(back.door.x + back.dx * 2, 0, back.door.z + back.dz * 2); pos.y = walkH(pos.x, pos.z); face = Math.atan2(back.dx, back.dz); yaw = face; camPitch = -0.14; fp = null; near = null; prompt.hidden = true; }
+if (back) { const bd = spawnOut(back); pos.set(back.door.x + back.dx * bd, 0, back.door.z + back.dz * bd); pos.y = walkH(pos.x, pos.z); face = Math.atan2(back.dx, back.dz); yaw = face; camPitch = -0.14; fp = null; near = null; prompt.hidden = true; }
 path = null; pathSpot = null; vel.set(0, 0, 0); vy = 0; onGround = true; last.copy(pos); arReset = true;
 const In = SC.input; In.release(); In.cancelActions(); In.consume(); In.active = true; hud.querySelector('.tw-hint').textContent = touchHint(); hintT = 0;
+if (SC.devtip && SC.devtip.defer) SC.devtip.defer();
+if (SC.farm && SC.farm.welcome) { const g = SC.farm.welcome(); if (g) say('🎁 ' + tr('歡迎來到小鎮！送你 🪙 {n} 代幣，可以去服飾店買衣服').replace('{n}', g)); }
 };
 T.hide = () => { ipOff(); clEnd('', null, true); if (CL.ov) CL.ov.hidden = true; if (SC.fish && SC.fish.on && SC.fish.on()) SC.fish.stop(); if (SC.input) SC.input.scope = false; zoom = 1; scopeEl(0); T.on = false; autoFreed = false; inkSave(true); shots.length = 0; if (ARN.q) ARN.q.forEach((l) => (l.length = 0)); if (SC.fx && SC.fx.root && SC.fx.home) { SC.fx.drawBlobs([]); SC.fx.home.add(SC.fx.root); } if (picker) picker.hidden = true; if (setEl) setEl.hidden = true; document.getElementById('app').classList.remove('in-town'); if (hud) { hud.hidden = true; prompt.hidden = true; } const In = SC.input; if (In) { In.release(); In.active = false; } if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); };
 T.frame = (dt) => {
@@ -38713,7 +38731,7 @@ const tr = (s) => (SC.tr ? SC.tr(s) : s);
 function rkHero() { const R = SC.ranked, el = hud && hud.querySelector('.tw-rk'); if (!R || !el || !R.load) return; try { const s = R.load(), tt = R.tierOf(s.p), ic = el.querySelector('.tw-rki'), nm = tr(R.TIERS[tt].n), src = document.querySelector('#m-title .rkd-badge .rkd-stars'), st = src ? src.outerHTML : '', h = R.icon(tt); if (ic.dataset.t !== String(tt)) { ic.innerHTML = h; ic.dataset.t = tt; } const k = el.querySelector('.tw-rkt'), kv = '<b class="tw-rkn">' + nm + '</b>' + st; if (k.innerHTML !== kv) k.innerHTML = kv; const n = R.seasonNo(), d = Math.max(0, Math.ceil((R.seasonEnd(n) - Date.now()) / 864e5)), sv = tr('第 {n} 季').replace('{n}', n) + '・' + tr('還有 {n} 天').replace('{n}', d); const ss = el.querySelector('.tw-rks'); if (ss.textContent !== sv) ss.textContent = sv; } catch (e) {} }
 function rkBadge() { if ((rkT -= 1) > 0) return; rkT = 60; rkHero(); const w = hud.querySelector('.tw-rkw'), src = document.querySelector('#m-title .rkd-badge'); if (!w || !src) return; let b = w.firstChild; if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'rkd-badge tw-rkb'; b.setAttribute('translate', 'no'); b.onclick = () => { click(); if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); src.click(); }; w.appendChild(b); } if (b.innerHTML !== src.innerHTML) b.innerHTML = src.innerHTML; }
 T._ar = () => ({ ARN, dents: dents.size, dm, swim: swimming(), pos, rangeN: () => rangeN });
-T._st = () => ({ enterLock, t, near: near && near.k });
+T._st = () => ({ enterLock, t, near: near && near.k, path: path && path.map((v) => [Math.round(v.x), Math.round(v.z)]) });
 function setZone(z, at) {
 if (z === Z) return; const was = Z; Z = z;
 (was ? was.spots : SPOTS).forEach((s) => { if (s.el) { s.el.style.visibility = 'hidden'; s.vis = false; } });
@@ -38727,7 +38745,7 @@ if (!Z && at == null) { const f = SPOTS.find((s) => s.k === 'farm'); if (f) { po
 T.setZone = (z, at) => { if (!T.on) T.show(); setZone(z, at); };
 T.zone = () => Z; T._house = (...a) => house(...a); T._face = (f) => { face = f; arReset = true; }; T._look = (y, p) => { yaw = y; if (p != null) camPitch = p; arReset = true; };   T._low = () => low; T._mesh = (...a) => mesh(...a); T._mat = (c, o) => mat(c, o);
 T._ui = () => ({ hud, lblBox, prompt, say, click, walkTo: (p, s) => walkTo(p, s) });
-T._route = (a, b) => route(a, b); T._topW = (x, z) => topW(x, z); T._camera = () => cam; T.spots = SPOTS; T._rt = RT; T._shots = () => shots; T._aim = () => [aimPoint().clone(), mzl.clone(), face, yaw]; T._pos = pos; T._walkTo = walkTo; T._H = walkH; T._view = (x, z, yw, pt) => { pos.set(x, zW(x, z), z); yaw = yw; face = yw; if (pt != null) camPitch = pt; arReset = true; fp = null; last.copy(pos); };
+T._setNear = (s) => { near = s; }; T._sols = () => solids; T._route = (a, b) => route(a, b); T._topW = (x, z) => topW(x, z); T._camera = () => cam; T.spots = SPOTS; T._rt = RT; T._shots = () => shots; T._aim = () => [aimPoint().clone(), mzl.clone(), face, yaw]; T._pos = pos; T._walkTo = walkTo; T._H = walkH; T._view = (x, z, yw, pt) => { pos.set(x, zW(x, z), z); yaw = yw; face = yw; if (pt != null) camPitch = pt; arReset = true; fp = null; last.copy(pos); };
 const I = SC.i18n;
 I.add([
 ['愛心補給站', 'Heart Station', 'ハートステーション', '하트 보급소'],
@@ -39403,6 +39421,7 @@ else sy('走到田上按 E（或左鍵）種菜、澆水、收成；1／2／3 �
 };
 F.leave = (toTown) => { flush(); if (toTown) T().setZone(null); };
 F._who = () => who; F._pick = pickWho; F._enc = () => encPlots(); F._dec = decPlots; F._apply = applySteals; F._setWho = (w, m) => { who = w; mine = m || { d: '', s: {}, n: 0 }; fbag = []; nbLabel(); syncPlots(true); };
+F.welcome = () => { if (!S) load(); if (S.gift) return 0; S.gift = 1; S.coins += 100; save(true); hudSync(); return 100; };
 F.addCoins = (n) => { if (!S) load(); n = Math.max(0, n | 0); if (!n) return; S.coins += n; save(true); hudSync(); };
 F.spend = (n) => { if (!S) load(); n = Math.max(0, n | 0); if (S.coins < n) return false; S.coins -= n; save(true); hudSync(); return true; };
 F.coins = () => { if (!S) load(); return S.coins | 0; };
@@ -45691,6 +45710,8 @@ if (useFb) load().catch(() => { fbp = null; });
 (() => {
 window.SC = window.SC || {};
 SC.CHANGELOG = [
+['2026-11-26', '', '沐沐小鎮修正：從房子出來站遠一點，鏡頭不再抬到屋頂上看不到貓；點菜園、靶場會自己走坡道上去，不再卡在崖下；第一次進小鎮送 100 代幣；手機直式右上角 ⚙️ 不再被擠出畫面，裝置提示不會蓋住小鎮；名牌會避開上面的按鈕',
+{ en: 'MooMoo Town fixes: you now step farther out of buildings so the camera no longer jumps above the roof; tapping the farm or range walks up the ramp instead of getting stuck below the cliff; 100 free coins on your first visit; the ⚙️ button no longer slides off the screen on portrait phones and the device tips no longer cover the town; signs move clear of the top buttons', ja: 'ムームータウンのしゅうせい：たてものから少しはなれて出るので、カメラが屋根の上にあがらない；はたけ・しゃてきじょうをタップするとさかを通って行く（がけの下でとまらない）；はじめて来たら100コインプレゼント；スマホたて画面で⚙️がはみ出さない、たんまつのヒントがタウンをかくさない；かんばんが上のボタンをよける', ko: '무무 마을 수정: 건물에서 조금 떨어져 나와서 카메라가 지붕 위로 올라가지 않아요; 텃밭·사격장을 누르면 비탈길로 올라가요(절벽 아래에서 멈추지 않음); 처음 오면 코인 100개 선물; 휴대폰 세로 화면에서 ⚙️가 밀려나지 않고 기기 안내가 마을을 가리지 않아요; 간판이 위쪽 버튼을 피해요', es: 'Arreglos en el pueblo MooMoo: sales un poco más lejos de los edificios y la cámara ya no sube al tejado; al tocar el huerto o el campo de tiro subes por la rampa sin atascarte bajo el acantilado; 100 monedas gratis en tu primera visita; el botón ⚙️ ya no se sale de la pantalla en vertical y los consejos del dispositivo no tapan el pueblo; los carteles esquivan los botones de arriba', pt: 'Correções na vila MooMoo: você sai um pouco mais longe dos prédios e a câmera não sobe mais no telhado; tocar na horta ou no estande sobe pela rampa sem travar embaixo do penhasco; 100 moedas grátis na primeira visita; o botão ⚙️ não sai mais da tela no celular em pé e as dicas do aparelho não cobrem a vila; as placas desviam dos botões de cima', fr: 'Corrections du village MooMoo : tu sors un peu plus loin des bâtiments et la caméra ne monte plus sur le toit ; toucher le potager ou le stand de tir passe par la rampe au lieu de bloquer sous la falaise ; 100 pièces offertes à la première visite ; le bouton ⚙️ ne sort plus de l’écran en portrait et les conseils de l’appareil ne cachent plus le village ; les panneaux évitent les boutons du haut', de: 'MooMoo-Dorf-Korrekturen: Du trittst etwas weiter aus Gebäuden, die Kamera springt nicht mehr übers Dach; Tippen auf Garten oder Schießstand läuft über die Rampe statt unter der Klippe festzuhängen; 100 Münzen geschenkt beim ersten Besuch; der ⚙️-Knopf rutscht im Hochformat nicht mehr aus dem Bild, die Gerätetipps verdecken das Dorf nicht; Schilder weichen den oberen Knöpfen aus', it: 'Correzioni al paese MooMoo: esci un po’ più lontano dagli edifici e la telecamera non sale più sul tetto; toccando l’orto o il poligono sali dalla rampa invece di bloccarti sotto la scogliera; 100 monete in regalo alla prima visita; il pulsante ⚙️ non esce più dallo schermo in verticale e i consigli del dispositivo non coprono il paese; i cartelli evitano i pulsanti in alto', ru: 'Исправления в городке MooMoo: из домов выходишь чуть дальше, камера больше не взлетает над крышей; нажатие на огород или тир ведёт по пандусу, а не застревает под обрывом; 100 монет в подарок при первом визите; кнопка ⚙️ не уезжает с экрана в портретном режиме, подсказки об устройстве не закрывают городок; таблички обходят верхние кнопки', tr: 'MooMoo kasabası düzeltmeleri: binalardan biraz daha uzağa çıkıyorsun, kamera artık çatının üstüne fırlamıyor; bahçeye veya atış alanına dokununca rampadan çıkılıyor, uçurumun dibinde takılmıyor; ilk ziyarette 100 jeton hediye; dikey telefonda ⚙️ ekrandan taşmıyor, cihaz ipuçları kasabayı kapatmıyor; tabelalar üstteki düğmelerden kaçıyor', id: 'Perbaikan kota MooMoo: keluar dari bangunan sedikit lebih jauh jadi kamera tidak naik ke atap; ketuk kebun atau lapangan tembak akan naik lewat tanjakan, tidak tersangkut di bawah tebing; 100 koin gratis di kunjungan pertama; tombol ⚙️ tidak keluar layar di ponsel tegak dan tips perangkat tidak menutupi kota; papan nama menghindari tombol atas', vi: 'Sửa thị trấn MooMoo: bước ra khỏi nhà xa hơn một chút nên máy quay không bay lên mái nhà; chạm vườn rau hoặc trường bắn sẽ đi theo dốc, không kẹt dưới vách đá; tặng 100 xu lần đầu ghé; nút ⚙️ không còn bị đẩy ra khỏi màn hình khi cầm dọc, gợi ý thiết bị không che thị trấn; bảng tên tránh các nút phía trên', th: 'แก้เมืองมูมู: ออกจากบ้านห่างขึ้นนิดหนึ่ง กล้องไม่ลอยขึ้นไปบนหลังคาแล้ว; แตะสวนผักหรือสนามยิงจะเดินขึ้นทางลาด ไม่ติดใต้หน้าผา; เข้าเมืองครั้งแรกรับ 100 เหรียญ; ปุ่ม ⚙️ ไม่หลุดจอเมื่อถือมือถือแนวตั้ง และคำแนะนำอุปกรณ์ไม่บังเมือง; ป้ายชื่อหลบปุ่มด้านบน' }],
 ['2026-11-26', '', '沒登入也能先玩積分賽：積分賽頁多一顆「先練習（不計分）」，和電腦打複合賽（塗地＋擊倒），最後一分鐘一樣會變形；不計分、不上排行榜',
 { en: 'Try ranked without signing in: the ranked page has a Practice first (unranked) button for a combo match (paint + KOs) against CPUs, with the same final-minute map transform; no points and no leaderboard', ja: 'ログインしなくてもランク戦をためせる：ランク戦ページに「まずれんしゅう（記録なし）」ボタン、CPUとミックスルール（ぬり＋たおした）で対戦、ラスト1分のステージ変形もそのまま；ポイントとランキングはなし', ko: '로그인 없이 랭크전 체험: 랭크전 화면에 「먼저 연습(점수 없음)」 버튼, 컴퓨터와 혼합 규칙(칠하기+쓰러뜨림)으로 대전하고 마지막 1분 맵 변신도 그대로; 점수와 순위표는 없어요', es: 'Prueba las clasificatorias sin iniciar sesión: botón Practicar primero (sin puntos) para un combo (pintura + KO) contra la CPU, con la transformación del último minuto; sin puntos ni clasificación', pt: 'Experimente as ranqueadas sem entrar: botão Treinar antes (sem pontos) para um combo (pintura + KOs) contra a CPU, com a transformação do último minuto; sem pontos e sem placar', fr: 'Essaie le classé sans te connecter : bouton S’entraîner d’abord (sans points) pour un combo (peinture + KO) contre l’ordinateur, avec la transformation de la dernière minute ; sans points ni classement', de: 'Ranglisten ohne Anmeldung testen: Knopf Erst üben (ohne Wertung) für ein Kombi-Match (Farbe + KOs) gegen den Computer, mit Kartenverwandlung in der letzten Minute; keine Punkte, keine Bestenliste', it: 'Prova le classificate senza accedere: pulsante Prima allenati (senza punti) per una combo (colore + KO) contro la CPU, con la trasformazione dell’ultimo minuto; niente punti né classifica', ru: 'Рейтинг без входа: на странице рейтинга кнопка «Сначала тренировка (без очков)» — комбо-матч (краска + нокауты) против компьютера с превращением карты в последнюю минуту; без очков и таблицы', tr: 'Giriş yapmadan dereceliyi dene: dereceli sayfasında Önce antrenman (puansız) düğmesi, bilgisayara karşı kombo maç (boya + KO), son dakika harita dönüşümü dahil; puan ve sıralama yok', id: 'Coba peringkat tanpa masuk: halaman peringkat punya tombol Latihan dulu (tanpa poin) untuk laga kombo (cat + KO) melawan komputer, lengkap dengan perubahan peta menit terakhir; tanpa poin dan papan peringkat', vi: 'Thử đấu hạng không cần đăng nhập: trang đấu hạng có nút Luyện tập trước (không tính điểm), đấu kết hợp (sơn + hạ gục) với máy, bản đồ vẫn biến hình phút cuối; không tính điểm, không lên bảng xếp hạng', th: 'ลองแรงก์ได้โดยไม่ต้องเข้าสู่ระบบ: หน้าแรงก์มีปุ่ม ซ้อมก่อน (ไม่นับคะแนน) เล่นกติกาผสม (ทาสี + ล้ม) กับคอม ฉากแปลงร่างนาทีสุดท้ายเหมือนเดิม; ไม่นับคะแนนและไม่ขึ้นกระดานอันดับ' }],
 ['2026-11-26', '', '翻譯補齊：殭屍戰的商店、升級、波次和怪物名字、體感瞄準提示在 10 種新語言都有翻譯了；電腦隊友名字照語言顯示（Maomao 2），長隊名縮小字不再被截掉；俄文等首頁工具列字換成兩行',
