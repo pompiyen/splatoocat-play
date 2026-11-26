@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v322';</script><script>window.SC_BUILD='badcd448bd2e';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v323';</script><script>window.SC_BUILD='512b53edfed3';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -32044,6 +32044,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const q = location.search + location.hash, m = /[?&#]ip3d(?:=(\w+))?/.exec(q);
   if (!m) return;
   const VER = m[1] === 'adult' || m[1] === 'a' ? 'a' : 'q';
+  const PLAY = /[?&]play\b/.test(location.search); // ?ip3d=q&play：整個遊戲（對戰、潛墨、各武器）的貓都換成新造型
   const T = () => window.THREE, $ = (id) => document.getElementById(id);
   const TEAM_HUE = { pink: 345 / 360, blue: 208 / 360 };
   // 每隻的關節位置（模型已縮放成身高 1、腳踩 y=0、臉朝 +z）
@@ -32130,21 +32131,33 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     mat.customProgramCacheKey = () => 'ip3d' + src;
   }
 
+  // 模型只讀一次、權重只算一次；每隻貓共用幾何和貼圖，各自一副骨架和一個材質（隊伍色不同）
+  const MODELS = {};
+  function prep(key) {
+    if (MODELS[key]) return MODELS[key];
+    return (MODELS[key] = loadGlb('ip3d/' + key + '.glb').then((g) => {
+      const THREE = T(), B = bonesOf(key), geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(g.pos, 3)); geo.setAttribute('uv', new THREE.BufferAttribute(g.uv, 2)); geo.setIndex(new THREE.BufferAttribute(g.idx, 1));
+      const { si, sw } = weights(g.pos, B);
+      geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4)); geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sw, 4));
+      geo.computeVertexNormals();
+      const tex = new THREE.Texture(g.img); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4; tex.needsUpdate = true;
+      return { geo, tex, B, key };
+    }));
+  }
+  function instance(M) {
+    const THREE = T(), U = { value: TEAM_HUE.pink }, mat = new THREE.MeshStandardMaterial({ map: M.tex, roughness: 0.8, metalness: 0, flatShading: true });
+    hueSwap(mat, SKEL[M.key].src, U);
+    const bones = M.B.P.map(() => new THREE.Bone());
+    M.B.P.forEach((p, i) => { const par = M.B.parent[i], o = par < 0 ? [0, 0, 0] : M.B.P[par]; bones[i].position.set(p[0] - o[0], p[1] - o[1], p[2] - o[2]); if (par >= 0) bones[par].add(bones[i]); });
+    const mesh = new THREE.SkinnedMesh(M.geo, mat); mesh.add(bones[0]); mesh.bind(new THREE.Skeleton(bones)); mesh.castShadow = true; mesh.frustumCulled = false;
+    return { mesh, bones, U };
+  }
   async function makeCat(id) {
-    const THREE = T(), key = id + '_' + VER, g = await loadGlb('ip3d/' + key + '.glb'), B = bonesOf(key);
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(g.pos, 3)); geo.setAttribute('uv', new THREE.BufferAttribute(g.uv, 2)); geo.setIndex(new THREE.BufferAttribute(g.idx, 1));
-    const { si, sw } = weights(g.pos, B);
-    geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4)); geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sw, 4));
-    geo.computeVertexNormals();
-    const tex = new THREE.Texture(g.img); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4; tex.needsUpdate = true;
-    const U = { value: TEAM_HUE.pink }, mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0, flatShading: true });
-    hueSwap(mat, SKEL[key].src, U);
-    const bones = B.P.map(() => new THREE.Bone());
-    B.P.forEach((p, i) => { const par = B.parent[i], o = par < 0 ? [0, 0, 0] : B.P[par]; bones[i].position.set(p[0] - o[0], p[1] - o[1], p[2] - o[2]); if (par >= 0) bones[par].add(bones[i]); });
-    const mesh = new THREE.SkinnedMesh(geo, mat); mesh.add(bones[0]); mesh.bind(new THREE.Skeleton(bones)); mesh.castShadow = true; mesh.frustumCulled = false;
+    const THREE = T(), key = id + '_' + VER, M = await prep(key), { mesh, bones, U } = instance(M);
     const root = new THREE.Group(); root.add(mesh); mesh.scale.setScalar(H);
-    return { root, mesh, bones, U, key, s: SKEL[key], phase: Math.random() * 6, run: 0, speed: 0, yaw: 0, vx: 0, vz: 0, vy: 0, air: false, aim: 0, kick: 0, land: 0, cd: 0 };
+    const dive = makeDive(id); dive.scale.setScalar(H * 0.3); dive.visible = false; root.add(dive);
+    return { root, mesh, bones, U, key, dive, ph: 0, seed: 0, s: SKEL[key], phase: Math.random() * 6, run: 0, speed: 0, yaw: 0, vx: 0, vz: 0, vy: 0, air: false, aim: 0, kick: 0, land: 0, cd: 0 };
   }
 
   // ---- 動作 ----
@@ -32175,7 +32188,6 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     b[12].rotation.x = -r * 0.5 * (1 - A) - A * 0.35; b[13].rotation.x = -r * 0.5 * (1 - A) - A * 0.05;
     b[12].rotation.z = A * -0.6;
     for (let i = 0; i < 4; i++) { const tb = b[16 + i], k = t * (2.4 + r * 5) - i * 0.7 + c.phase; tb.rotation.y = Math.sin(k) * (0.18 + r * 0.12); tb.rotation.x = Math.cos(k * 0.8) * 0.08 + r * 0.06 + F * (up ? 0.25 : -0.2); }
-    if (c.gun) c.gun.visible = true;
   }
 
   // 漆槍：掛在右手骨頭上，槍管朝手臂往下的方向（-y），舉槍時就朝前
@@ -32191,6 +32203,108 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     c.muzzle = new THREE.Object3D(); c.muzzle.position.set(0, -0.19 * k, 0.012 * k); g.add(c.muzzle);
     g.position.set(0, -0.01, 0.015); c.bones[15].add(g); c.gun = g;
   }
+  // ---- 整個遊戲換新造型（?ip3d=q&play、?ip3d=adult&play）----
+  // 做法：遊戲原本的 SC.makeCat 照樣做出整隻貓（判定、武器、墨水、潛墨、名牌都不變），只把舊的身體和舊的潛墨造型藏起來（layer 7 鏡頭看不到），
+  // 換上新模型；cat.animate 之後依遊戲給的狀態（速度、在不在地上、瞄準角度、潛墨）擺新模型的骨架。武器還是拿在原本的手（位置跟新身材對齊）。
+  const GH = VER === 'a' ? 7.4 : 5.8;                        // 新造型在對戰場上的身高（舊的 Q 版貓約 6）
+  const HAND = VER === 'a' ? { y: 4.45, z: 1.75 } : { y: 2.45, z: 1.05 }; // 槍拿在新身材的肩膀前面
+  const FUR = { mao: [0xe58a3a, 0xf6e2c6], shuang: [0xeee6dc, 0x5b4033] };
+  const KMAP = { maomao: 'mao', shuang: 'shuang', banban: 'mao', taro: 'mao', mochi: 'shuang', meiqiu: 'shuang' };
+  const HIDE = 7;
+  // 新潛墨造型「漆塊貓」：一攤切面的隊色油漆，冒出兩隻尖耳朵（耳尖沾漆）、一對亮晶晶的眼睛，後面翹著筆刷尾巴；毛毛耳朵上別小金冠，雙雙別魚骨髮夾
+  function makeDive(id) {
+    const THREE = T(), g = new THREE.Group(), [fc, fc2] = FUR[id];
+    const team = new THREE.MeshStandardMaterial({ color: 0xe8336f, roughness: 0.25, metalness: 0.05, flatShading: true });
+    const furM = new THREE.MeshStandardMaterial({ color: fc, roughness: 0.85, flatShading: true }), furM2 = new THREE.MeshStandardMaterial({ color: fc2, roughness: 0.85, flatShading: true });
+    const metal = new THREE.MeshStandardMaterial({ color: 0x9aa3ad, roughness: 0.35, metalness: 0.6, flatShading: true }), dark = new THREE.MeshStandardMaterial({ color: 0x1b1420, roughness: 0.2, flatShading: true });
+    const white = new THREE.MeshBasicMaterial({ color: 0xffffff }), gold = new THREE.MeshStandardMaterial({ color: 0xffcf3a, roughness: 0.3, metalness: 0.5, flatShading: true });
+    const add = (geo, mat, x, y, z, sx = 1, sy = 1, sz = 1, par = g) => { const o = new THREE.Mesh(geo, mat); o.position.set(x, y, z); o.scale.set(sx, sy, sz); o.castShadow = true; par.add(o); return o; };
+    const body = new THREE.Group(); g.add(body);
+    add(new THREE.IcosahedronGeometry(1, 1), team, 0, 0.55, 0, 1.25, 0.72, 1.35, body);                    // 漆塊本體
+    add(new THREE.IcosahedronGeometry(0.62, 0), team, 0, 1.05, 0.25, 1.1, 0.8, 1.05, body);               // 頭頂鼓起來的一塊
+    add(new THREE.CylinderGeometry(1.55, 1.75, 0.14, 9), team, 0, 0.07, 0, 1, 1, 1.08, body);             // 底下攤開的一圈漆
+    for (let i = 0; i < 6; i++) { const a = i / 6 * 6.28 + 0.4, r = 1.95 + (i % 2) * 0.3; add(new THREE.CylinderGeometry(0.22 + (i % 3) * 0.06, 0.26 + (i % 3) * 0.06, 0.08, 6), team, Math.sin(a) * r, 0.04, Math.cos(a) * r, 1, 1, 1, body); } // 濺出去的小漆點
+    [-1, 1].forEach((sg) => {
+      const ear = new THREE.Group(); ear.position.set(sg * 0.55, 1.35, 0.15); ear.rotation.z = -sg * 0.28; body.add(ear);
+      add(new THREE.ConeGeometry(0.4, 1.0, 4), furM, 0, 0.4, 0, 1, 1, 0.6, ear);
+      add(new THREE.ConeGeometry(0.2, 0.36, 4), team, 0, 0.8, 0, 1.05, 1, 0.65, ear);                     // 耳尖沾漆
+      add(new THREE.ConeGeometry(0.18, 0.5, 4), furM2, 0, 0.3, 0.07, 1, 1, 0.4, ear);
+      add(new THREE.IcosahedronGeometry(0.2, 0), dark, sg * 0.36, 1.0, 0.92, 1, 1.25, 0.55, body);        // 眼睛
+      add(new THREE.IcosahedronGeometry(0.07, 0), white, sg * 0.36 + 0.07, 1.08, 1.02, 1, 1, 1, body);
+      if (id === 'mao' && sg > 0) { const cr = new THREE.Group(); cr.position.set(0.05, 0.45, 0.16); ear.add(cr); add(new THREE.CylinderGeometry(0.16, 0.14, 0.1, 5), gold, 0, 0, 0, 1, 1, 1, cr); for (let k = 0; k < 5; k++) add(new THREE.ConeGeometry(0.045, 0.14, 3), gold, Math.sin(k * 1.257) * 0.13, 0.11, Math.cos(k * 1.257) * 0.13, 1, 1, 1, cr); }
+      if (id === 'shuang' && sg < 0) { const cl = new THREE.Group(); cl.position.set(0, 0.32, 0.17); cl.rotation.z = 0.5; ear.add(cl); add(new THREE.BoxGeometry(0.42, 0.04, 0.04), white, 0, 0, 0, 1, 1, 1, cl); for (let k = 0; k < 4; k++) add(new THREE.BoxGeometry(0.03, 0.16, 0.03), white, -0.12 + k * 0.08, 0, 0, 1, 1, 1, cl); }
+    });
+    const tail = new THREE.Group(); tail.position.set(0, 0.7, -1.05); body.add(tail);                     // 筆刷尾巴
+    add(new THREE.CylinderGeometry(0.13, 0.17, 0.9, 6), furM, 0, 0.35, -0.12, 1, 1, 1, tail).rotation.x = -0.35;
+    add(new THREE.CylinderGeometry(0.16, 0.14, 0.28, 6), metal, 0, 0.86, -0.3, 1, 1, 1, tail).rotation.x = -0.35;
+    add(new THREE.ConeGeometry(0.24, 0.6, 6), team, 0, 1.25, -0.44, 1, 1, 1, tail).rotation.x = -0.35;
+    g.userData = { team, body, tail };
+    return g;
+  }
+  function poseBattle(k, s, cat, dt) {
+    const b = k.bones, mv = Math.min(1, (s.speed || 0) / 23), air = s.onGround ? 0 : 1, up = (s.vy || 0) > 0 ? 1 : 0, r = mv * (1 - air);
+    k.ph += dt * (5 + (s.speed || 0) * 0.42) * (mv > 0.05 ? 1 : 0);
+    const sw = Math.sin(k.ph), cw = Math.cos(k.ph), t = s.t || 0, br = Math.sin(t * 2.2 + k.seed), idle = (1 - mv) * (1 - air);
+    for (const x of b) x.rotation.set(0, 0, 0);
+    k.land = s.onGround && k.wasAir ? 0.2 : Math.max(0, k.land - dt); k.wasAir = !s.onGround;
+    const sq = k.land > 0 ? Math.sin(k.land / 0.2 * Math.PI) * 0.1 : 0, S0 = k.S;
+    b[0].position.y = S0.sp[0] + idle * br * 0.004 + r * Math.abs(cw) * 0.025 - sq * S0.sp[0] * 0.5;
+    const pitch = s.pitch || 0, roller = cat.weaponId === 'W02', melee = roller || cat.weaponId === 'W05';
+    b[1].rotation.x = r * 0.14 + air * (up ? -0.1 : 0.12) + sq + idle * br * 0.02;
+    b[1].rotation.y = -0.22;
+    b[3].rotation.y = 0.2; b[3].rotation.x = -pitch * 0.45 - r * 0.08;
+    const legA = VER === 'a' ? 0.7 : 0.6, toe = VER === 'a' ? 0.22 : 0;
+    b[4].rotation.y = -toe; b[5].rotation.y = toe;
+    b[4].rotation.x = -r * sw * legA - air * (up ? 0.7 : 0.35) - sq * 1.1; b[5].rotation.x = r * sw * legA - air * (up ? 0.15 : 0.35) - sq * 1.1;
+    b[6].rotation.x = r * Math.max(0, cw) * 0.9 + air * (up ? 1.1 : 0.5) + sq * 2; b[7].rotation.x = r * Math.max(0, -cw) * 0.9 + air * (up ? 0.4 : 0.5) + sq * 2;
+    // 右手（b11）跟著準星上下指向槍；左手扶槍。近戰武器（滾刷、墨刀）手放低一點
+    const aimX = melee ? -0.9 - pitch * 0.4 : -Math.PI / 2 - pitch * 0.9 + (cat.recoil || 0) * 0.2;
+    b[11].rotation.x = aimX; b[11].rotation.z = 0.06; b[13].rotation.x = -0.05;
+    b[10].rotation.x = aimX + 0.35; b[10].rotation.z = -0.55; b[12].rotation.x = -0.35; b[12].rotation.z = -0.6;
+    for (let i = 0; i < 4; i++) { const tb = b[16 + i], q = t * (2.4 + mv * 5) - i * 0.7 + k.seed; tb.rotation.y = Math.sin(q) * (0.18 + mv * 0.12); tb.rotation.x = Math.cos(q * 0.8) * 0.08 + mv * 0.06 + air * (up ? 0.25 : -0.2); }
+  }
+  function poseDive(k, s, dt) {
+    const d = k.dive.userData, mv = Math.min(1, (s.speed || 0) / 40), air = s.onGround ? 0 : 1, t = s.t || 0;
+    const lean = air ? Math.max(-0.15, Math.min(0.6, 0.15 - (s.vy || 0) * 0.012)) : 0.05 + mv * 0.35;
+    d.body.rotation.x += (lean - d.body.rotation.x) * Math.min(1, dt * 10);
+    const pulse = Math.sin(t * (6 + mv * 10)) * (air ? 0.03 : 0.05);
+    d.body.scale.set(1 + pulse + mv * 0.05, 1 - pulse * 1.5 + (air ? 0.15 : 0) - mv * 0.08, 1 + pulse + mv * 0.12);
+    d.tail.rotation.z = Math.sin(t * (4 + mv * 8)) * (0.25 + mv * 0.2); d.tail.rotation.x = air ? 0.3 : -mv * 0.4;
+  }
+  function skinCat(cat, kind) {
+    const id = KMAP[kind] || 'mao', key = id + '_' + VER, M = MODELS[key + '!'];
+    if (!M) return false;
+    const THREE = T(), body = cat.bodyG, gag = body.parent, root = cat.group, hand = cat.hand;
+    const inHand = new Set(); hand.traverse((o) => inHand.add(o));
+    body.traverse((o) => { if (o.isMesh && !inHand.has(o)) o.layers.set(HIDE); });
+    cat.lod = () => {};
+    const blob = root.children.find((o) => o.children && o.children.length === 1 && o.children[0].isGroup && o !== gag.parent && o.type === 'Group' && !o.children[0].isMesh);
+    const k = instance(M); k.S = SKEL[key]; k.ph = 0; k.seed = Math.random() * 6; k.land = 0; k.wasAir = false;
+    k.mesh.scale.setScalar(GH); gag.add(k.mesh);
+    if (blob) { blob.children[0].visible = false; k.dive = makeDive(id); k.dive.scale.setScalar(1.3); blob.add(k.dive); }
+    root.traverse((o) => { if (o.isSprite && o.position.y > 6) o.position.y = GH + 1.6; });
+    const hsl = { h: 0, s: 0, l: 0 };
+    const anim = cat.animate;
+    cat.animate = (dt, s) => {
+      anim(dt, s);
+      if (s.form !== 'cat') { hand.position.y += HAND.y - 2.3; hand.position.z += HAND.z - 0.95; poseBattle(k, s, cat, dt); }
+      else if (k.dive) poseDive(k, s, dt);
+      if (cat.color && cat.color.getHSL) { cat.color.getHSL(hsl); k.U.value = hsl.h; if (k.dive) k.dive.userData.team.color.copy(cat.color); }
+    };
+    cat.ip3d = k; (SC.ip3dCats = SC.ip3dCats || []).push(cat); return true;
+  }
+  function skinGame() {
+    const orig = SC.makeCat, pending = [];
+    SC.makeCat = (kind) => { const c = orig(kind); if (!skinCat(c, kind)) pending.push([c, kind]); return c; };
+    const ids = ['mao', 'shuang'];
+    Promise.all(ids.map((id) => prep(id + '_' + VER).then((M) => (MODELS[id + '_' + VER + '!'] = M)))).then(() => { while (pending.length) { const [c, kd] = pending.shift(); skinCat(c, kd); } })
+      .catch((e) => console.warn('ip3d', e));
+    const tip = document.createElement('div');
+    tip.textContent = (VER === 'a' ? '擬人版' : 'Q 版') + '新造型試玩中（所有模式的貓都換成新造型，判定不變）';
+    tip.style.cssText = 'position:fixed;left:50%;bottom:6px;transform:translateX(-50%);z-index:50;background:#ffffffd9;color:#1d2330;border-radius:9px;padding:4px 10px;font:12px system-ui,sans-serif;pointer-events:none';
+    addEventListener('load', () => document.body.appendChild(tip));
+  }
+
   // ---- 頁面 ----
   let on = false;
   async function open() {
@@ -32203,8 +32317,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         <b style="background:#fff;border-radius:8px;padding:6px 10px">${VER === 'a' ? '擬人版' : 'Q 版'} 3D 試作</b>
         <button data-t="pink">粉紅隊</button><button data-t="blue">藍隊</button><button data-t="mix">原本隊色</button>
         <button data-c="0">操作毛毛</button><button data-c="1">操作雙雙</button>
-        <button data-demo>自動示範</button><button data-v>${VER === 'a' ? '換 Q 版' : '換擬人版'}</button><button data-x>回首頁</button></div>
-      <div id="ip3d-tip" style="position:absolute;left:12px;bottom:12px;right:12px;background:#ffffffcc;border-radius:10px;padding:8px 12px;font-size:13px">WASD／方向鍵或拖曳左半邊走動，右半邊拖曳轉鏡頭；空白鍵跳，按住 F 或 J 射擊（往鏡頭前方）。另一隻會跟著你做。</div>
+        <button data-demo>自動示範</button><button data-dive>潛墨</button><button data-play style="background:#ffe2ec">用新造型玩對戰</button><button data-v>${VER === 'a' ? '換 Q 版' : '換擬人版'}</button><button data-x>回首頁</button></div>
+      <div id="ip3d-tip" style="position:absolute;left:12px;bottom:12px;right:12px;background:#ffffffcc;border-radius:10px;padding:8px 12px;font-size:13px">WASD／方向鍵或拖曳左半邊走動，右半邊拖曳轉鏡頭；空白鍵跳，按住 F 或 J 射擊，按住 Shift（或上方「潛墨」）變漆塊貓。另一隻會跟著你做。</div>
       <div style="position:absolute;right:16px;bottom:64px;display:flex;gap:14px">
         <button data-b="shoot" style="width:74px;height:74px;border-radius:50%">射擊</button><button data-b="jump" style="width:74px;height:74px;border-radius:50%">跳</button></div>`;
     document.body.appendChild(wrap);
@@ -32245,6 +32359,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const up = (e) => { if (e.pointerId === joy.id) Object.assign(joy, { id: null, x: 0, y: 0 }); if (e.pointerId === look.id) look.id = null; };
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
     wrap.querySelectorAll('[data-t]').forEach((x) => (x.onclick = () => cats.forEach((c, i) => { c.team = x.dataset.t === 'mix' ? CATS[i].team : x.dataset.t; c.U.value = TEAM_HUE[c.team]; c.gunMat.color.setHex(TEAMC[c.team]); c.gunMat.emissive.setHex(TEAMC[c.team]); })));
+    let diveOn = false; const dvb = wrap.querySelector('[data-dive]');
+    dvb.onclick = () => { diveOn = !diveOn; dvb.style.background = diveOn ? '#ffe2ec' : '#fff'; };
     let btnShoot = false;
     const sb = wrap.querySelector('[data-b="shoot"]'), jb = wrap.querySelector('[data-b="jump"]');
     sb.onpointerdown = (e) => { e.preventDefault(); btnShoot = true; }; sb.onpointerup = sb.onpointerleave = sb.onpointercancel = () => (btnShoot = false);
@@ -32252,6 +32368,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const db = wrap.querySelector('[data-demo]'); db.onclick = () => { demo = !demo; demoT = 0; db.style.background = demo ? '#ffe2ec' : '#fff'; };
     wrap.querySelectorAll('[data-c]').forEach((x) => (x.onclick = () => (me = +x.dataset.c)));
     wrap.querySelector('[data-v]').onclick = () => { location.search = '?ip3d=' + (VER === 'a' ? 'q' : 'adult'); };
+    wrap.querySelector('[data-play]').onclick = () => { location.href = location.pathname + '?ip3d=' + (VER === 'a' ? 'adult' : 'q') + '&play'; };
     wrap.querySelector('[data-x]').onclick = () => { location.href = location.pathname; };
     const size = () => { R.setSize(innerWidth, innerHeight, false); C.aspect = innerWidth / innerHeight; C.updateProjectionMatrix(); };
     addEventListener('resize', size); size();
@@ -32293,6 +32410,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         else if (ml > 0.05) { const want = Math.atan2(mx, mz); let dy = want - c.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); c.yaw += dy * Math.min(1, dt * 10); }
         c.root.rotation.y = c.yaw; c.run += ((ml > 0.1 ? Math.min(1, ml) : 0) - c.run) * Math.min(1, dt * 8);
         pose(c, t, dt);
+        const dv = (keys.ShiftLeft || keys.ShiftRight || diveOn) && !shootNow; c.mesh.visible = !dv; c.dive.visible = dv; if (c.gun) c.gun.visible = !dv;
+        if (dv) { poseDive(c, { speed: c.run * 40, onGround: !c.air, vy: c.vy, t }, dt); c.dive.userData.team.color.setHex(TEAMC[c.team]); }
       });
       wantJump = false;
       for (let i = shots.length - 1; i >= 0; i--) { const m = shots[i], v = m.userData.v; v.y -= 18 * dt; m.position.addScaledVector(v, dt);
@@ -32304,6 +32423,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       R.render(S, C);
     });
   }
+  if (PLAY) { skinGame(); return; }
   const boot = () => { const b = $('boot'); if (!T() || !b || !b.classList.contains('done')) return setTimeout(boot, 200); setTimeout(open, 300); };
   addEventListener('load', boot);
 })();
