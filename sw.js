@@ -4,7 +4,8 @@
 // - 網頁裡的更新檢查（?b=）直接走網路；發現新版會換到 ?v=新版號：存著的那份就是那一版就直接用，不是就從網路抓
 // - 出問題時網址加 ?nosw 會把這個快取整個移除（09q_perf.js）
 const C = 'sc-page-v1', KEY = '/';
-self.addEventListener('install', () => self.skipWaiting());
+// 試玩報告 v317（M2）：安裝時就先存好首頁（通常直接用瀏覽器剛下載的那份），第 2 次打開就能秒開，不用等到第 3 次
+self.addEventListener('install', (e) => e.waitUntil(caches.open(C).then((c) => c.match(KEY).then((h) => h || c.add(KEY))).catch(() => {}).then(() => self.skipWaiting())));
 self.addEventListener('activate', (e) => e.waitUntil((async () => { for (const k of await caches.keys()) if (k !== C) await caches.delete(k); await self.clients.claim(); })()));
 self.addEventListener('fetch', (e) => {
   const r = e.request; if (r.method !== 'GET' || r.mode !== 'navigate') return;
