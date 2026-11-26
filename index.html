@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v335';</script><script>window.SC_BUILD='0215693db62f';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v336';</script><script>window.SC_BUILD='d1c950bd3711';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -19430,6 +19430,12 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     },
     ding() { tone('triangle', 2350, 2250, 0.09, 0.14); tone('sine', 3500, 3300, 0.12, 0.08); }, // 魔王有保護，打上去「叮」一聲
     hit() { tone('square', 1250, 1700, 0.05, 0.16); tone('sine', 880, 1320, 0.07, 0.2, 0.02); },
+    rpgHit(k) { /* 冒險世界（Yen 11-26「打擊中的音效換比較符合遊戲世界觀風格的，而不是電子音啾啾啾的」）：body 顏料啪、open 破綻的木頭叩＋小鈴、stone 褪石鏘、mob 小怪輕啪 */
+      if (!A.ready) return; const t = A.ctx.currentTime, c = k || 'body'; if (t - (hitWAt['rpg' + c] || 0) < 0.06) return; hitWAt['rpg' + c] = t; const r = 0.92 + Math.random() * 0.16;
+      if (c === 'stone') { noise(0.05, 0.3, 2400 * r, 1300, 3, 'bandpass'); tone('triangle', 420 * r, 300, 0.06, 0.12); return; }
+      if (c === 'mob') { noise(0.06, 0.26, 1500 * r, 300, 0.8, 'lowpass'); tone('sine', 240 * r, 120, 0.05, 0.12); return; }
+      noise(0.09, 0.34, 1000 * r, 200, 0.8, 'lowpass'); tone('sine', 190 * r, 85, 0.09, 0.26);
+      if (c === 'open') { tone('triangle', 560 * r, 500, 0.12, 0.13, 0.01); tone('sine', 1120 * r, 1100, 0.3, 0.05, 0.02); } },
     hitW(cause) { /* 第 130.1 版（Yen 11-22 02:44「每把武器有自己的命中聲」）：漆彈槍「啪」、滾刷「啪嘰」、狙擊「叮——」、散彈「碰」、墨刀「唰」、墨水彈和絕招「咚」 */
       if (!A.ready) return; const t = A.ctx.currentTime, c = HITW[cause] ? cause : 'W01'; if (t - (hitWAt[c] || 0) < (c === 'W04' ? 0.09 : 0.05)) return; hitWAt[c] = t; HITW[c](); },
     // 打中人時輕輕的「叮」：幾個不成倍數的高音一起響、很快消失，聽起來像敲到金屬（連發時最快每 70 毫秒一次）
@@ -37465,6 +37471,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
           <div class="set-row"><label for="set-vs">音效音量</label><input type="range" id="set-vs" min="0" max="100" step="5" value="100"><output class="sens-v" id="vs-v2">100</output></div>
           <button type="button" class="btn small" id="btn-mute2">音效：開</button>
           <button type="button" class="btn small" id="btn-fpv">視角：第三人稱</button>
+          <button type="button" class="btn small" id="btn-full3" hidden>全螢幕</button>
           <button type="button" class="btn small touch-only" id="btn-cat-mode">墨貓鈕：按住</button>
           <div class="set-row touch-only gyro-row" id="gyro-row" hidden><button type="button" class="btn small" id="btn-gyro">體感瞄準：關</button><label for="set-gyro">體感靈敏度</label><input type="range" id="set-gyro" min="0.5" max="4" step="0.1" value="1.5"><output class="sens-v" id="gyro-v">1.5</output></div>
         </div>
@@ -37762,7 +37769,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const guideOk = !standalone && coarse && (!fsOk || ios); // iPhone、iPad：顯示加入主畫面圖解
     let fsWant = false, fsTry = 0;
-    const fsSync = () => { $('btn-full2').textContent = fsOn() ? '離開全螢幕' : '全螢幕'; $('btn-full').classList.toggle('on', fsOn()); try { const kb = navigator.keyboard; if (kb && kb.lock) { if (fsOn()) kb.lock(['Escape']).catch(() => {}); else kb.unlock(); } } catch (e) {} }; /* 第 141.4 版（Yen「按 escape 暫停時不要退出全螢幕」）：全螢幕時把 Esc 留給遊戲（Chrome、Edge 的鍵盤鎖定），按一下只暫停；要離開全螢幕用全螢幕鈕，或按住 Esc 兩秒。Safari、Firefox 沒有鍵盤鎖定，Esc 還是會退出，下一次點畫面或按鍵就自動回到全螢幕 */
+    const fsSync = () => { $('btn-full2').textContent = fsOn() ? '離開全螢幕' : '全螢幕'; $('btn-full3').textContent = $('btn-full2').textContent; $('btn-full').classList.toggle('on', fsOn()); try { const kb = navigator.keyboard; if (kb && kb.lock) { if (fsOn()) kb.lock(['Escape']).catch(() => {}); else kb.unlock(); } } catch (e) {} }; /* 第 141.4 版（Yen「按 escape 暫停時不要退出全螢幕」）：全螢幕時把 Esc 留給遊戲（Chrome、Edge 的鍵盤鎖定），按一下只暫停；要離開全螢幕用全螢幕鈕，或按住 Esc 兩秒。Safari、Firefox 沒有鍵盤鎖定，Esc 還是會退出，下一次點畫面或按鍵就自動回到全螢幕 */
     const fsEnter = (loud) => {
       if (fsOn() || Date.now() - fsTry < 900) return; fsTry = Date.now();
       try {
@@ -37775,7 +37782,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       if (fsOn()) { fsWant = false; (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc); return; }
       fsWant = true; fsTry = 0; fsEnter(true);
     };
-    if ((fsOk || guideOk) && !standalone) { $('btn-full').hidden = false; $('btn-full2').hidden = false; } // 從主畫面打開的（standalone）已經是整個螢幕，不用全螢幕鈕
+    if ((fsOk || guideOk) && !standalone) { $('btn-full').hidden = false; $('btn-full2').hidden = false; $('btn-full3').hidden = false; } // 第 336 版（Yen 11-26「太陽谷無法切到全螢幕」）：滑鼠鎖住時點不到左上角，暫停選單也放一顆 // 從主畫面打開的（standalone）已經是整個螢幕，不用全螢幕鈕
     if (guideOk && fsOk) $('btn-fsguide-try').hidden = false;
     on('btn-fsguide-try', () => { $('m-fsguide').hidden = true; fsWant = true; fsTry = 0; fsEnter(true); });
     // iPhone、iPad 第一次在 Safari 打開：自動跳出一次加入主畫面圖解
@@ -37785,7 +37792,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     const fsBack = () => { if (fsWant && fsOk && !fsOn()) fsEnter(false); };
     doc.addEventListener('touchend', fsBack, true); doc.addEventListener('pointerup', fsBack, true); doc.addEventListener('keydown', fsBack, true);
     $('btn-full').addEventListener('pointerdown', (e) => e.stopPropagation());
-    on('btn-full', fsToggle); on('btn-full2', fsToggle);
+    on('btn-full', fsToggle); on('btn-full2', fsToggle); on('btn-full3', fsToggle);
     on('btn-fsguide-close', () => ($('m-fsguide').hidden = true));
     // 第 121.1 版（Yen 11-22「斷線後要能再連回去，尤其是積分賽」）：重新整理或關掉再打開時，剛剛那場還在打，就跳出大大的「回到比賽」鈕（不用讀字）
     { let shown = '';
@@ -44731,6 +44738,50 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   };
 })();
 
+// 冒險世界的第一人稱：畫面右下角是自己的筆尾，不是手拿槍（Yen 11-26「B切換視角變成小叮噹手拿槍，也不是用尾巴」）
+// 尾巴從右下角彎上來，尾巴尖是沾著隊伍顏色的筆刷；子彈從筆刷尖出來（SC.fpv.tip）。只在太陽谷（SC.rpg.active）換掉，其他模式照舊。
+(() => {
+  const F = SC.fpv; if (!F || !F.vm) return;
+  const V3 = THREE.Vector3, oldVm = F.vm, oldOff = F.vmOff;
+  let T = null, kick = 0, flick = 0, lastRc = 0, last = performance.now();
+  const P0 = [new V3(1.2, -1.35, -1.0), new V3(1.12, -0.88, -1.35), new V3(0.86, -0.66, -1.62), new V3(0.62, -0.5, -1.9)];
+  function build(cat, scene) {
+    drop(); const K = (SC.CAT_KINDS || {})[cat.kind] || {}, fur = K.fur || 0xd99a4e, g = new THREE.Group();
+    const furM = new THREE.MeshStandardMaterial({ color: fur, roughness: 0.9, flatShading: true }), inkM = new THREE.MeshStandardMaterial({ color: cat.color || 0xff5fa2, roughness: 0.35, emissive: cat.color || 0xff5fa2, emissiveIntensity: 0.15 });
+    const stripeM = new THREE.MeshStandardMaterial({ color: new THREE.Color(fur).multiplyScalar(0.72), roughness: 0.9, flatShading: true }), curve = new THREE.CatmullRomCurve3(P0.map((p) => p.clone())), tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 24, 0.062, 8, false), furM); g.add(tube);
+    // 尾巴上的毛環（看得出是毛茸茸的尾巴）
+    const rings = [0.25, 0.5, 0.72].map((t) => { const m = new THREE.Mesh(new THREE.TorusGeometry(0.068, 0.026, 5, 10), stripeM); g.add(m); return { m, t }; });
+    // 筆刷：一圈白毛環＋沾滿顏料的尖尖筆毛
+    const tip = new THREE.Group(), ferrule = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.1, 10), new THREE.MeshStandardMaterial({ color: 0xfff4e0, roughness: 0.8 }));
+    const brush = new THREE.Mesh(new THREE.LatheGeometry([[0.001, 0.32], [0.04, 0.27], [0.085, 0.16], [0.1, 0.05], [0.085, 0]].map(([x, y]) => new THREE.Vector2(x, y)), 10), inkM);
+    ferrule.position.y = -0.06; tip.add(ferrule); tip.add(brush); g.add(tip);
+    g.traverse((o) => { o.castShadow = o.receiveShadow = false; o.frustumCulled = false; }); scene.add(g);
+    T = { g, tube, curve, rings, tip, inkM, cat, scene, pts: P0.map((p) => p.clone()) };
+  }
+  function drop() { if (T && T.g.parent) T.g.parent.remove(T.g); T = null; }
+  const tg = new V3(), up = new V3(0, 1, 0), q = new THREE.Quaternion();
+  F.vm = (cat, camera, scene, o) => {
+    if (!(SC.rpg && SC.rpg.active) || !cat || !scene) { if (T) drop(); return oldVm(cat, camera, scene, o); }
+    o = o || {}; oldOff(); // 槍和手套收起來
+    const t0 = performance.now(), dt = Math.min(0.05, Math.max(0.001, (t0 - last) / 1000)); last = t0;
+    if (!T || T.cat !== cat || T.scene !== scene) build(cat, scene);
+    if (o.hide) { T.g.visible = false; F.tipOn = false; return; }
+    const rc = cat.recoil || 0; if (rc > lastRc + 0.3) { kick = Math.min(1, kick + 0.7); flick = 1; } lastRc = rc;
+    kick = SC.damp(kick, 0, 10, dt); flick = SC.damp(flick, 0, 7, dt);
+    const sw = Math.sin(SC.clamp(o.swing || 0, 0, 1) * Math.PI), bx = F.bobX(), tm = t0 / 1000;
+    // 尾巴輕輕擺、開火時往後一縮再甩出去、揮動武器時整條甩一下
+    T.pts.forEach((p, i) => { const k = i / 3; p.copy(P0[i]); p.x += (bx * 1.6 + Math.sin(tm * 2.1 + i) * 0.015 - sw * 0.5 * k) * k; p.y += (-Math.abs(bx) * 0.9 + Math.sin(tm * 1.7 + i * 0.8) * 0.012 + sw * 0.25 * k - flick * 0.05 * k) * k; p.z += kick * 0.22 * k; });
+    T.curve.points = T.pts; const geo = new THREE.TubeGeometry(T.curve, 24, 0.062, 8, false); T.tube.geometry.dispose(); T.tube.geometry = geo;
+    T.rings.forEach((r) => { r.m.position.copy(T.curve.getPoint(r.t)); tg.copy(T.curve.getTangent(r.t)); r.m.quaternion.setFromUnitVectors(new V3(0, 0, 1), tg); });
+    const end = T.curve.getPoint(1); tg.copy(T.curve.getTangent(1)); T.tip.position.copy(end); q.setFromUnitVectors(up, tg); T.tip.quaternion.copy(q);
+    if (cat.color) { T.inkM.color.copy(cat.color); T.inkM.emissive.copy(cat.color); }
+    camera.updateMatrixWorld(); T.g.visible = true; T.g.position.copy(camera.position); T.g.quaternion.copy(camera.quaternion);
+    const fit = Math.tan((camera.fov * Math.PI) / 360) / Math.tan(Math.PI / 6); T.g.scale.setScalar(fit);
+    T.g.updateMatrixWorld(true); F.tip.copy(end).addScaledVector(tg, 0.32); T.g.localToWorld(F.tip); F.tipOn = true;
+  };
+  F.vmOff = (d) => { oldOff(d); if (T) { if (d) drop(); else T.g.visible = false; } };
+})();
+
 // 冒險世界（09wr_rpg.js，Yen 11-26 探險小徑改成冒險世界）畫面上的字，15 種語言（簡體中文走 01c_i18n_hans.js 的字表）。
 // 一列：中文、en、ja、ko、es、pt、fr、de、it、ru、tr、id、vi、th
 (() => {
@@ -44878,6 +44929,9 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     ['它是我的朋友，守夜者……它只是太累了。', 'It’s my friend, the Night Keeper… it’s just too tired.', 'あれはぼくの友だち、夜守りなんだ……ただ、つかれすぎただけなんだよ。', '그건 내 친구, 밤지기야…… 그냥 너무 지쳤을 뿐이야.', 'Es mi amigo, el Guardián de la Noche… solo está demasiado cansado.', 'É meu amigo, o Guardião da Noite… ele só está cansado demais.', 'C’est mon ami, le Gardien de la nuit… il est juste trop fatigué.', 'Das ist mein Freund, der Nachthüter … er ist nur zu müde.', 'È mio amico, il Guardiano della Notte… è solo troppo stanco.', 'Это мой друг, Ночной страж… он просто очень устал.', 'O benim arkadaşım, Gece Bekçisi… sadece çok yorgun.', 'Dia temanku, Penjaga Malam… dia hanya terlalu lelah.', 'Đó là bạn tôi, Người Gác Đêm… nó chỉ quá mệt thôi.', 'นั่นคือเพื่อนของฉัน ผู้เฝ้ารัตติกาล… มันแค่เหนื่อยเกินไป'],
     ['以前……也有一隻這樣的貓，謝謝我讓大家睡得好。', 'Long ago… there was a cat just like you, who thanked me for letting everyone sleep well.', 'むかし……きみみたいなネコがいて、みんなをよく眠らせてくれてありがとうって言ってくれた。', '옛날에…… 너 같은 고양이가 있었어. 모두를 푹 재워 줘서 고맙다고 했지.', 'Hace mucho… hubo un gato como tú que me agradeció por dejar dormir bien a todos.', 'Há muito tempo… houve um gato como você, que me agradeceu por deixar todos dormirem bem.', 'Autrefois… il y avait un chat comme toi, qui m’a remercié de laisser tout le monde bien dormir.', 'Früher … gab es eine Katze wie dich, die mir dankte, dass alle gut schlafen konnten.', 'Tanto tempo fa… c’era un gatto come te, che mi ringraziò perché tutti dormivano bene.', 'Когда-то… был кот, как ты. Он поблагодарил меня за то, что все спят спокойно.', 'Eskiden… senin gibi bir kedi vardı, herkesin iyi uyumasını sağladığım için bana teşekkür etmişti.', 'Dulu… ada kucing sepertimu, yang berterima kasih karena aku membuat semua tidur nyenyak.', 'Ngày xưa… cũng có một chú mèo như thế, cảm ơn tôi vì đã cho mọi người ngủ ngon.', 'นานมาแล้ว… มีแมวแบบเธออยู่ตัวหนึ่ง ขอบใจฉันที่ทำให้ทุกคนหลับสบาย'],
     ['那以後每天晚上，我們都會謝謝你。', 'Then from now on, every night, we’ll thank you.', 'じゃあこれから毎晩、わたしたちがありがとうって言うね。', '그럼 이제부터 매일 밤, 우리가 고맙다고 말할게.', 'Entonces, desde ahora, cada noche te daremos las gracias.', 'Então, de agora em diante, toda noite vamos te agradecer.', 'Alors à partir de maintenant, chaque nuit, nous te dirons merci.', 'Dann danken wir dir ab jetzt jede Nacht.', 'Allora d’ora in poi, ogni notte, ti diremo grazie.', 'Тогда с этих пор каждую ночь мы будем тебя благодарить.', 'O zaman bundan sonra her gece sana teşekkür edeceğiz.', 'Kalau begitu mulai sekarang, setiap malam kami akan berterima kasih padamu.', 'Vậy từ nay mỗi tối, chúng tôi đều sẽ cảm ơn bạn.', 'งั้นต่อจากนี้ ทุกคืนพวกเราจะขอบคุณเธอนะ'],
+    ['被打中了！要躲開這一招，牠才會露出破綻', 'You got hit! Dodge that move and it will leave an opening', '当たっちゃった！この技をよければ、すきができるよ', '맞았어! 이 공격을 피해야 빈틈이 생겨', '¡Te dio! Esquiva ese ataque y dejará una abertura', 'Você foi atingido! Desvie desse golpe e ele vai abrir a guarda', 'Touché ! Esquive cette attaque et il laissera une ouverture', 'Getroffen! Weich dem Angriff aus, dann zeigt er eine Lücke', 'Colpito! Schiva quell’attacco e lascerà un’apertura', 'Попал! Увернись от этого удара — и он откроется', 'Vuruldun! O saldırıdan kaçarsan açık verir', 'Kena! Hindari serangan itu, nanti ia lengah', 'Bị trúng rồi! Né chiêu đó thì nó mới lộ sơ hở', 'โดนแล้ว! หลบท่านั้นให้ได้ มันถึงจะเผยจุดอ่อน'],
+    ['擋住了！要用破解方法讓牠露出破綻', 'Blocked! Use its weakness to make it leave an opening', '防がれた！こうりゃく法で、すきを作ろう', '막혔어! 공략법으로 빈틈을 만들어', '¡Bloqueado! Usa su punto débil para abrirle la guardia', 'Bloqueado! Use o ponto fraco para abrir a guarda', 'Bloqué ! Utilise son point faible pour créer une ouverture', 'Abgeblockt! Nutze seine Schwäche, um eine Lücke zu schaffen', 'Bloccato! Sfrutta il suo punto debole per creare un’apertura', 'Заблокировано! Используй слабость, чтобы он открылся', 'Engellendi! Zayıf noktasını kullanıp açık ver', 'Tertahan! Pakai cara mengalahkannya supaya ia lengah', 'Bị chặn! Dùng cách khắc chế để nó lộ sơ hở', 'โดนกันไว้! ใช้วิธีพิชิตให้มันเผยจุดอ่อน'],
+    ['擋住了！等日蝕巨像的手卡在地上（累了）再打', 'Blocked! Wait until the Eclipse Colossus’s hand gets stuck in the ground (tired), then attack', '防がれた！日食の巨像の手が地面にはまったら（つかれたら）攻撃しよう', '막혔어! 일식 거상의 손이 땅에 박히면(지치면) 공격해', '¡Bloqueado! Espera a que la mano del Coloso del Eclipse se atasque en el suelo (cansado) y ataca', 'Bloqueado! Espere a mão do Colosso do Eclipse ficar presa no chão (cansado) e ataque', 'Bloqué ! Attends que la main du Colosse de l’Éclipse reste coincée au sol (fatigué), puis attaque', 'Abgeblockt! Warte, bis die Hand des Finsternis-Kolosses im Boden steckt (müde), dann greif an', 'Bloccato! Aspetta che la mano del Colosso dell’Eclissi resti incastrata nel terreno (stanco), poi attacca', 'Заблокировано! Дождись, когда рука Колосса Затмения застрянет в земле (устал), и бей', 'Engellendi! Tutulma Devi’nin eli yere saplanınca (yorulunca) saldır', 'Tertahan! Tunggu tangan Raksasa Gerhana tersangkut di tanah (lelah), lalu serang', 'Bị chặn! Chờ tay Người Khổng Lồ Nhật Thực kẹt dưới đất (mệt) rồi hãy đánh', 'โดนกันไว้! รอให้มือยักษ์สุริยคราสติดพื้น (เหนื่อย) แล้วค่อยโจมตี'],
   ];
   I.add(R.map((r) => r.slice(0, 4)));
   if (I.addL) L.slice(3).forEach((l, j) => I.addL(l, R.map((r) => [r[0], r[4 + j]])));
@@ -45553,13 +45607,15 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
         qA.setFromUnitVectors(tB, tW); bn.getWorldQuaternion(qB); qC.copy(qA).multiply(qB); bn.parent.getWorldQuaternion(qB); qB.invert(); qC.premultiply(qB); bn.quaternion.slerp(qC, 0.75); bn.updateMatrixWorld(true); }
     }
   }
-  let ipC = null, ipFor = null, handHome = null;
-  function ipAttach(a) {
+  let ipC = null, ipFor = null, handHome = null, ipLive = null, ipClock = null;
+  // live()：還要不要掛著（預設＝在太陽谷且是自己的角色）；clock()：動畫時間（預設＝太陽谷的 now）。沐沐小鎮用 SC.rpg.ip.attach(a, live, clock)
+  function ipAttach(a, live, clock) {
+    ipLive = live || (() => RP.active && ctx && ctx.player() === a); ipClock = clock || (() => now);
     const id = a.kind === 'shuang' || a.kind === 'meiqiu' ? 'shuang' : 'mao';
     if (ipC && ipFor === a && ipC.id === id) return;
     ipDetach();
     ipLoad(id).then((data) => {
-      if (!RP.active || !ctx || ctx.player() !== a) return; ipDetach();
+      if (!ipLive()) return; ipDetach();
       ipC = ipMake(id, data); ipFor = a; a.cat.group.add(ipC.root);
       const hsl = {}; a.cat.color.getHSL(hsl); ipC.U.value = hsl.h;
       const anchor = new THREE.Group(); a.cat.group.add(anchor); ipC.anchor = anchor; handHome = { parent: a.cat.hand.parent, p: a.cat.hand.position.clone() }; anchor.add(a.cat.hand); ipC.hand = a.cat.hand;
@@ -45575,7 +45631,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (!ipC) return; const cat = a.cat, biped = a.form !== 'cat';
     if (cat.biped) cat.biped.visible = false; ipC.root.visible = biped; ipC.anchor.visible = biped;
     if (!biped) return;
-    ipPose(ipC, a, dt, now);
+    ipPose(ipC, a, dt, ipClock ? ipClock() : now);
     ipC.bones[19].getWorldPosition(tipV); cat.group.worldToLocal(tipV); ipC.anchor.position.copy(tipV);
     const h = ipC.hand; h.position.set(0, 0, h.position.z - 0.95); h.scale.setScalar(0.72);
     const hsl = {}; cat.color.getHSL(hsl); ipC.U.value = hsl.h;
@@ -45687,7 +45743,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   function orb(e, kind, x, z) { const o = orbs.find((q) => !q.on); if (!o) return null; const K = ORB[kind]; Object.assign(o, { on: true, k: kind, K, e, t: 0, back: false, hp: (K.hp || 1) * (1 + 0.12 * ((e.lv || 1) - 1)) }); o.pos.set(x == null ? e.pos.x : x, 0, z == null ? e.pos.z : z); o.pos.y = hgt(o.pos.x, o.pos.z) + K.y; o.m.material.color.setHex(K.c); o.m.material.emissive.setHex(K.e || 0); o.m.scale.setScalar(K.r); o.m.visible = true; o.target.alive = true; o.target.hr = K.r + 0.3; o.target.hy0 = -K.r - 0.3; o.target.hy1 = K.r + 0.3; return o; }
   function orbOff(o) { o.on = false; o.m.visible = false; o.target.alive = false; }
   function orbHit(o, amt) {
-    if (!o.on || o.back || !ctx) return false; ctx.hitMarker(false); sfx('hit');
+    if (!o.on || o.back || !ctx) return false; ctx.hitMarker(false); sfx('rpgHit', 'mob');
     if (o.K.refl) { o.back = true; o.target.alive = false; sfx('swap'); return true; } // 射回去
     o.hp -= amt * outK(o.e.lv || 1); if (o.hp <= 0) { ctx.burst(o.pos.x, o.pos.y, o.pos.z, new THREE.Color(o.K.c), 18, 14, 0.5); orbOff(o); }
     return true;
@@ -45720,7 +45776,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   }
   function partsOff(e) { if (e.pl) e.pl.forEach((q) => { if (q.e === e) partOff(q); }); e.pl = null; e.partsUp = false; }
   function partHit(q, amt) {
-    if (!q.on || q.done || !ctx) return false; q.hp -= amt; ctx.hitMarker(false); sfx('hit'); if (q.hp > 0) return true;
+    if (!q.on || q.done || !ctx) return false; q.hp -= amt; ctx.hitMarker(false); sfx('rpgHit', 'mob'); if (q.hp > 0) return true;
     q.done = true; q.target.alive = false; q.arrow.visible = false; const e = q.e;
     if (q.kind === 'balloon') { q.g.visible = false; ctx.burst(q.pos.x, q.pos.y, q.pos.z, new THREE.Color(q.mat.color.getHex()), 24, 16, 0.5); sfx('boom'); }
     else if (q.kind === 'lamp') { q.mat.color.setHex(0xfff2a0); q.mat.emissive.setHex(0xffd23f); ctx.burst(q.pos.x, q.pos.y, q.pos.z, new THREE.Color(0xffe27a), 20, 14, 0.5); sfx('koGot'); }
@@ -45734,15 +45790,23 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 
   // ───────── 怪物共用 ─────────
   function resetM(e) { e.lv = e.lv || 1; e.hp = e.max = Math.round(e.d.hp * (1 + (e.mob ? 0.15 : 0.12) * (e.lv - 1))); e.pos.copy(e.home); e.mode = 'idle'; e.aggro = false; e.cd = 1.5 + hash(e.i) * 2; e.flash = 0; e.dying = 0; e.vy = 0; e.air = 0; e.y = 0; e.vul = 0; e.fallK = 0; e.split = false; e.tipT = 0; if (e.stripe) e.stripe = null; if (!e.mob) partsOff(e); }
+  // 王的血分成三段：平常只打得到這一段的底線，要用破解方法讓牠露出破綻，才打得進下一段（一次破綻最多打掉一段）
+  const SEGS = 3, flAt = (mx, h) => Math.max(0, (Math.floor((h / mx) * SEGS + 1e-6) / SEGS) * mx);
+  const segFl = (e) => flAt(e.max, Math.min(e.hp, (e.max * (SEGS - 1)) / SEGS)); // 平常：打到這一段的底線就停
+  const winFl = (e) => flAt(e.max, e.hp - e.max / SEGS); // 破綻：最多再打穿一條線
+  let lastClank = -99;
   function hurtM(e, amt, from, cause, raw) {
     if (!e.alive || !ctx || e.split || e.mode === 'hide') return false;
     let k = raw ? 1 : outK(e.lv);
     if (!e.mob && !raw) { const K = e.d.K; let a = e.vul > 0 ? 1.5 : K.armor;
       if (K.back && from && from.pos && a < 1) { const fx = Math.sin(e.yaw), fz = Math.cos(e.yaw), bx = from.pos.x - e.pos.x, bz = from.pos.z - e.pos.z, l = Math.hypot(bx, bz) || 1; if ((fx * bx + fz * bz) / l < -0.35) a = 1; } // 翠鱗小龍：從背後打背上的水晶
       if (e.mode === 'inhale') { a = 2; e.inh = (e.inh || 0) + amt * k * 2; } // 鯨魚張嘴吸氣：打嘴巴兩倍痛
-      if (a < 0.5 && now - (e.tipT || -99) > 9) { e.tipT = now; ctx.tip('打不痛！找找看破解的方法', 1.6); later(1.7, () => ctx.tip(K.tip, 3.5)); }
-      k *= a; }
-    e.hp -= Math.min(amt, 180) * k; e.flash = 0.1; e.aggro = true; e.calm = 0; sfx('hit'); foe = e; setFoe(e);
+      k = Math.min(k, 2.2) * a; // 等級高很多也不會一下打爆
+      const back = K.back && a === 1 && e.vul <= 0, fl = e.vul > 0 ? (e.stFl == null ? winFl(e) : e.stFl) : back ? winFl(e) : segFl(e);
+      if (e.hp - Math.min(amt, 180) * k < fl) { const was = e.hp; e.hp = Math.max(fl, Math.min(e.hp, fl)); e.flash = 0.1; e.aggro = true; e.calm = 0; foe = e; setFoe(e);
+        if (was > fl + 0.5) { sfx('rpgHit', 'body'); ctx.hitMarker(false); } else { if (now - lastClank > 0.12) { lastClank = now; sfx('rpgHit', 'stone'); ctx.burst(e.pos.x, e.pos.y + e.d.hy * 0.6, e.pos.z, new THREE.Color(0x9a958c), 4, 10, 0.3); } if (now - (e.tipT || -99) > 8) { e.tipT = now; ctx.tip('擋住了！要用破解方法讓牠露出破綻', 1.8); later(1.9, () => ctx.tip(K.tip, 3.5)); } }
+        return true; } }
+    e.hp -= Math.min(amt, 180) * k; e.flash = 0.1; e.aggro = true; e.calm = 0; sfx('rpgHit', e.mob ? 'mob' : e.vul > 0 ? 'open' : 'body'); foe = e; setFoe(e);
     if (e.hp <= 0) { killM(e); ctx.hitMarker(true); } else ctx.hitMarker(false);
     return true;
   }
@@ -45765,13 +45829,18 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const lobs = (e, p, n, R, dmg) => { for (let k = 0; k < n; k++) lobAt(e, p.pos.x + (k ? rnd(-R, R) : 0), p.pos.z + (k ? rnd(-R, R) : 0), dmg); sfx('bombThrow'); };
   const rain = (e, p, n, R, dmg) => { for (let k = 0; k < n; k++) later(k * 0.13, () => { const a = rnd(0, 6.28), r = k ? rnd(2, R) : 0, x = p.pos.x + Math.cos(a) * r, z = p.pos.z + Math.sin(a) * r; warn(x, z, 3, 0.9); ctx.shoot(x, hgt(x, z) + 46, z, 0, -10, 0, dmg * inK(e.lv), 1.6); }); sfx('zhorn'); };
   const dashGo = (e, want) => { e.mode = 'dashAim'; e.cd = 0.8; e.dyaw = want; };
-  const hopGo = (e, p, land) => { e.mode = 'hop'; e.air = 0; e.hx = p.pos.x; e.hz = p.pos.z; warn(p.pos.x, p.pos.z, 6, 0.9); sfx('boing'); e.onLand = land || null; };
-  const busy = (e, t, next) => { e.mode = 'busy'; e.busyT = t; e.next = next || null; };
+  // Yen 11-26「有時他就暈了…沒有戰術打法可言」：王自己招式後的破綻，要你躲開那一招才會出現；被打中就沒有破綻
+  const php = () => { const p = ctx.player(); return p && p.alive ? p.hp : -1; };
+  const dodged = (e, f) => { const h0 = php(); return () => { const h1 = php(); e.dg = h1 < 0 || h1 < h0 - 0.5; f(); e.dg = false; }; };
+  const hopGo = (e, p, land) => { e.mode = 'hop'; e.air = 0; e.hx = p.pos.x; e.hz = p.pos.z; warn(p.pos.x, p.pos.z, 6, 0.9); sfx('boing'); e.onLand = land ? dodged(e, land) : null; };
+  const busy = (e, t, next) => { e.mode = 'busy'; e.busyT = t; e.next = next ? dodged(e, next) : null; };
   const sweep = (e, r, delay, dmg) => { warn(e.pos.x, e.pos.z, r, delay); zone({ x: e.pos.x, z: e.pos.z, r, delay, dur: 0.4, jump: true, dmg: hitD(e, dmg), fx: 'ring' }); };
   const pops = (e, p, n, R, delay, dur, r, dmg, fx) => { for (let k = 0; k < n; k++) { const a = rnd(0, 6.28), d = k ? rnd(3, R) : 0, x = p.pos.x + Math.cos(a) * d, z = p.pos.z + Math.sin(a) * d; warn(x, z, r, delay); zone({ x, z, r, delay, dur, dmg: hitD(e, dmg), fx }); } };
   const lineHit = (e, yaw, len, w, delay, dmg) => { warnRect(e.pos.x, e.pos.z, yaw, len, w, delay); zone({ x: e.pos.x, z: e.pos.z, yaw, len, w, rect: true, delay, dur: 0.35, dmg: hitD(e, dmg), fx: 'line' }); };
   const waveN = (e, n, max, sp, gap) => { for (let k = 0; k < n; k++) later(k * (gap || 0.5), () => { wave(e.pos.x, e.pos.z, max, sp, hitD(e, 40)); sfx('boom'); ctx.shake(0.25); }); };
-  function stun(e, s, msg) { e.mode = 'stun'; e.vul = s; e.cd = 0; ctx.tip(msg || '現在打牠！', 1.8); sfx('boing'); ctx.burst(e.pos.x, e.pos.y + e.d.hy, e.pos.z, new THREE.Color(0xffe27a), 20, 12, 0.6); }
+  function stun(e, s, msg) {
+    if (e.dg) { e.dg = false; ctx.tip('被打中了！要躲開這一招，牠才會露出破綻', 2.2); return; }
+    e.stFl = winFl(e); e.mode = 'stun'; e.vul = s; e.cd = 0; ctx.tip(msg || '現在打牠！', 1.8); sfx('boing'); ctx.burst(e.pos.x, e.pos.y + e.d.hy, e.pos.z, new THREE.Color(0xffe27a), 20, 12, 0.6); }
   function crack(e, why) { const K = e.d.K; if (!e.alive || e.mode === 'stun') return; if (K.onCrack) K.onCrack(e, why); else stun(e, 4); }
 
   // ───────── 15 隻怪物王：每隻都保留原本關卡的招式和破解方法（Yen 11-26「要保有原本的作戰攻擊方法與特性 而不是血厚一直打而已」）─────────
@@ -45936,9 +46005,12 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (SC.audio) SC.audio.music('rpgboss', true);
   }
   function hurtB(amt, from, cause) {
-    if (!boss.alive || boss.mode === 'rise' || !ctx) return false; const k = (boss.mode === 'tired' ? 1.6 : 1) * outK(BOSS.lv); const hit = Math.min(amt, 200) * k; boss.flash = 0.1; foe = boss; setFoe(boss);
-    if (boss.arm.length) { const L = boss.arm[boss.arm.length - 1]; L.hp -= hit; sfx('hit'); if (L.hp <= 0) armBreak(L.i, false); armHud(); ctx.hitMarker(false); return true; } // 有護甲時先打最外層，核心不會受傷
-    boss.hp -= hit; sfx('hit');
+    if (!boss.alive || boss.mode === 'rise' || !ctx) return false; const k = (boss.mode === 'tired' ? 1.6 : 1) * outK(BOSS.lv); const hit = Math.min(amt, 200) * Math.min(k, 2.2); boss.flash = 0.1; foe = boss; setFoe(boss);
+    if (boss.arm.length) { const L = boss.arm[boss.arm.length - 1]; L.hp -= hit; sfx('rpgHit', 'stone'); if (L.hp <= 0) armBreak(L.i, false); armHud(); ctx.hitMarker(false); return true; } // 有護甲時先打最外層，核心不會受傷
+    { const tired = boss.mode === 'tired'; if (tired && boss.stFl == null) boss.stFl = winFl(boss); const fl = tired ? boss.stFl : segFl(boss); // 牠累了（手卡在地上）才打得穿下一段
+      if (boss.hp - hit < fl) { const was = boss.hp; boss.hp = fl; if (was <= fl + 0.5) { if (now - lastClank > 0.12) { lastClank = now; sfx('rpgHit', 'stone'); } if (now - (boss.tipT || -99) > 8) { boss.tipT = now; ctx.tip('擋住了！等日蝕巨像的手卡在地上（累了）再打', 2.4); } ctx.hitMarker(false); return true; } }
+      else boss.hp -= hit; }
+    sfx('rpgHit', boss.mode === 'tired' ? 'open' : 'body');
     const ph = boss.hp < boss.max / 3 ? 3 : boss.hp < (boss.max * 2) / 3 ? 2 : 1; if (ph !== boss.phase) { boss.phase = ph; ctx.banner(ph === 2 ? '日蝕巨像生氣了！' : '日蝕巨像全力反擊！', 1.8); ctx.shake(0.5); }
     if (boss.hp <= 0) { killB(); ctx.hitMarker(true); } else ctx.hitMarker(false);
     return true;
@@ -45950,7 +46022,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   }
   let armEl = null;
   function armHud() {
-    const bar = document.getElementById('boss-bar'); if (!bar) return; if (!armEl || !armEl.isConnected) { armEl = document.createElement('div'); armEl.className = 'rpg-arm'; armEl.innerHTML = '<b>褪石護甲</b><span></span>'; const bb = bar.querySelector('.bb'); bar.insertBefore(armEl, bb || null); }
+    const bar = document.getElementById('boss-bar'); if (!bar) return; const bb = bar.querySelector('.bb'); if (bb && !bb.querySelector('.rpg-tk')) bb.insertAdjacentHTML('beforeend', '<i class="rpg-tk" style="left:33.33%"></i><i class="rpg-tk" style="left:66.67%"></i>'); // 血條上的三段線
+    if (!armEl || !armEl.isConnected) { armEl = document.createElement('div'); armEl.className = 'rpg-arm'; armEl.innerHTML = '<b>褪石護甲</b><span></span>'; const bb = bar.querySelector('.bb'); bar.insertBefore(armEl, bb || null); }
     const on = boss && boss.on && boss.alive && boss.arm.length > 0 && RP.active; armEl.hidden = !on; if (!on) return;
     const sp = armEl.querySelector('span'), key = boss.arm.map((L) => L.i + ':' + Math.ceil(L.hp / 60)).join(','); if (sp.dataset.k === key) return; sp.dataset.k = key;
     sp.innerHTML = boss.arm.map((L) => '<i style="--c:#' + VEINS[L.i][1].toString(16).padStart(6, '0') + '"><s style="width:' + Math.max(0, (L.hp / ARM_HP) * 100).toFixed(1) + '%"></s></i>').join('');
@@ -45967,7 +46040,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const fmt = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
   const BR = new V3();
   function updBoss(dt) {
-    if (!boss || !boss.on) return; const b = boss, g = b.g, p = ctx.player(); b.t += dt; b.armG.forEach((a, i) => { if (a.visible) a.rotation.y += dt * (i % 2 ? 0.35 : -0.35); });
+    if (!boss || !boss.on) return; const b = boss, g = b.g, p = ctx.player(); b.t += dt; if (b.mode !== 'tired') b.stFl = null; b.armG.forEach((a, i) => { if (a.visible) a.rotation.y += dt * (i % 2 ? 0.35 : -0.35); });
     if (b.mode === 'dead') { b.dying -= dt; const k = Math.max(0, b.dying / 3); g.position.y = b.pos.y - (1 - k) * 30; g.rotation.z = Math.sin(b.t * 20) * 0.03 * k; if (b.dying <= 0) { g.visible = false; b.shadow.visible = false; b.on = false; } return; }
     if (b.mode === 'rise') { b.rise = Math.min(1, b.rise + dt / 2.2); g.position.set(b.pos.x, b.pos.y - 30 * (1 - b.rise), b.pos.z); if (Math.random() < dt * 8) ctx.burst(b.pos.x + rnd(-8, 8), b.pos.y + 1, b.pos.z + rnd(-8, 8), new THREE.Color(0xc9a774), 6, 14, 0.8); if (b.rise >= 1) { b.mode = 'walk'; b.cd = 2; } b.shadow.position.set(b.pos.x, b.pos.y + 0.1, b.pos.z); return; }
     const dx = p.pos.x - b.pos.x, dz = p.pos.z - b.pos.z, dist = Math.hypot(dx, dz), want = Math.atan2(dx, dz), inField = Math.hypot(p.pos.x - BOSSF.x, p.pos.z - BOSSF.z) < BOSSF.r + 12;
@@ -46144,15 +46217,18 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     const nm = e === boss ? BOSS.n : e.d.n; document.body.classList.toggle('rpg-hard', e !== boss && e.lv > PL() + 5); document.querySelectorAll('.boss-name').forEach((el) => { if (el.textContent !== nm) el.textContent = nm; });
     mod.phaseName = 'Lv ' + (e === boss ? BOSS.lv : e.lv); mod.health = Math.max(0, e.hp); mod.maxHealth = e.max;
   }
-  const syncFoe = () => { if (foe) { mod.health = Math.max(0, foe.hp); mod.maxHealth = foe.max; } };
+  const syncFoe = () => { const open = !!foe && !foe.mob && (foe === boss ? boss.mode === 'tired' : foe.mode === 'stun'); if (mod.tired !== open) { mod.tired = open; document.body.classList.toggle('rpg-open', open); } if (foe) { mod.health = Math.max(0, foe.hp); mod.maxHealth = foe.max; } }; // 露出破綻：血條上面顯示「累了！快打！」、血條發亮
   const upd0 = mod.update; mod.update = (dt) => { upd0(dt); syncFoe(); };
   RP._mons = mons; RP._boss = () => boss; RP._h = hgt; RP._kill = (i) => { const e = mons[i]; if (e && e.alive) { e.hp = 1; hurtM(e, 5, null, null, true); } }; RP._wake = (q) => wakeBoss(!!q); RP._ctx = () => ctx; RP._elder = () => ELDER; RP._sprite = (on, x, y, z) => { if (!sprite) return; sprite.visible = on; if (x != null) sprite.position.set(x, y, z); spr.free = 3.5; };
   RP._dim = (dark, gold) => { if (!sun) return; sun.intensity = dark ? 0.7 : gold ? 2.8 : 2.3; hemi.intensity = dark ? 0.55 : 1.25; }; RP._killB = () => { if (boss.alive) { boss.hp = 1; boss.mode = 'walk'; hurtB(5); } }; RP._prog = () => prog; RP._calm = (e, on) => { if (!e || e.alive) return; e.g.visible = on; if (on) { e.g.scale.setScalar(1); e.g.rotation.set(0, e.yaw || 0, 0); e.g.position.set(e.pos.x, hgt(e.pos.x, e.pos.z), e.pos.z); } }; // 解放劇情：守護者安靜地站在原地 RP._ghost = (on) => { if (!boss || boss.on) return; boss.g.visible = on; if (on) { boss.g.position.set(BOSSF.x, hgt(BOSSF.x, BOSSF.z - 4) - 7, BOSSF.z - 4); boss.g.rotation.set(0, 0, 0); } }; // 開場劇情：日蝕巨像半埋在地裡的黑影
+  RP.ip = { attach: (a, live, clock) => ipAttach(a, live || (() => true), clock || (() => SC.game.time || 0)), detach: () => ipDetach() }; // 共用給沐沐小鎮
   RP._camps = () => CAMPS; RP._mobs = mobs; RP._orbs = orbs; RP._zones = zones; RP._parts = parts; RP._setLv = (l) => { prog.lv = l; prog.xp = 0; save(prog); hudUpd(true); }; RP._tp = (x, z) => { const p = ctx.player(); p.pos.set(x, hgt(x, z) + 0.5, z); p.vel.set(0, 0, 0); inkAt(x, z, true); BG.update(x, z, true); mobT = 0; }; RP._map = bigMap; RP._crack = (i, w) => crack(mons[i], w);
 
   const CSS = `
 body.rpg-on #boss-pips,body.rpg-on #trick-badge{display:none!important}
 body.rpg-on:not(.rpg-foe) #boss-bar{display:none!important}
+body.rpg-on #boss-bar .bb{position:relative}#boss-bar .bb .rpg-tk{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:rgba(255,255,255,.9);z-index:3;display:none;transition:none}body.rpg-on #boss-bar .bb .rpg-tk{display:block}
+body.rpg-open #boss-bar .bb{box-shadow:0 0 0 3px #ffe27a,0 0 16px #ffd23f}body.rpg-open #boss-phase{color:#ffe27a;font-weight:900}
 .rpg-arm{display:flex;align-items:center;gap:6px;margin:2px 0 3px}.rpg-arm[hidden]{display:none}.rpg-arm b{font-size:11px;font-weight:900;color:#e8e2d4;text-shadow:0 1px 2px #000;white-space:nowrap}.rpg-arm span{display:flex;gap:3px;flex:1}.rpg-arm i{flex:1;height:7px;border-radius:4px;background:rgba(40,36,48,.75);box-shadow:inset 0 0 0 1.5px var(--c);overflow:hidden}.rpg-arm s{display:block;height:100%;background:linear-gradient(90deg,#9a958c,var(--c));text-decoration:none}
 body.rpg-hard #boss-phase{color:#ff5a5a!important}
 @media (max-width:960px){body.rpg-on .w-chip b{display:none}body.rpg-on .w-chip{min-width:0}}
@@ -47984,6 +48060,8 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ['2026-11-26', '', '冒險世界：怪物王的血分成三段，要躲開招式或用破解方法讓牠露出破綻才打得進下一段，等級再高也不會一下打爆；打中音效換成顏料和石頭的聲音；第一人稱看到的是自己的筆尾；暫停選單也能切全螢幕',
+      { en: 'Adventure World: monster kings’ health has three sections; dodge their moves or use their weakness to open them up before you can break into the next one, so they no longer melt even at high level; hit sounds are now paint and stone; first person shows your brush tail; fullscreen button in the pause menu', ja: '冒険ワールド：モンスター王の体力は3段、技をよけるかこうりゃく法ですきを作らないと次の段に入れない（レベルが高くても一瞬で倒れない）；ヒット音を絵の具と石の音に；一人称で自分のふでしっぽが見える；ポーズメニューから全画面', ko: '모험 세계: 몬스터 왕 체력이 세 칸, 공격을 피하거나 공략법으로 빈틈을 만들어야 다음 칸을 깎을 수 있어 레벨이 높아도 순식간에 쓰러지지 않아요; 타격음은 물감과 돌 소리; 1인칭에서 내 붓꼬리가 보여요; 일시정지 메뉴에서 전체 화면', es: 'Mundo de aventura: la vida de los reyes monstruo tiene tres tramos; esquiva sus ataques o usa su punto débil para abrir su guardia antes de pasar al siguiente, así no caen en un instante; sonidos de golpe de pintura y piedra; en primera persona ves tu cola pincel; pantalla completa en el menú de pausa', pt: 'Mundo de aventura: a vida dos reis monstro tem três partes; desvie dos golpes ou use o ponto fraco para abrir a guarda antes de passar à próxima, então não caem num instante; sons de acerto de tinta e pedra; em primeira pessoa você vê seu rabo-pincel; tela cheia no menu de pausa', fr: 'Monde d’aventure : la vie des rois monstres a trois sections ; esquive leurs attaques ou utilise leur point faible pour les ouvrir avant d’entamer la suivante, ils ne fondent plus d’un coup ; bruits d’impact de peinture et de pierre ; en vue subjective tu vois ta queue-pinceau ; plein écran dans le menu pause', de: 'Abenteuerwelt: Die Lebensleiste der Monsterkönige hat drei Abschnitte; weiche Angriffen aus oder nutze die Schwäche, um eine Lücke zu öffnen, bevor du in den nächsten kommst, so schmelzen sie nicht mehr weg; Trefferklänge aus Farbe und Stein; in der Ich-Perspektive siehst du deinen Pinselschwanz; Vollbild im Pausenmenü', it: 'Mondo avventura: la vita dei re mostro ha tre sezioni; schiva i loro attacchi o sfrutta il punto debole per aprire la guardia prima di passare alla successiva, così non crollano in un attimo; suoni di colpo di vernice e pietra; in prima persona vedi la tua coda-pennello; schermo intero nel menu di pausa', ru: 'Мир приключений: здоровье королей монстров делится на три части; уворачивайся от ударов или используй слабость, чтобы король открылся, иначе следующую часть не пробить, так что они больше не тают мгновенно; звуки попаданий — краска и камень; от первого лица видно свой хвост-кисть; полный экран в меню паузы', tr: 'Macera Dünyası: canavar kralların canı üç bölüm; bir sonrakine geçmek için saldırılarından kaç ya da zayıf noktasını kullanıp açık ver, yüksek seviyede bile anında erimezler; vuruş sesleri boya ve taş; birinci şahısta fırça kuyruğunu görürsün; duraklatma menüsünde tam ekran', id: 'Dunia Petualangan: darah raja monster dibagi tiga; hindari serangannya atau pakai cara mengalahkannya supaya lengah sebelum bisa menembus bagian berikutnya, jadi tidak langsung tumbang walau levelmu tinggi; suara pukulan cat dan batu; sudut pandang orang pertama memperlihatkan ekor kuasmu; layar penuh di menu jeda', vi: 'Thế giới phiêu lưu: máu vua quái vật chia ba đoạn; phải né chiêu hoặc dùng cách khắc chế để nó lộ sơ hở mới đánh vào đoạn tiếp, cấp cao cũng không hạ ngay; tiếng trúng đòn là sơn và đá; góc nhìn thứ nhất thấy đuôi cọ của mình; nút toàn màn hình trong menu tạm dừng', th: 'โลกผจญภัย: เลือดราชาสัตว์ประหลาดแบ่งเป็นสามช่วง ต้องหลบท่าหรือใช้วิธีพิชิตให้มันเผยจุดอ่อนก่อนจึงจะตีเข้าช่วงต่อไปได้ เลเวลสูงก็ไม่ล้มทันที; เสียงโดนเป็นเสียงสีและหิน; มุมมองบุคคลที่หนึ่งเห็นหางพู่กันของตัวเอง; ปุ่มเต็มจอในเมนูหยุด' }],
     ['2026-11-26', '', '冒險世界：彩脈還沒恢復的地區顏色是褪掉的，打倒那個地區全部的怪物王，顏色就會回來；咕咕星星貓頭鷹和結局多了新對白',
       { en: 'Adventure World: regions whose color vein is not restored look faded, and color returns once you beat every monster king there; new lines for the Twinkle Owl and the ending', ja: '冒険ワールド：彩脈を取り戻していない地方は色があせて見え、そこのモンスター王をぜんぶ倒すと色が戻る；フクロウとエンディングに新しいセリフ', ko: '모험 세계: 색맥을 되살리지 못한 지역은 색이 바래 보이고, 그 지역 몬스터 왕을 모두 쓰러뜨리면 색이 돌아와요; 부엉이와 엔딩에 새 대사', es: 'Mundo de aventura: las regiones con la veta sin restaurar se ven descoloridas y recuperan el color al vencer a todos sus reyes monstruo; nuevas frases para el búho y el final', pt: 'Mundo de aventura: regiões com o veio não restaurado ficam desbotadas e recuperam a cor ao vencer todos os reis monstro de lá; novas falas para a coruja e o final', fr: 'Monde d’aventure : les régions dont la veine n’est pas restaurée sont délavées, la couleur revient quand tu bats tous leurs rois monstres ; nouvelles répliques pour le hibou et la fin', de: 'Abenteuerwelt: Regionen mit ungeheilter Farbader wirken verblasst, die Farbe kehrt zurück, wenn alle Monsterkönige dort besiegt sind; neue Sätze für die Eule und das Ende', it: 'Mondo avventura: le regioni con la vena non ripristinata sono sbiadite e tornano a colori quando sconfiggi tutti i loro re mostro; nuove battute per il gufo e il finale', ru: 'Мир приключений: регионы с невосстановленной жилой выглядят блёклыми, цвет возвращается, когда побеждены все короли монстров там; новые реплики совы и концовки', tr: 'Macera Dünyası: renk damarı geri gelmemiş bölgeler soluk görünür, oradaki tüm canavar krallarını yenince renk döner; baykuş ve son için yeni sözler', id: 'Dunia Petualangan: wilayah yang uratnya belum pulih tampak pudar, warnanya kembali setelah semua raja monster di sana dikalahkan; dialog baru untuk burung hantu dan akhir cerita', vi: 'Thế giới phiêu lưu: vùng có mạch màu chưa hồi phục trông phai màu, màu sắc trở lại khi đánh bại hết vua quái vật ở đó; lời thoại mới cho cú mèo và đoạn kết', th: 'โลกผจญภัย: ภูมิภาคที่เส้นสียังไม่ฟื้นจะดูสีซีด สีจะกลับมาเมื่อชนะราชาสัตว์ประหลาดทุกตัวที่นั่น; บทพูดใหม่ของนกฮูกและตอนจบ' }],
     ['2026-11-26', '', '冒險世界：日蝕巨像隨時都能挑戰；每有一條彩脈還沒恢復，牠就多一層褪石護甲，先把護甲打碎才打得到本體',
