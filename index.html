@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v344';</script><script>window.SC_BUILD='91bac42c5cfd';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v345';</script><script>window.SC_BUILD='6f7077bc7a4e';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -22861,7 +22861,7 @@ hatG.add(mesh(S(0.12, 8, 6), mPink, s * 0.55, 0.3, 0.78, 1, 0.6, 0.5));
 [[-1.05, -0.2], [-0.75, -0.75], [1.05, -0.2], [0.75, -0.75], [-0.3, -1.0], [0.3, -1.0]].forEach(([x, z]) => { for (let k = 0; k < 6; k++) hatG.add(mesh(S(0.17 - k * 0.017, 8, 6), mSea, x * (1 + k * 0.03), 0.05 - k * 0.2, z + Math.sin(k * 0.7) * 0.08)); });
 hatG.traverse((o) => { o.castShadow = false; });
 }
-if (hatG) hatG.visible = !!on;
+if (hatG) { hatG.visible = !!on; const par = cat.wearHead || head; if (hatG.parent !== par) par.add(hatG); }
 if (crown) crown.visible = !on; if (cap) cap.visible = !on;
 };
 return cat;
@@ -30869,6 +30869,7 @@ const LEND = { maomao: 'mao', shuang: 'shuang', banban: 'mao', taro: 'mao', moch
 const HAVE = { q: ['mao', 'shuang', 'banban'], a: ['mao', 'shuang'] };
 const modelOf = (kind) => { const o = OWN[kind]; return o && HAVE[VER].includes(o) && SKEL[o + '_' + VER] ? o : LEND[kind] || 'mao'; };
 const HIDE = 7;
+const WEAR = { q: { hk: 1.15, hy: -0.08, hz: 0, tw: 1, td: 1, ty: 0, tz: 0 }, a: { hk: 0.9, hy: 0, hz: 0, tw: 0.8, td: 0.8, ty: 0, tz: 0 } };
 function makeDive(id) {
 const THREE = T(), g = new THREE.Group(), [fc, fc2] = FUR[id];
 const team = new THREE.MeshStandardMaterial({ color: 0xe8336f, roughness: 0.25, metalness: 0.05, flatShading: true });
@@ -30928,6 +30929,7 @@ d.body.scale.set(1 + pulse + mv * 0.05, 1 - pulse * 1.5 + (air ? 0.15 : 0) - mv 
 d.tail.rotation.z = Math.sin(t * (4 + mv * 8)) * (0.25 + mv * 0.2); d.tail.rotation.x = air ? 0.3 : -mv * 0.4;
 }
 function skinCat(cat, kind) {
+if (LIVE && !m && !HAVE[VER].includes(OWN[kind])) return true;
 const id = modelOf(kind), key = id + '_' + VER, M = MODELS[key + '!'];
 if (!M) { prep(key).then((m) => (MODELS[key + '!'] = m)).then(flush, (e) => console.warn('ip3d', key, e)); return false; }
 const THREE = T(), body = cat.bodyG, gag = body.parent, root = cat.group, hand = cat.hand;
@@ -30937,6 +30939,11 @@ cat.lod = () => {};
 const blob = root.children.find((o) => o.children && o.children.length === 1 && o.children[0].isGroup && o !== gag.parent && o.type === 'Group' && !o.children[0].isMesh);
 const k = instance(M); k.S = SKEL[key]; k.ph = 0; k.seed = Math.random() * 6; k.land = 0; k.wasAir = false;
 k.mesh.scale.setScalar(GH); gag.add(k.mesh);
+const WR = WEAR[key] || WEAR.q, hA = new THREE.Group(), tA = new THREE.Group();
+hA.scale.setScalar(WR.hk / GH); hA.position.set(0, WR.hy, WR.hz); k.bones[3].add(hA);
+tA.scale.set(WR.tw / GH, 1 / GH, WR.td / GH); tA.position.set(0, WR.ty - k.S.sp[1], WR.tz); k.bones[1].add(tA);
+cat.wearHead = hA; cat.wearTorso = tA;
+if (cat._wear) { cat._wearRedo = true; if (SC.wear && SC.wear.show) SC.wear.show(cat, cat._lk || ''); }
 if (blob) { blob.children[0].visible = false; k.dive = makeDive(id); k.dive.scale.setScalar(1.3); blob.add(k.dive); }
 root.traverse((o) => { if (o.isSprite && o.position.y > 6) o.position.y = GH + 1.6; });
 const hsl = { h: 0, s: 0, l: 0 };
@@ -30952,7 +30959,7 @@ cat.ip3d = k; (SC.ip3dCats = SC.ip3dCats || []).push(cat); return true;
 const pending = [];
 function flush() { for (let i = pending.length - 1; i >= 0; i--) { const [c, kd] = pending[i]; if (c.ip3d || skinCat(c, kd)) pending.splice(i, 1); } }
 function skinGame() {
-const orig = SC.makeCat;
+const orig = SC.makeCat; SC.ip3dOn = VER;
 SC.makeCat = (kind) => { const c = orig(kind); if (!skinCat(c, kind)) pending.push([c, kind]); return c; };
 prep('mao_' + VER).then((M) => (MODELS['mao_' + VER + '!'] = M)).then(flush, (e) => console.warn('ip3d', e));
 const tip = document.createElement('div');
@@ -38083,7 +38090,8 @@ T.qOn = () => arOn() && !Z;
 ARN.hit = arHit; ARN.ray = arRay; ARN.blocked = arBlocked; ARN.wallPaint = arWallPaint; ARN.ctl = arCtl; ARN.vis = arVis; ARN.respawn = (a) => { a.pos.copy(last); }; ARN.ev = null;
 const arOn = () => !!(ARN.a && SC.game && SC.game.arena);
 let ipA = null;
-function ipTown(a) { const IP = SC.rpg && SC.rpg.ip; if (!IP || !a || ipA === a || location.protocol === 'file:') return;   ipA = a; try { IP.attach(a, () => T.on && ARN.a === a, () => t); } catch (e) { console.warn('town ip', e); } }
+const IP_TOWN = false;
+function ipTown(a) { const IP = SC.rpg && SC.rpg.ip; if (!IP || !a || ipA === a || location.protocol === 'file:' || SC.ip3dOn || !IP_TOWN) return;     ipA = a; try { IP.attach(a, () => T.on && ARN.a === a, () => t); } catch (e) { console.warn('town ip', e); } }
 function ipOff() { const IP = SC.rpg && SC.rpg.ip; if (ipA && IP) try { IP.detach(); } catch (e) {} ipA = null; }
 function arMake(kind) { const GA = SC.game && SC.game.arena; if (!GA || !me) return; const a = GA.actor(me, kind); a.pos = pos; a.vel = vel; a.yaw = face; ARN.a = a; ARN.cam = null; arReset = true; }
 function arUpdate(dt) {
@@ -39542,11 +39550,11 @@ const live = new Set();
 const squid = () => !!(SC.stk && SC.stk.hat && SC.stk.hat());
 W.code = () => { load(); const on = (sl) => { const k = st.on[sl]; return BY[k] && BY[k].s === sl && st.own[k] ? k : ''; }; const q = squid(), c = [q ? '' : on('hat'), on('neck'), on('back'), q ? 'q' : ''].join('.'); return c === '...' ? '' : c; };
 W.show = (cat, code) => {
-if (!cat || !cat.head || !cat.torso) return; code = typeof code === 'string' ? code.slice(0, 60) : ''; if (live.size > 40) live.forEach((c) => { if (!c.group || !c.group.parent) live.delete(c); }); if (cat._lk === code && cat._wear) return; cat._lk = code;
+if (!cat || !cat.head || !cat.torso) return; code = typeof code === 'string' ? code.slice(0, 60) : ''; if (live.size > 40) live.forEach((c) => { if (!c.group || !c.group.parent) live.delete(c); }); if (cat._lk === code && cat._wear && !cat._wearRedo) return; cat._lk = code; cat._wearRedo = false;
 const p = code.split('.'), want = { hat: p[0], neck: p[1], back: p[2] }, q = p[3] === 'q'; live.add(cat);
 (cat._wear || []).forEach((o) => o.parent && o.parent.remove(o)); cat._wear = [];
 Object.keys(SLOT).forEach((sl) => { const it = BY[want[sl]]; if (!it || it.s !== sl || (sl === 'hat' && q)) return; const g = new THREE.Group(), P = SLOT[sl]; it.b(g); g.userData.wear = it.k;
-if (sl === 'hat') { g.position.set(0, P.y, 0.05); g.rotation.x = -0.08; cat.head.add(g); } else { g.position.set(0, P.y, P.z || 0); cat.torso.add(g); }
+if (sl === 'hat') { g.position.set(0, P.y, 0.05); g.rotation.x = -0.08; (cat.wearHead || cat.head).add(g); } else { g.position.set(0, P.y, P.z || 0); (cat.wearTorso || cat.torso).add(g); }
 cat._wear.push(g); });
 if (cat.setHat) cat.setHat(q);
 const hat = !q && !!(BY[want.hat] && BY[want.hat].s === 'hat'); if (hat) (cat.topAcc || []).forEach((o) => { if (o) o.visible = false; }); else if (!q) (cat.topAcc || []).forEach((o) => { if (o) o.visible = true; });
