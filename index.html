@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v340';</script><script>window.SC_BUILD='0ad0402da126';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v341';</script><script>window.SC_BUILD='a86a778ee614';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -44547,238 +44547,337 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   document.head.appendChild(css);
 })();
 
-// 冒險世界的大地圖（Yen 2026-11-26「太陽谷太小，我要遼闊壯麗的冒險感，至少三十倍大，能夠慢慢探索歷險，畫面渲染的運算請控制不會在網頁上過載」
-// 「森林不用這麼茂密 有山谷有溪流有森林有平原有山丘 遠方有高山」）。
-// 原本的太陽谷（±170 公尺）留在正中間當起點，外面接上一片 1800 × 1800 公尺的大地（大約 33 倍大）：
-// 西邊風鈴草原、西北青苔森林、北邊碧溪河谷、東邊紅岩台地、南邊回音丘陵、東南雲霧高原，最外圈是雪頂高山。
-// 地形是一張 2.5 公尺的高度格（碰撞也用它），畫面用 12×12 塊地形，近的細、遠的粗（三種細度），樹、石頭都是 InstancedMesh。
+// 冒險世界的大地圖：七條彩脈（Yen 11-26「請將一整著太陽谷的地圖大小做成一個脈，每個彩脈之間有明確的地形地勢地貌差異變化，
+//   不要像現在隔一條線就進入下一個地形了」「每個脈中央都有一個塔要解開」「技術部分確保流暢，不受大地圖資料影響」）。
+// 太陽谷（±170 公尺）在正中間，外面一圈是谷外的草地和環路；七條彩脈繞著它排成一圈，每條脈大約跟舊的整張大地圖一樣大（約 1800 公尺見方），
+//   整個世界 6000 × 6000 公尺。脈和脈之間是好幾百公尺慢慢過渡（高斯權重混合），不是一條線切開。
+//   紫 雪頂山麓（北）、靛 雲霧高原（東北，抬高 50 公尺的台地）、紅 紅岩台地（東，一層層的崖和平頂山）、橙 回音丘陵（東南，起伏的丘陵和峽谷）、
+//   黃 風鈴草原（西南，平坦開闊）、綠 青苔森林（西，巨木森林）、藍 碧溪河谷（西北，河網和大湖，塔在湖心島上）。
+// 流暢（不受地圖大小影響）：地形是一個函數，只在玩家附近一塊一塊（240 公尺一塊）算出來；每一格畫面最多花約 3 毫秒在算地形，
+//   算好的塊只留最近用過的。畫面上：近的 7×7 塊（近細遠粗），再外面是一張很粗的遠景地形；樹、石頭、花叢只放玩家附近 5×5 塊。
 (() => {
   const B = (SC.rpgBig = { ready: false });
-  const BIG = 900, SQ = 170, GS = 2.5, GN = 721, CH = 60, NC = 12, LIM = 850;
-  Object.assign(B, { BIG, SQ, LIM, GS });
+  const BIG = 3000, SQ = 170, GS = 4, TC = 60, TW = TC * GS, NT = (2 * BIG) / TW, LIM = 2850, VR = 1750, RR = 420, TP = TC + 3;
+  Object.assign(B, { BIG, SQ, LIM, GS, TW, NT });
   const sst = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
   const ih = (x, z, s) => { let h = (Math.imul(x, 374761393) + Math.imul(z, 668265263) + Math.imul(s, 1442695041)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h & 0xffffff) / 0xffffff; };
   const vn = (x, z, s) => { const xi = Math.floor(x), zi = Math.floor(z), fx = x - xi, fz = z - zi, ux = fx * fx * (3 - 2 * fx), uz = fz * fz * (3 - 2 * fz), a = ih(xi, zi, s), b = ih(xi + 1, zi, s), c = ih(xi, zi + 1, s), d = ih(xi + 1, zi + 1, s), p = a + (b - a) * ux; return p + (c + (d - c) * ux - p) * uz; };
   const fbm = (x, z, o, s) => { let v = 0, a = 0.5, t = 0; for (let i = 0; i < o; i++) { v += (vn(x, z, s + i) * 2 - 1) * a; t += a; x *= 2.03; z *= 2.03; a *= 0.45; } return v / t; };
+  const hashf = (i) => { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
   B.noise = (x, z, s) => vn(x, z, s);
   const segD = (x, z, ax, az, bx, bz) => { const dx = bx - ax, dz = bz - az, l = dx * dx + dz * dz, t = l ? Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / l)) : 0; return Math.hypot(x - ax - dx * t, z - az - dz * t); };
 
-  // ───────── 地區（名字會在走進去的時候顯示）─────────
-  const REG = [
-    { id: 'sun', n: '太陽谷', x: 0, z: 0 },
-    { id: 'plain', n: '風鈴草原', x: -430, z: 90 },
-    { id: 'forest', n: '青苔森林', x: -440, z: -400 },
-    { id: 'river', n: '碧溪河谷', x: 70, z: -440 },
-    { id: 'mesa', n: '紅岩台地', x: 440, z: -200 },
-    { id: 'hills', n: '回音丘陵', x: -80, z: 480 },
-    { id: 'high', n: '雲霧高原', x: 440, z: 400 },
-    { id: 'snow', n: '雪頂山麓', x: 0, z: -760 },
-  ];
-  B.REG = REG;
-  const RG = {}; REG.forEach((r) => (RG[r.id] = r));
-  const rw = (x, z, R, s) => Math.exp(-((x - R.x) ** 2 + (z - R.z) ** 2) / (s * s));
-  B.region = (x, z) => { if (Math.abs(x) < SQ && Math.abs(z) < SQ) return RG.sun; if (Math.max(Math.abs(x), Math.abs(z)) > 690 || z < -640) return RG.snow; let b = null, bd = 1e18; for (const r of REG) { if (r.id === 'snow') continue; const d = (x - r.x) ** 2 + (z - r.z) ** 2 * (r.id === 'sun' ? 1.6 : 1); if (d < bd) { bd = d; b = r; } } return b; };
+  // ───────── 七條彩脈 ─────────
+  // lv：這條脈的基本等級（建議的順序：黃→綠→橙→藍→紅→靛→紫，但哪條先走都可以）
+  const VE = [['snow', '雪頂山麓', 33, 0xb04fe0], ['high', '雲霧高原', 28, 0x5a4bd6], ['mesa', '紅岩台地', 23, 0xff5533], ['hills', '回音丘陵', 13, 0xff9a1f], ['plain', '風鈴草原', 4, 0xffd23f], ['forest', '青苔森林', 8, 0x4cc75a], ['river', '碧溪河谷', 18, 0x3d8bff]].map(([id, n, lv, col], k) => {
+    const a = (k / 7) * Math.PI * 2, x = Math.sin(a) * VR, z = -Math.cos(a) * VR; return { k, id, n, lv, col, a, x, z, ux: -x / VR, uz: -z / VR }; });
+  const VI = {}; VE.forEach((v) => (VI[v.id] = v));
+  B.VEINS = VE;
+  const REG = [{ id: 'sun', n: '太陽谷', x: 0, z: 0 }].concat(VE.map((v) => ({ id: v.id, n: v.n, x: v.x, z: v.z, v })));
+  B.REG = REG; const RG = {}; REG.forEach((r) => (RG[r.id] = r));
 
-  // ───────── 河、湖、路、魔王的地盤、營地 ─────────
-  // 河的第一段接上太陽谷裡原本的小溪（北邊 80,-175、南邊 98,175），寬度一樣 6，後面變寬
-  const RIV = [
-    { w: 9, p: [[80, -168], [78, -240], [50, -330], [40, -420], [72, -520], [30, -620], [-20, -720], [-60, -905]] },
-    { w: 9, p: [[98, 168], [118, 250], [170, 340], [160, 450], [220, 560], [270, 680], [310, 905]] },
-    { w: 7, p: [[-905, -150], [-700, -185], [-520, -262], [-330, -330], [-160, -385], [40, -420]] },
-    { w: 7, p: [[905, 60], [720, 120], [540, 205], [380, 300], [235, 335], [165, 395]] },
-  ];
-  const LAKES = [{ x: -430, z: 300, r: 60 }, { x: 490, z: -440, r: 50 }, { x: -300, z: -560, r: 44 }];
-  const ROADS = [
-    [[6, -165], [20, -230], [55, -300], [30, -420], [72, -540], [20, -640], [0, -690]],
-    [[-165, 30], [-250, 70], [-400, -10], [-520, -60], [-650, -100]],
-    [[165, -10], [270, -60], [400, 60], [540, 0], [660, -40]],
-    [[-30, 165], [-100, 300], [-60, 440]],
-    [[-100, 300], [-260, 322], [-355, 306]],
-    [[270, -60], [300, -220], [320, -410]],
-    [[-250, 70], [-330, -150], [-410, -330], [-540, -520], [-660, -660]],
-    [[60, 165], [200, 250], [420, 330]],
-  ];
-  B.RIV = RIV; B.LAKES = LAKES; B.ROADS = ROADS;
-  const KS = {
-    喵抓抓大王: [-250, 70], 熔岩跳跳蛙: [270, -60], 鹿角衝衝兔: [55, -300], 菇菇山怪: [-100, 300], 苔石魔像: [-400, -10], 刺刺仙人掌: [400, 60],
-    咚咚樹鼓精: [-60, 440], 嘩嘩大鯨魚: [-430, 300], 狐狸聖騎士: [320, -410], 旋風橡果精: [-410, -330], 飄飄水母仙: [420, 330],
-    翠鱗小龍: [-650, -100], 轟轟雷雲: [660, -40], 冰原企鵝戰士: [0, -690], 咕咕星星貓頭鷹: [-660, -660],
-  };
-  B.KS = KS; const SITE_R = 34;
-  const CAMP0 = [[-200, 50], [-350, 17], [-560, -72], [220, -39], [360, 23], [600, -20], [-73, 250], [-74, 390], [-330, 306], [290, -170], [316, -360], [-310, -95], [-390, -285], [-600, -590], [40, -372], [30, -615], [160, 227], [380, 315], [-470, -40], [480, 30]];
-  // 等級：離中間越遠越高（Yen「每隻王的能力等級不同，越遠的遠強」）
-  B.lvAt = (x, z) => 1 + 36 * Math.pow(Math.min(1, Math.max(0, (Math.hypot(x, z) - 150) / 780)), 1.15);
+  // 權重：每條脈中心一個大高斯（σ≈720 公尺），谷外一個；加起來是 1。地形、顏色、樹都照權重混合，所以邊界是慢慢變的
+  const SIG2 = 720 * 720, HUB2 = 560 * 560, WT = new Float32Array(8);
+  function weights(x, z) { let s = (WT[7] = Math.exp(-(x * x + z * z) / HUB2) * 1.2); for (let k = 0; k < 7; k++) { const dx = x - VE[k].x, dz = z - VE[k].z; s += WT[k] = Math.exp(-(dx * dx + dz * dz) / SIG2); } s = 1 / (s + 1e-12); for (let k = 0; k < 8; k++) WT[k] *= s; return WT; }
+  B.region = (x, z) => { if (Math.abs(x) < SQ && Math.abs(z) < SQ) return RG.sun; const W = weights(x, z); if (W[7] > 0.5 || Math.hypot(x, z) < 520) return RG.sun; let b = 0; for (let k = 1; k < 7; k++) if (W[k] > W[b]) b = k; return RG[VE[b].id]; };
+  // 等級：谷外 1～4，進到脈裡就是那條脈的等級，越往外越高（最多 +4）
+  B.lvAt = (x, z) => { const r = Math.hypot(x, z), W = weights(x, z); let s = 0, t = 0; for (let k = 0; k < 7; k++) { s += W[k] * VE[k].lv; t += W[k]; } const vl = t > 1e-6 ? s / t : 1, m = sst(450, 1150, r); return (1 - m) * (1 + 3 * Math.min(1, r / 600)) + m * (vl + 4 * sst(1300, 2400, r)); };
 
-  // ───────── 距離場（河、路）：5 公尺一格，只畫線段附近 ─────────
-  const DS = 5, DN = 361, RD = new Float32Array(DN * DN).fill(300), PD = new Float32Array(DN * DN).fill(300);
-  function rast(F, pts, w, band) {
-    for (let k = 1; k < pts.length; k++) { const [ax, az] = pts[k - 1], [bx, bz] = pts[k], ww = k === 1 && F === RD && w > 8 ? 6 : w;
-      const i0 = Math.max(0, Math.floor((Math.min(ax, bx) - band + BIG) / DS)), i1 = Math.min(DN - 1, Math.ceil((Math.max(ax, bx) + band + BIG) / DS)), j0 = Math.max(0, Math.floor((Math.min(az, bz) - band + BIG) / DS)), j1 = Math.min(DN - 1, Math.ceil((Math.max(az, bz) + band + BIG) / DS));
-      for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) { const d = segD(-BIG + i * DS, -BIG + j * DS, ax, az, bx, bz) - ww / 2, q = j * DN + i; if (d < F[q]) F[q] = d; } }
-  }
-  const fld = (F, x, z) => { const fx = Math.min(DN - 1.001, Math.max(0, (x + BIG) / DS)), fz = Math.min(DN - 1.001, Math.max(0, (z + BIG) / DS)), i = fx | 0, j = fz | 0, u = fx - i, v = fz - j, q = j * DN + i; return F[q] * (1 - u) * (1 - v) + F[q + 1] * u * (1 - v) + F[q + DN] * (1 - u) * v + F[q + DN + 1] * u * v; };
-  const lakeD = (x, z) => { let b = 1e9; for (const L of LAKES) { const d = Math.hypot(x - L.x, z - L.z) - L.r * (1 + 0.12 * Math.sin(Math.atan2(z - L.z, x - L.x) * 3 + L.r)); if (d < b) b = d; } return b; };
-  B.riverD = (x, z) => Math.min(fld(RD, x, z), lakeD(x, z));
-  B.roadD = (x, z) => fld(PD, x, z);
+  // ───────── 空間雜湊（河、路、整平的地方、擋路的東西都放進去，查詢只看附近）─────────
+  const HC = 100, HO = BIG + 600, HN = Math.ceil((2 * HO) / HC);
+  const hAdd = (H, it, x0, z0, x1, z1) => { const i0 = Math.max(0, Math.floor((x0 + HO) / HC)), i1 = Math.min(HN - 1, Math.floor((x1 + HO) / HC)), j0 = Math.max(0, Math.floor((z0 + HO) / HC)), j1 = Math.min(HN - 1, Math.floor((z1 + HO) / HC)); for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) { const k = j * HN + i; let L = H.get(k); if (!L) H.set(k, (L = [])); L.push(it); } };
+  const NONE = []; const hGet = (H, x, z) => { const i = Math.floor((x + HO) / HC), j = Math.floor((z + HO) / HC); return i < 0 || j < 0 || i >= HN || j >= HN ? NONE : H.get(j * HN + i) || NONE; };
+  const HR = new Map(), HP = new Map(), HS = new Map(), HX = new Map(), HB = new Map();
 
-  // ───────── 自然地形 ─────────
-  function natural(x, z) {
-    const c = Math.max(Math.abs(x), Math.abs(z)), wP = rw(x, z, RG.plain, 300), wF = rw(x, z, RG.forest, 320), wH = rw(x, z, RG.hills, 300), wHi = rw(x, z, RG.high, 260), wM = rw(x, z, RG.mesa, 280);
-    const hm = 0.5 + 0.5 * fbm(x / 520 + 7.1, z / 520 - 3.3, 2, 11);
-    let amp = (5 + 15 * hm + 18 * wH + 9 * wF + 8 * wM) * (1 - 0.8 * wP);
-    let h = amp * (0.55 + 0.45 * fbm(x / 230, z / 230, 3, 21));
-    h += 24 * sst(0.3, 0.65, wHi) + 6 * wHi * fbm(x / 90, z / 90, 2, 51); // 雲霧高原：抬高的一大片台地
-    if (wM > 0.12) { const st = 6, q = h / st, f = q - Math.floor(q), t = (Math.floor(q) + sst(0.72, 1, f)) * st; h += (t - h) * Math.min(1, wM * 1.7); } // 紅岩台地：一層一層的階梯崖
-    const rd = fld(RD, x, z), ld = lakeD(x, z);
+  // 折線變平滑（Catmull-Rom），step 公尺一段
+  function smooth(P, step) { const out = []; for (let i = 0; i < P.length - 1; i++) { const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)], n = Math.max(1, Math.ceil(Math.hypot(p2[0] - p1[0], p2[1] - p1[1]) / step));
+      for (let s = 0; s < n; s++) { const t = s / n, t2 = t * t, t3 = t2 * t, f = (k) => 0.5 * (2 * p1[k] + (-p0[k] + p2[k]) * t + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t2 + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t3); out.push([f(0), f(1)]); } }
+    out.push(P[P.length - 1]); return out; }
+  // 兩點之間加上彎彎曲曲的中間點（路不要筆直）
+  function wig(a, b, amp, seed, n) { const P = [a], dx = b[0] - a[0], dz = b[1] - a[1], L = Math.hypot(dx, dz) || 1, px = -dz / L, pz = dx / L; n = n || Math.max(1, Math.round(L / 160)); for (let i = 1; i < n; i++) { const t = i / n, o = (hashf(seed * 13.1 + i * 7.7) - 0.5) * 2 * amp * Math.sin(t * Math.PI); P.push([a[0] + dx * t + px * o, a[1] + dz * t + pz * o]); } P.push(b); return P; }
+  const ring = (cx, cz, r, n, amp, seed, a0) => { const P = []; for (let i = 0; i < n; i++) { const a = (a0 || 0) + (i / n) * Math.PI * 2, rr = r + (hashf(seed + i * 3.3) - 0.5) * 2 * amp * (i ? 1 : 0); P.push([cx + Math.sin(a) * rr, cz - Math.cos(a) * rr]); } P.push(P[0].slice()); return P; };
+
+  // ───────── 河、湖 ─────────
+  // 第一段接上太陽谷裡原本的小溪（北邊 80,-175、南邊 98,175），寬度一樣 6，後面變寬
+  const RIV0 = [
+    { w: 9, p: [[80, -168], [72, -260], [-40, -420], [-250, -560], [-520, -700], [-800, -850], [-1100, -980], [-1260, -1050]] }, // 谷北的溪 → 碧溪大湖
+    { w: 11, p: [[-1520, -1170], [-1900, -1300], [-2300, -1500], [-2700, -1700], [-3150, -1900]] }, // 大湖流出去
+    { w: 8, p: [[380, -2600], [320, -2260], [-50, -1980], [-500, -1680], [-900, -1400], [-1240, -1190]] }, // 雪融水
+    { w: 9, p: [[98, 168], [110, 300], [40, 520], [0, 800], [30, 1100], [-20, 1400], [40, 1800], [0, 2200], [60, 2600], [0, 3150]] }, // 谷南的溪，從黃和橙中間往南
+    { w: 7, p: [[1500, 700], [1300, 1000], [1150, 1350], [1100, 1800], [900, 2200], [500, 2500], [70, 2640]] }, // 回音丘陵的峽谷溪
+    { w: 7, p: [[2950, 700], [2300, 720], [1950, 760], [1700, 900], [1450, 960], [1320, 990]] }, // 紅岩台地的溪
+    { w: 7, p: [[-2600, 760], [-2150, 470], [-1760, 120], [-1520, -220], [-1420, -600], [-1380, -900]] }, // 青苔森林的溪
+  ];
+  const RIV = RIV0.map((r) => ({ w: r.w, p: smooth(r.p, 22) }));
+  const plainLake = { x: VI.plain.x - VI.plain.ux * RR * 0.92, z: VI.plain.z - VI.plain.uz * RR * 0.92 };
+  const LAKES = [
+    { x: VI.river.x, z: VI.river.z, r: 175, ri: 58 }, // 碧溪大湖，中間是塔的小島
+    { x: plainLake.x, z: plainLake.z, r: 66 }, // 風鈴草原的湖（大鯨魚）
+    { x: -1950, z: 680, r: 55 }, { x: 1250, z: -1300, r: 72 }, { x: 330, z: -2260, r: 92 }, { x: -380, z: 2150, r: 48 }, { x: 2150, z: -200, r: 40 },
+  ];
+  B.RIV = RIV; B.LAKES = LAKES;
+  RIV.forEach((r) => { for (let k = 1; k < r.p.length; k++) { const [ax, az] = r.p[k - 1], [bx, bz] = r.p[k], w = k <= 4 && r.w === 9 && Math.hypot(ax, az) < 300 ? 6 : r.w, it = { ax, az, bx, bz, hw: w / 2 }; hAdd(HR, it, Math.min(ax, bx) - 135, Math.min(az, bz) - 135, Math.max(ax, bx) + 135, Math.max(az, bz) + 135); } });
+  const rivD = (x, z) => { let b = 300; for (const s of hGet(HR, x, z)) { const d = segD(x, z, s.ax, s.az, s.bx, s.bz) - s.hw; if (d < b) b = d; } return b; };
+  const lakeD = (x, z) => { let b = 1e9; for (const L of LAKES) { const dd = Math.hypot(x - L.x, z - L.z), d = dd - L.r * (1 + 0.1 * Math.sin(Math.atan2(z - L.z, x - L.x) * 3 + L.r)), e = L.ri ? Math.max(d, L.ri - dd) : d; if (e < b) b = e; } return b; };
+  B.riverD = (x, z) => Math.min(rivD(x, z), lakeD(x, z));
+
+  // ───────── 路 ─────────
+  // 谷外環路（半徑約 560）；太陽谷四個出口接到環路；環路往每條脈拉一條大路，接到脈裡的環路（繞著塔、半徑約 420），再一條小路通到塔
+  const ROADS0 = [];
+  ROADS0.push(ring(0, 0, 560, 28, 26, 5, 0.06));
+  ROADS0.push(wig([6, -165], [6, -556], 20, 1, 3), wig([165, -10], [556, -10], 20, 2, 3), wig([-165, 30], [-556, 30], 20, 3, 3), wig([-30, 165], [-30, 556], 20, 4, 3), wig([60, 165], [270, 490], 20, 6, 3));
+  const VRING = {};
+  VE.forEach((v, k) => {
+    const hx = v.x + v.ux * RR, hz = v.z + v.uz * RR, sx = Math.sin(v.a) * 560, sz = -Math.cos(v.a) * 560;
+    ROADS0.push(wig([sx, sz], [hx, hz], 60, 20 + k, 5)); // 大路
+    const R = ring(v.x, v.z, RR, 22, 30, 40 + k * 9, v.a + Math.PI); ROADS0.push(R); VRING[v.id] = R; // 脈裡的環路（第一個點在靠谷的那一邊）
+    const e = v.id === 'river' ? 26 : 62; ROADS0.push(wig([hx, hz], [v.x + v.ux * e, v.z + v.uz * e], v.id === 'river' ? 0 : 14, 60 + k, 3)); // 通到塔的小路（碧溪是一座長橋通到湖心島）
+  });
+  const ROADS = ROADS0.map((r) => smooth(r, 18));
+  B.ROADS = ROADS;
+  ROADS.forEach((r) => { for (let k = 1; k < r.length; k++) { const [ax, az] = r[k - 1], [bx, bz] = r[k], it = { ax, az, bx, bz }; hAdd(HP, it, Math.min(ax, bx) - 95, Math.min(az, bz) - 95, Math.max(ax, bx) + 95, Math.max(az, bz) + 95); } });
+  const roadD = (x, z) => { let b = 300; for (const s of hGet(HP, x, z)) { const d = segD(x, z, s.ax, s.az, s.bx, s.bz) - 3; if (d < b) b = d; } return b; };
+  B.roadD = roadD;
+  // 環路上的點：a 是從「靠谷那一邊」開始算的角度
+  const snapRoad = (x, z) => { let b = null, bd = 1e9; for (const s of hGet(HP, x, z)) { const dx = s.bx - s.ax, dz = s.bz - s.az, l = dx * dx + dz * dz, t = l ? Math.max(0, Math.min(1, ((x - s.ax) * dx + (z - s.az) * dz) / l)) : 0, px = s.ax + dx * t, pz = s.az + dz * t, d = Math.hypot(px - x, pz - z); if (d < bd) { bd = d; b = [px, pz]; } } return b || [x, z]; };
+  const ringAt = (v, a, r) => { const t = v.a + Math.PI + a; return [v.x + Math.sin(t) * (r || RR), v.z - Math.cos(t) * (r || RR)]; };
+
+  // ───────── 自然地形（每條脈自己的長相）─────────
+  // n0：共用的大起伏；rk：離路越遠越接近 1（靠近路的地方不要有崖和尖山，路才走得上去）
+  const HFN = [
+    (x, z, n0, rk) => { const rg = 1 - Math.abs(fbm(x / 260, z / 260, 3, 81)); return 24 + (18 + 85 * rg * rg) * (0.3 + 0.7 * rk) + 8 * n0; }, // 紫：雪山
+    (x, z, n0, rk) => 54 + 9 * n0 + 3 * fbm(x / 70, z / 70, 2, 51) * rk, // 靛：雲上高原
+    (x, z, n0, rk) => { let h = 10 + 5 * n0 + sst(0.1, 0.26, fbm(x / 300, z / 300, 2, 91)) * 30 * rk; if (rk > 0.05) { const st = 6, q = h / st, f = q - Math.floor(q), t = (Math.floor(q) + sst(0.7, 1, f)) * st; h += (t - h) * rk * 0.9; } return h; }, // 紅：一層層的崖、平頂山
+    (x, z, n0, rk) => 12 + 24 * (0.5 + 0.5 * fbm(x / 170, z / 170, 3, 61)) * (0.4 + 0.6 * rk) + 4 * n0, // 橙：丘陵
+    (x, z, n0) => 3 + 2.5 * n0 + 1.2 * fbm(x / 70, z / 70, 2, 71), // 黃：大草原
+    (x, z, n0) => 9 + 9 * n0 + 5 * (0.5 + 0.5 * fbm(x / 110, z / 110, 2, 77)), // 綠：森林
+    (x, z, n0) => 2.4 + 2 * n0, // 藍：低低的河谷
+  ];
+  let lastW = null;
+  function natural(x, z, pd) {
+    const W = weights(x, z), rk = sst(12, 90, pd), n0 = fbm(x / 230, z / 230, 3, 21); let h = 0;
+    if (W[7] > 0.004) h += W[7] * (4 + 7 * (0.5 + 0.5 * fbm(x / 200, z / 200, 2, 11)));
+    for (let k = 0; k < 7; k++) if (W[k] > 0.004) h += W[k] * HFN[k](x, z, n0, rk);
+    const rd = rivD(x, z), ld = lakeD(x, z);
     h *= 0.12 + 0.88 * sst(3, 120, Math.min(rd, ld)); // 河邊是山谷
-    const e = sst(690, 885, c + 40 * fbm(x / 210, z / 210, 2, 31)), rg = 1 - Math.abs(fbm(x / 150, z / 150, 3, 41));
-    h += e * (80 + 150 * rg * rg) * (z < -450 ? 1.3 : 1); // 最外圈的高山
-    h *= sst(0, 70, c - SQ); // 靠近太陽谷慢慢變平，接上原本的地面
+    const r = Math.hypot(x, z), e = sst(2550, 2900, r + 70 * fbm(x / 240, z / 240, 2, 31)); if (e > 0) { const rg = 1 - Math.abs(fbm(x / 170, z / 170, 3, 41)); h += e * (90 + 170 * rg * rg); } // 世界邊緣的高山
+    h *= sst(0, 70, Math.max(Math.abs(x), Math.abs(z)) - SQ); // 靠近太陽谷慢慢變平
     if (rd < 1.6) h = rd < 0 ? -2.6 : h + (-2.6 - h) * (1 - rd / 1.6);
     if (ld < 8) h = ld < 0 ? -3.4 + Math.max(-2.5, ld * 0.06) : h + (-3.4 - h) * (1 - sst(0, 8, ld));
+    lastW = W; return h;
+  }
+  // 要整平的地方（怪物王的地盤、營地、塔的廣場）
+  const SITES = [];
+  const site = (x, z, r, p, minH) => { const pd = roadD(x, z), s = { x, z, r, p, h: Math.max(minH == null ? 0.2 : minH, natural(x, z, Math.max(pd, 30))) }; SITES.push(s); hAdd(HS, s, x - r - p, z - r - p, x + r + p, z + r + p); return s; };
+  // 地面高度（不含樹、柱子、橋）。col：要的話順便給這一點的底色
+  function hRaw(x, z, col) {
+    if (Math.abs(x) < SQ - 3 && Math.abs(z) < SQ - 3) { if (col) baseCol(col, 0, x, z, null); return 0; }
+    const pd = roadD(x, z); let h = natural(x, z, pd); if (col) baseCol(col, 0, x, z, lastW);
+    if (pd < 10 && rivD(x, z) > 1) { const a = Math.max(-0.6, (h + natural(x - 9, z, pd) + natural(x + 9, z, pd) + natural(x, z - 9, pd) + natural(x, z + 9, pd)) / 5); h = a + (h - a) * sst(2.5, 10, pd); }
+    for (const s of hGet(HS, x, z)) { const d = Math.hypot(x - s.x, z - s.z); if (d < s.r + s.p) h = s.h + (h - s.h) * sst(s.r, s.r + s.p, d); }
     return h;
   }
 
-  let TG = null, CG = null;
-  const tAt = (A, x, z) => { const fx = (x + BIG) / GS, fz = (z + BIG) / GS; if (fx < 0 || fz < 0 || fx >= GN - 1 || fz >= GN - 1) return 300; const ix = fx | 0, iz = fz | 0, u = fx - ix, v = fz - iz, i = iz * GN + ix, a = A[i], b = A[i + 1], cc = A[i + GN], d = A[i + GN + 1];
-    if (A === CG) { const mx = Math.max(a, b, cc, d), mn = Math.min(a, b, cc, d); if (mx - mn > 1.6) return u < 0.5 ? (v < 0.5 ? a : cc) : v < 0.5 ? b : d; } // 陡的地方不內插：變成一階一階的崖，走不上去
-    return a + (b - a) * u + (cc - a) * v + (a - b - cc + d) * u * v; };
-  B.h = (x, z) => tAt(CG, x, z); // 碰撞用（有樹幹、石頭、橋）
-  B.th = (x, z) => tAt(TG, x, z); // 地面本身
-  const gIdx = (x, z) => { const ix = Math.round((x + BIG) / GS), iz = Math.round((z + BIG) / GS); return ix < 0 || iz < 0 || ix >= GN || iz >= GN ? -1 : iz * GN + ix; };
-  B.solid = (x, z, r, top) => { const n = Math.ceil(r / GS); const c = gIdx(x, z); if (c < 0) return; const cx = c % GN, cz = (c / GN) | 0; for (let j = -n; j <= n; j++) for (let i = -n; i <= n; i++) { const ix = cx + i, iz = cz + j; if (ix < 0 || iz < 0 || ix >= GN || iz >= GN) continue; const px = -BIG + ix * GS, pz = -BIG + iz * GS; if (Math.hypot(px - x, pz - z) <= Math.max(r, GS * 0.75)) { const q = iz * GN + ix; CG[q] = Math.max(CG[q], top); } } };
-  B.unsolid = (x, z, r) => { const n = Math.ceil(r / GS) + 1, c = gIdx(x, z); if (c < 0) return; const cx = c % GN, cz = (c / GN) | 0; for (let j = -n; j <= n; j++) for (let i = -n; i <= n; i++) { const ix = cx + i, iz = cz + j; if (ix < 0 || iz < 0 || ix >= GN || iz >= GN) continue; const q = iz * GN + ix; CG[q] = TG[q]; } };
-
-  function blur(src, r) { const out = new Float32Array(src.length), tmp = new Float32Array(src.length), n = GN, k = 1 / (2 * r + 1);
-    for (let j = 0; j < n; j++) { let s = 0; const o = j * n; for (let i = -r; i <= r; i++) s += src[o + Math.min(n - 1, Math.max(0, i))]; for (let i = 0; i < n; i++) { tmp[o + i] = s * k; s += src[o + Math.min(n - 1, i + r + 1)] - src[o + Math.max(0, i - r)]; } }
-    for (let i = 0; i < n; i++) { let s = 0; for (let j = -r; j <= r; j++) s += tmp[Math.min(n - 1, Math.max(0, j)) * n + i]; for (let j = 0; j < n; j++) { out[j * n + i] = s * k; s += tmp[Math.min(n - 1, j + r + 1) * n + i] - tmp[Math.max(0, j - r) * n + i]; } }
-    return out; }
-
-  // ───────── 產生整張地圖（第一次走進冒險世界時做一次，大約 0.3 秒）─────────
-  B.trees = []; B.rocks = []; B.bushes = []; B.bridges = []; B.spawns = []; B.camps = [];
+  // ───────── 怪物王、營地、塔 ─────────
+  // 怪物王屬於哪條脈（跟 09wr_rpg.js 的 VEINS 一樣）；放在脈裡的環路上：靠谷那邊左右各一隻，第三隻在後面
+  const VK = { snow: ['冰原企鵝戰士', '咕咕星星貓頭鷹'], high: ['飄飄水母仙', '轟轟雷雲'], mesa: ['熔岩跳跳蛙', '刺刺仙人掌'], hills: ['菇菇山怪', '咚咚樹鼓精'], plain: ['喵抓抓大王', '苔石魔像', '嘩嘩大鯨魚'], forest: ['旋風橡果精', '翠鱗小龍'], river: ['鹿角衝衝兔', '狐狸聖騎士'] };
+  const KS = {}, SITE_R = 34; B.KS = KS; B.camps = []; B.TOWERS = []; B.bridges = []; B.spawns = [];
   B.gen = () => {
     if (B.ready) return; const t0 = performance.now();
-    RIV.forEach((r) => rast(RD, r.p, r.w, 130)); ROADS.forEach((r) => rast(PD, r, 6, 24));
-    TG = new Float32Array(GN * GN);
-    for (let iz = 0; iz < GN; iz++) for (let ix = 0; ix < GN; ix++) { const x = -BIG + ix * GS, z = -BIG + iz * GS; TG[iz * GN + ix] = Math.abs(x) < SQ - 3 && Math.abs(z) < SQ - 3 ? 0 : natural(x, z); }
-    const TB = blur(blur(TG, 4), 4);
-    // 路：路面用平滑過的高度（不會太陡），兩邊慢慢接回原本的地
-    for (let iz = 0; iz < GN; iz++) for (let ix = 0; ix < GN; ix++) { const x = -BIG + ix * GS, z = -BIG + iz * GS, pd = fld(PD, x, z); if (pd > 10) continue; const q = iz * GN + ix; if (fld(RD, x, z) < 1) continue; const k = sst(2.5, 10, pd); TG[q] = Math.max(TB[q], -0.6) + (TG[q] - Math.max(TB[q], -0.6)) * k; }
-    // 魔王的地盤、營地：整平
-    const flat = (cx, cz, r, pad) => { const c = gIdx(cx, cz); if (c < 0) return; const hc = Math.max(0.2, TB[c]), n = Math.ceil((r + pad) / GS), ci = c % GN, cj = (c / GN) | 0; for (let j = -n; j <= n; j++) for (let i = -n; i <= n; i++) { const ix = ci + i, iz = cj + j; if (ix < 0 || iz < 0 || ix >= GN || iz >= GN) continue; const d = Math.hypot(i, j) * GS; if (d > r + pad) continue; const q = iz * GN + ix, k = sst(r, r + pad, d); TG[q] = hc + (TG[q] - hc) * k; } };
-    const snapRoad = (x, z) => { let b = [x, z], bd = 1e9; for (const R of ROADS) for (let k = 1; k < R.length; k++) { const [ax, az] = R[k - 1], [bx, bz] = R[k], dx = bx - ax, dz = bz - az, l = dx * dx + dz * dz, t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / l)), px = ax + dx * t, pz = az + dz * t, d = Math.hypot(px - x, pz - z); if (d < bd) { bd = d; b = [px, pz]; } } return bd < 40 ? b : [x, z]; };
-    for (const n in KS) if (n !== '嘩嘩大鯨魚') flat(KS[n][0], KS[n][1], SITE_R, 18);
-    B.camps = CAMP0.map(([x, z]) => { const [px, pz] = snapRoad(x, z); const ox = px + (hashf(px) - 0.5) * 2, oz = pz + 9; flat(ox, oz, 7, 8); return { x: ox, z: oz }; });
-    CG = TG.slice();
-    // 橋：路跨過河的地方
-    for (const R of ROADS) { let run = null; const done = () => { if (!run) return; const [ax, az] = run.a, [bx, bz] = run.b, L = Math.hypot(bx - ax, bz - az) || 1, ux = (bx - ax) / L, uz = (bz - az) / L, e = 3.5, A = [ax - ux * e, az - uz * e], Bp = [bx + ux * e, bz + uz * e], y = Math.max(0.3, tAt(TG, A[0], A[1]), tAt(TG, Bp[0], Bp[1])) + 0.25;
-        B.bridges.push({ ax: A[0], az: A[1], bx: Bp[0], bz: Bp[1], y, w: 6 }); const len = L + 2 * e; for (let s = 0; s <= len; s += 1) for (let w = -2.75; w <= 2.75; w += 1) { const x = A[0] + ux * s - uz * w, z = A[1] + uz * s + ux * w, q = gIdx(x, z); if (q >= 0) CG[q] = Math.max(CG[q], y); } run = null; };
-      for (let k = 1; k < R.length; k++) { const [ax, az] = R[k - 1], [bx, bz] = R[k], L = Math.hypot(bx - ax, bz - az); for (let s = 0; s <= L; s += 1.5) { const x = ax + ((bx - ax) * s) / L, z = az + ((bz - az) * s) / L, wet = B.riverD(x, z) < 1.2; if (wet) { if (!run) run = { a: [x, z], b: [x, z] }; else run.b = [x, z]; } else done(); } } done(); }
-    // 樹：森林不要太密（Yen），大部分是零星的樹，青苔森林和山腳下比較多
-    const ok = (x, z, pad) => Math.max(Math.abs(x), Math.abs(z)) < LIM + 30 && !(Math.abs(x) < SQ + 4 && Math.abs(z) < SQ + 4) && fld(PD, x, z) > pad && B.riverD(x, z) > pad * 0.7 && !B.bridges.some((b) => segD(x, z, b.ax, b.az, b.bx, b.bz) < 8) && !Object.values(KS).some(([kx, kz]) => Math.hypot(x - kx, z - kz) < SITE_R + 10) && !B.camps.some((c) => Math.hypot(x - c.x, z - c.z) < 14);
-    const slope = (x, z) => { const a = tAt(TG, x - 2, z), b = tAt(TG, x + 2, z), c = tAt(TG, x, z - 2), d = tAt(TG, x, z + 2); return Math.hypot(b - a, d - c) / 4; };
-    for (let gz = -BIG; gz < BIG; gz += 15) for (let gx = -BIG; gx < BIG; gx += 15) {
-      const i = ((gz + BIG) / 15) * 200 + (gx + BIG) / 15, x = gx + hashf(i * 3.1) * 15, z = gz + hashf(i * 7.7) * 15, h = tAt(TG, x, z);
-      const fm = sst(0.05, 0.45, fbm(x / 240 + 3, z / 240 - 9, 2, 61)), e = sst(640, 760, Math.max(Math.abs(x), Math.abs(z))), wF = rw(x, z, RG.forest, 320), wP = rw(x, z, RG.plain, 300), wM = rw(x, z, RG.mesa, 260);
-      const dens = 0.025 + fm * (0.2 + 0.8 * wF + 0.12 * rw(x, z, RG.river, 300) + 0.1 * rw(x, z, RG.hills, 300)) + e * 0.32 * (1 - sst(150, 200, h)) - 0.03 * wP - 0.1 * wM;
-      if (hashf(i * 1.37 + 5) > dens || !ok(x, z, 4.5) || h < -0.4 || h > 175 || slope(x, z) > 0.75) continue;
-      const pine = wF > 0.25 || e > 0.05 || z < -560 || hashf(i + 9) < 0.35, s = 0.8 + hashf(i * 2.3) * 0.55, snow = z < -600 || h > 110;
-      B.trees.push({ x, y: h, z, s, t: pine ? 0 : 1, snow }); B.solid(x, z, 1.2 * s, h + 20 * s);
-    }
-    // 石頭、花叢
-    for (let k = 0; k < 900; k++) { const x = (hashf(k * 1.9 + 3) - 0.5) * 2 * (LIM + 20), z = (hashf(k * 2.7 + 8) - 0.5) * 2 * (LIM + 20), h = tAt(TG, x, z); if (!ok(x, z, 3) || h < -0.5) continue; const wM = rw(x, z, RG.mesa, 280), big = hashf(k + 77) < 0.25 + wM * 0.4, s = big ? 2 + hashf(k + 5) * 3 : 0.9 + hashf(k + 5) * 1.1; B.rocks.push({ x, y: h, z, s, r: hashf(k) * 6, red: wM > 0.35, snow: z < -600 || h > 110 }); if (s > 1.6) B.solid(x, z, s * 0.95, h + s * 1.3); }
-    for (let k = 0; k < 2400; k++) { const x = (hashf(k * 3.3 + 1) - 0.5) * 2 * LIM, z = (hashf(k * 4.1 + 2) - 0.5) * 2 * LIM, h = tAt(TG, x, z), wP = rw(x, z, RG.plain, 320); if (hashf(k + 0.5) > 0.35 + wP * 0.6 || !ok(x, z, 2.5) || h < -0.3 || h > 90) continue; B.bushes.push({ x, y: h, z, s: 0.7 + hashf(k * 1.7) * 0.8, f: wP > 0.3 || hashf(k + 3) < 0.4, c: (k % 3) }); }
-    // 路上小怪物出現的地方
-    for (let gz = -BIG; gz < BIG; gz += 48) for (let gx = -BIG; gx < BIG; gx += 48) { const i = gz * 7 + gx, x = gx + 6 + hashf(i * 1.1 + 4) * 36, z = gz + 6 + hashf(i * 1.3 + 6) * 36; if (Math.abs(x) < SQ + 6 && Math.abs(z) < SQ + 6) continue; const h = tAt(CG, x, z); if (Math.max(Math.abs(x), Math.abs(z)) > LIM - 30 || h < -0.4 || h > 130 || slope(x, z) > 0.55 || B.riverD(x, z) < 4 || Object.values(KS).some(([kx, kz]) => Math.hypot(x - kx, z - kz) < SITE_R + 16) || B.camps.some((c) => Math.hypot(x - c.x, z - c.z) < 26)) continue; B.spawns.push({ x, z, lv: Math.max(1, Math.round(B.lvAt(x, z) + (hashf(i + 2) - 0.5) * 2)), reg: B.region(x, z).id }); }
-    B.TG = TG; B.CG = CG; B.ready = true; B.genMs = Math.round(performance.now() - t0);
+    VE.forEach((v) => {
+      const T = { k: v.k, id: v.id, x: v.x, z: v.z, r: v.id === 'river' ? 44 : 58 }; T.site = v.id === 'river' ? site(v.x, v.z, 44, 10, 1.4) : site(v.x, v.z, 58, 40, 0.5); T.h = T.site.h; B.TOWERS.push(T);
+      VK[v.id].forEach((n, i) => {
+        if (n === '嘩嘩大鯨魚') { KS[n] = [plainLake.x, plainLake.z]; return; }
+        const a0 = [0.8, -0.8, Math.PI][i]; let best = null;
+        for (let t = 0; t < 12 && !best; t++) { const a = a0 + (t ? (t % 2 ? 1 : -1) * Math.ceil(t / 2) * 0.12 : 0), [x, z] = ringAt(v, a, RR + 34); if (B.riverD(x, z) > 50) best = [x, z]; }
+        if (!best) best = ringAt(v, a0, RR + 34); KS[n] = best; site(best[0], best[1], SITE_R, 18);
+      });
+      // 營地：大路接進來的地方、左右兩側、塔前
+      [0.22, 1.75, -1.75, Math.PI * 0.62].forEach((a) => { const [rx, rz] = snapRoad(...ringAt(v, a, RR)), d = Math.hypot(rx - v.x, rz - v.z) || 1, x = rx + ((rx - v.x) / d) * 11, z = rz + ((rz - v.z) / d) * 11; if (B.riverD(x, z) < 12 || nearSite(x, z, 4)) return; site(x, z, 7, 8); B.camps.push({ x, z, v: v.id }); });
+      const tx = v.x + v.ux * (T.r + 24) - v.uz * 11, tz = v.z + v.uz * (T.r + 24) + v.ux * 11; if (v.id !== 'river') { site(tx, tz, 7, 6); B.camps.push({ x: tx, z: tz, v: v.id, tower: true }); }
+    });
+    [[6, -540], [540, -10], [-540, 30], [-30, 540]].forEach(([x, z], i) => { const ox = x + (i % 2 ? 0 : 12), oz = z + (i % 2 ? 12 : 0); site(ox, oz, 7, 8); B.camps.push({ x: ox, z: oz, v: 'sun' }); });
+    // 橋：路跨過河或湖的地方
+    for (const R of ROADS) { let run = null; const done = () => { if (!run) return; const [ax, az] = run.a, [bx, bz] = run.b, L = Math.hypot(bx - ax, bz - az) || 1, ux = (bx - ax) / L, uz = (bz - az) / L, e = 3.5, A = [ax - ux * e, az - uz * e], Bp = [bx + ux * e, bz + uz * e], y = Math.max(0.3, hRaw(A[0], A[1]), hRaw(Bp[0], Bp[1])) + 0.25;
+        const b = { ax: A[0], az: A[1], bx: Bp[0], bz: Bp[1], y, w: 6 }; B.bridges.push(b); hAdd(HB, b, Math.min(b.ax, b.bx) - 8, Math.min(b.az, b.bz) - 8, Math.max(b.ax, b.bx) + 8, Math.max(b.az, b.bz) + 8); run = null; };
+      for (let k = 1; k < R.length; k++) { const [ax, az] = R[k - 1], [bx, bz] = R[k], L = Math.hypot(bx - ax, bz - az); for (let s = 0; s <= L; s += 1.5) { const x = ax + ((bx - ax) * s) / L, z = az + ((bz - az) * s) / L; if (Math.abs(x) < SQ + 8 && Math.abs(z) < SQ + 8) { done(); continue; } if (B.riverD(x, z) < 1.2) { if (!run) run = { a: [x, z], b: [x, z] }; else run.b = [x, z]; } else done(); } } done(); }
+    regGrid(); B.ready = true; B.genMs = Math.round(performance.now() - t0);
   };
-  const hashf = (i) => { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+  const nearSite = (x, z, pad) => { for (const s of hGet(HS, x, z)) if (Math.hypot(x - s.x, z - s.z) < s.r + pad) return true; return false; };
+  const nearBridge = (x, z, pad) => { for (const b of hGet(HB, x, z)) if (segD(x, z, b.ax, b.az, b.bx, b.bz) < pad) return true; return false; };
+  const bridgeY = (x, z) => { let y = null; for (const b of hGet(HB, x, z)) { const L = Math.hypot(b.bx - b.ax, b.bz - b.az) || 1, t = ((x - b.ax) * (b.bx - b.ax) + (z - b.az) * (b.bz - b.az)) / (L * L); if (t < 0 || t > 1) continue; if (segD(x, z, b.ax, b.az, b.bx, b.bz) <= b.w / 2 + 0.3) y = Math.max(y == null ? -99 : y, b.y); } return y; };
+
+  // ───────── 擋路的東西（王身邊的柱子、塔…由 09wr_rpg 放進來）─────────
+  const SOL = [];
+  B.solid = (x, z, r, top) => { const s = { x, z, r: Math.max(r, GS * 0.75), top }; SOL.push(s); hAdd(HX, s, x - s.r, z - s.r, x + s.r, z + s.r); tiles.forEach((t) => { if (t.st === 2) solidInto(t, s); }); };
+  B.unsolid = (x, z, r) => { for (let i = SOL.length - 1; i >= 0; i--) { const s = SOL[i]; if (Math.hypot(s.x - x, s.z - z) <= r) { SOL.splice(i, 1); for (const L of HX.values()) { const k = L.indexOf(s); if (k >= 0) L.splice(k, 1); } } } tiles.forEach((t) => { if (t.st === 2 && Math.abs(t.x0 + TW / 2 - x) < TW / 2 + r + 8 && Math.abs(t.z0 + TW / 2 - z) < TW / 2 + r + 8) { t.CG = null; cgBuild(t); } }); };
+  function solidInto(t, s) { const i0 = Math.max(0, Math.ceil((s.x - s.r - t.x0) / GS)), i1 = Math.min(TC, Math.floor((s.x + s.r - t.x0) / GS)), j0 = Math.max(0, Math.ceil((s.z - s.r - t.z0) / GS)), j1 = Math.min(TC, Math.floor((s.z + s.r - t.z0) / GS)); for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) { if (Math.hypot(t.x0 + i * GS - s.x, t.z0 + j * GS - s.z) > s.r) continue; const q = j * (TC + 1) + i; if (t.CG[q] < s.top) t.CG[q] = s.top; } }
 
   // ───────── 顏色 ─────────
-  const P = {}; [['grass', 0x86b84a], ['plain', 0xa3c556], ['forest', 0x6a9a3c], ['hill', 0x8fb84e], ['high', 0xa9c47a], ['mesaT', 0xd0a868], ['mesaC', 0xc2703f], ['rock', 0x9e978a], ['rock2', 0x857f74], ['snow', 0xf3f6f8], ['snowG', 0xd9e4e0], ['road', 0xe3c99a], ['road2', 0xc9a774], ['sand', 0xd9c08a], ['bed', 0x6f8f74], ['dirt', 0xb98a55]].forEach(([k, v]) => (P[k] = new THREE.Color(v)));
-  const cA = new THREE.Color();
-  const mixC = (o, c, k) => { o.r += (c.r - o.r) * k; o.g += (c.g - o.g) * k; o.b += (c.b - o.b) * k; };
-  function colorAt(ix, iz, out, o) {
-    const x = -BIG + ix * GS, z = -BIG + iz * GS, q = iz * GN + ix, h = TG[q], l = TG[q - (ix > 0 ? 1 : 0)], r = TG[q + (ix < GN - 1 ? 1 : 0)], u = TG[q - (iz > 0 ? GN : 0)], d = TG[q + (iz < GN - 1 ? GN : 0)], sl = Math.hypot(r - l, d - u) / (2 * GS);
-    const wP = rw(x, z, RG.plain, 300), wF = rw(x, z, RG.forest, 320), wHi = rw(x, z, RG.high, 260), wM = rw(x, z, RG.mesa, 280), wH = rw(x, z, RG.hills, 300), n = vn(x / 40, z / 40, 71), n2 = ih(ix, iz, 3);
-    cA.copy(P.grass); mixC(cA, P.plain, wP * 0.9); mixC(cA, P.forest, Math.min(1, wF * 1.2) * (0.6 + 0.4 * n)); mixC(cA, P.hill, wH * 0.6); mixC(cA, P.high, wHi * 0.8);
-    if (wM > 0.15) { mixC(cA, P.mesaT, Math.min(1, wM * 1.4) * 0.7); if (sl > 0.45) mixC(cA, P.mesaC, Math.min(1, wM * 2)); }
-    const snowy = z < -600 || h > 105;
-    if (sl > 0.62) mixC(cA, n > 0.5 ? P.rock : P.rock2, sst(0.62, 0.95, sl));
-    if (h > 40) mixC(cA, P.rock, sst(40, 110, h) * 0.7);
-    if (snowy) mixC(cA, sl > 0.8 && h < 160 ? P.rock2 : P.snow, sst(-640, -720, z) * 0.6 + sst(100, 150, h + n * 30) * (sl > 0.9 ? 0.4 : 1));
-    if (z < -600) mixC(cA, P.snowG, 0.45 * sst(-600, -660, z) * (1 - sst(0.62, 0.9, sl)));
+  const P = {}; [['hub', 0x86b84a], ['snow', 0xf2f7ff], ['snowG', 0xdde6f6], ['high', 0x9fbf9a], ['mesa', 0xd3a96a], ['mesaC', 0xc2683a], ['hills', 0xb3ae4a], ['plain', 0xbfd05c], ['forest', 0x4e8a34], ['river', 0x6fb05c], ['rock', 0x9e978a], ['rock2', 0x857f74], ['road', 0xe3c99a], ['road2', 0xc9a774], ['sand', 0xd9c08a], ['bed', 0x6f8f74], ['lav', 0xb9aee0]].forEach(([k, v]) => (P[k] = new THREE.Color(v)));
+  const BC = [P.snowG, P.high, P.mesa, P.hills, P.plain, P.forest, P.river, P.hub];
+  function baseCol(out, o, x, z, W) {
+    if (!W) W = weights(x, z); let r = 0, g = 0, b = 0; for (let k = 0; k < 8; k++) { const w = W[k]; if (w < 0.002) continue; r += BC[k].r * w; g += BC[k].g * w; b += BC[k].b * w; }
+    const n = vn(x / 40, z / 40, 71) - 0.5; r *= 1 + n * 0.12; g *= 1 + n * 0.1; b *= 1 + n * 0.08; out[o] = r; out[o + 1] = g; out[o + 2] = b; out[o + 3] = W[0]; out[o + 4] = W[2];
+  }
+  const cA = new THREE.Color(); const mixC = (o, c, k) => { o.r += (c.r - o.r) * k; o.g += (c.g - o.g) * k; o.b += (c.b - o.b) * k; };
+  // 底色＋坡度、高度、雪、河、路
+  function finishCol(out, o, x, z, h, sl, wSnow, wMesa, n2) {
+    cA.setRGB(out[o], out[o + 1], out[o + 2]); const n = vn(x / 40, z / 40, 72);
+    if (wMesa > 0.15 && sl > 0.45) mixC(cA, P.mesaC, Math.min(1, wMesa * 2));
+    if (sl > 0.62) mixC(cA, n > 0.5 ? P.rock : P.rock2, sst(0.62, 0.95, sl) * (wMesa > 0.3 ? 0.4 : 1));
+    if (h > 60) mixC(cA, P.rock, sst(60, 130, h) * 0.6);
+    const sn = Math.max(wSnow * sst(0.25, 0.6, wSnow) * (sl > 0.85 ? 0.5 : 1), sst(110, 160, h + n * 30) * (sl > 0.9 ? 0.4 : 1)); if (sn > 0) mixC(cA, sl > 0.75 && n > 0.6 ? P.lav : P.snow, sn);
     const rd = B.riverD(x, z); if (rd < 4) mixC(cA, rd < 0 ? P.bed : P.sand, rd < 0 ? 1 : 1 - rd / 4);
-    const pd = fld(PD, x, z); if (pd < 4.5) mixC(cA, pd < 2.6 ? P.road : P.road2, pd < 2.6 ? 0.92 : 0.6 * (1 - (pd - 2.6) / 1.9));
+    const pd = roadD(x, z); if (pd < 1.5) mixC(cA, pd < -0.4 ? P.road : P.road2, pd < -0.4 ? 0.92 : 0.6 * (1 - (pd + 0.4) / 1.9));
     const j = 0.94 + n2 * 0.12; out[o] = cA.r * j; out[o + 1] = cA.g * j; out[o + 2] = cA.b * j;
   }
 
-  // ───────── 地形分塊＋三種細度 ─────────
-  let chunks = null, terrMat = null, group = null, LODS = [1, 2, 4], LD = [170, 430];
-  function chunkGeo(ci, cj, s) {
-    const n = CH / s, gx = ci * CH, gz = cj * CH, nv = (n + 1) * (n + 1), ns = 4 * (n + 1), pos = new Float32Array((nv + ns) * 3), col = new Float32Array((nv + ns) * 3), idx = [];
-    let v = 0;
-    for (let j = 0; j <= n; j++) for (let i = 0; i <= n; i++) { const ix = gx + i * s, iz = gz + j * s; pos[v * 3] = -BIG + ix * GS; pos[v * 3 + 1] = TG[iz * GN + ix]; pos[v * 3 + 2] = -BIG + iz * GS; colorAt(ix, iz, col, v * 3); v++; }
-    for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) { const cx = -BIG + (gx + (i + 0.5) * s) * GS, cz = -BIG + (gz + (j + 0.5) * s) * GS; if (Math.abs(cx) < SQ && Math.abs(cz) < SQ) continue; const a = j * (n + 1) + i, b = a + 1, c = a + n + 1, d = c + 1; idx.push(a, c, b, b, c, d); }
-    // 裙邊：塊和塊之間細度不一樣時不會露縫
+  // ───────── 地形塊（240 公尺一塊；資料慢慢算，最近用過的留著）─────────
+  const tiles = new Map(); let tick = 0;
+  const tKey = (i, j) => j * 64 + i;
+  const tileOf = (x, z) => [Math.floor((x + BIG) / TW), Math.floor((z + BIG) / TW)];
+  function tileGet(i, j) { if (i < 0 || j < 0 || i >= NT || j >= NT) return null; const k = tKey(i, j); let t = tiles.get(k); if (!t) { t = { i, j, k, x0: -BIG + i * TW, z0: -BIG + j * TW, st: 0, used: tick, m: null, lod: -1 }; tiles.set(k, t); } t.used = tick; return t; }
+  // 一塊的資料：T＝地面高度（多一圈邊，算坡度用），CG＝碰撞高度（含樹幹、石頭、橋、柱子），COL＝顏色
+  function* genTile(t) {
+    const T = new Float32Array(TP * TP), BCOL = new Float32Array((TC + 1) * (TC + 1) * 5); t.T = T;
+    for (let jz = 0; jz < TP; jz++) { const z = t.z0 + (jz - 1) * GS; for (let jx = 0; jx < TP; jx++) { const x = t.x0 + (jx - 1) * GS, core = jx >= 1 && jz >= 1 && jx <= TC + 1 && jz <= TC + 1; T[jz * TP + jx] = hRaw(x, z, core ? BCOL.subarray(((jz - 1) * (TC + 1) + jx - 1) * 5) : null); } yield; }
+    const COL = new Float32Array((TC + 1) * (TC + 1) * 3);
+    for (let iz = 0; iz <= TC; iz++) { for (let ix = 0; ix <= TC; ix++) { const q = (iz + 1) * TP + ix + 1, h = T[q], sl = Math.hypot(T[q + 1] - T[q - 1], T[q + TP] - T[q - TP]) / (2 * GS), c = iz * (TC + 1) + ix, bo = c * 5; COL[c * 3] = BCOL[bo]; COL[c * 3 + 1] = BCOL[bo + 1]; COL[c * 3 + 2] = BCOL[bo + 2];
+        finishCol(COL, c * 3, t.x0 + ix * GS, t.z0 + iz * GS, h, sl, BCOL[bo + 3], BCOL[bo + 4], ih(t.i * TC + ix, t.j * TC + iz, 3)); } if (iz % 12 === 11) yield; }
+    t.COL = COL; t.W = new Float32Array((TC + 1) * (TC + 1) * 2); for (let c = 0; c < (TC + 1) * (TC + 1); c++) { t.W[c * 2] = BCOL[c * 5 + 3]; t.W[c * 2 + 1] = BCOL[c * 5 + 4]; }
+    decorate(t); yield; cgBuild(t); spawnsOf(t); t.st = 2; t.used = tick;
+  }
+  const tH = (t, x, z) => { const fx = (x - t.x0) / GS + 1, fz = (z - t.z0) / GS + 1, ix = Math.min(TP - 2, Math.max(0, fx | 0)), iz = Math.min(TP - 2, Math.max(0, fz | 0)), u = fx - ix, v = fz - iz, q = iz * TP + ix, T = t.T; return T[q] + (T[q + 1] - T[q]) * u + (T[q + TP] - T[q]) * v + (T[q] - T[q + 1] - T[q + TP] + T[q + TP + 1]) * u * v; };
+  const tSl = (t, x, z) => (Math.hypot(tH(t, x + 2, z) - tH(t, x - 2, z), tH(t, x, z + 2) - tH(t, x, z - 2)) / 4);
+  function cgBuild(t) {
+    const N = TC + 1, CG = (t.CG = new Float32Array(N * N)); for (let iz = 0; iz < N; iz++) for (let ix = 0; ix < N; ix++) CG[iz * N + ix] = t.T[(iz + 1) * TP + ix + 1];
+    const tr = (x, z, r, top) => solidInto(t, { x, z, r: Math.max(r, GS * 0.75), top });
+    t.trees.forEach((q) => tr(q.x, q.z, 1.2 * q.s, q.y + 20 * q.s)); t.rocks.forEach((q) => { if (q.s > 1.6) tr(q.x, q.z, q.s * 0.95, q.y + q.s * 1.3); });
+    for (let iz = 0; iz < N; iz++) for (let ix = 0; ix < N; ix++) { const x = t.x0 + ix * GS, z = t.z0 + iz * GS, y = bridgeY(x, z); if (y != null && CG[iz * N + ix] < y) CG[iz * N + ix] = y; }
+    const seen = new Set(); for (let z = t.z0; z <= t.z0 + TW + HC; z += HC) for (let x = t.x0; x <= t.x0 + TW + HC; x += HC) for (const s of hGet(HX, Math.min(x, t.x0 + TW), Math.min(z, t.z0 + TW))) if (!seen.has(s)) { seen.add(s); solidInto(t, s); }
+  }
+  // 樹、石頭、花叢：用固定的格點＋雜湊決定，同一塊每次算出來都一樣
+  // 樹的種類：t 0 松樹、1 圓樹；c 0 一般、1 雪、2 秋天橘、3 金黃、4 青綠
+  const TD = [0.3, 0.12, 0.025, 0.3, 0.05, 0.75, 0.28, 0.12];
+  function decorate(t) {
+    const trees = (t.trees = []), rocks = (t.rocks = []), bushes = (t.bushes = []);
+    const ok = (x, z, pad) => Math.hypot(x, z) < 2780 && !(Math.abs(x) < SQ + 4 && Math.abs(z) < SQ + 4) && roadD(x, z) > pad && B.riverD(x, z) > pad * 0.7 && !nearBridge(x, z, 8) && !nearSite(x, z, pad + 6);
+    for (let gz = t.z0; gz < t.z0 + TW; gz += 15) for (let gx = t.x0; gx < t.x0 + TW; gx += 15) {
+      const i = Math.round((gz + BIG) / 15) * 400 + Math.round((gx + BIG) / 15), x = gx + hashf(i * 3.1) * 15, z = gz + hashf(i * 7.7) * 15, W = weights(x, z);
+      let d = 0; for (let k = 0; k < 8; k++) d += W[k] * TD[k]; const fm = sst(-0.15, 0.4, fbm(x / 240 + 3, z / 240 - 9, 2, 61)), r = Math.hypot(x, z), e = sst(2550, 2700, r);
+      d = d * (0.25 + 1.1 * fm) + e * 0.3; if (hashf(i * 1.37 + 5) > d) continue; const h = tH(t, x, z); if (h < -0.4 || h > 175 || tSl(t, x, z) > 0.75 || !ok(x, z, 4.5)) continue;
+      let b = 7; for (let k = 0; k < 7; k++) if (W[k] > W[b]) b = k; const id = b < 7 ? VE[b].id : 'hub';
+      const pine = id === 'forest' || id === 'snow' || id === 'high' || e > 0.1 || (id !== 'hills' && id !== 'plain' && hashf(i + 9) < 0.35), s = (0.8 + hashf(i * 2.3) * 0.55) * (id === 'forest' ? 1.35 + hashf(i * 4.1) * 0.5 : 1);
+      const c = h > 110 || W[0] > 0.45 ? 1 : id === 'hills' && hashf(i + 4) < 0.7 ? 2 : id === 'plain' && hashf(i + 4) < 0.5 ? 3 : id === 'river' && hashf(i + 4) < 0.5 ? 4 : 0;
+      trees.push({ x, y: h, z, s, t: pine ? 0 : 1, c, r: hashf(i + t.x0) * 6 });
+    }
+    for (let gz = t.z0; gz < t.z0 + TW; gz += 30) for (let gx = t.x0; gx < t.x0 + TW; gx += 30) {
+      const i = Math.round((gz + BIG) / 30) * 300 + Math.round((gx + BIG) / 30), x = gx + hashf(i * 1.9 + 3) * 30, z = gz + hashf(i * 2.7 + 8) * 30, W = weights(x, z), pr = 0.08 + W[2] * 0.5 + W[0] * 0.25 + W[1] * 0.3 + W[3] * 0.1;
+      if (hashf(i + 0.3) > pr) continue; const h = tH(t, x, z); if (h < -0.5 || !ok(x, z, 3)) continue; const big = hashf(i + 77) < 0.25 + W[2] * 0.4, s = big ? 2 + hashf(i + 5) * 3 : 0.9 + hashf(i + 5) * 1.1;
+      rocks.push({ x, y: h, z, s, r: hashf(i) * 6, red: W[2] > 0.35, snow: W[0] > 0.4 || h > 110, blue: W[1] > 0.4 });
+    }
+    for (let gz = t.z0; gz < t.z0 + TW; gz += 12) for (let gx = t.x0; gx < t.x0 + TW; gx += 12) {
+      const i = Math.round((gz + BIG) / 12) * 600 + Math.round((gx + BIG) / 12), x = gx + hashf(i * 3.3 + 1) * 12, z = gz + hashf(i * 4.1 + 2) * 12, W = weights(x, z), pr = 0.05 + W[4] * 0.42 + W[7] * 0.2 + W[6] * 0.18 + W[3] * 0.16 + W[5] * 0.08;
+      if (hashf(i + 0.5) > pr) continue; const h = tH(t, x, z); if (h < -0.3 || h > 90 || !ok(x, z, 2.5)) continue; bushes.push({ x, y: h, z, s: 0.7 + hashf(i * 1.7) * 0.8, f: W[4] > 0.3 || hashf(i + 3) < 0.3, c: i % 3 });
+    }
+  }
+  // 路上小怪物出現的地方（每塊算一次就記住，之後就算這塊被丟掉也還在）
+  const spawned = new Set();
+  function spawnsOf(t) {
+    if (spawned.has(t.k)) return; spawned.add(t.k);
+    for (let gz = t.z0; gz < t.z0 + TW; gz += 48) for (let gx = t.x0; gx < t.x0 + TW; gx += 48) { const i = Math.round(gz * 7 + gx), x = gx + 6 + hashf(i * 1.1 + 4) * 36, z = gz + 6 + hashf(i * 1.3 + 6) * 36; if (Math.abs(x) < SQ + 6 && Math.abs(z) < SQ + 6) continue;
+      const h = tH(t, x, z); if (Math.hypot(x, z) > 2700 || h < -0.4 || h > 130 || tSl(t, x, z) > 0.55 || B.riverD(x, z) < 4 || nearSite(x, z, 16) || B.camps.some((c) => Math.hypot(x - c.x, z - c.z) < 26)) continue;
+      const s = { x, z, lv: Math.max(1, Math.round(B.lvAt(x, z) + (hashf(i + 2) - 0.5) * 2)), reg: B.region(x, z).id }; B.spawns.push(s); if (B.onSpawn) B.onSpawn(s); }
+  }
+
+  // ───────── 高度查詢（碰撞用）─────────
+  const cgAt = (t, x, z) => { const N = TC + 1, fx = (x - t.x0) / GS, fz = (z - t.z0) / GS, ix = Math.min(TC - 1, Math.max(0, fx | 0)), iz = Math.min(TC - 1, Math.max(0, fz | 0)), u = fx - ix, v = fz - iz, i = iz * N + ix, A = t.CG, a = A[i], b = A[i + 1], c = A[i + N], d = A[i + N + 1];
+    const mx = Math.max(a, b, c, d), mn = Math.min(a, b, c, d); if (mx - mn > 1.6) return u < 0.5 ? (v < 0.5 ? a : c) : v < 0.5 ? b : d; // 陡的地方不內插：變成一階一階的崖，走不上去
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; };
+  let lastT = null;
+  const findT = (x, z) => { if (lastT && x >= lastT.x0 && z >= lastT.z0 && x < lastT.x0 + TW && z < lastT.z0 + TW && lastT.st === 2) return lastT; const [i, j] = tileOf(x, z), t = tiles.get(tKey(i, j)); if (t && t.st === 2) { lastT = t; return t; } return null; };
+  B.h = (x, z) => { if (Math.abs(x) > BIG || Math.abs(z) > BIG) return hRaw(SC.clamp(x, -BIG, BIG), SC.clamp(z, -BIG, BIG)); const t = findT(x, z); if (t) return cgAt(t, x, z);
+    let h = hRaw(x, z); const y = bridgeY(x, z); if (y != null && y > h) h = y; for (const s of hGet(HX, x, z)) if (s.top > h && Math.hypot(x - s.x, z - s.z) <= s.r) h = s.top; return h; }; // 還沒算好的地方：直接用公式算（不含樹）
+  B.th = (x, z) => { const t = findT(x, z); return t ? tH(t, x, z) : hRaw(x, z); };
+
+  // ───────── 畫面 ─────────
+  let group = null, terrMat = null, farMat = null, LODS = [1, 2, 4], qual = 'high', cov = null, jobs = [], cur = null, poolKey = '', uCov = { value: new THREE.Vector4(1e9, 1e9, -1e9, -1e9) };
+  function tileGeo(t, s) {
+    const n = TC / s, N = TC + 1, nv = (n + 1) * (n + 1), ns = 4 * (n + 1), pos = new Float32Array((nv + ns) * 3), col = new Float32Array((nv + ns) * 3), idx = []; let v = 0;
+    for (let j = 0; j <= n; j++) for (let i = 0; i <= n; i++) { const ix = i * s, iz = j * s, c = iz * N + ix; pos[v * 3] = t.x0 + ix * GS; pos[v * 3 + 1] = t.T[(iz + 1) * TP + ix + 1]; pos[v * 3 + 2] = t.z0 + iz * GS; col[v * 3] = t.COL[c * 3]; col[v * 3 + 1] = t.COL[c * 3 + 1]; col[v * 3 + 2] = t.COL[c * 3 + 2]; v++; }
+    for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) { const cx = t.x0 + (i + 0.5) * s * GS, cz = t.z0 + (j + 0.5) * s * GS; if (Math.abs(cx) < SQ && Math.abs(cz) < SQ) continue; const a = j * (n + 1) + i, b = a + 1, c = a + n + 1, d = c + 1; idx.push(a, c, b, b, c, d); }
     const edges = [[], [], [], []]; for (let k = 0; k <= n; k++) { edges[0].push(k); edges[1].push(n * (n + 1) + k); edges[2].push(k * (n + 1)); edges[3].push(k * (n + 1) + n); }
     for (const E of edges) { const base = v; for (const e of E) { pos[v * 3] = pos[e * 3]; pos[v * 3 + 1] = pos[e * 3 + 1] - 7; pos[v * 3 + 2] = pos[e * 3 + 2]; col[v * 3] = col[e * 3] * 0.7; col[v * 3 + 1] = col[e * 3 + 1] * 0.7; col[v * 3 + 2] = col[e * 3 + 2] * 0.7; v++; }
       for (let k = 0; k < E.length - 1; k++) { const a = E[k], b = E[k + 1], c = base + k, d = base + k + 1; idx.push(a, c, b, b, c, d, a, b, c, b, d, c); } }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals(); g.computeBoundingSphere(); return g;
   }
-  B.build = (root, qual) => {
-    B.gen(); group = new THREE.Group(); root.add(group);
-    if (qual === 'low') { LODS = [2, 4, 4]; LD = [130, 330]; } else if (qual === 'mid') { LODS = [1, 2, 4]; LD = [130, 360]; }
+  B.build = (root, q) => {
+    B.gen(); group = new THREE.Group(); root.add(group); B.root = root; qual = q || 'high';
+    if (qual === 'low') LODS = [2, 4, 4]; else LODS = [1, 2, 4];
     terrMat = SC.ink.patch(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, flatShading: true }));
-    chunks = [];
-    for (let cj = 0; cj < NC; cj++) for (let ci = 0; ci < NC; ci++) { const x0 = -BIG + ci * CH * GS, z0 = -BIG + cj * CH * GS, x1 = x0 + CH * GS, z1 = z0 + CH * GS; if (x0 >= -SQ && x1 <= SQ && z0 >= -SQ && z1 <= SQ) continue; const m = new THREE.Mesh(new THREE.BufferGeometry(), terrMat); m.receiveShadow = true; group.add(m); chunks.push({ ci, cj, cx: (x0 + x1) / 2, cz: (z0 + z1) / 2, m, lod: -1 }); }
-    buildTrees(); buildRocks(); buildBridges(); buildFar();
+    buildPools(); buildBridges(); buildFar();
     const seen = new Set(); group.traverse((o) => { if (o.material && !seen.has(o.material)) { seen.add(o.material); satPatch(o.material); } });
   };
-  // 彩脈褪色（Yen 11-26 同意的彩脈設定）：彩脈還沒恢復的地區顏色是褪的，恢復後慢慢回來。B.sat.value 1＝原色，由 09wr_rpg 依玩家所在地區調整。
-  // 在 color_fragment 後面就降飽和，墨水是後面才疊上去的，所以墨水顏色不受影響。
+  // 彩脈褪色：彩脈還沒恢復的地區顏色是褪的，恢復後慢慢回來。B.sat.value 1＝原色，由 09wr_rpg 依玩家所在地區調整。墨水是後面才疊上去的，不受影響。
   B.sat = { value: 1 };
   function satPatch(m) {
-    const prev = m.onBeforeCompile && m.onBeforeCompile !== THREE.Material.prototype.onBeforeCompile ? m.onBeforeCompile : null;
-    m.onBeforeCompile = (sh, r) => { if (prev) prev.call(m, sh, r); sh.uniforms.uSat = B.sat; sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uSat;').replace('#include <color_fragment>', '#include <color_fragment>\n{ float sl = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114)); diffuseColor.rgb = mix(vec3(sl) * vec3(1.0, 0.98, 1.02), diffuseColor.rgb, uSat); }'); };
-    m.customProgramCacheKey = () => 'rpgsat' + (prev ? 'ink' : '');
-    m.needsUpdate = true;
+    const prev = m.onBeforeCompile && m.onBeforeCompile !== THREE.Material.prototype.onBeforeCompile ? m.onBeforeCompile : null, far = m === farMat;
+    m.onBeforeCompile = (sh, r) => { if (prev) prev.call(m, sh, r); sh.uniforms.uSat = B.sat; sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uSat;').replace('#include <color_fragment>', '#include <color_fragment>\n{ float sl = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114)); diffuseColor.rgb = mix(vec3(sl) * vec3(1.0, 0.98, 1.02), diffuseColor.rgb, uSat); }'); if (far) farPatch(sh); };
+    m.customProgramCacheKey = () => 'rpgsat' + (prev ? 'ink' : '') + (far ? 'far' : ''); m.needsUpdate = true;
   }
-  B.update = (px, pz, all) => {
-    if (!chunks) return 0; let budget = all ? 999 : 2, n = 0; const want = [];
-    for (const c of chunks) { const d = Math.hypot(Math.max(0, Math.abs(px - c.cx) - 75), Math.max(0, Math.abs(pz - c.cz) - 75)), l = d < LD[0] ? 0 : d < LD[1] ? 1 : 2; if (l !== c.lod) want.push([d, c, l]); }
-    want.sort((a, b) => a[0] - b[0]);
-    for (const [, c, l] of want) { if (budget-- <= 0) break; const old = c.m.geometry; c.m.geometry = chunkGeo(c.ci, c.cj, LODS[l]); old.dispose(); c.lod = l; n++; }
-    return n;
-  };
-  B.tris = () => (chunks ? chunks.reduce((s, c) => s + (c.m.geometry.index ? c.m.geometry.index.count / 3 : 0), 0) : 0);
+  // 遠景地形：近的地形塊已經蓋住的那一塊方形不畫（不會跟近景重疊閃爍）
+  function farPatch(sh) {
+    sh.uniforms.uCov = uCov; sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec2 vFW;').replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvFW = (modelMatrix * vec4(transformed, 1.0)).xz;');
+    sh.fragmentShader = sh.fragmentShader.replace('uniform float uSat;', 'uniform float uSat; uniform vec4 uCov; varying vec2 vFW;').replace('void main() {', 'void main() {\n if (vFW.x > uCov.x && vFW.y > uCov.y && vFW.x < uCov.z && vFW.y < uCov.w) discard;');
+  }
+  function buildFar() {
+    const E = 4400, S = 64, n = Math.round((2 * E) / S), pos = new Float32Array((n + 1) * (n + 1) * 3), col = new Float32Array((n + 1) * (n + 1) * 3), idx = [], tmp = new Float32Array(5);
+    for (let j = 0; j <= n; j++) for (let i = 0; i <= n; i++) { const x = -E + i * S, z = -E + j * S, v = j * (n + 1) + i, cx = SC.clamp(x, -BIG, BIG), cz = SC.clamp(z, -BIG, BIG), pd = roadD(cx, cz); let h = Math.abs(x) < SQ && Math.abs(z) < SQ ? -2 : natural(x, z, pd);
+      baseCol(tmp, 0, x, z, lastW); if (h < -1) { tmp[0] = 0.16; tmp[1] = 0.5; tmp[2] = 0.6; } else { const sl = Math.min(1.5, Math.abs(natural(x + 20, z, pd) - h) / 20); finishColFar(tmp, x, z, h, sl); }
+      pos[v * 3] = x; pos[v * 3 + 1] = h; pos[v * 3 + 2] = z; col[v * 3] = tmp[0]; col[v * 3 + 1] = tmp[1]; col[v * 3 + 2] = tmp[2]; }
+    for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) { const a = j * (n + 1) + i, b = a + 1, c = a + n + 1, d = c + 1; idx.push(a, c, b, b, c, d); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.setIndex(idx); g.computeVertexNormals();
+    farMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true, polygonOffset: true, polygonOffsetFactor: 3, polygonOffsetUnits: 6 });
+    const m = new THREE.Mesh(g, farMat); m.frustumCulled = false; m.receiveShadow = false; group.add(m);
+    // 再遠一圈有雪頂的大山影子
+    const p2 = [], c2 = [], cone = new THREE.ConeGeometry(1, 1, 6, 1).toNonIndexed(), M = new THREE.Matrix4(), Q = new THREE.Quaternion(), Sv = new THREE.Vector3(), Tv = new THREE.Vector3(), Eu = new THREE.Euler();
+    const add = (x, y, z, sx, sy, sz, ry, c) => { Eu.set(0, ry, 0); Q.setFromEuler(Eu); M.compose(Tv.set(x, y, z), Q, Sv.set(sx, sy, sz)); const gg = cone.clone().applyMatrix4(M), p = gg.attributes.position.array; for (let i = 0; i < p.length; i += 3) { p2.push(p[i], p[i + 1], p[i + 2]); c2.push(c.r, c.g, c.b); } gg.dispose(); };
+    const rk = new THREE.Color(0x8b8f96), rk2 = new THREE.Color(0x7a8088), sn = new THREE.Color(0xf6f8fb);
+    for (let i = 0; i < 70; i++) { const a = (i / 70) * Math.PI * 2 + hashf(i) * 0.05, r = 4700 + hashf(i + 3) * 700, x = Math.sin(a) * r, z = -Math.cos(a) * r, h = 600 + hashf(i + 7) * 700, w = 500 + hashf(i + 11) * 500;
+      add(x, h / 2, z, w, h, w * (0.8 + hashf(i + 2) * 0.4), hashf(i + 5) * 3, i % 2 ? rk : rk2); add(x, h * 0.84, z, w * 0.33, h * 0.33, w * 0.33 * (0.8 + hashf(i + 2) * 0.4), hashf(i + 5) * 3, sn); }
+    const g2 = new THREE.BufferGeometry(); g2.setAttribute('position', new THREE.Float32BufferAttribute(p2, 3)); g2.setAttribute('color', new THREE.Float32BufferAttribute(c2, 3)); g2.computeVertexNormals();
+    const m2 = new THREE.Mesh(g2, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true })); m2.frustumCulled = false; group.add(m2);
+  }
+  function finishColFar(o, x, z, h, sl) { const W = lastW, ws = W ? W[0] : 0, wm = W ? W[2] : 0; finishCol(o, 0, x, z, h, sl, ws, wm, 0.5); }
 
-  const IM = (geo, mat, list) => { const m = new THREE.InstancedMesh(geo, mat, Math.max(1, list.length)); m.count = list.length; m.castShadow = true; m.receiveShadow = true; return m; };
-  const fitIM = (m) => { if (m.computeBoundingSphere && Object.prototype.hasOwnProperty.call(THREE.InstancedMesh.prototype, 'computeBoundingSphere')) m.computeBoundingSphere(); else m.frustumCulled = false; };
-  // 樹分成 3×3 區，每區自己的 InstancedMesh，看不到的那幾區整區不畫
-  function buildTrees() {
-    const O = new THREE.Object3D(), cc = new THREE.Color(), tm = new THREE.MeshStandardMaterial({ color: 0x7a4a2c, roughness: 0.9, flatShading: true }), pm = new THREE.MeshStandardMaterial({ color: 0x5f9a3c, roughness: 0.85, flatShading: true }), pm2 = new THREE.MeshStandardMaterial({ color: 0x74ab45, roughness: 0.85, flatShading: true }), rm = new THREE.MeshStandardMaterial({ color: 0x86b840, roughness: 0.85, flatShading: true });
-    const gTr = new THREE.CylinderGeometry(0.55, 0.75, 1, 5), gCone = new THREE.ConeGeometry(1, 1, 7), gRound = new THREE.IcosahedronGeometry(1, 0);
-    for (let gj = 0; gj < 3; gj++) for (let gi = 0; gi < 3; gi++) {
-      const L = B.trees.filter((t) => Math.min(2, Math.floor((t.x + BIG) / 600)) === gi && Math.min(2, Math.floor((t.z + BIG) / 600)) === gj), pines = L.filter((t) => !t.t), rounds = L.filter((t) => t.t);
-      const tr = IM(gTr, tm, L), lo = IM(gCone, pm, pines), hi = IM(gCone, pm2, pines), cr = IM(gRound, rm, rounds), cr2 = IM(gRound, rm, rounds);
-      let a = 0, b = 0; L.forEach((t, k) => { const s = t.s * 1.25; O.rotation.set(0, hashf(k + t.x) * 6, 0);
-        if (!t.t) { O.position.set(t.x, t.y + 1.5 * s, t.z); O.scale.set(s, 3 * s, s); O.updateMatrix(); tr.setMatrixAt(k, O.matrix); O.position.set(t.x, t.y + 6 * s, t.z); O.scale.set(4.2 * s, 7.5 * s, 4.2 * s); O.updateMatrix(); lo.setMatrixAt(a, O.matrix); O.position.set(t.x, t.y + 10.5 * s, t.z); O.scale.set(3 * s, 6 * s, 3 * s); O.updateMatrix(); hi.setMatrixAt(a, O.matrix);
-          const k2 = 0.85 + hashf(k * 3 + t.z) * 0.25; if (t.snow) { lo.setColorAt(a, cc.setRGB(1.25, 1.35, 1.3)); hi.setColorAt(a, cc.setRGB(1.6, 1.65, 1.6)); } else { lo.setColorAt(a, cc.setRGB(k2, k2, k2)); hi.setColorAt(a, cc.setRGB(k2, k2 * 1.02, k2)); } a++; }
-        else { O.position.set(t.x, t.y + 2.2 * s, t.z); O.scale.set(0.9 * s, 4.4 * s, 0.9 * s); O.updateMatrix(); tr.setMatrixAt(k, O.matrix); const k2 = hashf(k * 5 + t.x); O.position.set(t.x, t.y + 6.6 * s, t.z); O.scale.set(4.2 * s, 3.6 * s, 4 * s); O.updateMatrix(); cr.setMatrixAt(b, O.matrix); O.position.set(t.x + 1.6 * s, t.y + 5.4 * s, t.z + 0.8 * s); O.scale.set(2.6 * s, 2.4 * s, 2.6 * s); O.updateMatrix(); cr2.setMatrixAt(b, O.matrix);
-          const c1 = k2 < 0.18 ? cc.setRGB(1.25, 0.95, 0.45) : k2 < 0.3 ? cc.setRGB(1.3, 0.75, 0.6) : cc.setRGB(0.85 + k2 * 0.2, 0.9 + k2 * 0.15, 0.85); cr.setColorAt(b, c1); cr2.setColorAt(b, c1.multiplyScalar(0.9)); b++; } });
-      [tr, lo, hi, cr, cr2].forEach((m) => { if (!m.count) return; m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; fitIM(m); group.add(m); });
-    }
+  // 樹、石頭、花叢：固定數量的 InstancedMesh，玩家附近 5×5 塊換過才重填
+  const POOL = {}; const CAP = { tr: 5000, lo: 4000, hi: 4000, cr: 3000, cr2: 3000, rk: 2500, bu: 6000, fl: 9000 };
+  function buildPools() {
+    const mk = (k, geo, mat, sh) => { const m = new THREE.InstancedMesh(geo, mat, CAP[k]); m.count = 0; m.castShadow = sh !== false; m.receiveShadow = true; m.frustumCulled = false; m.setColorAt(0, new THREE.Color(1, 1, 1)); POOL[k] = m; group.add(m); };
+    mk('tr', new THREE.CylinderGeometry(0.55, 0.75, 1, 5), new THREE.MeshStandardMaterial({ color: 0x7a4a2c, roughness: 0.9, flatShading: true }));
+    const cone = new THREE.ConeGeometry(1, 1, 7), ico = new THREE.IcosahedronGeometry(1, 0);
+    mk('lo', cone, new THREE.MeshStandardMaterial({ color: 0x5f9a3c, roughness: 0.85, flatShading: true })); mk('hi', cone, new THREE.MeshStandardMaterial({ color: 0x74ab45, roughness: 0.85, flatShading: true }));
+    const rm = new THREE.MeshStandardMaterial({ color: 0x86b840, roughness: 0.85, flatShading: true }); mk('cr', ico, rm); mk('cr2', ico, rm);
+    mk('rk', new THREE.DodecahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ color: 0xc9c2b2, roughness: 0.9, flatShading: true }));
+    mk('bu', ico, new THREE.MeshStandardMaterial({ color: 0x6aa84c, roughness: 0.9, flatShading: true })); mk('fl', ico, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.7, flatShading: true }), false);
   }
-  function buildRocks() {
-    const O = new THREE.Object3D(), cc = new THREE.Color();
-    const rk = IM(new THREE.DodecahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ color: 0xc9c2b2, roughness: 0.9, flatShading: true }), B.rocks);
-    B.rocks.forEach((r, k) => { O.position.set(r.x, r.y + r.s * 0.35, r.z); O.rotation.set(r.r, r.r * 1.7, 0); O.scale.set(r.s * 1.3, r.s, r.s * 1.1); O.updateMatrix(); rk.setMatrixAt(k, O.matrix); rk.setColorAt(k, r.snow ? cc.setRGB(1.15, 1.18, 1.2) : r.red ? cc.setRGB(1.05, 0.68, 0.5) : cc.setRGB(0.92 + (k % 5) * 0.03, 0.92, 0.9)); });
-    const bu = IM(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ color: 0x6aa84c, roughness: 0.9, flatShading: true }), B.bushes), fl = B.bushes.filter((b) => b.f), fm = IM(new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.7, flatShading: true }), fl.length ? fl.concat(fl, fl) : []);
-    const FC = [[1.0, 0.62, 0.74], [0.62, 0.72, 1.0], [1.0, 0.95, 0.6]];
-    B.bushes.forEach((b, k) => { O.position.set(b.x, b.y + b.s * 0.45, b.z); O.rotation.set(0, k, 0); O.scale.set(b.s * 1.4, b.s, b.s * 1.3); O.updateMatrix(); bu.setMatrixAt(k, O.matrix); bu.setColorAt(k, cc.setRGB(0.85 + (k % 4) * 0.06, 0.95, 0.85)); });
-    let q = 0; fl.forEach((b, k) => { for (let i = 0; i < 3; i++) { O.position.set(b.x + (hashf(k * 9 + i) - 0.5) * b.s * 2.2, b.y + b.s * 1.0, b.z + (hashf(k * 7 + i) - 0.5) * b.s * 2.2); O.scale.setScalar(0.32); O.updateMatrix(); fm.setMatrixAt(q, O.matrix); const c = FC[(b.c + i) % 3]; fm.setColorAt(q, cc.setRGB(c[0], c[1], c[2])); q++; } });
-    [rk, bu, fm].forEach((m) => { if (!m.count) return; m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; fitIM(m); if (m === fm) m.castShadow = false; group.add(m); });
+  const O = new THREE.Object3D(), cc = new THREE.Color(), FC = [[1.0, 0.62, 0.74], [0.62, 0.72, 1.0], [1.0, 0.95, 0.6]];
+  const LEAF = [[1, 1, 1], [1.3, 1.38, 1.34], [1.45, 0.78, 0.38], [1.35, 1.12, 0.45], [0.8, 1.05, 1.0]];
+  function fillPools(list) {
+    const n = {}; for (const k in POOL) n[k] = 0;
+    const put = (k, c) => { const m = POOL[k], i = n[k]; if (i >= CAP[k]) return; O.updateMatrix(); m.setMatrixAt(i, O.matrix); if (c) m.setColorAt(i, c); n[k] = i + 1; };
+    for (const t of list) {
+      for (const q of t.trees) { const s = q.s * 1.25, L = LEAF[q.c]; O.rotation.set(0, q.r, 0);
+        if (!q.t) { O.position.set(q.x, q.y + 1.5 * s, q.z); O.scale.set(s, 3 * s, s); put('tr', cc.setRGB(1, 1, 1)); const k2 = 0.85 + hashf(q.x + q.z) * 0.25;
+          O.position.set(q.x, q.y + 6 * s, q.z); O.scale.set(4.2 * s, 7.5 * s, 4.2 * s); put('lo', cc.setRGB(L[0] * k2, L[1] * k2, L[2] * k2)); O.position.set(q.x, q.y + 10.5 * s, q.z); O.scale.set(3 * s, 6 * s, 3 * s); put('hi', cc.setRGB(L[0] * k2 * 1.05, L[1] * k2 * 1.05, L[2] * k2)); }
+        else { O.position.set(q.x, q.y + 2.2 * s, q.z); O.scale.set(0.9 * s, 4.4 * s, 0.9 * s); put('tr', cc.setRGB(1, 1, 1)); const k2 = hashf(q.x * 3 + q.z), c1 = q.c ? cc.setRGB(L[0] * (0.9 + k2 * 0.2), L[1] * (0.9 + k2 * 0.2), L[2]) : k2 < 0.18 ? cc.setRGB(1.25, 0.95, 0.45) : k2 < 0.3 ? cc.setRGB(1.3, 0.75, 0.6) : cc.setRGB(0.85 + k2 * 0.2, 0.9 + k2 * 0.15, 0.85);
+          O.position.set(q.x, q.y + 6.6 * s, q.z); O.scale.set(4.2 * s, 3.6 * s, 4 * s); put('cr', c1); O.position.set(q.x + 1.6 * s, q.y + 5.4 * s, q.z + 0.8 * s); O.scale.set(2.6 * s, 2.4 * s, 2.6 * s); put('cr2', c1.multiplyScalar(0.9)); } }
+      for (const r of t.rocks) { O.position.set(r.x, r.y + r.s * 0.35, r.z); O.rotation.set(r.r, r.r * 1.7, 0); O.scale.set(r.s * 1.3, r.s, r.s * 1.1); put('rk', r.snow ? cc.setRGB(1.15, 1.18, 1.2) : r.red ? cc.setRGB(1.05, 0.62, 0.45) : r.blue ? cc.setRGB(0.85, 0.9, 1.08) : cc.setRGB(0.92 + (r.s % 0.1), 0.92, 0.9)); }
+      for (const b of t.bushes) { O.position.set(b.x, b.y + b.s * 0.45, b.z); O.rotation.set(0, b.x, 0); O.scale.set(b.s * 1.4, b.s, b.s * 1.3); put('bu', cc.setRGB(0.85 + b.c * 0.06, 0.95, 0.85));
+        if (b.f) for (let i = 0; i < 3; i++) { O.position.set(b.x + (hashf(b.x * 9 + i) - 0.5) * b.s * 2.2, b.y + b.s, b.z + (hashf(b.z * 7 + i) - 0.5) * b.s * 2.2); O.rotation.set(0, 0, 0); O.scale.setScalar(0.32); const c = FC[(b.c + i) % 3]; put('fl', cc.setRGB(c[0], c[1], c[2])); } }
+    }
+    for (const k in POOL) { const m = POOL[k]; m.count = n[k]; m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; }
   }
   function buildBridges() {
     const pos = [], col = [], box = new THREE.BoxGeometry(1, 1, 1).toNonIndexed(), M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), T = new THREE.Vector3(), E = new THREE.Euler(), c1 = new THREE.Color(0xa86a3a), c2 = new THREE.Color(0x8a5230);
@@ -44790,28 +44889,69 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (!pos.length) return; const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.computeVertexNormals();
     const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 })); m.castShadow = m.receiveShadow = true; group.add(m);
   }
-  // 遠方的大山：地圖外面一圈有雪頂的高山（一個網格），再遠是淡淡的山影
-  function buildFar() {
-    const pos = [], col = [], cone = new THREE.ConeGeometry(1, 1, 6, 1).toNonIndexed(), cap = new THREE.ConeGeometry(1, 1, 6, 1).toNonIndexed(), M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), T = new THREE.Vector3(), E = new THREE.Euler();
-    const add = (g, x, y, z, sx, sy, sz, ry, c) => { E.set(0, ry, 0); Q.setFromEuler(E); M.compose(T.set(x, y, z), Q, S.set(sx, sy, sz)); const gg = g.clone().applyMatrix4(M), p = gg.attributes.position.array; for (let i = 0; i < p.length; i += 3) { pos.push(p[i], p[i + 1], p[i + 2]); col.push(c.r, c.g, c.b); } gg.dispose(); };
-    const rk = new THREE.Color(0x8b8f96), rk2 = new THREE.Color(0x7a8088), sn = new THREE.Color(0xf6f8fb), gr = new THREE.Color(0x6f8f62);
-    for (let i = 0; i < 90; i++) { const a = (i / 90) * Math.PI * 2 + hashf(i) * 0.05, north = Math.max(0, -Math.sin(a)), r = 1020 + hashf(i + 3) * 380, x = Math.cos(a) * r, z = Math.sin(a) * r, h = 220 + hashf(i + 7) * 260 + north * 260, w = 140 + hashf(i + 11) * 160;
-      add(cone, x, h / 2, z, w, h, w * (0.8 + hashf(i + 2) * 0.4), hashf(i + 5) * 3, i % 2 ? rk : rk2); add(cap, x, h * 0.84, z, w * 0.33, h * 0.33, w * 0.33 * (0.8 + hashf(i + 2) * 0.4), hashf(i + 5) * 3, sn);
-      if (i % 2) add(cone, x * 0.93, 45, z * 0.93, w * 1.2, 110, w, hashf(i) * 3, gr); }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.computeVertexNormals();
-    const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true })); group.add(m);
-    const ring = new THREE.Mesh(new THREE.RingGeometry(860, 2600, 48, 1), new THREE.MeshStandardMaterial({ color: 0x6f8f62, roughness: 1 })); ring.rotation.x = -Math.PI / 2; ring.position.y = 40; group.add(ring);
-  }
 
-  // ───────── 世界地圖（大地圖、小地圖用）─────────
-  B.mapCanvas = (S = 1024) => {
-    const cv = document.createElement('canvas'); cv.width = cv.height = S; const g = cv.getContext('2d'), im = g.createImageData(S, S), out = [0, 0, 0], k = (2 * BIG) / S;
-    for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) { const x = -BIG + (px + 0.5) * k, z = -BIG + (py + 0.5) * k, ix = Math.min(GN - 2, Math.max(1, Math.round((x + BIG) / GS))), iz = Math.min(GN - 2, Math.max(1, Math.round((z + BIG) / GS))), q = iz * GN + ix; colorAt(ix, iz, out, 0);
-      const sh = SC.clamp(1 + (TG[q - GN - 1] - TG[q + GN + 1]) * 0.06, 0.7, 1.25), o = (py * S + px) * 4; let r = out[0] * sh, gg = out[1] * sh, b = out[2] * sh;
-      if (TG[q] < -1) { r = 0.16; gg = 0.55; b = 0.68; }
-      im.data[o] = Math.min(255, Math.pow(r, 1 / 2.2) * 255); im.data[o + 1] = Math.min(255, Math.pow(gg, 1 / 2.2) * 255); im.data[o + 2] = Math.min(255, Math.pow(b, 1 / 2.2) * 255); im.data[o + 3] = 255; }
-    g.putImageData(im, 0, 0); return cv;
+  // ───────── 每一格：決定要哪些塊、慢慢算、慢慢換細度 ─────────
+  // all：剛進來、傳送、重生時，先把腳下附近 3×3 塊一次算好（畫面會先淡出，不會卡到玩的時候）
+  const VIS = 3, NEAR = 2;
+  B.update = (px, pz, all) => {
+    if (!group) return 0; tick++; const t0 = performance.now(), [ci, cj] = tileOf(SC.clamp(px, -BIG + 1, BIG - 1), SC.clamp(pz, -BIG + 1, BIG - 1)), budget = all ? 1e9 : 3;
+    if (!cur || cur[0] !== ci || cur[1] !== cj) { cur = [ci, cj]; jobs = []; const want = [];
+      for (let j = cj - VIS - 1; j <= cj + VIS + 1; j++) for (let i = ci - VIS - 1; i <= ci + VIS + 1; i++) { const t = tileGet(i, j); if (t && t.st !== 2) want.push([Math.max(Math.abs(i - ci), Math.abs(j - cj)) + (Math.hypot(i - ci, j - cj) * 0.01), t]); }
+      want.sort((a, b) => a[0] - b[0]); jobs = want.map((w) => w[1]); evict(ci, cj); }
+    else for (let j = cj - VIS - 1; j <= cj + VIS + 1; j++) for (let i = ci - VIS - 1; i <= ci + VIS + 1; i++) { const t = tiles.get(tKey(i, j)); if (t) t.used = tick; }
+    // 算資料
+    while (jobs.length) { const t = jobs[0]; if (all && Math.max(Math.abs(t.i - ci), Math.abs(t.j - cj)) > 1 && performance.now() - t0 > 40) break; if (!all && performance.now() - t0 > budget) break; if (!t.gen) { if (t.st === 2) { jobs.shift(); continue; } t.gen = genTile(t); t.st = 1; } const r = t.gen.next(); if (r.done) { t.gen = null; jobs.shift(); } }
+    // 換細度、蓋上畫面
+    let built = 0, ready = true;
+    for (let j = cj - VIS; j <= cj + VIS; j++) for (let i = ci - VIS; i <= ci + VIS; i++) { const t = tiles.get(tKey(i, j)); if (!t) continue; if (t.st !== 2) { ready = false; continue; } const d = Math.max(Math.abs(i - ci), Math.abs(j - cj)), l = d <= 1 ? 0 : d <= 2 ? 1 : 2;
+      if (t.lod === l) continue; if (t.lod < 0) ready = false; if (!all && (built >= 2 || performance.now() - t0 > budget + 2)) continue; meshOf(t, l); built++; }
+    if (ready) { const i0 = Math.max(0, ci - VIS), i1 = Math.min(NT - 1, ci + VIS), j0 = Math.max(0, cj - VIS), j1 = Math.min(NT - 1, cj + VIS);
+      if (!cov || cov[0] !== i0 || cov[1] !== i1 || cov[2] !== j0 || cov[3] !== j1) { cov = [i0, i1, j0, j1]; uCov.value.set(-BIG + i0 * TW + 1, -BIG + j0 * TW + 1, -BIG + (i1 + 1) * TW - 1, -BIG + (j1 + 1) * TW - 1);
+        tiles.forEach((t) => { if (t.m && (t.i < i0 || t.i > i1 || t.j < j0 || t.j > j1)) dropMesh(t); }); } }
+    // 樹、石頭：附近 5×5 塊
+    const L = []; let key = ''; for (let j = cj - NEAR; j <= cj + NEAR; j++) for (let i = ci - NEAR; i <= ci + NEAR; i++) { const t = tiles.get(tKey(i, j)); if (t && t.st === 2) { L.push(t); key += t.k + ','; } }
+    if (key !== poolKey) { poolKey = key; fillPools(L); }
+    mapTick(all ? 30 : 2.5);
+    return built;
   };
+  function meshOf(t, l) { const g = tileGeo(t, LODS[l]); if (!t.m) { t.m = new THREE.Mesh(g, terrMat); t.m.receiveShadow = true; group.add(t.m); } else { t.m.geometry.dispose(); t.m.geometry = g; } t.lod = l; }
+  function dropMesh(t) { if (!t.m) return; group.remove(t.m); t.m.geometry.dispose(); t.m = null; t.lod = -1; }
+  function evict(ci, cj) { if (tiles.size <= 150) return; const L = [...tiles.values()].filter((t) => Math.max(Math.abs(t.i - ci), Math.abs(t.j - cj)) > VIS + 1 && !t.gen).sort((a, b) => a.used - b.used); for (const t of L) { if (tiles.size <= 120) break; dropMesh(t); tiles.delete(t.k); if (lastT === t) lastT = null; } }
+  B.tris = () => { let s = 0; tiles.forEach((t) => { if (t.m && t.m.geometry.index) s += t.m.geometry.index.count / 3; }); return s; };
+  B.stat = () => ({ tiles: tiles.size, ready: [...tiles.values()].filter((t) => t.st === 2).length, meshes: [...tiles.values()].filter((t) => t.m).length, jobs: jobs.length, tris: B.tris(), map: mapJob ? mapJob.done : 1 });
+
+  // ───────── 世界地圖（慢慢畫：先畫谷外，再畫各條脈；地形底色 512 格，河、湖、路用線畫在上面，所以放大也清楚）─────────
+  const MB = 512; let mapBase = null, mapCv = null, mapJob = null, mapImg = null, mapDirty = false, mapT = 0, fogCv = null, fogHide = new Set(), regG = null;
+  const RGN = 256;
+  function regGrid() { regG = new Uint8Array(RGN * RGN); for (let j = 0; j < RGN; j++) for (let i = 0; i < RGN; i++) { const x = -BIG + ((i + 0.5) / RGN) * 2 * BIG, z = -BIG + ((j + 0.5) / RGN) * 2 * BIG, r = B.region(x, z); regG[j * RGN + i] = r.id === 'sun' ? 255 : r.v.k; } }
+  B.regionGrid = () => regG;
+  B.mapCanvas = (S = 2048) => {
+    if (mapCv) return mapCv; mapCv = document.createElement('canvas'); mapCv.width = mapCv.height = S; mapBase = document.createElement('canvas'); mapBase.width = mapBase.height = MB; const g = mapBase.getContext('2d'); g.fillStyle = '#6f8f62'; g.fillRect(0, 0, MB, MB); mapImg = g.getImageData(0, 0, MB, MB);
+    const order = []; for (let j = 0; j < MB; j += 8) for (let i = 0; i < MB; i += 8) { const x = -BIG + ((i + 4) / MB) * 2 * BIG, z = -BIG + ((j + 4) / MB) * 2 * BIG; order.push([Math.hypot(x, z), i, j]); } order.sort((a, b) => a[0] - b[0]);
+    mapJob = { order, k: 0, done: 0 }; mapTick(25); compose(); return mapCv; };
+  const tmpC = new Float32Array(5);
+  function mapTick(ms) { if (!mapJob || mapJob.done) { if (mapDirty && performance.now() - mapT > 1000) compose(); return; } const t0 = performance.now(), k = (2 * BIG) / MB, d = mapImg.data;
+    while (mapJob.k < mapJob.order.length && performance.now() - t0 < ms) { const [, bi, bj] = mapJob.order[mapJob.k++];
+      for (let j = bj; j < bj + 8; j++) for (let i = bi; i < bi + 8; i++) { const x = -BIG + (i + 0.5) * k, z = -BIG + (j + 0.5) * k, o = (j * MB + i) * 4; let r, g, b;
+        if (Math.abs(x) < SQ && Math.abs(z) < SQ) { r = 0.53; g = 0.72; b = 0.29; } else { const pd = roadD(x, z), h = natural(x, z, pd); baseCol(tmpC, 0, x, z, lastW); const h2 = natural(x + k, z + k, pd), sh = SC.clamp(1 + (h - h2) * 0.05, 0.7, 1.3);
+          if (h < -1) { r = 0.16; g = 0.55; b = 0.68; } else { finishColFar(tmpC, x, z, h, Math.min(1.5, Math.abs(h2 - h) / k)); r = tmpC[0] * sh; g = tmpC[1] * sh; b = tmpC[2] * sh; } }
+        d[o] = Math.min(255, Math.pow(r, 1 / 2.2) * 255); d[o + 1] = Math.min(255, Math.pow(g, 1 / 2.2) * 255); d[o + 2] = Math.min(255, Math.pow(b, 1 / 2.2) * 255); d[o + 3] = 255; } }
+    mapDirty = true; if (mapJob.k >= mapJob.order.length) mapJob.done = 1; if (performance.now() - mapT > 1000 || mapJob.done) compose(); }
+  // 地圖的黑幕：還沒解開塔的脈蓋黑（Yen「解開後該脈圖才從地圖中黑屏解開」）
+  B.fogVer = 0; B.setFog = (hide) => { fogHide = new Set(hide || []); fogCv = null; mapDirty = true; B.fogVer++; compose(); };
+  function fogLayer() { if (fogCv) return fogCv; fogCv = document.createElement('canvas'); fogCv.width = fogCv.height = RGN; const g = fogCv.getContext('2d'), im = g.createImageData(RGN, RGN); if (regG) for (let q = 0; q < RGN * RGN; q++) { const v = regG[q]; if (v !== 255 && fogHide.has(VE[v].id)) { im.data[q * 4] = 22; im.data[q * 4 + 1] = 18; im.data[q * 4 + 2] = 34; im.data[q * 4 + 3] = 255; } } g.putImageData(im, 0, 0); return fogCv; }
+  B.fogAt = (x, z) => { if (!regG || !fogHide.size) return false; const i = Math.floor(((x + BIG) / (2 * BIG)) * RGN), j = Math.floor(((z + BIG) / (2 * BIG)) * RGN); if (i < 0 || j < 0 || i >= RGN || j >= RGN) return false; const v = regG[j * RGN + i]; return v !== 255 && fogHide.has(VE[v].id); };
+  function compose() {
+    if (!mapCv) return; mapT = performance.now(); mapDirty = false; const S = mapCv.width, g = mapCv.getContext('2d'), k = S / (2 * BIG); mapBase.getContext('2d').putImageData(mapImg, 0, 0);
+    g.imageSmoothingEnabled = true; g.drawImage(mapBase, 0, 0, S, S); g.lineCap = g.lineJoin = 'round';
+    const line = (P, w, c) => { g.strokeStyle = c; g.lineWidth = w; g.beginPath(); P.forEach(([x, z], i) => (i ? g.lineTo : g.moveTo).call(g, (x + BIG) * k, (z + BIG) * k)); g.stroke(); };
+    RIV.forEach((r) => line(r.p, Math.max(2.5, r.w * k * 1.2), '#3f9fc0'));
+    g.fillStyle = '#3f9fc0'; LAKES.forEach((L) => { g.beginPath(); g.arc((L.x + BIG) * k, (L.z + BIG) * k, L.r * k, 0, 6.3); if (L.ri) g.arc((L.x + BIG) * k, (L.z + BIG) * k, L.ri * k, 0, 6.3, true); g.fill('evenodd'); });
+    ROADS.forEach((r) => line(r, Math.max(3.4, 8 * k), 'rgba(120,80,40,.55)')); ROADS.forEach((r) => line(r, Math.max(2, 5 * k), '#f1dcae'));
+    B.bridges.forEach((b) => line([[b.ax, b.az], [b.bx, b.bz]], Math.max(3, 7 * k), '#a86a3a'));
+    if (B.mapOverlay) B.mapOverlay(g, S, k);
+    if (fogHide.size) { g.save(); g.imageSmoothingEnabled = true; g.globalAlpha = 0.86; g.drawImage(fogLayer(), 0, 0, S, S); g.restore(); }
+  }
 })();
 
 // 景深（Yen 11-26「做景深 遠處看起來較模糊 遠方看起來朦朧模糊」「所有畫面皆是 不用針對特定區域運算處理」）
@@ -45056,6 +45196,29 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     ['被打中了！要躲開這一招，牠才會露出破綻', 'You got hit! Dodge that move and it will leave an opening', '当たっちゃった！この技をよければ、すきができるよ', '맞았어! 이 공격을 피해야 빈틈이 생겨', '¡Te dio! Esquiva ese ataque y dejará una abertura', 'Você foi atingido! Desvie desse golpe e ele vai abrir a guarda', 'Touché ! Esquive cette attaque et il laissera une ouverture', 'Getroffen! Weich dem Angriff aus, dann zeigt er eine Lücke', 'Colpito! Schiva quell’attacco e lascerà un’apertura', 'Попал! Увернись от этого удара — и он откроется', 'Vuruldun! O saldırıdan kaçarsan açık verir', 'Kena! Hindari serangan itu, nanti ia lengah', 'Bị trúng rồi! Né chiêu đó thì nó mới lộ sơ hở', 'โดนแล้ว! หลบท่านั้นให้ได้ มันถึงจะเผยจุดอ่อน'],
     ['擋住了！要用破解方法讓牠露出破綻', 'Blocked! Use its weakness to make it leave an opening', '防がれた！こうりゃく法で、すきを作ろう', '막혔어! 공략법으로 빈틈을 만들어', '¡Bloqueado! Usa su punto débil para abrirle la guardia', 'Bloqueado! Use o ponto fraco para abrir a guarda', 'Bloqué ! Utilise son point faible pour créer une ouverture', 'Abgeblockt! Nutze seine Schwäche, um eine Lücke zu schaffen', 'Bloccato! Sfrutta il suo punto debole per creare un’apertura', 'Заблокировано! Используй слабость, чтобы он открылся', 'Engellendi! Zayıf noktasını kullanıp açık ver', 'Tertahan! Pakai cara mengalahkannya supaya ia lengah', 'Bị chặn! Dùng cách khắc chế để nó lộ sơ hở', 'โดนกันไว้! ใช้วิธีพิชิตให้มันเผยจุดอ่อน'],
     ['擋住了！等日蝕巨像的手卡在地上（累了）再打', 'Blocked! Wait until the Eclipse Colossus’s hand gets stuck in the ground (tired), then attack', '防がれた！日食の巨像の手が地面にはまったら（つかれたら）攻撃しよう', '막혔어! 일식 거상의 손이 땅에 박히면(지치면) 공격해', '¡Bloqueado! Espera a que la mano del Coloso del Eclipse se atasque en el suelo (cansado) y ataca', 'Bloqueado! Espere a mão do Colosso do Eclipse ficar presa no chão (cansado) e ataque', 'Bloqué ! Attends que la main du Colosse de l’Éclipse reste coincée au sol (fatigué), puis attaque', 'Abgeblockt! Warte, bis die Hand des Finsternis-Kolosses im Boden steckt (müde), dann greif an', 'Bloccato! Aspetta che la mano del Colosso dell’Eclissi resti incastrata nel terreno (stanco), poi attacca', 'Заблокировано! Дождись, когда рука Колосса Затмения застрянет в земле (устал), и бей', 'Engellendi! Tutulma Devi’nin eli yere saplanınca (yorulunca) saldır', 'Tertahan! Tunggu tangan Raksasa Gerhana tersangkut di tanah (lelah), lalu serang', 'Bị chặn! Chờ tay Người Khổng Lồ Nhật Thực kẹt dưới đất (mệt) rồi hãy đánh', 'โดนกันไว้! รอให้มือยักษ์สุริยคราสติดพื้น (เหนื่อย) แล้วค่อยโจมตี'],
+    ["太陽谷外面有七條彩脈！每條脈中央有一座塔，解開塔就看得到那裡的地圖，營火也能傳送。按 M 或點小地圖看地圖", "Seven color veins surround Sun Valley! Each has a tower at its center. Solve the tower to reveal that area on the map and unlock its campfires for travel. Press M or tap the minimap to see the map", "たいようの谷のまわりには7本の彩脈があるよ！それぞれの真ん中に塔があって、塔をとくとその地図が見えて、たき火でワープできるようになる。Mかミニマップで地図を見よう", "태양 골짜기 밖에는 일곱 갈래 색맥이 있어요! 각 색맥 한가운데 탑이 있고, 탑을 풀면 그곳 지도가 보이고 모닥불로 이동할 수 있어요. M 키나 미니맵을 눌러 지도를 봐요", "¡Siete vetas de color rodean el Valle del Sol! Cada una tiene una torre en el centro. Resuelve la torre para ver esa zona en el mapa y viajar a sus fogatas. Pulsa M o toca el minimapa para ver el mapa", "Sete veios de cor cercam o Vale do Sol! Cada um tem uma torre no centro. Resolva a torre para revelar a área no mapa e liberar as fogueiras para viajar. Aperte M ou toque no minimapa para ver o mapa", "Sept veines de couleur entourent la Vallée du Soleil ! Chacune a une tour en son centre. Résous la tour pour révéler la zone sur la carte et voyager vers ses feux de camp. Appuie sur M ou touche la mini-carte pour voir la carte", "Sieben Farbadern umgeben das Sonnental! In der Mitte jeder Ader steht ein Turm. Löse den Turm, um das Gebiet auf der Karte aufzudecken und zu seinen Lagerfeuern zu reisen. Drück M oder tippe auf die Minikarte", "Sette vene di colore circondano la Valle del Sole! Ognuna ha una torre al centro. Risolvi la torre per svelare la zona sulla mappa e viaggiare ai suoi falò. Premi M o tocca la minimappa per vedere la mappa", "Вокруг Солнечной долины семь цветных жил! В центре каждой стоит башня. Разгадай башню, чтобы открыть этот край на карте и перемещаться к его кострам. Нажми M или коснись мини-карты", "Güneş Vadisi’nin çevresinde yedi renk damarı var! Her birinin ortasında bir kule var. Kuleyi çöz, bölgenin haritası açılsın ve kamp ateşlerine ışınlanabilesin. Haritayı görmek için M’ye bas ya da mini haritaya dokun", "Ada tujuh urat warna di sekitar Lembah Matahari! Di tengah tiap urat ada menara. Pecahkan menaranya untuk membuka peta daerah itu dan bisa teleport ke api unggunnya. Tekan M atau ketuk peta mini untuk melihat peta", "Quanh Thung lũng Mặt Trời có bảy mạch màu! Giữa mỗi mạch có một ngọn tháp. Giải tháp để mở bản đồ vùng đó và dịch chuyển tới các đống lửa trại. Nhấn M hoặc chạm bản đồ nhỏ để xem bản đồ", "รอบหุบเขาแห่งดวงอาทิตย์มีสายสีเจ็ดสาย! กลางแต่ละสายมีหอคอย ไขหอคอยแล้วจะเห็นแผนที่ของที่นั่นและวาร์ปไปกองไฟได้ กด M หรือแตะแผนที่เล็กเพื่อดูแผนที่"],
+    ["塗滿圓圈", "Fill the circle", "円をぬりつぶせ", "원 채우기", "Llena el círculo", "Preencha o círculo", "Remplis le cercle", "Füll den Kreis", "Riempi il cerchio", "Закрась круг", "Çemberi doldur", "Isi lingkaran", "Tô kín vòng tròn", "ระบายวงกลมให้เต็ม"],
+    ["把塔前地上的圓圈一口氣塗滿（墨水會蒸發，要快）", "Paint the whole circle on the ground in front of the tower in one go (ink evaporates, so be quick)", "塔の前の地面の円を一気にぬりつぶそう（インクは蒸発するから急いで）", "탑 앞 땅의 원을 단숨에 다 칠해요 (잉크가 증발하니 서둘러요)", "Pinta todo el círculo del suelo frente a la torre de una vez (la tinta se evapora, date prisa)", "Pinte todo o círculo no chão diante da torre de uma vez (a tinta evapora, seja rápido)", "Peins tout le cercle au sol devant la tour d’un coup (l’encre s’évapore, fais vite)", "Färbe den Kreis vor dem Turm auf einmal ganz ein (die Tinte verdunstet, also schnell)", "Dipingi tutto il cerchio davanti alla torre in un colpo (l’inchiostro evapora, sbrigati)", "Закрась весь круг перед башней за один раз (чернила испаряются, торопись)", "Kulenin önündeki çemberi bir seferde tamamen boya (mürekkep buharlaşır, acele et)", "Cat seluruh lingkaran di depan menara sekaligus (tinta menguap, cepat ya)", "Tô kín vòng tròn trước tháp một lượt (mực sẽ bay hơi, nhanh lên)", "ระบายวงกลมหน้าหอคอยให้เต็มในรวดเดียว (หมึกระเหยได้ ต้องรีบ)"],
+    ["引泉水", "Guide the spring", "いずみの水をひけ", "샘물 끌어오기", "Guía el manantial", "Guie a nascente", "Guide la source", "Leite die Quelle", "Guida la sorgente", "Проведи родник", "Pınarı yönlendir", "Alirkan mata air", "Dẫn nước suối", "นำน้ำพุมา"],
+    ["沿著發光的蘑菇，把泉水到塔的路整條塗起來", "Follow the glowing mushrooms and paint the whole path from the spring to the tower", "光るキノコにそって、いずみから塔までの道をぜんぶぬろう", "빛나는 버섯을 따라 샘에서 탑까지 길을 다 칠해요", "Sigue las setas brillantes y pinta todo el camino del manantial a la torre", "Siga os cogumelos brilhantes e pinte todo o caminho da nascente até a torre", "Suis les champignons lumineux et peins tout le chemin de la source à la tour", "Folge den leuchtenden Pilzen und färbe den ganzen Weg von der Quelle zum Turm", "Segui i funghi luminosi e dipingi tutto il percorso dalla sorgente alla torre", "Иди вдоль светящихся грибов и закрась весь путь от родника до башни", "Parlayan mantarları izle, pınardan kuleye kadar tüm yolu boya", "Ikuti jamur bercahaya dan cat seluruh jalan dari mata air ke menara", "Đi theo nấm phát sáng, tô cả con đường từ suối tới tháp", "เดินตามเห็ดเรืองแสง แล้วระบายทางจากน้ำพุไปหอคอยให้ครบ"],
+    ["點火盆", "Light the braziers", "火ばちをともせ", "화로 켜기", "Enciende los braseros", "Acenda os braseiros", "Allume les braseros", "Entzünde die Feuerschalen", "Accendi i bracieri", "Зажги жаровни", "Mangalları yak", "Nyalakan anglo", "Thắp lò lửa", "จุดเตาไฟ"],
+    ["火盆只會燒一下子，要讓四個火盆同時燒起來", "Braziers only burn for a moment. Get all four burning at the same time", "火ばちは少しの間しか燃えない。4つを同時に燃やそう", "화로는 잠깐만 타요. 네 개를 동시에 타오르게 해요", "Los braseros arden solo un momento. Haz que los cuatro ardan a la vez", "Os braseiros queimam só um instante. Faça os quatro queimarem ao mesmo tempo", "Les braseros ne brûlent qu’un instant. Fais brûler les quatre en même temps", "Die Feuerschalen brennen nur kurz. Bring alle vier gleichzeitig zum Brennen", "I bracieri ardono solo un attimo. Falli ardere tutti e quattro insieme", "Жаровни горят недолго. Сделай так, чтобы горели все четыре сразу", "Mangallar kısa süre yanar. Dördünü aynı anda yak", "Anglo hanya menyala sebentar. Nyalakan keempatnya bersamaan", "Lò lửa chỉ cháy một lúc. Làm cả bốn lò cùng cháy", "เตาไฟติดแค่ประเดี๋ยวเดียว ทำให้ทั้งสี่เตาติดพร้อมกัน"],
+    ["回音鼓", "Echo drums", "こだまだいこ", "메아리 북", "Tambores del eco", "Tambores do eco", "Tambours d’écho", "Echotrommeln", "Tamburi dell’eco", "Барабаны эха", "Yankı davulları", "Gendang gema", "Trống vang", "กลองเสียงสะท้อน"],
+    ["仔細看塔的回音（鼓會依序亮起來），照同樣的順序敲鼓", "Watch the tower’s echo (the drums light up in order), then hit the drums in the same order", "塔のこだまをよく見て（たいこが順に光る）、同じ順番でたたこう", "탑의 메아리를 잘 봐요 (북이 차례로 빛나요). 같은 순서로 북을 쳐요", "Mira el eco de la torre (los tambores se iluminan en orden) y golpéalos en el mismo orden", "Observe o eco da torre (os tambores acendem em ordem) e toque-os na mesma ordem", "Observe l’écho de la tour (les tambours s’allument dans l’ordre), puis frappe-les dans le même ordre", "Achte auf das Echo des Turms (die Trommeln leuchten nacheinander) und schlag sie in derselben Reihenfolge", "Guarda l’eco della torre (i tamburi si accendono in ordine) e colpiscili nello stesso ordine", "Следи за эхом башни (барабаны загораются по очереди) и бей в них в том же порядке", "Kulenin yankısını izle (davullar sırayla yanar), sonra aynı sırayla vur", "Perhatikan gema menara (gendang menyala berurutan), lalu pukul dengan urutan yang sama", "Xem tiếng vang của tháp (trống sáng lần lượt), rồi đánh trống theo đúng thứ tự", "ดูเสียงสะท้อนของหอคอย (กลองจะสว่างตามลำดับ) แล้วตีกลองตามลำดับเดียวกัน"],
+    ["水流石", "Current stones", "水流の石", "물길 돌", "Piedras de corriente", "Pedras da correnteza", "Pierres de courant", "Strömungssteine", "Pietre della corrente", "Камни течения", "Akıntı taşları", "Batu arus", "Đá dòng nước", "หินสายน้ำ"],
+    ["讓三塊水流石的箭頭都指向塔；打一塊石頭，它和右邊那塊都會轉", "Make all three stone arrows point at the tower. Hitting a stone turns it and the one to its right", "3つの石の矢じるしを全部塔に向けよう。石をうつと、その石と右どなりの石が回る", "돌 세 개의 화살표가 모두 탑을 가리키게 해요. 돌 하나를 치면 그 돌과 오른쪽 돌이 같이 돌아요", "Haz que las tres flechas apunten a la torre. Golpear una piedra la gira a ella y a la de su derecha", "Faça as três setas apontarem para a torre. Acertar uma pedra gira ela e a da direita", "Fais pointer les trois flèches vers la tour. Frapper une pierre la tourne, ainsi que celle de droite", "Richte alle drei Pfeile auf den Turm. Ein Treffer dreht den Stein und den rechts daneben", "Fai puntare tutte e tre le frecce verso la torre. Colpire una pietra gira lei e quella alla sua destra", "Направь все три стрелки на башню. Удар по камню поворачивает его и соседний справа", "Üç okun da kuleyi göstermesini sağla. Bir taşa vurunca o ve sağındaki döner", "Buat ketiga panah menunjuk ke menara. Memukul satu batu memutarnya dan batu di kanannya", "Làm cả ba mũi tên chỉ về tháp. Đánh một hòn đá sẽ xoay nó và hòn bên phải", "ทำให้ลูกศรบนหินทั้งสามชี้ไปที่หอคอย ตีหินก้อนหนึ่งจะหมุนทั้งก้อนนั้นและก้อนทางขวา"],
+    ["染雲朵", "Color the clouds", "雲をそめろ", "구름 물들이기", "Colorea las nubes", "Pinte as nuvens", "Colore les nuages", "Färbe die Wolken", "Colora le nuvole", "Раскрась облака", "Bulutları boya", "Warnai awan", "Nhuộm mây", "ย้อมสีเมฆ"],
+    ["把繞著塔飄的六朵雲都染上顏色（顏色一陣子會褪）", "Color all six clouds drifting around the tower (the color fades after a while)", "塔のまわりをただよう6つの雲をぜんぶそめよう（色はしばらくすると消える）", "탑 주위를 떠도는 구름 여섯 개를 모두 물들여요 (색은 잠시 뒤 바래요)", "Colorea las seis nubes que flotan alrededor de la torre (el color se desvanece al rato)", "Pinte as seis nuvens que flutuam em volta da torre (a cor some depois de um tempo)", "Colore les six nuages qui flottent autour de la tour (la couleur s’efface au bout d’un moment)", "Färbe alle sechs Wolken, die um den Turm treiben (die Farbe verblasst nach einer Weile)", "Colora tutte e sei le nuvole che fluttuano attorno alla torre (il colore svanisce dopo un po’)", "Раскрась все шесть облаков вокруг башни (цвет через время тускнеет)", "Kulenin çevresinde süzülen altı bulutu da boya (renk bir süre sonra solar)", "Warnai keenam awan yang melayang di sekitar menara (warnanya pudar setelah beberapa saat)", "Nhuộm cả sáu đám mây trôi quanh tháp (màu sẽ phai sau một lúc)", "ย้อมสีเมฆหกก้อนที่ลอยรอบหอคอยให้ครบ (สีจะจางไปสักพัก)"],
+    ["點星座", "Light the constellation", "星座をともせ", "별자리 밝히기", "Enciende la constelación", "Acenda a constelação", "Allume la constellation", "Entzünde das Sternbild", "Accendi la costellazione", "Зажги созвездие", "Takımyıldızı yak", "Nyalakan rasi bintang", "Thắp chòm sao", "จุดกลุ่มดาว"],
+    ["照門前石板上的星圖，點亮對的三顆星（點錯就全部熄掉）", "Follow the star map on the stone tablet by the door and light the right three stars (a wrong one puts them all out)", "門の前の石板の星図どおりに、正しい3つの星をともそう（まちがえると全部消える）", "문 앞 석판의 별 지도대로 맞는 별 세 개를 밝혀요 (틀리면 모두 꺼져요)", "Sigue el mapa estelar de la tablilla junto a la puerta y enciende las tres estrellas correctas (una equivocada las apaga todas)", "Siga o mapa estelar na placa ao lado da porta e acenda as três estrelas certas (uma errada apaga todas)", "Suis la carte du ciel sur la tablette près de la porte et allume les trois bonnes étoiles (une erreur les éteint toutes)", "Folge der Sternkarte auf der Steintafel an der Tür und entzünde die richtigen drei Sterne (ein falscher löscht alle)", "Segui la mappa stellare sulla tavoletta vicino alla porta e accendi le tre stelle giuste (una sbagliata le spegne tutte)", "Следуй звёздной карте на плите у двери и зажги три нужные звезды (ошибка гасит все)", "Kapının yanındaki taş tabletteki yıldız haritasına göre doğru üç yıldızı yak (yanlışı hepsini söndürür)", "Ikuti peta bintang di lempeng batu dekat pintu dan nyalakan tiga bintang yang benar (salah satu memadamkan semuanya)", "Làm theo bản đồ sao trên phiến đá cạnh cửa, thắp đúng ba ngôi sao (sai một ngôi là tắt hết)", "ทำตามแผนที่ดาวบนแผ่นหินข้างประตู จุดดาวสามดวงที่ถูก (ผิดดวงเดียวดับหมด)"],
+    ["之塔", " Tower", "の塔", " 탑", " – Torre", " – Torre", " – Tour", " – Turm", " – Torre", " – башня", " Kulesi", " – Menara", " – Tháp", " – หอคอย"],
+    ["塔解開了！這條彩脈的地圖打開了，這裡的營火也可以傳送了", "Tower solved! This vein’s map is revealed and its campfires can be used for travel", "塔がとけた！この彩脈の地図がひらいて、ここのたき火にワープできるようになった", "탑을 풀었어요! 이 색맥의 지도가 열리고 여기 모닥불로 이동할 수 있어요", "¡Torre resuelta! Se revela el mapa de esta veta y puedes viajar a sus fogatas", "Torre resolvida! O mapa deste veio foi revelado e você pode viajar às fogueiras", "Tour résolue ! La carte de cette veine est révélée et tu peux voyager vers ses feux de camp", "Turm gelöst! Die Karte dieser Ader ist aufgedeckt und du kannst zu ihren Lagerfeuern reisen", "Torre risolta! La mappa di questa vena è svelata e puoi viaggiare ai suoi falò", "Башня разгадана! Карта этой жилы открыта, и к её кострам можно перемещаться", "Kule çözüldü! Bu damarın haritası açıldı, kamp ateşlerine ışınlanabilirsin", "Menara terpecahkan! Peta urat ini terbuka dan api unggunnya bisa dipakai teleport", "Đã giải tháp! Bản đồ mạch này đã mở, có thể dịch chuyển tới các đống lửa trại", "ไขหอคอยแล้ว! แผนที่สายนี้เปิดแล้ว และวาร์ปไปกองไฟที่นี่ได้"],
+    ["要先解開這條彩脈中央的塔，這裡的營火才能傳送", "Solve the tower at the center of this vein first to travel to these campfires", "この彩脈の真ん中の塔をとかないと、ここのたき火にはワープできないよ", "이 색맥 한가운데 탑을 먼저 풀어야 여기 모닥불로 이동할 수 있어요", "Primero resuelve la torre del centro de esta veta para viajar a estas fogatas", "Resolva primeiro a torre no centro deste veio para viajar a estas fogueiras", "Résous d’abord la tour au centre de cette veine pour voyager vers ces feux de camp", "Löse zuerst den Turm in der Mitte dieser Ader, um zu diesen Lagerfeuern zu reisen", "Risolvi prima la torre al centro di questa vena per viaggiare a questi falò", "Сначала разгадай башню в центре этой жилы, чтобы перемещаться к этим кострам", "Bu kamp ateşlerine ışınlanmak için önce damarın ortasındaki kuleyi çöz", "Pecahkan dulu menara di tengah urat ini untuk teleport ke api unggun ini", "Hãy giải tháp ở giữa mạch này trước để dịch chuyển tới các đống lửa này", "ต้องไขหอคอยกลางสายนี้ก่อน ถึงจะวาร์ปไปกองไฟที่นี่ได้"],
+    ["已設為目標", "Set as target", "目標にしたよ", "목표로 설정했어요", "Fijado como objetivo", "Definido como alvo", "Défini comme cible", "Als Ziel gesetzt", "Impostato come obiettivo", "Цель выбрана", "Hedef olarak seçildi", "Dijadikan target", "Đã đặt làm mục tiêu", "ตั้งเป็นเป้าหมายแล้ว"],
+    ["目標改回自動建議", "Target back to auto suggestion", "目標をおまかせにもどした", "목표를 자동 추천으로 되돌렸어요", "Objetivo de nuevo en sugerencia automática", "Alvo voltou à sugestão automática", "Cible revenue à la suggestion automatique", "Ziel wieder automatisch vorgeschlagen", "Obiettivo tornato al suggerimento automatico", "Цель снова выбирается автоматически", "Hedef otomatik öneriye döndü", "Target kembali ke saran otomatis", "Mục tiêu trở lại gợi ý tự động", "เป้าหมายกลับเป็นแนะนำอัตโนมัติ"],
+    ["怪物王：綠＝好打、橘＝差不多、紅＝太強（點一下設為目標）", "Monster kings: green = easy, orange = even, red = too strong (tap to set as target)", "モンスター王：緑＝かんたん、オレンジ＝同じくらい、赤＝強すぎ（タップで目標に）", "몬스터 왕: 초록=쉬움, 주황=비슷함, 빨강=너무 셈 (탭해서 목표로)", "Reyes monstruo: verde = fácil, naranja = parejo, rojo = demasiado fuerte (toca para fijar objetivo)", "Reis monstro: verde = fácil, laranja = parelho, vermelho = forte demais (toque para definir alvo)", "Rois monstres : vert = facile, orange = équilibré, rouge = trop fort (touche pour cibler)", "Monsterkönige: Grün = leicht, Orange = ebenbürtig, Rot = zu stark (tippen = Ziel)", "Re mostro: verde = facile, arancione = alla pari, rosso = troppo forte (tocca per impostare obiettivo)", "Короли монстров: зелёный = легко, оранжевый = на равных, красный = слишком силён (нажми, чтобы выбрать цель)", "Canavar kralları: yeşil = kolay, turuncu = denk, kırmızı = çok güçlü (hedef için dokun)", "Raja monster: hijau = mudah, oranye = seimbang, merah = terlalu kuat (ketuk untuk jadikan target)", "Vua quái: xanh = dễ, cam = ngang sức, đỏ = quá mạnh (chạm để đặt mục tiêu)", "ราชาสัตว์ประหลาด: เขียว = ง่าย ส้ม = สูสี แดง = เก่งเกินไป (แตะเพื่อตั้งเป้าหมาย)"],
+    ["順序不對，再看一次回音", "Wrong order. Watch the echo again", "順番がちがう。もう一度こだまを見よう", "순서가 틀렸어요. 메아리를 다시 봐요", "Orden incorrecto. Mira el eco otra vez", "Ordem errada. Veja o eco de novo", "Mauvais ordre. Regarde l’écho encore une fois", "Falsche Reihenfolge. Achte noch einmal auf das Echo", "Ordine sbagliato. Guarda di nuovo l’eco", "Не тот порядок. Посмотри эхо ещё раз", "Sıra yanlış. Yankıyı bir daha izle", "Urutannya salah. Lihat gemanya lagi", "Sai thứ tự. Xem lại tiếng vang", "ลำดับผิด ดูเสียงสะท้อนอีกครั้ง"],
+    ["那顆不是星座裡的星，全部熄掉了", "That star isn’t in the constellation. They all went out", "その星は星座の星じゃない。全部消えちゃった", "그 별은 별자리에 없어요. 모두 꺼졌어요", "Esa estrella no está en la constelación. Se apagaron todas", "Essa estrela não faz parte da constelação. Todas se apagaram", "Cette étoile n’est pas dans la constellation. Elles se sont toutes éteintes", "Dieser Stern gehört nicht zum Sternbild. Alle sind erloschen", "Quella stella non fa parte della costellazione. Si sono spente tutte", "Этой звезды нет в созвездии. Все погасли", "O yıldız takımyıldızda yok. Hepsi söndü", "Bintang itu bukan bagian rasi. Semuanya padam", "Ngôi sao đó không thuộc chòm sao. Tất cả đã tắt", "ดาวดวงนั้นไม่ได้อยู่ในกลุ่มดาว ดับหมดแล้ว"],
   ];
   I.add(R.map((r) => r.slice(0, 4)));
   if (I.addL) L.slice(3).forEach((l, j) => I.addL(l, R.map((r) => [r[0], r[4 + j]])));
@@ -45537,7 +45700,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   // 大地圖：15 隻王搬到遠近不同的地方，各自有等級；營地、王身邊的柱子
   function bigSetup() {
     MON.forEach((d) => { const k = BG.KS[d.n]; if (k) d.at = [k[0], k[1]]; d.K = KB[d.n]; d.dist = Math.hypot(d.at[0], d.at[1]); });
-    let prev = 0; MON.slice().sort((a, b) => a.dist - b.dist).forEach((d) => { d.lv = Math.min(38, Math.max(prev + 1, Math.round(BG.lvAt(d.at[0], d.at[1])) + 2)); prev = d.lv; });
+    let prev = 0; MON.forEach((d) => (d.lv0 = BG.lvAt(d.at[0], d.at[1]))); MON.slice().sort((a, b) => a.lv0 - b.lv0).forEach((d) => { d.lv = Math.min(38, Math.max(prev + 1, Math.round(d.lv0) + 1)); prev = d.lv; }); // 七條彩脈（11-26）：王的等級照所在那條脈的等級排
     BG.camps.forEach((c) => CAMPS.push(c));
     const m = Merger();
     MON.forEach((d) => { const K = d.K; if (!K || !K.pillars) return; d.pills = []; const [c1, c2] = PILLAR[K.pillars];
@@ -45566,8 +45729,9 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const OLD_SP = [[30, 118], [-40, 128], [60, 92], [-30, 82], [112, 40], [-122, -18], [42, -40], [-60, -92], [100, -88], [130, 122], [-132, 138], [-140, 70]];
   function buildMobs() {
     OLD_SP.forEach(([x, z], i) => SPN.push({ x, z, lv: 1 + (i % 3), reg: 'sun', cd: 0 }));
-    BG.spawns.forEach((s) => SPN.push(Object.assign({ cd: 0 }, s)));
+    const addSp = (s0) => { const s = Object.assign({ cd: 0, on: false }, s0), i = SPN.length, L = REGMOB[s.reg] || REGMOB.sun; s.ty = L[(hash(i * 3 + 1) * L.length) | 0]; SPN.push(s); };
     SPN.forEach((s, i) => { const L = REGMOB[s.reg] || REGMOB.sun; s.ty = L[(hash(i * 3 + 1) * L.length) | 0]; s.on = false; });
+    BG.spawns.forEach(addSp); BG.onSpawn = addSp; // 大地圖是走到附近才算出來的，小怪物出現的地方也是那時候才加進來
     const geo = {}; for (const k in MOB) { const m = Merger(); MOB[k].mk(m); geo[k] = m.build(); }
     for (let i = 0; i < MOBN; i++) {
       const mat = vmat({ roughness: 0.6, emissive: 0x000000 }), mesh = new THREE.Mesh(geo.moss, mat); mesh.castShadow = true; const g = new THREE.Group(); g.add(mesh); g.visible = false; root.add(g);
@@ -45771,7 +45935,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (on && !built) build(scene);
     if (on === mod.on) return false;
     mod.on = on; const W = SC.world;
-    if (on) { saved = { fog: scene.fog, openH: W.openH, camR: W.camR, bg: scene.background }; W.root.visible = false; root.visible = true; W.alt = hgt; W.openH = 100; W.camR = 0; scene.fog = new THREE.Fog(0xead9c6, 240, 1900); scene.background = null; const cm = SC.game.camera; if (cm) { saved.far = cm.far; cm.far = 3200; cm.updateProjectionMatrix(); } }
+    if (on) { saved = { fog: scene.fog, openH: W.openH, camR: W.camR, bg: scene.background }; W.root.visible = false; root.visible = true; W.alt = hgt; W.openH = 100; W.camR = 0; scene.fog = new THREE.Fog(0xead9c6, 320, 3600); scene.background = null; const cm = SC.game.camera; if (cm) { saved.far = cm.far; cm.far = 6400; cm.updateProjectionMatrix(); } }
     else { root.visible = false; W.root.visible = true; W.alt = null; W.camR = saved.camR; W.openH = saved.openH; scene.fog = saved.fog; scene.background = saved.bg; const cm = SC.game.camera; if (cm && saved.far) { cm.far = saved.far; cm.updateProjectionMatrix(); } off(); }
     return true;
   };
@@ -45809,7 +45973,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   mod.start = (c) => {
     ctx = c; RP.active = true; now = 0; mod.time = 0; mod.state = 'fight'; mod.phase = 1; mod.clearSeconds = 0; mod.health = 100; mod.maxHealth = 100;
     C.BOSS_LIVES = 99999; C.MAX_JUMPS = 2; // 冒險世界：倒下就回最近的營地，不會結束；跳躍跟一般對戰一樣兩段
-    prog = load(); if (prog.won && prog.d && prog.d.length >= MON.length) prog = { runs: (prog.runs | 0) + 1, best: prog.best, won: prog.won, d: [], lv: prog.lv, xp: prog.xp, camps: prog.camps }; prog.d = prog.d || []; prog.lv = prog.lv || 1; prog.xp = prog.xp || 0; prog.camps = prog.camps || [0];
+    prog = load(); if (prog.won && prog.d && prog.d.length >= MON.length) prog = { runs: (prog.runs | 0) + 1, best: prog.best, won: prog.won, d: [], lv: prog.lv, xp: prog.xp, camps: prog.camps }; prog.d = prog.d || []; prog.lv = prog.lv || 1; prog.xp = prog.xp || 0; prog.camps = prog.camps || [0]; if (prog.wv !== 2) { prog.wv = 2; prog.camps = prog.camps.filter((i) => i < 8); if (prog.last >= 8) prog.last = 0; } // 七條彩脈的新地圖（11-26）：舊地圖的營地編號不一樣了，只留太陽谷裡的
     mons.forEach((e) => { const dead = prog.d.includes(e.i); resetM(e); e.dead = dead; e.alive = !dead; e.target.alive = !dead; e.g.visible = !dead; e.shadow.visible = !dead; });
     mobs.forEach((e) => mobOff(e)); SPN.forEach((s) => (s.cd = 0)); zones.length = 0; timers.length = 0; orbs.forEach(orbOff); parts.forEach(partOff);
     boss.on = false; boss.alive = false; boss.target.alive = false; boss.g.visible = false; boss.shadow.visible = false; boss.mode = 'sleep'; boss.arm = []; boss.armG.forEach((a) => (a.visible = false)); armHud();
@@ -45820,9 +45984,9 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (SC.audio) { SC.audio.music('rpg', true); SC.audio.musicLevel && SC.audio.musicLevel(0); }
     evapInit(); waterOn(true); hud(true); hudUpd(true); ipAttach(p);
     prog.met = prog.met || []; if (prog.story && sprite) sprite.visible = true;
-    if (!prog.story && RP.story) later(0.4, () => RP.story.intro(() => { prog.story = 1; save(prog); c.tip('太陽谷外面是一大片土地！打倒路上的小怪物升級，再去挑戰 15 隻怪物王。按 M 或點小地圖看地圖', 8); }));
+    if (!prog.story && RP.story) later(0.4, () => RP.story.intro(() => { prog.story = 1; save(prog); c.tip('太陽谷外面有七條彩脈！每條脈中央有一座塔，解開塔就看得到那裡的地圖，營火也能傳送。按 M 或點小地圖看地圖', 8); }));
     else { c.banner('冒險世界 一\n太陽谷', 2.6);
-    later(2.8, () => c.tip(left() ? '太陽谷外面是一大片土地！打倒路上的小怪物升級，再去挑戰 15 隻怪物王。按 M 或點小地圖看地圖' : '15 隻怪物都打倒了！日蝕巨像在太陽拱門後面等你', 8)); }
+    later(2.8, () => c.tip(left() ? '太陽谷外面有七條彩脈！每條脈中央有一座塔，解開塔就看得到那裡的地圖，營火也能傳送。按 M 或點小地圖看地圖' : '15 隻怪物都打倒了！日蝕巨像在太陽拱門後面等你', 8)); }
     if (!left()) wakeBoss(true);
   };
   const left = () => mons.filter((e) => !e.dead).length;
@@ -46242,7 +46406,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
       // 營地：走過就記住（存起來，大地圖上可以傳送）
       CAMPS.forEach((c, i) => { if (!p.alive || Math.hypot(p.pos.x - c.x, p.pos.z - c.z) >= 14) return; if (!visited.has(i)) { visited.add(i); if (i) { prog.camps = [...visited]; sfx('swap'); } } if (lastCamp !== c) setCamp(i, true); });
       // 世界邊界：最外圈的高山
-      if (p.alive) { p.pos.x = SC.clamp(p.pos.x, -BG.LIM, BG.LIM); p.pos.z = SC.clamp(p.pos.z, -BG.LIM, BG.LIM); }
+      if (p.alive) { p.pos.x = SC.clamp(p.pos.x, -BG.LIM, BG.LIM); p.pos.z = SC.clamp(p.pos.z, -BG.LIM, BG.LIM); const rr = Math.hypot(p.pos.x, p.pos.z); if (rr > 2780) { p.pos.x *= 2780 / rr; p.pos.z *= 2780 / rr; } }
       // 南邊的木拱門：走進門裡回沐沐小鎮
       if (p.alive && Math.abs(p.pos.x) < 5 && p.pos.z > 159 && p.pos.z < 166 && now > 3) { exitToTown(); return; }
       if (p.pos.y < -30 && p.alive) toCamp(p);
@@ -46259,6 +46423,29 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   // ───────── HUD：等級、經驗值、小地圖、怪物王數、大地圖 ─────────
   let hudEl = null, mapEl = null, mapG = null, worldCv = null, mapT = 0, bigEl = null, popT = null, regTo = null;
   const MR = 190; // 小地圖半徑（公尺）
+  // Yen 11-26「太陽谷地圖重新全面優化，現在很難看懂也不好操控」：
+  // 目標指引（畫面上方的箭頭＋距離）、小地圖跟著鏡頭轉（前方朝上）、大地圖一打開看整個世界、地區用彩脈顏色、王用大圖示（顏色＝難度）、點王設成目標
+  let tgtE = null; // 玩家自己點的目標（王）；null＝自動挑建議的王
+  const kCol = (lv) => (lv <= PL() + 1 ? '#3fae4a' : lv <= PL() + 5 ? '#f0a020' : '#d6463a'); // 綠＝好打、橘＝差不多、紅＝太強
+  function curTgt() {
+    if (tgtE && tgtE.alive && !tgtE.dead) return { x: tgtE.pos.x, z: tgtE.pos.z, n: tgtE.d.n, lv: tgtE.lv, e: tgtE, pick: true };
+    tgtE = null; const p = ctx && ctx.player(); if (!p) return null; { const th = RP.tgtHook && RP.tgtHook(p); if (th) return th; } let best = null, bs = 1e9; // 在還沒解開的塔附近：先指向塔
+    mons.forEach((e) => { if (e.dead || !e.alive) return; const sc0 = Math.hypot(e.pos.x - p.pos.x, e.pos.z - p.pos.z) + Math.max(0, e.lv - PL()) * 60; if (sc0 < bs) { bs = sc0; best = e; } });
+    if (best) return { x: best.pos.x, z: best.pos.z, n: best.d.n, lv: best.lv, e: best };
+    if (boss && !(prog.end && !boss.alive)) return { x: BOSSF.x, z: BOSSF.z, n: BOSS.n, lv: BOSS.lv, boss: true };
+    return null;
+  }
+  const camFwd = () => { const c = SC.game.camera; if (c) { c.getWorldDirection(tgV); return Math.atan2(tgV.x, tgV.z); } const p = ctx.player(); return p ? p.yaw : 0; };
+  const tgV = new V3();
+  let tgKey = '';
+  function tgHud() { // 畫面上方：目標的方向和距離
+    const el = hudEl && hudEl.querySelector('.rpg-tg'); if (!el) return; const p = ctx.player(), t = curTgt();
+    const show = !!t && !!p && !document.body.classList.contains('rpg-foe') && !(RP.story && RP.story.on); el.hidden = !show; if (!show) return;
+    const dx = t.x - p.pos.x, dz = t.z - p.pos.z, d = Math.hypot(dx, dz), rel = Math.atan2(dx, dz) - camFwd();
+    el.querySelector('.rpg-ta').style.transform = 'rotate(' + (-rel).toFixed(3) + 'rad)';
+    const key = t.n + '|' + t.lv + '|' + Math.round(d / 10) + '|' + !!t.pick; if (key === tgKey) return; tgKey = key;
+    el.querySelector('b').textContent = t.n; el.querySelector('.rpg-tl').textContent = 'Lv ' + t.lv; el.querySelector('.rpg-tl').style.background = kCol(t.lv); el.querySelector('.rpg-td').textContent = (d < 15 ? '' : Math.round(d / 10) * 10 + ' m'); el.classList.toggle('pick', !!t.pick);
+  }
   function showReg(r) { if (!hudEl) return; const el = hudEl.querySelector('.rpg-reg'), lo = Math.max(1, Math.round(BG.lvAt(r.x, r.z)) - 1); el.querySelector('b').textContent = r.n; el.querySelector('small').textContent = r.id === 'sun' ? 'Lv 1 – 3' : 'Lv ' + lo + ' – ' + (lo + 4); el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); clearTimeout(regTo); regTo = setTimeout(() => el.classList.remove('on'), 3200); }
   function xpPop(t) { if (!hudEl) return; const el = hudEl.querySelector('.rpg-pop'); el.textContent = t; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); }
   function hud(on) {
@@ -46268,51 +46455,70 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (!hudEl) {
       const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
       hudEl = document.createElement('div'); hudEl.id = 'rpg-hud';
-      hudEl.innerHTML = `<div class="rpg-lv"><b class="rpg-lvn">Lv 1</b><i class="rpg-xp"><s></s></i><small class="rpg-xpt"></small></div><canvas class="rpg-map" width="200" height="200"></canvas><div class="rpg-cnt"><b class="rpg-n"></b><small>怪物王</small></div><div class="rpg-reg"><b></b><small></small></div><div class="rpg-pop"></div>`;
+      hudEl.innerHTML = `<div class="rpg-lv"><b class="rpg-lvn">Lv 1</b><i class="rpg-xp"><s></s></i><small class="rpg-xpt"></small></div><canvas class="rpg-map" width="200" height="200"></canvas><div class="rpg-cnt"><b class="rpg-n"></b><small>怪物王</small></div><div class="rpg-reg"><b></b><small></small></div><div class="rpg-pop"></div><div class="rpg-tg" hidden><i class="rpg-ta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 L21 20 L12 15 L3 20 Z" fill="#ffd23f" stroke="#5a3a1a" stroke-width="2" stroke-linejoin="round"/></svg></i><span class="rpg-tt"><small>🎯</small><b></b><em class="rpg-tl"></em><small class="rpg-td"></small></span></div>`;
       (document.getElementById('app') || document.body).appendChild(hudEl);
       mapEl = hudEl.querySelector('.rpg-map'); mapG = mapEl.getContext('2d'); mapEl.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); bigMap(true); });
-      worldCv = BG.mapCanvas(1024); { const g = worldCv.getContext('2d'), k = 1024 / (BG.BIG * 2), a = (BG.BIG - HALF) * k; g.drawImage(mapCv, a, a, HALF * 2 * k, HALF * 2 * k); }
+      BG.mapOverlay = (g, S, k) => { const a = (BG.BIG - HALF) * k; g.drawImage(mapCv, a, a, HALF * 2 * k, HALF * 2 * k); }; worldCv = BG.mapCanvas(2048);
     }
     hudEl.hidden = false;
   }
   const W2M = (x, z, S) => [((x + BG.BIG) / (BG.BIG * 2)) * S, ((z + BG.BIG) / (BG.BIG * 2)) * S];
-  function drawMarks(g, S, sc, ox, oz, big) { // sc：一公尺幾點；ox/oz：畫面左上角的世界座標
-    const P = (x, z) => [(x - ox) * sc, (z - oz) * sc];
-    const k = big ? 2.2 : 1; // 大地圖的圖示畫大一點
-    CAMPS.forEach((c, i) => { const [x, y] = P(c.x, c.z); if (x < -30 || y < -30 || x > S + 30 || y > S + 30) return; const v = visited.has(i) || i === 0, cur = lastCamp === c;
+  function drawMarks(g, S, sc, ox, oz, big, th) { // sc：一公尺幾點；ox/oz：畫面左上角的世界座標；th：小地圖轉了幾度（文字要轉正）
+    const P = (x, z) => [(x - ox) * sc, (z - oz) * sc], up = (x, y, f) => { g.save(); g.translate(x, y); if (th) g.rotate(-th); f(); g.restore(); };
+    const k = big ? 2.2 : 1, tg = curTgt(); // 大地圖的圖示畫大一點
+    CAMPS.forEach((c, i) => { const [x, y] = P(c.x, c.z); if (x < -30 || y < -30 || x > S + 30 || y > S + 30) return; if (BG.fogAt && BG.fogAt(c.x, c.z) && !visited.has(i)) return; const v = (visited.has(i) || i === 0) && (!RP.campOk || RP.campOk(c)), cur = lastCamp === c;
       if (v) { // 去過的營地：金色圓底＋營火；最後記錄的營地多一圈閃亮的外框
         if (cur) { g.fillStyle = 'rgba(255,210,63,.35)'; g.beginPath(); g.arc(x, y, 15 * k, 0, 6.3); g.fill(); g.strokeStyle = '#ff7a2a'; g.lineWidth = 3 * k; g.beginPath(); g.arc(x, y, 12.5 * k, 0, 6.3); g.stroke(); }
         g.fillStyle = '#ffd23f'; g.strokeStyle = '#5a3a1a'; g.lineWidth = 2 * k; g.beginPath(); g.arc(x, y, 8.5 * k, 0, 6.3); g.fill(); g.stroke();
         g.fillStyle = '#ff6a2a'; g.beginPath(); g.moveTo(x, y - 6 * k); g.quadraticCurveTo(x + 5 * k, y + 1 * k, x, y + 5 * k); g.quadraticCurveTo(x - 5 * k, y + 1 * k, x, y - 6 * k); g.fill(); g.fillStyle = '#fff2a0'; g.beginPath(); g.arc(x, y + 2 * k, 2 * k, 0, 6.3); g.fill(); }
       else { g.globalAlpha = 0.75; g.fillStyle = '#9a9488'; g.strokeStyle = '#fff'; g.lineWidth = 1.5 * k; g.beginPath(); g.moveTo(x, y - 6 * k); g.lineTo(x + 5 * k, y + 4 * k); g.lineTo(x - 5 * k, y + 4 * k); g.closePath(); g.fill(); g.stroke(); g.globalAlpha = 1; } });
-    mons.forEach((e) => { const [x, y] = P(e.pos.x, e.pos.z); if (x < -30 || y < -30 || x > S + 30 || y > S + 30) return; g.font = '900 15px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      if (e.dead && e.dying <= 0) { g.fillStyle = 'rgba(90,58,26,.55)'; g.fillText('✓', x, y); return; } g.fillStyle = e.aggro ? '#ff3c3c' : e.lv > PL() + 5 ? '#7a2a8a' : '#c65a3a'; g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(x, y, 7, 0, 6.3); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.font = '900 9px sans-serif'; g.fillText(e.lv, x, y + 0.5); });
+    if (RP.mapMarks) RP.mapMarks(g, P, big, up); // 七座塔（09wr_tower.js）
+    const kr = big ? 17 : 9; // 王的圖示：圓底顏色＝難度，裡面是等級；打倒的是金色羽毛
+    mons.forEach((e) => { const [x, y] = P(e.pos.x, e.pos.z); if (x < -40 || y < -40 || x > S + 40 || y > S + 40) return; if (BG.fogAt && BG.fogAt(e.pos.x, e.pos.z) && Math.hypot(e.pos.x - ctx.player().pos.x, e.pos.z - ctx.player().pos.z) > 150) return; g.textAlign = 'center'; g.textBaseline = 'middle';
+      if (e.dead && e.dying <= 0) { up(x, y, () => { g.fillStyle = 'rgba(255,247,230,.85)'; g.strokeStyle = '#c9a040'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, kr * 0.7, 0, 6.3); g.fill(); g.stroke(); g.fillStyle = '#c9a040'; g.font = '900 ' + Math.round(kr * 0.9) + 'px sans-serif'; g.fillText('✓', 0, 1); }); return; }
+      const isT = tg && tg.e === e;
+      up(x, y, () => { if (isT) { g.strokeStyle = '#ffd23f'; g.lineWidth = big ? 6 : 3.5; g.beginPath(); g.arc(0, 0, kr + (big ? 8 : 4) + Math.sin(now * 5) * 2, 0, 6.3); g.stroke(); }
+        g.fillStyle = kCol(e.lv); g.strokeStyle = e.aggro ? '#ff3c3c' : '#fff'; g.lineWidth = big ? 4 : 2.5; g.beginPath(); g.arc(0, 0, kr, 0, 6.3); g.fill(); g.stroke();
+        g.fillStyle = '#fff'; g.font = '900 ' + Math.round(kr * 0.95) + 'px sans-serif'; g.fillText(e.lv, 0, 1);
+        if (big && (MV.z >= 1.8 || isT)) { const n = SC.tr ? SC.tr(e.d.n) : e.d.n; g.font = '900 22px sans-serif'; g.lineWidth = 5; g.strokeStyle = 'rgba(90,58,26,.85)'; g.fillStyle = '#fff7e6'; g.strokeText(n, 0, kr + 18); g.fillText(n, 0, kr + 18); } }); });
     parts.forEach((q) => { if (!q.on || q.done) return; const [x, y] = P(q.pos.x, q.pos.z); g.fillStyle = q.kind === 'bucket' ? '#2f9fff' : '#ffd23f'; g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(x, y, 5, 0, 6.3); g.fill(); g.stroke(); });
     mobs.forEach((e) => { if (!e.alive) return; const [x, y] = P(e.pos.x, e.pos.z); if (x < 0 || y < 0 || x > S || y > S) return; g.fillStyle = e.aggro ? '#ff6a4a' : '#b0602a'; g.beginPath(); g.arc(x, y, 2.6, 0, 6.3); g.fill(); });
-    if (boss && boss.alive) { const [x, y] = P(boss.pos.x, boss.pos.z); g.font = '16px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('👑', x, y); }
-    const p = ctx.player(); const [px, py] = P(p.pos.x, p.pos.z), yaw = SC.game.cam ? SC.game.cam.yaw : p.yaw; g.save(); g.translate(px, py); g.rotate(-yaw + Math.PI); g.fillStyle = '#fff'; g.strokeStyle = '#1b1430'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, -8); g.lineTo(6, 6); g.lineTo(0, 3); g.lineTo(-6, 6); g.closePath(); g.fill(); g.stroke(); g.restore();
+    { const [x, y] = P(BOSSF.x, BOSSF.z); if (!(prog.end && !boss.alive)) up(x, y, () => { g.font = (big ? 40 : 18) + 'px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('👑', 0, 0); if (tg && tg.boss) { g.strokeStyle = '#ffd23f'; g.lineWidth = big ? 6 : 3; g.beginPath(); g.arc(0, 0, big ? 30 : 13, 0, 6.3); g.stroke(); } }); }
+    const p = ctx.player(); const [px, py] = P(p.pos.x, p.pos.z), fa = camFwd(), pk = big ? 2 : 1.3; g.save(); g.translate(px, py); g.rotate(Math.atan2(Math.cos(fa), Math.sin(fa)) + Math.PI / 2); g.scale(pk, pk); g.fillStyle = '#fff'; g.strokeStyle = '#1b1430'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(0, -9); g.lineTo(7, 7); g.lineTo(0, 3); g.lineTo(-7, 7); g.closePath(); g.fill(); g.stroke(); g.restore();
   }
   function hudUpd(force) {
     if (!hudEl || hudEl.hidden) return; const p = ctx && ctx.player(); if (!p) return;
     const n = hudEl.querySelector('.rpg-n'), done = MON.length - left(), txt = left() ? done + ' / ' + MON.length : boss && boss.alive ? '👑' : '⭐'; if (n.textContent !== txt) n.textContent = txt;
     const lv = 'Lv ' + PL(), ln = hudEl.querySelector('.rpg-lvn'); if (ln.textContent !== lv) ln.textContent = lv; const xt = (prog.xp | 0) + ' / ' + need(PL()), xe = hudEl.querySelector('.rpg-xpt'); if (xe.textContent !== xt) { xe.textContent = xt; hudEl.querySelector('.rpg-xp s').style.width = Math.min(100, ((prog.xp | 0) / need(PL())) * 100) + '%'; }
-    mapT -= 1; if (mapT > 0 && !force) return; mapT = 6;
-    const g = mapG, S = 200, sc = S / (MR * 2), ox = p.pos.x - MR, oz = p.pos.z - MR, k = 1024 / (BG.BIG * 2);
-    g.fillStyle = '#6f8f62'; g.fillRect(0, 0, S, S); g.drawImage(worldCv, (ox + BG.BIG) * k, (oz + BG.BIG) * k, MR * 2 * k, MR * 2 * k, 0, 0, S, S);
-    drawMarks(g, S, sc, ox, oz);
+    tgHud();
+    mapT -= 1; if (mapT > 0 && !force) return; mapT = 3;
+    // 小地圖跟著鏡頭轉：你面對的方向永遠朝上
+    const g = mapG, S = 200, sc = S / (MR * 2), ox = p.pos.x - MR, oz = p.pos.z - MR, k = worldCv.width / (BG.BIG * 2), fa = camFwd(), th = -Math.PI / 2 - Math.atan2(Math.cos(fa), Math.sin(fa)), E = 1.45;
+    g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#6f8f62'; g.fillRect(0, 0, S, S);
+    g.translate(S / 2, S / 2); g.rotate(th); g.translate(-S / 2, -S / 2);
+    g.drawImage(worldCv, (p.pos.x - MR * E + BG.BIG) * k, (p.pos.z - MR * E + BG.BIG) * k, MR * 2 * E * k, MR * 2 * E * k, S / 2 - (S / 2) * E, S / 2 - (S / 2) * E, S * E, S * E);
+    drawMarks(g, S, sc, ox, oz, false, th);
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    { const nx = S / 2 + Math.sin(th) * S * 0.41, ny = S / 2 - Math.cos(th) * S * 0.41; g.fillStyle = '#d6463a'; g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.arc(nx, ny, 11, 0, 6.3); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.font = '900 13px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('N', nx, ny + 0.5); }
+    // 目標在小地圖外面：邊上畫一個指向目標的小箭頭
+    { const t = curTgt(); if (t) { const dx = t.x - p.pos.x, dz = t.z - p.pos.z; if (Math.hypot(dx, dz) > MR * 0.85) { const cx = dx * Math.cos(th) - dz * Math.sin(th), cy = dx * Math.sin(th) + dz * Math.cos(th), a = Math.atan2(cy, cx), ex = S / 2 + Math.cos(a) * S * 0.43, ey = S / 2 + Math.sin(a) * S * 0.43; g.save(); g.translate(ex, ey); g.rotate(a + Math.PI / 2); g.fillStyle = '#ffd23f'; g.strokeStyle = '#5a3a1a'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(0, -11); g.lineTo(9, 7); g.lineTo(-9, 7); g.closePath(); g.fill(); g.stroke(); g.restore(); } } }
     if (bigEl && !bigEl.hidden) drawBig();
   }
   // 大地圖（M 或點小地圖）：王在哪裡、幾級、打倒了沒；點走過的營地可以傳送
   // 大地圖（Yen 11-26「點地圖看不清楚，要可以放大，去過的營地區分不出來」）：可以放大縮小（滾輪、兩指、＋－按鈕）、拖曳移動；
   // 點一下去過的營地就傳送（拖曳不算點）。去過的營地是金色營火，最後記錄的重生點多一圈橘色外框，沒去過的是灰色小三角形。
-  const MV = { cx: 0, cz: 0, z: 1 }, ptr = new Map(); let drag = null;
-  const mvClamp = () => { MV.z = SC.clamp(MV.z, 1, 6); const h = BG.BIG / MV.z; MV.cx = SC.clamp(MV.cx, -BG.BIG + h, BG.BIG - h); MV.cz = SC.clamp(MV.cz, -BG.BIG + h, BG.BIG - h); };
+  const MV = { cx: 0, cz: 0, z: 1 }, ptr = new Map(); let drag = null, tintCv = null, tintV = -1;
+  // 大地圖上每個地區淡淡塗上那條彩脈的顏色，一眼分得出地區
+  function mkTint() { const N = 160, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'), im = g.createImageData(N, N);
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const x = -BG.BIG + ((i + 0.5) / N) * BG.BIG * 2, z = -BG.BIG + ((j + 0.5) / N) * BG.BIG * 2, r = BG.region(x, z), v = VEINS.find((q) => q[3] === r.id), o = (j * N + i) * 4; if (!v || (BG.fogAt && BG.fogAt(x, z))) continue; im.data[o] = (v[1] >> 16) & 255; im.data[o + 1] = (v[1] >> 8) & 255; im.data[o + 2] = v[1] & 255; im.data[o + 3] = 60; }
+    g.putImageData(im, 0, 0); const c2 = document.createElement('canvas'); c2.width = c2.height = 640; const g2 = c2.getContext('2d'); g2.filter = 'blur(6px)'; g2.imageSmoothingEnabled = true; g2.drawImage(c, 0, 0, 640, 640); return c2; }
+  const mvClamp = () => { MV.z = SC.clamp(MV.z, 1, 16); const h = BG.BIG / MV.z; MV.cx = SC.clamp(MV.cx, -BG.BIG + h, BG.BIG - h); MV.cz = SC.clamp(MV.cz, -BG.BIG + h, BG.BIG - h); };
   const cvPt = (cv, e) => { const r = cv.getBoundingClientRect(), h = BG.BIG / MV.z; return [MV.cx - h + ((e.clientX - r.left) / r.width) * h * 2, MV.cz - h + ((e.clientY - r.top) / r.height) * h * 2]; };
   function zoomAt(f, wx, wz) { const z0 = MV.z; MV.z = SC.clamp(MV.z * f, 1, 6); const k = z0 / MV.z; if (wx != null) { MV.cx = wx + (MV.cx - wx) * k; MV.cz = wz + (MV.cz - wz) * k; } mvClamp(); drawBig(); }
   function bigMap(on) {
     if (on && !bigEl) {
       bigEl = document.createElement('div'); bigEl.id = 'rpg-big'; bigEl.hidden = true;
-      bigEl.innerHTML = `<div class="rpg-bin"><canvas width="1024" height="1024"></canvas><b class="rpg-bt">地圖</b><div class="rpg-zm"><button type="button" data-z="1">＋</button><button type="button" data-z="-1">－</button></div><p class="rpg-lg"><span class="on">🔥</span><span>去過的營地（點一下傳送）</span><span class="cur">◎</span><span>重生點</span><span class="no">▲</span><span>還沒去過</span></p><button type="button" class="rpg-x" aria-label="✕">✕</button></div>`;
+      bigEl.innerHTML = `<div class="rpg-bin"><canvas width="1024" height="1024"></canvas><b class="rpg-bt">地圖</b><div class="rpg-zm"><button type="button" data-z="1">＋</button><button type="button" data-z="-1">－</button></div><p class="rpg-lg"><span class="on">🔥</span><span>去過的營地（點一下傳送）</span><span class="cur">◎</span><span>重生點</span><span class="no">▲</span><span>還沒去過</span></p><p class="rpg-lg rpg-lg2"><span class="kc" style="background:#3fae4a"></span><span class="kc" style="background:#f0a020"></span><span class="kc" style="background:#d6463a"></span><span>怪物王：綠＝好打、橘＝差不多、紅＝太強（點一下設為目標）</span></p><button type="button" class="rpg-x" aria-label="✕">✕</button></div>`;
       (document.getElementById('app') || document.body).appendChild(bigEl);
       const cv = bigEl.querySelector('canvas');
       bigEl.addEventListener('pointerdown', (e) => { e.stopPropagation(); if (e.target.closest('.rpg-x') || e.target === bigEl) { e.preventDefault(); bigMap(false); return; } const zb = e.target.closest('[data-z]'); if (zb) { e.preventDefault(); zoomAt(+zb.dataset.z > 0 ? 1.6 : 1 / 1.6); } });
@@ -46321,17 +46527,22 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
         if (ptr.size >= 2 && ptr.pinch) { const [a, b] = [...ptr.values()], d = Math.hypot(a.x - b.x, a.y - b.y), [wx, wz] = cvPt(cv, { clientX: (a.x + b.x) / 2, clientY: (a.y + b.y) / 2 }); zoomAt((ptr.pinch.z * d) / Math.max(20, ptr.pinch.d) / MV.z, wx, wz); return; }
         if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.moved = Math.max(drag.moved, Math.hypot(dx, dy)); const m = (BG.BIG * 2) / MV.z / r.width; MV.cx = drag.cx - dx * m; MV.cz = drag.cz - dy * m; mvClamp(); drawBig(); });
       const up = (e) => { if (!ptr.has(e.pointerId)) return; ptr.delete(e.pointerId); if (ptr.size < 2) ptr.pinch = null;
-        if (drag && ptr.size === 0 && drag.moved < 10) { const [x, z] = cvPt(cv, e), r = cv.getBoundingClientRect(), near = 22 * ((BG.BIG * 2) / MV.z / r.width) + 10; let best = -1, bd = near; visited.forEach((i) => { const c = CAMPS[i], d = Math.hypot(c.x - x, c.z - z); if (d < bd) { bd = d; best = i; } }); const p = ctx && ctx.player(); if (best >= 0 && p && p.alive) { bigMap(false); fade(() => { toCamp(p, CAMPS[best]); setCamp(best, false); }); } }
+        if (drag && ptr.size === 0 && drag.moved < 10) { const [x, z] = cvPt(cv, e), r = cv.getBoundingClientRect(), near = 22 * ((BG.BIG * 2) / MV.z / r.width) + 10; let best = -1, bd = near;
+          { let ke = null, kd = near; mons.forEach((m) => { if (m.dead || !m.alive) return; const d = Math.hypot(m.pos.x - x, m.pos.z - z); if (d < kd) { kd = d; ke = m; } }); if (ke) { tgtE = tgtE === ke ? null : ke; tgKey = ''; sfx('swap'); if (ctx) ctx.tip(tgtE ? '已設為目標' : '目標改回自動建議', 1.6); drawBig(); if (ptr.size === 0) drag = null; return; } } let lock = false; visited.forEach((i) => { const c = CAMPS[i], d = Math.hypot(c.x - x, c.z - z); if (d < bd) { if (RP.campOk && !RP.campOk(c)) { lock = true; return; } bd = d; best = i; } }); if (best < 0 && lock && ctx) ctx.tip('要先解開這條彩脈中央的塔，這裡的營火才能傳送', 3); const p = ctx && ctx.player(); if (best >= 0 && p && p.alive) { bigMap(false); fade(() => { toCamp(p, CAMPS[best]); setCamp(best, false); }); } }
         if (ptr.size === 0) drag = null; };
       cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', (e) => { ptr.delete(e.pointerId); drag = null; ptr.pinch = null; });
       cv.addEventListener('wheel', (e) => { e.preventDefault(); const [x, z] = cvPt(cv, e); zoomAt(e.deltaY < 0 ? 1.25 : 0.8, x, z); }, { passive: false });
     }
-    if (!bigEl) return; bigEl.hidden = !on; if (on) { try { if (document.pointerLockElement) document.exitPointerLock(); } catch (e) {} const p = ctx && ctx.player(); MV.z = 3; if (p) { MV.cx = p.pos.x; MV.cz = p.pos.z; } mvClamp(); drawBig(); }
+    if (!bigEl) return; bigEl.hidden = !on; if (on) { try { if (document.pointerLockElement) document.exitPointerLock(); } catch (e) {} const p = ctx && ctx.player(); MV.z = 1.3; if (p) { MV.cx = p.pos.x; MV.cz = p.pos.z; } mvClamp(); drawBig(); }
   }
   function drawBig() { const cv = bigEl.querySelector('canvas'), g = cv.getContext('2d'), S = 1024, h = BG.BIG / MV.z, ox = MV.cx - h, oz = MV.cz - h, sc = S / (h * 2), wk = worldCv.width / (BG.BIG * 2);
     g.imageSmoothingEnabled = true; g.drawImage(worldCv, (ox + BG.BIG) * wk, (oz + BG.BIG) * wk, h * 2 * wk, h * 2 * wk, 0, 0, S, S);
+    if (!tintCv || tintV !== BG.fogVer) { tintCv = mkTint(); tintV = BG.fogVer; } const tk = tintCv.width / (BG.BIG * 2); g.drawImage(tintCv, (ox + BG.BIG) * tk, (oz + BG.BIG) * tk, h * 2 * tk, h * 2 * tk, 0, 0, S, S);
     g.font = '900 ' + Math.round(20 + MV.z * 3) + 'px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = 'rgba(255,247,230,.92)'; g.strokeStyle = 'rgba(90,58,26,.75)'; g.lineWidth = 5;
-    BG.REG.forEach((r) => { if (r.id === 'sun' && MV.z < 2.5) return; const x = (r.x - ox) * sc, y = (r.z - oz) * sc - 40; if (x < -100 || y < -40 || x > S + 100 || y > S + 40) return; const t = (SC.tr ? SC.tr(r.n) : r.n); g.strokeText(t, x, y); g.fillText(t, x, y); });
+    BG.REG.forEach((r) => { const x = (r.x - ox) * sc, y = (r.z - oz) * sc - (r.id === 'sun' ? 70 : 46); if (x < -140 || y < -40 || x > S + 140 || y > S + 40) return; const t = (SC.tr ? SC.tr(r.n) : r.n), v = VEINS.find((q) => q[3] === r.id), ok = !v || veinOk(v);
+      g.font = '900 ' + Math.round(26 + MV.z * 3) + 'px sans-serif'; const w = g.measureText(t).width + (v ? 40 : 24); g.fillStyle = 'rgba(255,247,230,.93)'; g.beginPath(); g.roundRect ? g.roundRect(x - w / 2, y - 22, w, 44, 22) : g.rect(x - w / 2, y - 22, w, 44); g.fill();
+      if (v) { g.fillStyle = '#' + v[1].toString(16).padStart(6, '0'); g.beginPath(); g.arc(x - w / 2 + 22, y, 9, 0, 6.3); g.fill(); if (!ok) { g.strokeStyle = '#9a958c'; g.lineWidth = 3; g.stroke(); } }
+      g.fillStyle = ok ? '#5a3a1a' : '#7a7468'; g.fillText(t, x + (v ? 10 : 0), y + 1); });
     g.save(); drawMarks(g, S, sc, ox, oz, true); g.restore(); }
   document.addEventListener('keydown', (e) => { if (!RP.active || e.code !== 'KeyM' || e.repeat) return; if (SC.input && !SC.input.active && !(bigEl && !bigEl.hidden)) return; e.preventDefault(); e.stopImmediatePropagation(); bigMap(!(bigEl && !bigEl.hidden)); }, true);
   // 血條：只在打怪物的時候出現，名字換成那隻怪物
@@ -46358,7 +46569,13 @@ body.rpg-hard #boss-phase{color:#ff5a5a!important}
 @media (max-width:960px){body.rpg-on .w-chip b{display:none}body.rpg-on .w-chip{min-width:0}}
 body.rpg-on .h-clock,body.rpg-on .h-roster,body.rpg-on #lives,body.rpg-on #ko-lives,body.rpg-on .h-score{display:none!important}
 #rpg-hud{position:absolute;inset:0;pointer-events:none;z-index:6;font-family:inherit}
-#rpg-hud[hidden],#rpg-big[hidden]{display:none}
+#rpg-hud[hidden],#rpg-big[hidden]{display:none}#rpg-hud .rpg-tg{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(255,247,230,.94);color:#5a3a1a;border-radius:20px;padding:4px 14px 4px 6px;box-shadow:0 3px 0 rgba(27,20,48,.3);font-weight:900;white-space:nowrap}
+#rpg-hud .rpg-tg[hidden]{display:none}#rpg-hud .rpg-tg.pick{box-shadow:0 0 0 3px #ffd23f,0 3px 0 rgba(27,20,48,.3)}
+#rpg-hud .rpg-ta{width:30px;height:30px;display:block;transition:transform .08s linear}#rpg-hud .rpg-ta svg{width:100%;height:100%;display:block}
+#rpg-hud .rpg-tt{display:flex;align-items:center;gap:6px;font-size:15px}#rpg-hud .rpg-tl{font-style:normal;color:#fff;border-radius:10px;padding:0 7px;font-size:12px}#rpg-hud .rpg-td{font-size:13px;opacity:.8}
+#rpg-big .rpg-lg2{bottom:52px}#rpg-big .rpg-lg .kc{width:14px;height:14px;border-radius:50%;border:2px solid #fff;display:inline-block}
+@media (max-width:700px){#rpg-hud .rpg-tt{font-size:13px}#rpg-hud .rpg-tg{top:62px}}
+
 #rpg-hud .rpg-map{position:absolute;right:12px;top:58px;width:156px;height:156px;border-radius:50%;border:4px solid #fff7e6;box-shadow:0 3px 0 rgba(27,20,48,.35);background:#86b84a;pointer-events:auto;cursor:pointer}
 #rpg-hud .rpg-cnt{position:absolute;right:20px;top:222px;background:#fff7e6;color:#5a3a1a;border-radius:14px;padding:3px 12px;font-weight:900;box-shadow:0 3px 0 rgba(27,20,48,.3);display:flex;align-items:baseline;gap:6px}
 #rpg-hud .rpg-cnt b{font-size:20px}#rpg-hud .rpg-cnt small{font-size:12px}
@@ -46536,6 +46753,163 @@ body.rpg-on .h-clock,body.rpg-on .h-roster,body.rpg-on #lives,body.rpg-on #ko-li
 body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story #touch{opacity:0!important;pointer-events:none!important}
 @media (max-width:700px),(max-height:500px){#rpg-story .rs-txt p{font-size:15px}#rpg-story .rs-face{width:42px;height:42px;font-size:22px}#rpg-story .rs-card b{font-size:30px}#rpg-story .rs-box{min-height:70px;padding:8px 12px}}
 `;
+})();
+
+// 七條彩脈中央的塔（Yen 11-26「每個脈中央都有一個塔要解開，解開的方式可能是指定的區域範圍塗滿墨等多變的玩法，用提示但是要讓玩家思考一下怎麼解，
+//   解開後該脈圖才從地圖中黑屏解開並且營火才可以傳送」）。
+// 每座塔一種解法，走近塔就會看到左上角的提示和進度：
+//   黃 風鈴草原：把地上畫好的圓圈一口氣塗滿（墨水會蒸發，要快）
+//   綠 青苔森林：沿著發光蘑菇，把泉水到塔的路塗起來
+//   紅 紅岩台地：四個火盆只會燒一下子，要讓四個同時燒起來
+//   橙 回音丘陵：聽塔的回音（鼓依序亮起來），照同樣的順序敲鼓
+//   藍 碧溪河谷：讓三塊水流石的箭頭都指向塔；打一塊石頭，它和右邊那塊都會轉
+//   靛 雲霧高原：把繞著塔飄的六朵雲都染上顏色（顏色一陣子會褪）
+//   紫 雪頂山麓：照門前石板上的星圖，點亮對的三顆星（點錯就全部熄掉）
+// 解開的塔：塔頂的彩晶亮起來、地圖上那條脈的黑幕拿掉、那條脈的營火可以傳送。記在 sc-rpg 的 tw。
+(() => {
+  const RP = SC.rpg, BG = SC.rpgBig; if (!RP || !RP.mod || !BG) return;
+  const V3 = THREE.Vector3, mod = RP.mod, sfx = (n, ...a) => { const s = SC.audio && SC.audio.sfx; if (s && s[n]) try { s[n](...a); } catch (e) {} };
+  const ctx = () => RP._ctx && RP._ctx(), prog = () => (RP._prog && RP._prog()) || {};
+  const solved = (id) => (prog().tw || []).includes(id);
+  const hash = (i) => { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+  const INFO = {
+    plain: ['塗滿圓圈', '把塔前地上的圓圈一口氣塗滿（墨水會蒸發，要快）'],
+    forest: ['引泉水', '沿著發光的蘑菇，把泉水到塔的路整條塗起來'],
+    mesa: ['點火盆', '火盆只會燒一下子，要讓四個火盆同時燒起來'],
+    hills: ['回音鼓', '仔細看塔的回音（鼓會依序亮起來），照同樣的順序敲鼓'],
+    river: ['水流石', '讓三塊水流石的箭頭都指向塔；打一塊石頭，它和右邊那塊都會轉'],
+    high: ['染雲朵', '把繞著塔飄的六朵雲都染上顏色（顏色一陣子會褪）'],
+    snow: ['點星座', '照門前石板上的星圖，點亮對的三顆星（點錯就全部熄掉）'],
+  };
+  RP.campOk = (c) => !c || !c.v || c.v === 'sun' || solved(c.v); // 營火傳送：那條脈的塔解開了才行
+  RP.towerSolved = solved;
+
+  // ───────── 給子彈打的靶（先放進 mod.targets，開打前就要在）─────────
+  const TG = []; for (let i = 0; i < 8; i++) { const t = { isTarget: true, id: 'rpg-pz-' + i, name: '', team: 1, alive: false, pos: new V3(0, -99, 0), hy0: 0, hy1: 3, hr: 1.6, cy: 1.5, onHit: null, cd: 0 }; t.bossHurt = () => { if (!t.alive || !t.onHit || t.cd > now) return 0; t.cd = now + 0.4; t.onHit(); return 0; }; TG.push(t); mod.targets.push(t); }
+  const freeT = () => TG.forEach((t) => { t.alive = false; t.onHit = null; t.pos.set(0, -99, 0); });
+  const useT = (i, x, y, z, hy, hr, onHit) => { const t = TG[i]; t.alive = true; t.pos.set(x, y, z); t.hy0 = 0; t.hy1 = hy; t.hr = hr; t.cy = hy / 2; t.onHit = onHit; return t; };
+
+  let now = 0, built = false, active = null, hudEl = null, lastHint = '', nearT = null;
+  const TOW = []; // 每座塔：{ T, v, g, crystal, pz }
+  const M = (c, o) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.8, flatShading: true }, o || {}));
+  const mesh = (geo, mat, x, y, z, parent) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; (parent || root()).add(m); return m; };
+  const root = () => BG.root;
+  const hAt = (x, z) => (RP._h ? RP._h(x, z) : BG.h(x, z));
+  const ang = (T, a, r) => { const v = BG.VEINS.find((q) => q.id === T.id), t = v.a + Math.PI + a; return [T.x + Math.sin(t) * r, T.z - Math.cos(t) * r]; }; // a＝從靠谷那一邊算的角度
+
+  function build() {
+    if (built || !BG.root || !BG.TOWERS.length) return; built = true;
+    const stone = M(0xd8cfc0), dark = M(0x3a2e40), cap = M(0xb9ae9c);
+    BG.TOWERS.forEach((T) => {
+      const v = BG.VEINS.find((q) => q.id === T.id), col = new THREE.Color(v.col), g = new THREE.Group(); g.position.set(T.x, T.h, T.z); root().add(g);
+      mesh(new THREE.CylinderGeometry(8, 9, 3, 10), stone, 0, 1.5, 0, g); mesh(new THREE.CylinderGeometry(4.2, 5.6, 26, 9), stone, 0, 16, 0, g);
+      for (let k = 0; k < 4; k++) mesh(new THREE.CylinderGeometry(5.7 - k * 0.38, 5.75 - k * 0.38, 0.8, 9), M(v.col, { emissive: v.col, emissiveIntensity: 0.05 }), 0, 6 + k * 6, 0, g);
+      mesh(new THREE.CylinderGeometry(6.2, 4.6, 3, 9), cap, 0, 30, 0, g); for (let k = 0; k < 9; k++) { const a = (k / 9) * Math.PI * 2; mesh(new THREE.BoxGeometry(1.4, 2, 1.4), cap, Math.sin(a) * 5.6, 32.4, Math.cos(a) * 5.6, g); }
+      const door = mesh(new THREE.BoxGeometry(3.2, 5.2, 1), dark, 0, 5.6, 0, g); { const [dx, dz] = [v.ux, v.uz]; door.position.set(dx * 4.9, 5.6, dz * 4.9); door.rotation.y = Math.atan2(dx, dz); }
+      const cm = new THREE.MeshStandardMaterial({ color: 0x9a958c, roughness: 0.3, flatShading: true, emissive: 0x000000 }), crystal = mesh(new THREE.OctahedronGeometry(3.2, 0), cm, 0, 38, 0, g); crystal.scale.y = 1.6;
+      const plaza = new THREE.Mesh(new THREE.CircleGeometry(24, 28), M(0xcfc3a8, { roughness: 0.95 })); plaza.rotation.x = -Math.PI / 2; plaza.position.set(0, 0.07, 0); plaza.receiveShadow = true; g.add(plaza);
+      BG.solid(T.x, T.z, 9.2, T.h + 3); BG.solid(T.x, T.z, 6, T.h + 34);
+      const o = { T, v, g, col, crystal, cm, pz: null }; TOW.push(o); o.pz = PZ[T.id](o); setGlow(o, solved(T.id), true);
+    });
+    fogSync();
+  }
+  function setGlow(o, on, quiet) { o.cm.color.set(on ? o.v.col : 0x9a958c); o.cm.emissive.set(on ? o.v.col : 0x000000); o.cm.emissiveIntensity = on ? 0.9 : 0; if (on && !quiet) o.flash = 1.5; }
+  const fogSync = () => BG.setFog && BG.setFog(BG.VEINS.filter((v) => !solved(v.id)).map((v) => v.id));
+  function solve(o) {
+    const P = prog(); P.tw = P.tw || []; if (P.tw.includes(o.T.id)) return; P.tw.push(o.T.id); try { localStorage.setItem('sc-rpg', JSON.stringify(P)); } catch (e) {}
+    const c = ctx(); setGlow(o, true); fogSync(); freeT(); active = null;
+    if (c) { c.burst(o.T.x, o.T.h + 38, o.T.z, o.col, 60, 26, 1); c.flash('#' + o.col.getHexString(), 0.4); c.shake(0.3); c.tip('塔解開了！這條彩脈的地圖打開了，這裡的營火也可以傳送了', 6); }
+    sfx('shatter'); hud(null);
+  }
+
+  // ───────── 七種解法 ─────────
+  const team = () => { const p = ctx() && ctx().player(); return p ? (p.team | 0) + 1 : 1; };
+  const owned = (x, z) => { const I = SC.ink, i = I.cellIndex ? I.cellIndex(x, z) : -1; return i >= 0 && I.owner && I.owner[i] === team(); };
+  const post = (o, x, z, h, r, col) => { const y = hAt(x, z); return mesh(new THREE.CylinderGeometry(r, r * 1.15, h, 7), M(col), x, y + h / 2, z); };
+  const PZ = {
+    // 黃：塗滿圓圈
+    plain(o) { const T = o.T, [cx, cz] = ang(T, 0, 40), R = 11, y = hAt(cx, cz); const ring = new THREE.Mesh(new THREE.RingGeometry(R - 0.5, R + 0.5, 48), M(o.v.col, { emissive: o.v.col, emissiveIntensity: 0.5, roughness: 0.6 })); ring.rotation.x = -Math.PI / 2; ring.position.set(cx, y + 0.12, cz); root().add(ring);
+      for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2; post(o, cx + Math.cos(a) * (R + 1.2), cz + Math.sin(a) * (R + 1.2), 1.6, 0.35, 0xfff1c0); }
+      const pts = []; for (let z = -R; z <= R; z += 1.5) for (let x = -R; x <= R; x += 1.5) if (x * x + z * z < (R - 0.8) ** 2) pts.push([cx + x, cz + z]);
+      return { tick() { let n = 0; for (const [x, z] of pts) if (owned(x, z)) n++; const f = n / pts.length; hudP(Math.floor(f * 100) + '%'); if (f >= 0.85) solve(o); } }; },
+    // 綠：引泉水
+    forest(o) { const T = o.T, [sx, sz] = ang(T, 2.3, 52), [ex, ez] = ang(T, 0.25, 10), [mx, mz] = ang(T, 1.2, 46), path = [[sx, sz], [mx, mz], [ex, ez]], P = [];
+      mesh(new THREE.CylinderGeometry(3.2, 3.6, 1.4, 10), M(0xb9ae9c), sx, hAt(sx, sz) + 0.7, sz); mesh(new THREE.CircleGeometry(2.6, 16), M(0x5ad0ff, { emissive: 0x2a9fd0, emissiveIntensity: 0.6, roughness: 0.1 }), sx, hAt(sx, sz) + 1.45, sz).rotation.x = -Math.PI / 2;
+      for (let k = 1; k < path.length; k++) { const [ax, az] = path[k - 1], [bx, bz] = path[k], L = Math.hypot(bx - ax, bz - az); for (let s = 0; s < L; s += 2) { const t = s / L, w = Math.sin(t * Math.PI * 2 + k) * 4; P.push([ax + (bx - ax) * t - ((bz - az) / L) * w, az + (bz - az) * t + ((bx - ax) / L) * w]); } }
+      const mm = M(0x9fffb0, { emissive: 0x4cc75a, emissiveIntensity: 0.9 }); P.forEach(([x, z], i) => { if (i % 3) return; for (const sd of [-1, 1]) { const j = Math.min(P.length - 1, i + 1), dx = P[j][0] - x, dz = P[j][1] - z, L = Math.hypot(dx, dz) || 1, px = x - (dz / L) * 2.6 * sd, pz = z + (dx / L) * 2.6 * sd; mesh(new THREE.ConeGeometry(0.45, 0.9, 6), mm, px, hAt(px, pz) + 0.45, pz); } });
+      return { tick() { let n = 0; for (const [x, z] of P) if (owned(x, z) || owned(x + 0.9, z) || owned(x, z + 0.9)) n++; const f = n / P.length; hudP(Math.floor(f * 100) + '%'); if (f >= 0.9) solve(o); } }; },
+    // 紅：點火盆
+    mesa(o) { const B = [0.785, 2.356, 3.927, 5.498].map((a, i) => { const [x, z] = ang(o.T, a, 19), y = hAt(x, z), bowl = mesh(new THREE.CylinderGeometry(1.5, 0.8, 1.2, 8), M(0x6e4628), x, y + 2.6, z); post(o, x, z, 2, 0.45, 0x5a3a2a);
+        const fl = mesh(new THREE.ConeGeometry(1.1, 2.6, 7), new THREE.MeshBasicMaterial({ color: 0xff8a2a, transparent: true, opacity: 0.9 }), x, y + 4.4, z); fl.visible = false; return { x, y, z, fl, t: 0, i, bowl }; });
+      return { on() { B.forEach((b, i) => useT(i, b.x, b.y, b.z, 3.6, 1.8, () => { b.t = 9; sfx('rpgHit', 'open'); const c = ctx(); if (c) c.burst(b.x, b.y + 4, b.z, new THREE.Color(0xff8a2a), 14, 10, 0.5); })); },
+        tick(dt) { let n = 0; B.forEach((b) => { b.t = Math.max(0, b.t - dt); b.fl.visible = b.t > 0; if (b.t > 0) { n++; b.fl.scale.setScalar(0.6 + 0.4 * Math.min(1, b.t / 3) + Math.sin(now * 18 + b.i) * 0.06); } }); hudP(n + ' / 4'); if (n === 4) solve(o); } }; },
+    // 橙：回音鼓
+    hills(o) { const CS = [0xff5533, 0xffd23f, 0x4cc75a, 0x3d8bff], D = [0.6, 1.9, -0.6, -1.9].map((a, i) => { const [x, z] = ang(o.T, a, 17), y = hAt(x, z), m = M(CS[i], { emissive: CS[i], emissiveIntensity: 0 }); mesh(new THREE.CylinderGeometry(1.7, 1.7, 2.2, 12), m, x, y + 1.1, z); mesh(new THREE.CylinderGeometry(1.75, 1.75, 0.2, 12), M(0xfff4e0), x, y + 2.25, z); return { x, y, z, m, glow: 0 }; });
+      const SEQ = [0, 2, 1, 3, 2].map((q, i) => (q + Math.floor(hash(o.v.k * 7 + i) * 4)) % 4); let step = 0, echo = -1, et = 0, wait = 1.5;
+      const lit = (d) => { d.glow = 1; sfx('rpgHit', 'open'); };
+      return { on() { step = 0; echo = -1; wait = 1.5; D.forEach((d, i) => useT(i, d.x, d.y, d.z, 2.6, 2, () => { if (echo >= 0) return; lit(d); if (SEQ[step] === i) { step++; if (step >= SEQ.length) solve(o); } else { step = 0; const c = ctx(); if (c) c.tip('順序不對，再看一次回音', 2.5); sfx('rpgHit', 'stone'); wait = 1.4; } })); },
+        tick(dt) { D.forEach((d) => { d.glow = Math.max(0, d.glow - dt * 2.2); d.m.emissiveIntensity = d.glow * 0.9; });
+          if (echo >= 0) { et -= dt; if (et <= 0) { if (echo < SEQ.length) { lit(D[SEQ[echo]]); echo++; et = 0.75; } else { echo = -1; wait = 12; } } }
+          else if (step === 0) { wait -= dt; if (wait <= 0) { echo = 0; et = 0.3; } }
+          hudP(echo >= 0 ? '👂' : step + ' / ' + SEQ.length); } }; },
+    // 藍：水流石
+    river(o) { const T = o.T, S = [0.5, 2.6, 4.7].map((a, i) => { const [x, z] = ang(T, a, 22), y = hAt(x, z), g = new THREE.Group(); g.position.set(x, y, z); root().add(g); mesh(new THREE.CylinderGeometry(2, 2.4, 2.4, 8), M(0xa8b8c4), 0, 1.2, 0, g);
+        const ar = new THREE.Group(); ar.position.y = 2.7; g.add(ar); const am = M(0x3d8bff, { emissive: 0x3d8bff, emissiveIntensity: 0.35 }); mesh(new THREE.BoxGeometry(0.7, 0.5, 2.4), am, 0, 0, -0.4, ar); const tip = mesh(new THREE.ConeGeometry(0.9, 1.4, 6), am, 0, 0, 1.4, ar); tip.rotation.x = Math.PI / 2;
+        return { x, y, z, ar, d: 0, want: 0, base: Math.atan2(T.x - x, T.z - z), i }; });
+      // 從「全部指對」往回打亂（保證解得開）
+      S.forEach((s) => (s.d = s.want)); for (let k = 0; k < 4; k++) { const j = Math.floor(hash(o.v.k * 11 + k) * 3); S[j].d = (S[j].d + 3) % 4; S[(j + 1) % 3].d = (S[(j + 1) % 3].d + 3) % 4; } if (S.every((s) => s.d === s.want)) { S[0].d = (S[0].d + 1) % 4; S[1].d = (S[1].d + 1) % 4; }
+      S.forEach((s) => (s.ar.rotation.y = s.base + (s.d * Math.PI) / 2));
+      return { on() { S.forEach((s, i) => useT(i, s.x, s.y, s.z, 3.4, 2.4, () => { [s, S[(i + 1) % 3]].forEach((q) => (q.d = (q.d + 1) % 4)); sfx('rpgHit', 'stone'); })); },
+        tick(dt) { let n = 0; S.forEach((s) => { const w = s.base + (s.d * Math.PI) / 2; let cur = s.ar.rotation.y; const dd = Math.atan2(Math.sin(w - cur), Math.cos(w - cur)); s.ar.rotation.y = cur + dd * Math.min(1, dt * 10); if (s.d === s.want) n++; }); hudP(n + ' / 3'); if (n === 3) solve(o); } }; },
+    // 靛：染雲朵
+    high(o) { const T = o.T, C = []; for (let i = 0; i < 6; i++) { const m = M(0xf4f4fa, { emissive: o.v.col, emissiveIntensity: 0, roughness: 0.9 }), g = new THREE.Group(); root().add(g); [[0, 0, 0, 2.2], [1.8, -0.3, 0.4, 1.6], [-1.7, -0.4, -0.2, 1.5], [0.4, 0.9, 0.2, 1.3]].forEach(([x, y, z, r]) => mesh(new THREE.IcosahedronGeometry(r, 0), m, x, y, z, g)); C.push({ g, m, a: (i / 6) * Math.PI * 2, r: 22 + (i % 3) * 5, y: 10 + (i % 2) * 5, sp: 0.13 + (i % 3) * 0.04, t: 0 }); }
+      const place = () => C.forEach((c) => { c.a += 0; c.g.position.set(T.x + Math.cos(c.a) * c.r, T.h + c.y + Math.sin(now + c.r) * 0.8, T.z + Math.sin(c.a) * c.r); }); place();
+      return { on() { C.forEach((c, i) => useT(i, 0, -99, 0, 4.4, 3, () => { c.t = 16; sfx('rpgHit', 'body'); const cc = ctx(); if (cc) cc.burst(c.g.position.x, c.g.position.y, c.g.position.z, o.col, 16, 12, 0.6); })); },
+        idle(dt) { C.forEach((c) => (c.a += c.sp * dt * (c.r > 26 ? -1 : 1))); place(); },
+        tick(dt) { let n = 0; C.forEach((c, i) => { c.a += c.sp * dt * (c.r > 26 ? -1 : 1); c.t = Math.max(0, c.t - dt); if (c.t > 0) n++; const k = Math.min(1, c.t / 3); c.m.color.setRGB(0.96 - 0.6 * k, 0.96 - 0.62 * k, 0.98 - 0.2 * k); c.m.emissiveIntensity = k * 0.5; }); place(); C.forEach((c, i) => { TG[i].pos.set(c.g.position.x, c.g.position.y - 2.2, c.g.position.z); }); hudP(n + ' / 6'); if (n === 6) solve(o); } }; },
+    // 紫：點星座
+    snow(o) { const T = o.T, A = [0.3, 1.25, 2.1, 3.1, 4.1, 5.2], L = A.map((a, i) => { const [x, z] = ang(T, a, 18 + (i % 2) * 4), y = hAt(x, z), h = 3 + (i % 3) * 1.6; post(o, x, z, h, 0.5, 0x6a6a80); const m = M(0x8a86a0, { emissive: 0xffe27a, emissiveIntensity: 0 }), st = mesh(new THREE.OctahedronGeometry(1.1, 0), m, x, y + h + 1.3, z); return { x, y, z, h, m, st, on: false }; });
+      const want = [0, 2, 3, 5].filter((_, k) => hash(o.v.k * 5 + k) < 0.8).slice(0, 3); if (want.length < 3) want.splice(0, want.length, 1, 3, 4);
+      // 門前的石板：從上面看的星圖（北邊朝上），要點的星是金色
+      { const cv = document.createElement('canvas'); cv.width = cv.height = 256; const g = cv.getContext('2d'); g.fillStyle = '#2a2440'; g.fillRect(0, 0, 256, 256); g.strokeStyle = '#8a86a0'; g.lineWidth = 3; g.beginPath(); g.arc(128, 128, 104, 0, 6.3); g.stroke();
+        g.fillStyle = '#d6463a'; g.font = '900 26px sans-serif'; g.textAlign = 'center'; g.fillText('N', 128, 30); g.fillStyle = '#d8d0ff'; g.beginPath(); g.arc(128, 128, 9, 0, 6.3); g.fill();
+        L.forEach((l, i) => { const x = 128 + ((l.x - T.x) / 24) * 96, y = 128 + ((l.z - T.z) / 24) * 96, on = want.includes(i); g.fillStyle = on ? '#ffd23f' : '#5a5670'; g.beginPath(); g.arc(x, y, on ? 13 : 9, 0, 6.3); g.fill(); });
+        g.strokeStyle = '#ffd23f'; g.lineWidth = 3; g.beginPath(); want.forEach((i, k) => { const l = L[i], x = 128 + ((l.x - T.x) / 24) * 96, y = 128 + ((l.z - T.z) / 24) * 96; (k ? g.lineTo : g.moveTo).call(g, x, y); }); g.stroke();
+        const tx = new THREE.CanvasTexture(cv); tx.colorSpace = THREE.SRGBColorSpace; const [bx, bz] = ang(T, 0, 12.5), by = hAt(bx, bz), tab = new THREE.Group(); tab.position.set(bx, by, bz); tab.rotation.y = Math.atan2(o.v.ux, o.v.uz); root().add(tab);
+        mesh(new THREE.BoxGeometry(4.4, 4.4, 0.6), M(0x6a6a80), 0, 2.8, 0, tab); const face = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), new THREE.MeshBasicMaterial({ map: tx })); face.position.set(0, 2.8, 0.31); tab.add(face); }
+      const reset = () => L.forEach((l) => (l.on = false));
+      return { on() { L.forEach((l, i) => useT(i, l.x, l.y, l.z, l.h + 2.6, 1.6, () => { if (l.on) return; if (!want.includes(i)) { reset(); const c = ctx(); if (c) c.tip('那顆不是星座裡的星，全部熄掉了', 2.5); sfx('rpgHit', 'stone'); return; } l.on = true; sfx('rpgHit', 'open'); if (want.every((k) => L[k].on)) solve(o); })); },
+        tick() { let n = 0; L.forEach((l) => { l.m.emissiveIntensity = l.on ? 1 : 0; l.m.color.set(l.on ? 0xffe27a : 0x8a86a0); l.st.rotation.y = now * (l.on ? 2 : 0.4); if (l.on) n++; }); hudP(n + ' / 3'); } }; },
+  };
+
+  // ───────── 左上角的提示 ─────────
+  let pTxt = '';
+  function hud(o) {
+    if (!hudEl) { hudEl = document.createElement('div'); hudEl.id = 'rpg-pz'; hudEl.innerHTML = '<b></b><p></p><em></em>'; (document.getElementById('app') || document.body).appendChild(hudEl);
+      const st = document.createElement('style'); st.textContent = '#rpg-pz{position:absolute;left:12px;top:118px;max-width:300px;background:rgba(255,247,230,.94);color:#5a3a1a;border-radius:14px;padding:8px 12px;box-shadow:0 3px 0 rgba(27,20,48,.3);font-weight:800;pointer-events:none;z-index:5}#rpg-pz[hidden]{display:none}#rpg-pz b{display:block;font-size:15px}#rpg-pz b::before{content:"🗼 "}#rpg-pz p{margin:4px 0 2px;font-size:13px;line-height:1.35;font-weight:700}#rpg-pz em{font-style:normal;font-size:18px;color:#c65a3a}body.rpg-foe #rpg-pz{display:none}@media (max-width:700px),(max-height:500px){#rpg-pz{top:auto;bottom:128px;max-width:230px;padding:6px 10px}#rpg-pz p{font-size:12px}}';
+      document.head.appendChild(st); }
+    hudEl.hidden = !o; if (!o) return; const I = INFO[o.T.id], tt = (SC.tr ? SC.tr(o.v.n) : o.v.n) + '：' + (SC.tr ? SC.tr(I[0]) : I[0]), hp = SC.tr ? SC.tr(I[1]) : I[1];
+    hudEl.querySelector('b').textContent = tt; hudEl.querySelector('p').textContent = hp; pTxt = '';
+  }
+  function hudP(t) { if (!hudEl || t === pTxt) return; pTxt = t; hudEl.querySelector('em').textContent = t; }
+
+  // ───────── 每一格 ─────────
+  const u0 = mod.update; mod.update = (dt) => { u0(dt); try { tick(dt); } catch (e) { console.warn('tower', e); } };
+  function tick(dt) {
+    if (!RP.active) { if (active) { freeT(); active = null; hud(null); } return; } build(); if (!built) return; now += dt;
+    const c = ctx(), p = c && c.player(); if (!p) return;
+    TOW.forEach((o) => { if (o.flash > 0) { o.flash -= dt; o.cm.emissiveIntensity = 0.9 + Math.max(0, o.flash) * 1.5; } o.crystal.rotation.y += dt * 0.6; o.crystal.position.y = 38 + Math.sin(now * 1.3 + o.v.k) * 0.6; });
+    let best = null, bd = 1e9; TOW.forEach((o) => { const d = Math.hypot(p.pos.x - o.T.x, p.pos.z - o.T.z); if (d < bd) { bd = d; best = o; } }); nearT = best && bd < 900 ? best : null;
+    const want = best && bd < 75 && !solved(best.T.id) ? best : null;
+    if (want !== active) { freeT(); active = want; if (active) { if (active.pz.on) active.pz.on(); sfx('swap'); } hud(active); }
+    TOW.forEach((o) => { if (o !== active && o.pz.idle && Math.hypot(p.pos.x - o.T.x, p.pos.z - o.T.z) < 400) o.pz.idle(dt); });
+    if (active) active.pz.tick(dt);
+  }
+
+  // ───────── 地圖上的塔、目標指引 ─────────
+  RP.mapMarks = (g, P, big, up) => { TOW.forEach((o) => { const [x, y] = P(o.T.x, o.T.z), s = big ? 1.6 : 0.9, ok = solved(o.T.id); up(x, y, () => { g.fillStyle = ok ? '#' + o.col.getHexString() : '#9a958c'; g.strokeStyle = '#fff'; g.lineWidth = 2.5 * s; g.beginPath(); g.moveTo(-6 * s, 10 * s); g.lineTo(-4 * s, -8 * s); g.lineTo(0, -14 * s); g.lineTo(4 * s, -8 * s); g.lineTo(6 * s, 10 * s); g.closePath(); g.fill(); g.stroke(); if (ok) { g.fillStyle = '#fff'; g.beginPath(); g.arc(0, -8 * s, 2.4 * s, 0, 6.3); g.fill(); } }); }); };
+  RP.tgtHook = (p) => { if (!nearT || solved(nearT.T.id)) return null; const d = Math.hypot(p.pos.x - nearT.T.x, p.pos.z - nearT.T.z); if (d > 700) return null; return { x: nearT.T.x, z: nearT.T.z, n: (SC.tr ? SC.tr(nearT.v.n) + SC.tr('之塔') : nearT.v.n + '之塔'), lv: Math.round(BG.lvAt(nearT.T.x, nearT.T.z)), tower: true }; };
+  RP._towers = () => TOW; RP._solveTower = (id) => { const o = TOW.find((q) => q.T.id === id); if (o) solve(o); };
 })();
 
 // 積分制（牌位）。Yen 2026-11-20：「加入 APEX 遊戲的積分制」。
@@ -48187,6 +48561,8 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ['2026-11-26', '', '冒險世界變成七條彩脈：每條脈都跟以前整張地圖一樣大，雪山、雲上高原、紅岩台地、丘陵、草原、森林、河谷慢慢過渡；每條脈中央有一座塔，七種不同的解法，解開才看得到那裡的地圖、營火才能傳送；地圖加上目標指引，小地圖跟著你轉；大地圖分塊載入，不會變慢',
+      { en: 'Adventure World is now seven color veins, each as big as the whole old map: snowy peaks, cloud highlands, red mesas, hills, plains, forest and river valley blend gradually; each vein has a tower at its center with its own puzzle, and solving it reveals that area on the map and unlocks its campfires for travel; the map gains a target guide and a minimap that turns with you; the world loads in chunks so it stays smooth', ja: '冒険ワールドが7本の彩脈に：1本ずつが前の地図全体と同じ広さ。雪山、雲の高原、赤い岩の台地、丘、草原、森、川の谷がなめらかにつながる。それぞれの真ん中に塔があって、7種類のなぞとき。とくとその地図が見えて、たき火でワープできる。地図に目標ガイド、ミニマップは向きに合わせて回る。地形は少しずつ読みこむので重くならない', ko: '모험 세계가 일곱 갈래 색맥으로: 하나하나가 예전 지도 전체만큼 넓어요. 설산, 구름 고원, 붉은 바위 대지, 언덕, 초원, 숲, 강 골짜기가 자연스럽게 이어져요. 색맥마다 한가운데 탑과 서로 다른 퍼즐이 있고, 풀면 지도가 열리고 모닥불로 이동할 수 있어요. 지도에 목표 안내, 미니맵은 방향 따라 회전. 지형은 조금씩 불러와서 느려지지 않아요', es: 'El Mundo de aventura ahora son siete vetas de color, cada una tan grande como todo el mapa anterior: picos nevados, altiplano de nubes, mesetas rojas, colinas, praderas, bosque y valle fluvial se mezclan poco a poco; cada veta tiene una torre central con su propio acertijo, y resolverla revela la zona en el mapa y desbloquea sus fogatas para viajar; el mapa tiene guía de objetivo y un minimapa que gira contigo; el mundo carga por partes y sigue fluido', pt: 'O Mundo de aventura agora tem sete veios de cor, cada um do tamanho do mapa antigo inteiro: picos nevados, planalto das nuvens, mesetas vermelhas, colinas, campos, floresta e vale do rio se misturam aos poucos; cada veio tem uma torre central com seu próprio enigma, e resolvê-la revela a área no mapa e libera as fogueiras para viajar; o mapa ganhou guia de alvo e um minimapa que gira com você; o mundo carrega em partes e continua fluido', fr: 'Le Monde d’aventure devient sept veines de couleur, chacune aussi grande que toute l’ancienne carte : sommets enneigés, hauts plateaux de nuages, mesas rouges, collines, plaines, forêt et vallée de rivière se fondent peu à peu ; chaque veine a une tour centrale avec sa propre énigme, et la résoudre révèle la zone sur la carte et débloque ses feux de camp pour voyager ; la carte gagne un guide de cible et une mini-carte qui tourne avec toi ; le monde se charge par morceaux et reste fluide', de: 'Die Abenteuerwelt besteht jetzt aus sieben Farbadern, jede so groß wie die ganze alte Karte: Schneegipfel, Wolkenhochland, rote Tafelberge, Hügel, Ebenen, Wald und Flusstal gehen sanft ineinander über; in der Mitte jeder Ader steht ein Turm mit eigenem Rätsel, und wer ihn löst, deckt das Gebiet auf der Karte auf und kann zu seinen Lagerfeuern reisen; die Karte hat jetzt eine Zielanzeige und eine Minikarte, die sich mitdreht; die Welt lädt in Stücken und bleibt flüssig', it: 'Il Mondo dell’avventura ora è fatto di sette vene di colore, ognuna grande quanto tutta la vecchia mappa: cime innevate, altopiano delle nuvole, mesas rosse, colline, pianure, foresta e valle del fiume sfumano piano piano; ogni vena ha una torre al centro con il suo enigma, e risolverla svela la zona sulla mappa e sblocca i falò per viaggiare; la mappa ha una guida all’obiettivo e una minimappa che ruota con te; il mondo si carica a pezzi e resta fluido', ru: 'Мир приключений теперь — семь цветных жил, каждая размером со всю старую карту: снежные пики, облачное нагорье, красные столовые горы, холмы, равнины, лес и речная долина плавно переходят друг в друга; в центре каждой жилы башня со своей загадкой, а разгадав её, открываешь край на карте и костры для перемещения; на карте появился указатель цели и мини-карта, которая поворачивается вместе с тобой; мир подгружается частями и не тормозит', tr: 'Macera Dünyası artık yedi renk damarı, her biri eski haritanın tamamı kadar büyük: karlı zirveler, bulut yaylası, kırmızı platolar, tepeler, ovalar, orman ve nehir vadisi yavaş yavaş birbirine geçiyor; her damarın ortasında kendine özgü bulmacası olan bir kule var, çözünce bölgenin haritası açılıyor ve kamp ateşlerine ışınlanabiliyorsun; haritada hedef göstergesi ve seninle dönen mini harita var; dünya parça parça yüklendiği için akıcı kalıyor', id: 'Dunia Petualangan kini terdiri dari tujuh urat warna, masing-masing seluas seluruh peta lama: puncak bersalju, dataran awan, plato merah, perbukitan, padang, hutan, dan lembah sungai berbaur perlahan; tiap urat punya menara di tengah dengan teka-tekinya sendiri, dan memecahkannya membuka peta daerah itu serta api unggun untuk teleport; peta punya penunjuk target dan peta mini yang ikut berputar; dunia dimuat bertahap jadi tetap mulus', vi: 'Thế giới phiêu lưu giờ là bảy mạch màu, mỗi mạch rộng bằng cả bản đồ cũ: núi tuyết, cao nguyên mây, cao nguyên đá đỏ, đồi, đồng cỏ, rừng và thung lũng sông chuyển dần sang nhau; giữa mỗi mạch có một ngọn tháp với câu đố riêng, giải xong sẽ mở bản đồ vùng đó và cho dịch chuyển tới các đống lửa trại; bản đồ có chỉ dẫn mục tiêu và bản đồ nhỏ xoay theo bạn; thế giới tải từng phần nên vẫn mượt', th: 'โลกผจญภัยกลายเป็นสายสีเจ็ดสาย แต่ละสายใหญ่เท่าแผนที่เดิมทั้งหมด: ภูเขาหิมะ ที่ราบสูงเหนือเมฆ ที่ราบหินแดง เนินเขา ทุ่งหญ้า ป่า และหุบเขาแม่น้ำค่อย ๆ กลืนกัน กลางแต่ละสายมีหอคอยพร้อมปริศนาของตัวเอง ไขได้แล้วแผนที่ที่นั่นจะเปิดและวาร์ปไปกองไฟได้ แผนที่มีตัวชี้เป้าหมายและแผนที่เล็กหมุนตามคุณ โลกโหลดทีละส่วนจึงลื่นเหมือนเดิม' }],
     ['2026-11-26', '', '更省流量：檢查新版本只抓一個很小的檔案，不再每 5 分鐘重新下載整個遊戲；第二次打開就直接用手機裡存好的遊戲',
       { en: 'Uses less data: the update check now reads a tiny file instead of downloading the whole game every 5 minutes, and the second visit opens straight from the saved copy', ja: 'データ節約：新しい版の確認は小さなファイルだけを読み、5分ごとにゲーム全体をダウンロードしなくなった；2回目からは保存済みのゲームですぐ開く', ko: '데이터 절약: 새 버전 확인은 작은 파일만 읽고 5분마다 게임 전체를 다시 받지 않아요; 두 번째부터는 저장된 게임으로 바로 열려요', es: 'Menos datos: la búsqueda de versiones lee un archivo diminuto en vez de descargar todo el juego cada 5 minutos, y la segunda visita abre desde la copia guardada', pt: 'Menos dados: a verificação de versão lê um arquivo minúsculo em vez de baixar o jogo inteiro a cada 5 minutos, e a segunda visita abre pela cópia salva', fr: 'Moins de données : la vérification de version lit un tout petit fichier au lieu de retélécharger tout le jeu toutes les 5 minutes, et la deuxième visite s’ouvre depuis la copie enregistrée', de: 'Weniger Daten: die Update-Prüfung liest nur eine winzige Datei statt alle 5 Minuten das ganze Spiel zu laden, und ab dem zweiten Besuch startet die gespeicherte Kopie', it: 'Meno dati: il controllo versione legge un file minuscolo invece di riscaricare tutto il gioco ogni 5 minuti, e la seconda visita apre dalla copia salvata', ru: 'Меньше трафика: проверка обновлений читает крошечный файл вместо загрузки всей игры каждые 5 минут, а со второго раза игра открывается из сохранённой копии', tr: 'Daha az veri: sürüm kontrolü her 5 dakikada tüm oyunu indirmek yerine küçük bir dosya okur, ikinci açılışta kayıtlı kopyadan hemen açılır', id: 'Hemat kuota: cek versi baru hanya membaca file kecil, tidak mengunduh seluruh game tiap 5 menit, dan kunjungan kedua langsung dibuka dari salinan tersimpan', vi: 'Tiết kiệm dữ liệu: kiểm tra phiên bản chỉ đọc một tệp rất nhỏ thay vì tải lại cả trò chơi mỗi 5 phút, lần mở thứ hai dùng ngay bản đã lưu', th: 'ประหยัดเน็ต: เช็กเวอร์ชันใหม่อ่านแค่ไฟล์เล็กๆ ไม่โหลดเกมทั้งเกมใหม่ทุก 5 นาที และเปิดครั้งที่สองใช้ชุดที่เก็บไว้ได้ทันที' }],
     ['2026-11-26', '', '試玩修正：複合賽結算寫出「塗地＋擊倒＝總分」；單機對戰預設普通難度；沒登入也能送 Debug 留言；帳號面板按 Esc 就關；帳號說明寫清楚哪些存雲端；殭屍結算多了「圖鑑」和「貼紙」字',
