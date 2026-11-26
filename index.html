@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v331';</script><script>window.SC_BUILD='bb5b36e46a6f';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v332';</script><script>window.SC_BUILD='7c8cbfbf2a6b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -40545,7 +40545,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     setEl.querySelector('[data-s="vs"]').value = v('set-vs0'); setEl.querySelector('.tw-sv-vs').textContent = v('set-vs0');
     const m = setSrc('btn-mute'); setEl.querySelector('[data-b="mute"] b').textContent = SC.i18n && SC.i18n.tr ? SC.i18n.tr(m ? m.textContent : '音效：開') : (m ? m.textContent : '');
     const f = setSrc('btn-full2'); const fb = setEl.querySelector('[data-b="full"]'); fb.hidden = !f || f.hidden; if (f) fb.querySelector('b').textContent = f.textContent;
-    const cm = setSrc('btn-cat-mode'); const cb = setEl.querySelector('[data-b="catm"]'); cb.hidden = !(SC.input && SC.input.isTouch) || !cm; if (cm) cb.querySelector('b').textContent = cm.textContent;
+    { const tb = setEl.querySelector('[data-b="tlay"]'); tb.hidden = !(SC.input && SC.input.isTouch) || !SC.touchLay; } const cm = setSrc('btn-cat-mode'); const cb = setEl.querySelector('[data-b="catm"]'); cb.hidden = !(SC.input && SC.input.isTouch) || !cm; if (cm) cb.querySelector('b').textContent = cm.textContent;
     { const vb = setEl.querySelector('[data-b="fpv"]'); if (vb && SC.fpv) vb.querySelector('b').textContent = SC.fpv.label(); }
     const sel = setEl.querySelector('.tw-slang'), src = setSrc('pick-lang'); if (src && sel.options.length !== src.options.length) sel.innerHTML = src.innerHTML; if (src) sel.value = src.value;
   }
@@ -40557,7 +40557,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         <label class="tw-srow"><span>音樂音量</span><span aria-hidden="true">🎵</span><input type="range" data-s="vm" data-src="set-vm0" min="0" max="100" step="5"><output class="tw-sv-vm"></output></label>
         <label class="tw-srow"><span>音效音量</span><span aria-hidden="true">🔊</span><input type="range" data-s="vs" data-src="set-vs0" min="0" max="100" step="5"><output class="tw-sv-vs"></output></label>
         <label class="tw-srow"><span>語言</span><span aria-hidden="true">🌐</span><select class="tw-slang" aria-label="語言" translate="no"></select></label>
-        <div class="tw-sbtns"><button type="button" class="btn small" data-b="mute"><b>音效：開</b></button><button type="button" class="btn small" data-b="full"><b>全螢幕</b></button><button type="button" class="btn small" data-b="fpv"><b>視角：第三人稱</b></button><button type="button" class="btn small" data-b="catm"><b>墨貓鈕：按住</b></button><button type="button" class="btn small" data-b="help"><b>操作說明</b></button><button type="button" class="btn small" data-b="all"><span aria-hidden="true">☰</span> <b>全部模式</b></button></div>
+        <div class="tw-sbtns"><button type="button" class="btn small" data-b="mute"><b>音效：開</b></button><button type="button" class="btn small" data-b="full"><b>全螢幕</b></button><button type="button" class="btn small" data-b="fpv"><b>視角：第三人稱</b></button><button type="button" class="btn small" data-b="catm"><b>墨貓鈕：按住</b></button><button type="button" class="btn small" data-b="tlay"><b>✋ 調整按鈕位置</b></button><button type="button" class="btn small" data-b="help"><b>操作說明</b></button><button type="button" class="btn small" data-b="all"><span aria-hidden="true">☰</span> <b>全部模式</b></button></div>
         <button type="button" class="btn primary tw-sback" data-b="back">🏠 <b>回到小鎮</b></button></div>`;
       setEl.addEventListener('input', (e) => { const r = e.target.closest('[data-src]'); if (!r) return; const s = setSrc(r.dataset.src); if (s) { s.value = r.value; s.dispatchEvent(new Event('input', { bubbles: true })); } setSync(); });
       setEl.addEventListener('change', (e) => { if (!e.target.classList.contains('tw-slang')) return; const s = setSrc('pick-lang'); if (s) { s.value = e.target.value; s.dispatchEvent(new Event('change', { bubbles: true })); } else if (SC.i18n && SC.i18n.set) SC.i18n.set(e.target.value); setTimeout(setSync, 0); });
@@ -40570,6 +40570,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
         else if (k === 'catm') { const s = setSrc('btn-cat-mode'); if (s) s.click(); }
         else if (k === 'fpv') { if (SC.fpv) SC.fpv.set(!SC.fpv.on, true); } /* 第一人稱視角（Yen 11-23） */
         else if (k === 'help') { const s = setSrc('btn-help'); if (s) s.click(); }
+        else if (k === 'tlay') { /* Yen 11-26「在小鎮也要能調按鈕位置」：和對戰同一個拖曳畫面、同一份存檔 */ setEl.hidden = true; SC.touchLay.open({ stay: true, done: () => { enterLock = 0.3; } }); return; }
         else if (k === 'all') { closeSet(); if (SC.home) SC.home.show(); else T.enter('menu'); return; }
         setTimeout(setSync, 0);
       });
@@ -40716,7 +40717,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   T.frame = (dt) => {
     t += dt; if (enterLock > 0) enterLock -= dt; arRan = false;
     if (SC.net && SC.net.code) { T.hide(); const mt = $('m-title'); if (mt) mt.hidden = false; return; } // 從好友名單被邀進房間：直接到房間
-    const busy = T.pickOpen() || !!document.querySelector('.ac-wrap, .rkd-ov:not([hidden]), #m-stk:not([hidden]), .cat-view:not([hidden]), .fm-ov:not([hidden]), .tw-set:not([hidden]), #m-help:not([hidden])'); SC.input.active = !busy; if (busy) { SC.input.release(); if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); } // 開著面板時不要走、不鎖滑鼠
+    const busy = T.pickOpen() || !!document.querySelector('.ac-wrap, .rkd-ov:not([hidden]), #m-stk:not([hidden]), .cat-view:not([hidden]), .fm-ov:not([hidden]), .tw-set:not([hidden]), #m-help:not([hidden]), #tlay-ov:not([hidden])'); SC.input.active = !busy; if (busy) { SC.input.release(); if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); } // 開著面板時不要走、不鎖滑鼠
     rkBadge();
     if (SC.input.pause) SC.input.pause = false; /* 第 216 版：小鎮裡 Esc 只是放開滑鼠，不暫停 */
     if (SC.wear && SC.wear.tick) SC.wear.tick(t, me);
@@ -42321,10 +42322,11 @@ body.tut-jump #t-jump::after{content:'☝';position:absolute;right:-16px;top:-32
 body.tlay-on .t-btn,body.tlay-on #t-wpns,body.tlay-on #sp-btn,body.tlay-on #zq-btn{outline:3px dashed #ffd23f;outline-offset:3px}body.tlay-on .tlay-grab{outline-color:#fff;filter:brightness(1.15)}`;
   document.head.appendChild(css);
 
-  let ov = null, drag = null, backTo = null;
+  let ov = null, drag = null, backTo = null, opt = null;
   const hit = (x, y) => { for (const id of IDS) { const e = $(id); if (!e || !e.getClientRects().length || getComputedStyle(e).display === 'none' || e.hidden) continue; const r = e.getBoundingClientRect(); if (r.width > 4 && x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 6 && y <= r.bottom + 6) return id; } return null; };
-  function open() {
-    const app = $('app'); if (!app) return; backTo = $('m-pause') && !$('m-pause').hidden ? 'm-pause' : null; if (backTo) $(backTo).hidden = true;
+  function open(o) {
+    /* o.stay：不在對戰暫停中打開（例如小鎮、冒險世界），不要因為「沒暫停」就自動關掉；o.done：關掉時呼叫（回到原本的畫面） */
+    opt = o || null; const app = $('app'); if (!app) return; backTo = $('m-pause') && !$('m-pause').hidden ? 'm-pause' : null; if (backTo) $(backTo).hidden = true;
     if (!ov) {
       ov = document.createElement('div'); ov.id = 'tlay-ov'; ov.innerHTML = '<div id="tlay-bar"><span>拖曳按鈕，放到你順手的位置</span><button type="button" data-k="reset">恢復預設</button><button type="button" class="ok" data-k="ok">完成</button></div>'; app.appendChild(ov);
       ov.querySelector('#tlay-bar').addEventListener('pointerdown', (e) => e.stopPropagation());
@@ -42336,14 +42338,15 @@ body.tlay-on .t-btn,body.tlay-on #t-wpns,body.tlay-on #sp-btn,body.tlay-on #zq-b
     }
     ov.hidden = false; document.body.classList.add('tlay-on'); apply();
   }
-  function close() { if (ov) ov.hidden = true; document.body.classList.remove('tlay-on'); drag = null; if (backTo && $(backTo)) $(backTo).hidden = false; backTo = null; }
+  function close() { if (ov) ov.hidden = true; document.body.classList.remove('tlay-on'); drag = null; if (backTo && $(backTo)) $(backTo).hidden = false; backTo = null; const o = opt; opt = null; if (o && o.done) try { o.done(); } catch (x) {} }
+  L.isOpen = () => !!(ov && !ov.hidden);
   L.open = open; L.close = close;
 
   // 暫停選單加一顆（只有觸控裝置看得到）
   const addBtn = () => { const s = document.querySelector('#m-pause .settings'); if (!s || $('btn-tlay')) return; const b = document.createElement('button'); b.type = 'button'; b.className = 'btn small touch-only'; b.id = 'btn-tlay'; b.textContent = '✋ 調整按鈕位置'; b.onclick = () => { try { SC.audio.sfx.ui(); } catch (x) {} open(); }; const cm = $('btn-cat-mode'); if (cm && cm.parentNode === s) cm.after(b); else s.appendChild(b); };
   const t = setInterval(() => { addBtn(); if ($('btn-tlay')) clearInterval(t); }, 400);
   // 暫停選單被關掉（例如按繼續）時一定結束調整
-  setInterval(() => { if (ov && !ov.hidden && SC.game && !SC.game.paused) close(); }, 400);
+  setInterval(() => { if (ov && !ov.hidden && !(opt && opt.stay) && SC.game && !SC.game.paused) close(); }, 400);
 })();
 
 // 冒險模式・世界一「屋頂城堡」（Yen 2026-11-23）：2D 橫向射擊闖關。
@@ -47895,6 +47898,8 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-26", "", "沐沐小鎮也能調整按鈕位置：手機、平板在小鎮點 ⚙️ 設定 →「調整按鈕位置」，拖到順手的地方，和對戰用同一份設定",
+      { en: "You can move buttons in MooMoo Town too: on phones and tablets tap ⚙️ Settings → Move buttons and drag them where you like; it shares the same layout as battles", ja: "沐沐の町でもボタンの位置を変えられるように：スマホ・タブレットで ⚙️ 設定 →「ボタンの位置を変える」でドラッグ。バトルと同じ設定だよ", ko: "무무 마을에서도 버튼 위치를 바꿀 수 있어요: 휴대폰·태블릿에서 ⚙️ 설정 → '버튼 위치 바꾸기'로 끌어서 옮기세요. 대전과 같은 설정을 써요", es: "También puedes mover los botones en el Pueblo MooMoo: en móvil y tableta toca ⚙️ Ajustes → Mover botones y arrástralos; usa la misma disposición que las batallas", pt: "Agora dá para mover os botões na Vila MooMoo: no celular e tablet toque em ⚙️ Configurações → Mover botões e arraste; usa o mesmo layout das batalhas", fr: "On peut aussi déplacer les boutons au village MooMoo : sur téléphone et tablette, ⚙️ Réglages → Déplacer les boutons, puis glisse-les ; même disposition qu’en combat", de: "Auch im MooMoo-Dorf lassen sich die Tasten verschieben: auf Handy und Tablet ⚙️ Einstellungen → Tasten verschieben und ziehen; gleiche Anordnung wie im Kampf", it: "Ora puoi spostare i pulsanti anche nel villaggio MooMoo: su telefono e tablet tocca ⚙️ Impostazioni → Sposta pulsanti e trascinali; stessa disposizione delle battaglie", ru: "Кнопки теперь можно двигать и в городке MooMoo: на телефоне и планшете ⚙️ Настройки → «Переместить кнопки» и перетащите; раскладка общая с боями", tr: "MooMoo Kasabası'nda da düğmeleri taşıyabilirsin: telefon ve tablette ⚙️ Ayarlar → Düğmeleri taşı ile sürükle; savaşlarla aynı düzen kullanılır", id: "Tombol kini bisa dipindah juga di Kota MooMoo: di ponsel dan tablet ketuk ⚙️ Pengaturan → Pindahkan tombol lalu seret; tata letaknya sama dengan pertarungan", vi: "Giờ có thể di chuyển nút ở Thị trấn MooMoo: trên điện thoại và máy tính bảng chạm ⚙️ Cài đặt → Di chuyển nút rồi kéo; dùng chung bố cục với trận đấu", th: "ย้ายปุ่มในเมืองมูมูได้แล้ว: บนมือถือและแท็บเล็ตแตะ ⚙️ ตั้งค่า → ย้ายปุ่ม แล้วลากไปวาง ใช้การจัดวางเดียวกับการต่อสู้" }],
     ["2026-11-26", "", "冒險世界的怪物王換成奇幻世界的怪物，符合太陽谷的故事：熔岩跳跳蛙、飄飄水母仙、鹿角衝衝兔、狐狸聖騎士、苔石魔像、旋風橡果精、咚咚樹鼓精、冰原企鵝戰士、翠鱗小龍、菇菇山怪；招式和破解方法不變",
       { en: "The Adventure World's Monster Kings are now fantasy creatures that fit the Sun Valley story: Lava Hopper Toad, Drifting Jelly Sage, Antler Charge Rabbit, Fox Paladin, Moss Stone Golem, Whirlwind Acorn Sprite, Tree-Drum Spirit, Icefield Penguin Warrior, Jade-Scale Dragon and Mushroom Ogre; their moves and weak spots are unchanged",
         ja: "ぼうけんワールドのモンスターキングが、たいようの谷の物語に合うファンタジーのモンスターに：ようがんピョンピョンガエル、ふわふわクラゲ仙人、ツノ突進ウサギ、キツネ聖騎士、コケ石ゴーレム、つむじ風ドングリ精、ドンドン木だいこ精、ひょうげんペンギン戦士、ヒスイうろこの子ドラゴン、キノコ山オニ。技と弱点はそのまま",
