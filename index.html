@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v337';</script><script>window.SC_BUILD='d1eba383b00d';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v338';</script><script>window.SC_BUILD='bfdbaf908862';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -34788,7 +34788,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     I.consume(); if (SC.slots) SC.slots.frame();
     SC.ui.frame(dt);
     if (SC.res3d && SC.res3d.on) return; /* 立體結算中：主畫面不用重畫 */
-    renderer.render(scene, camera); if (SC.res3d && SC.res3d.want) SC.res3d.after(renderer.domElement); if (SC.speedFx) SC.speedFx.frame(renderer, SPDT()); /* 大威：速度景深 */
+    SC.dof.draw(renderer, scene, camera); if (SC.res3d && SC.res3d.want) SC.res3d.after(renderer.domElement); if (SC.speedFx) SC.speedFx.frame(renderer, SPDT()); /* 大威：速度景深 */
   };
 })();
 
@@ -40767,7 +40767,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     inkFrame(dt); skyFrame(dt); if (Z && Z.frame) Z.frame(dt, t, pos);
     if (SC.fx && SC.fx.update && !arRan) SC.fx.update(dt, cam); /* 比照實戰：特效在 G.arena 裡更新過了 */
     hintT += dt; const hint = hud.querySelector('.tw-hint'); if (hint) hint.classList.toggle('off', hintT > 9);
-    camera(dt); R.render(Z ? Z.scene : scene, cam);
+    camera(dt); SC.dof.draw(R, Z ? Z.scene : scene, cam);
   };
   T.init = (renderer, isLow) => {
     R = renderer; low = !!isLow; try { if (SC.perf && SC.perf.info && SC.perf.info().eff === 'low') low = true; } catch (e) {} /* 第 268 版：弱的平板或選了省電，小鎮也用省電美術 */
@@ -43288,7 +43288,7 @@ body.tlay-on .t-btn,body.tlay-on #t-wpns,body.tlay-on #sp-btn,body.tlay-on #zq-b
 
   AD.frame = (dt) => {
     t += dt; if (!L) return;
-    if (paused) { R.render(scene, cam); hudFrame(dt); return; }
+    if (paused) { SC.dof.draw(R, scene, cam); hudFrame(dt); return; }
     stT += dt * (state === 'toBoss' || state === 'fromBoss' ? 1.7 : 1); if (shake > 0) shake = Math.max(0, shake - dt * 1.6);
     if (state === 'intro') { if (stT > 0.35) state = 'play'; }
     if (state === 'play' || state === 'intro') { if (state === 'play') { P.segT += dt; playerFrame(dt); } enemies.forEach((e) => updEnemy(e, dt * 1.2)); worldFrame(dt); shotsFrame(dt); catFrame(dt); camSide(dt); }
@@ -43304,7 +43304,7 @@ body.tlay-on .t-btn,body.tlay-on #t-wpns,body.tlay-on #sp-btn,body.tlay-on #zq-b
       if (stT > 1.7) { state = 'play'; cam.fov = 38; cam.updateProjectionMatrix(); }
     } else if (state === 'menu') { catFrame(dt); camSide(dt); }
     In.jumpE = 0; In.bombE = 0; In.qE = 0; In.spE = 0;
-    if (!AD._noRender) R.render(scene, cam); hudFrame(dt);
+    if (!AD._noRender) SC.dof.draw(R, scene, cam); hudFrame(dt);
   };
 
   AD.init = (renderer, isLow) => { R = renderer; low = !!isLow; bindInput(); const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); };
@@ -44766,6 +44766,54 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
       if (TG[q] < -1) { r = 0.16; gg = 0.55; b = 0.68; }
       im.data[o] = Math.min(255, Math.pow(r, 1 / 2.2) * 255); im.data[o + 1] = Math.min(255, Math.pow(gg, 1 / 2.2) * 255); im.data[o + 2] = Math.min(255, Math.pow(b, 1 / 2.2) * 255); im.data[o + 3] = 255; }
     g.putImageData(im, 0, 0); return cv;
+  };
+})();
+
+// 景深（Yen 11-26「做景深 遠處看起來較模糊 遠方看起來朦朧模糊」「所有畫面皆是 不用針對特定區域運算處理」）
+//   所有 3D 畫面都先畫進一張有深度的圖，再照每一點的距離決定要糊多少：近的清楚，越遠越糊，遠方再罩一層淡淡的霧色。
+//   只多一次全畫面的處理，不會因為東西多就變慢。省電畫質、狙擊開鏡不做。遠近的距離依畫面大小分三組（SC.dof.Z）。
+(() => {
+  const D = (SC.dof = { on: true, max: 3.2, haze: 0.16, Z: { rpg: [55, 520], town: [40, 320], fight: [38, 230] } });
+  try { D.on = localStorage.getItem('sc-dof') !== '0'; } catch (e) { /* 不能存就用預設 */ }
+  const zone = () => (SC.rpg && SC.rpg.active ? D.Z.rpg : SC.town && SC.town.on ? D.Z.town : D.Z.fight);
+  let rt = null, quad = null, sc2 = null, cam2 = null, taps = 0, okGL = true; const size = new THREE.Vector2();
+  const eff = () => { try { return SC.perf && SC.perf.info ? SC.perf.info().eff : 'high'; } catch (e) { return 'high'; } };
+  D.want = () => okGL && D.on && eff() !== 'low' && !(SC.input && SC.input.scope);
+  function mat(n) {
+    return new THREE.ShaderMaterial({ depthTest: false, depthWrite: false,
+      uniforms: { tC: { value: null }, tD: { value: null }, cn: { value: 0.1 }, cf: { value: 1000 }, px: { value: new THREE.Vector2() }, rN: { value: 50 }, rF: { value: 400 }, mx: { value: D.max }, hz: { value: D.haze }, hc: { value: new THREE.Color(0xead9c6) } },
+      vertexShader: 'varying vec2 v; void main(){ v = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+      fragmentShader: `uniform sampler2D tC, tD; uniform float cn, cf, rN, rF, mx, hz; uniform vec2 px; uniform vec3 hc; varying vec2 v;
+        float lz(vec2 u){ float d = texture2D(tD, u).x; return cn * cf / (cf - d * (cf - cn)); }
+        float coc(vec2 u){ return smoothstep(rN, rF, lz(u)); }
+        void main(){ float c0 = coc(v); vec4 base = texture2D(tC, v); vec3 o = base.rgb; float w = 1.0;
+          if (c0 > 0.01) { float j = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) * 6.2832;
+            for (int i = 0; i < ${n}; i++) { float f = (float(i) + 0.5) / ${n}.0; float a = float(i) * 2.39996 + j; vec2 u = v + vec2(cos(a), sin(a)) * sqrt(f) * c0 * mx * px;
+              float cs = coc(u); float g = max(cs, 0.05); o += texture2D(tC, u).rgb * g; w += g; } o /= w; }
+          o = mix(o, hc, c0 * hz); gl_FragColor = vec4(o, 1.0);
+          #include <colorspace_fragment>
+        }` });
+  }
+  function build(w, h, renderer) {
+    if (rt) { rt.depthTexture.dispose(); rt.dispose(); }
+    const hi = eff() === 'high', gl2 = renderer.capabilities.isWebGL2;
+    rt = new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType, samples: gl2 ? 4 : 0, depthBuffer: true });
+    rt.depthTexture = new THREE.DepthTexture(w, h); rt.depthTexture.type = THREE.UnsignedIntType;
+    const n = hi ? 16 : 8; if (!quad || taps !== n) { if (quad) { quad.material.dispose(); sc2.remove(quad); } else { cam2 = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); sc2 = new THREE.Scene(); }
+      quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat(n)); quad.frustumCulled = false; sc2.add(quad); taps = n; }
+  }
+  // 對戰、小鎮、闖關畫畫面都走這裡：要做景深就由這裡畫，不做就照常直接畫
+  D.draw = (renderer, scene, camera) => { if (!D.render(renderer, scene, camera)) renderer.render(scene, camera); };
+  D.render = (renderer, scene, camera) => {
+    if (!D.want() || !camera || !camera.isPerspectiveCamera) return false;
+    try {
+      renderer.getDrawingBufferSize(size); const w = size.x | 0, h = size.y | 0; if (w < 8 || h < 8) return false;
+      if (!rt || rt.width !== w || rt.height !== h || taps !== (eff() === 'high' ? 16 : 8)) build(w, h, renderer);
+      const u = quad.material.uniforms; u.tC.value = rt.texture; u.tD.value = rt.depthTexture; u.cn.value = camera.near; u.cf.value = camera.far; u.px.value.set(h / 720 / w, 1 / 720);
+      const zz = zone(); u.rN.value = zz[0]; u.rF.value = zz[1]; u.mx.value = D.max; u.hz.value = D.haze; if (scene.fog && scene.fog.color) u.hc.value.copy(scene.fog.color);
+      renderer.setRenderTarget(rt); renderer.render(scene, camera); renderer.setRenderTarget(null);
+      const sh = renderer.shadowMap.autoUpdate; renderer.shadowMap.autoUpdate = false; renderer.render(sc2, cam2); renderer.shadowMap.autoUpdate = sh; return true;
+    } catch (e) { okGL = false; renderer.setRenderTarget(null); console.warn('dof off', e); return false; }
   };
 })();
 
@@ -48091,6 +48139,8 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ['2026-11-26', '', '所有畫面加上景深：近的清楚，遠方慢慢變得朦朧模糊、罩一層淡淡的霧；省電畫質和狙擊開鏡不做',
+      { en: 'Depth of field everywhere: nearby stays sharp while the distance turns soft and hazy; off on battery-saver quality and when scoped in', ja: '全画面に被写界深度：近くはくっきり、遠くはぼんやりかすんで見える；省電力画質とスコープ中はなし', ko: '모든 화면에 피사계 심도: 가까운 곳은 선명하고 먼 곳은 뿌옇게 흐려져요; 절전 화질과 조준경 사용 중에는 꺼져요', es: 'Profundidad de campo en todas partes: lo cercano se ve nítido y lo lejano suave y brumoso; desactivada en calidad de ahorro y al usar la mira', pt: 'Profundidade de campo em tudo: o que está perto fica nítido e o distante fica suave e enevoado; desligada na qualidade economia e ao mirar com a luneta', fr: 'Profondeur de champ partout : le proche reste net, le lointain devient doux et brumeux ; désactivée en qualité économie et en visée lunette', de: 'Tiefenschärfe überall: Nahes bleibt scharf, die Ferne wird weich und dunstig; aus bei Energiespar-Qualität und beim Zielfernrohr', it: 'Profondità di campo ovunque: il vicino resta nitido, il lontano diventa morbido e nebbioso; disattivata in qualità risparmio e mirando col cannocchiale', ru: 'Глубина резкости везде: вблизи всё чётко, вдали мягко и в дымке; отключена в экономном качестве и при прицеливании', tr: 'Her ekranda alan derinliği: yakınlar net, uzaklar yumuşak ve puslu; tasarruf kalitesinde ve dürbünle nişan alırken kapalı', id: 'Kedalaman bidang di semua layar: yang dekat tetap tajam, yang jauh jadi lembut dan berkabut; mati di kualitas hemat daya dan saat membidik dengan teropong', vi: 'Độ sâu trường ảnh ở mọi màn hình: gần thì rõ, xa thì mờ và mờ sương; tắt ở chất lượng tiết kiệm và khi ngắm ống ngắm', th: 'ระยะชัดลึกทุกหน้าจอ: ใกล้คมชัด ไกลค่อย ๆ เบลอเป็นหมอกจาง ๆ; ปิดในคุณภาพประหยัดพลังงานและตอนส่องกล้อง' }],
     ["2026-11-26", "", "沐沐小鎮換上太陽谷的風格：傍晚暖陽和桃粉色天空、低多邊形的雲和松樹、奶油色牆配紅陶瓦屋頂和青綠窗板、土橘色崖壁和泥土小路，還多了紅屋頂鐘樓、太陽石碑和橋頭路燈；小鎮裡的自己也是冒險世界的擬人版毛毛／雙雙",
       { en: "MooMoo Town now has the Sun Valley look: warm evening sun and a peach-pink sky, low-poly clouds and pines, cream walls with terracotta roofs and teal shutters, orange earth cliffs and dirt paths, plus a red-roofed clock tower, a sun stone and lamps at the bridges; you also walk around town as the adventure-world MaoMao / ShuangShuang", ja: "沐沐の町が太陽の谷の雰囲気に：夕方のあたたかい光と桃色の空、ローポリの雲と松の木、クリーム色の壁に赤い瓦屋根と青緑の窓板、土色のがけと土の小道。赤い屋根の時計塔、太陽石の碑、橋のたもとの街灯も。町の自分も冒険世界のヒト型の毛毛／雙雙に", ko: "무무 마을이 태양 계곡 분위기로 바뀌었어요: 따뜻한 저녁 햇살과 복숭아빛 하늘, 로우폴리 구름과 소나무, 크림색 벽에 붉은 기와지붕과 청록 덧창, 주황빛 흙 절벽과 흙길, 그리고 빨간 지붕 시계탑, 태양석 비석, 다리 앞 가로등까지. 마을에서도 모험 세계의 사람형 마오마오／솽솽으로 다녀요", es: "El Pueblo MooMoo ahora luce como el Valle del Sol: sol cálido de atardecer y cielo melocotón, nubes y pinos low-poly, paredes crema con tejados de terracota y contraventanas turquesa, acantilados de tierra anaranjada y caminos de tierra, además de una torre del reloj, una piedra solar y farolas en los puentes; y en el pueblo vas como MaoMao / ShuangShuang del mundo de aventura", pt: "A Vila MooMoo ganhou o visual do Vale do Sol: sol quente de fim de tarde e céu pêssego, nuvens e pinheiros low-poly, paredes creme com telhados de terracota e janelas turquesa, barrancos de terra laranja e trilhas de terra, além de uma torre do relógio, uma pedra do sol e postes nas pontes; na vila você anda como o MaoMao / ShuangShuang do mundo de aventura", fr: "Le village MooMoo prend le style de la Vallée du Soleil : soleil chaud du soir et ciel pêche, nuages et pins low-poly, murs crème, toits en terre cuite et volets turquoise, falaises de terre orangée et chemins de terre, plus une tour de l’horloge, une pierre solaire et des lampadaires aux ponts ; au village, tu es aussi le MaoMao / ShuangShuang du monde d’aventure", de: "Das MooMoo-Dorf trägt jetzt den Sonnental-Look: warme Abendsonne und pfirsichrosa Himmel, Low-Poly-Wolken und Kiefern, cremefarbene Wände mit Terrakottadächern und türkisen Fensterläden, orange Erdklippen und Erdwege, dazu ein Uhrturm, ein Sonnenstein und Laternen an den Brücken; im Dorf läufst du auch als MaoMao / ShuangShuang aus der Abenteuerwelt herum", it: "Il villaggio MooMoo ha lo stile della Valle del Sole: sole caldo della sera e cielo pesca, nuvole e pini low-poly, muri color crema con tetti in cotto e persiane turchesi, scarpate di terra arancione e sentieri sterrati, più una torre dell’orologio, una pietra del sole e lampioni ai ponti; in paese giri anche come MaoMao / ShuangShuang del mondo d’avventura", ru: "Городок MooMoo теперь в стиле Солнечной долины: тёплое вечернее солнце и персиковое небо, low-poly облака и сосны, кремовые стены с черепичными крышами и бирюзовыми ставнями, оранжевые земляные обрывы и грунтовые тропинки, а ещё часовая башня, солнечный камень и фонари у мостов; по городку вы ходите как МаоМао / ШуанШуан из мира приключений", tr: "MooMoo Kasabası artık Güneş Vadisi görünümünde: sıcak akşam güneşi ve şeftali rengi gök, low-poly bulutlar ve çamlar, kiremit çatılı krem duvarlar ve turkuaz panjurlar, turuncu toprak yamaçlar ve toprak yollar; bir saat kulesi, güneş taşı ve köprü başlarında fenerler de eklendi; kasabada da macera dünyasındaki MaoMao / ShuangShuang olarak geziyorsun", id: "Kota MooMoo kini bergaya Lembah Matahari: matahari senja yang hangat dan langit merah persik, awan dan pinus low-poly, dinding krem dengan atap terakota dan jendela hijau toska, tebing tanah oranye dan jalan tanah, plus menara jam, batu matahari, dan lampu di ujung jembatan; di kota kamu juga jadi MaoMao / ShuangShuang versi dunia petualangan", vi: "Thị trấn MooMoo mang phong cách Thung lũng Mặt Trời: nắng chiều ấm áp và bầu trời màu đào, mây và thông low-poly, tường kem với mái ngói đỏ và cửa chớp xanh ngọc, vách đất cam và đường đất, thêm tháp đồng hồ, bia đá mặt trời và đèn ở đầu cầu; trong thị trấn bạn cũng là MaoMao / ShuangShuang của thế giới phiêu lưu", th: "เมืองมูมูเปลี่ยนเป็นสไตล์หุบเขาตะวัน: แสงเย็นอบอุ่นและฟ้าสีพีช เมฆและต้นสนแบบโลว์โพลี ผนังสีครีมหลังคากระเบื้องดินเผาและบานเกล็ดสีเขียวอมฟ้า หน้าผาดินสีส้มและทางดิน พร้อมหอนาฬิกา แท่นหินตะวัน และโคมไฟหัวสะพาน ในเมืองคุณก็เป็นเหมาเหมา / ซวงซวงแบบโลกผจญภัย" }],
     ['2026-11-26', '', '冒險世界：怪物王的血分成三段，要躲開招式或用破解方法讓牠露出破綻才打得進下一段，等級再高也不會一下打爆；打中音效換成顏料和石頭的聲音；第一人稱看到的是自己的筆尾；暫停選單也能切全螢幕',
