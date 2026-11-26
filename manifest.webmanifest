@@ -8,6 +8,7 @@
   "orientation": "landscape",
   "background_color": "#1b1033",
   "theme_color": "#1b1033",
+  "related_applications": [{ "platform": "webapp", "url": "https://spalacat.com/manifest.webmanifest" }],
   "icons": [
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },

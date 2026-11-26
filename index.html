@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v328';</script><script>window.SC_BUILD='5bd2075ce044';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v329';</script><script>window.SC_BUILD='c3c6c5f5cc65';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -19232,6 +19232,49 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   if (I.addL) L.slice(3).forEach((l, j) => I.addL(l, R.map((r) => [r[0], r[4 + j]])));
 })();
 
+// 一鍵加入主畫面（09dt_a2hs.js）的多國語言，2026-11-26。欄位：中文, en, ja, ko, es, pt, fr, de, it, ru, tr, id, vi, th
+(() => {
+  const I = SC.i18n, L = ["en", "ja", "ko", "es", "pt", "fr", "de", "it", "ru", "tr", "id", "vi", "th"];
+  const R = [
+    ["一鍵加入", "Add in one tap", "ワンタップで追加", "한 번에 추가", "Añadir con un toque", "Adicionar com um toque", "Ajouter en un geste", "Mit einem Tipp hinzufügen", "Aggiungi con un tocco", "Добавить в одно касание", "Tek dokunuşla ekle", "Tambah sekali ketuk", "Thêm bằng một chạm", "เพิ่มในแตะเดียว"],
+    ["一鍵安裝", "Install in one tap", "ワンタップでインストール", "한 번에 설치", "Instalar con un toque", "Instalar com um toque", "Installer en un geste", "Mit einem Tipp installieren", "Installa con un tocco", "Установить в одно касание", "Tek dokunuşla yükle", "Instal sekali ketuk", "Cài bằng một chạm", "ติดตั้งในแตะเดียว"],
+    ["照箭頭點，三步加到主畫面", "Follow the arrow: 3 steps to your Home Screen", "矢印のとおりにタップ、3ステップでホーム画面へ", "화살표대로 누르면 3단계로 홈 화면에", "Sigue la flecha: 3 pasos a la pantalla de inicio", "Siga a seta: 3 passos para a tela inicial", "Suis la flèche : 3 étapes vers l’écran d’accueil", "Folge dem Pfeil: in 3 Schritten auf den Home-Bildschirm", "Segui la freccia: 3 passi per la schermata Home", "Следуйте стрелке: 3 шага до главного экрана", "Oku takip et: 3 adımda ana ekrana", "Ikuti panah: 3 langkah ke layar utama", "Làm theo mũi tên: 3 bước ra màn hình chính", "แตะตามลูกศร 3 ขั้นก็อยู่บนหน้าโฮม"],
+    ["分享鈕在這裡", "Share button is here", "共有ボタンはここ", "공유 버튼은 여기", "El botón Compartir está aquí", "O botão Compartilhar está aqui", "Le bouton Partager est ici", "Hier ist der Teilen-Knopf", "Il pulsante Condividi è qui", "Кнопка «Поделиться» здесь", "Paylaş düğmesi burada", "Tombol Bagikan di sini", "Nút Chia sẻ ở đây", "ปุ่มแชร์อยู่ตรงนี้"],
+    ["選單在這裡", "Menu is here", "メニューはここ", "메뉴는 여기", "El menú está aquí", "O menu está aqui", "Le menu est ici", "Hier ist das Menü", "Il menu è qui", "Меню здесь", "Menü burada", "Menu di sini", "Menu ở đây", "เมนูอยู่ตรงนี้"],
+    ["先點這個「⋯」", "Tap this “⋯” first", "まずこの「⋯」をタップ", "먼저 이 「⋯」를 누르세요", "Primero toca este «⋯»", "Toque primeiro neste “⋯”", "Touche d’abord ce « ⋯ »", "Tippe zuerst auf dieses „⋯“", "Tocca prima questo «⋯»", "Сначала нажмите «⋯»", "Önce bu “⋯”e dokun", "Ketuk “⋯” ini dulu", "Chạm vào “⋯” này trước", "แตะ “⋯” นี้ก่อน"],
+    ["點這個「⋯」", "Tap this “⋯”", "この「⋯」をタップ", "이 「⋯」를 누르세요", "Toca este «⋯»", "Toque neste “⋯”", "Touche ce « ⋯ »", "Tippe auf dieses „⋯“", "Tocca questo «⋯»", "Нажмите «⋯»", "Bu “⋯”e dokun", "Ketuk “⋯” ini", "Chạm vào “⋯” này", "แตะ “⋯” นี้"],
+    ["點右上角的分享鈕（方框加往上的箭頭），看不到就點「⋯」", "Tap the Share button at the top right (a box with an up arrow); if you can’t see it, tap “⋯”", "右上の共有ボタン（四角に上向き矢印）をタップ。見えなければ「⋯」をタップ", "오른쪽 위 공유 버튼(네모에 위쪽 화살표)을 누르세요. 안 보이면 「⋯」를 누르세요", "Toca el botón Compartir arriba a la derecha (un cuadro con una flecha hacia arriba); si no lo ves, toca «⋯»", "Toque no botão Compartilhar no canto superior direito (um quadrado com seta para cima); se não aparecer, toque em “⋯”", "Touche le bouton Partager en haut à droite (un carré avec une flèche vers le haut) ; si tu ne le vois pas, touche « ⋯ »", "Tippe oben rechts auf Teilen (Kästchen mit Pfeil nach oben); wenn du es nicht siehst, tippe auf „⋯“", "Tocca Condividi in alto a destra (un quadrato con una freccia in su); se non lo vedi, tocca «⋯»", "Нажмите «Поделиться» справа вверху (квадрат со стрелкой вверх); если её нет, нажмите «⋯»", "Sağ üstteki Paylaş düğmesine dokun (yukarı oklu kutu); görmüyorsan “⋯”e dokun", "Ketuk tombol Bagikan di kanan atas (kotak dengan panah ke atas); kalau tidak ada, ketuk “⋯”", "Chạm nút Chia sẻ ở góc phải trên (ô vuông có mũi tên lên); không thấy thì chạm “⋯”", "แตะปุ่มแชร์มุมขวาบน (กล่องมีลูกศรชี้ขึ้น) ถ้าไม่เห็นให้แตะ “⋯”"],
+    ["點這個「⋯」，再點「分享」", "Tap this “⋯”, then “Share”", "この「⋯」をタップして「共有」", "이 「⋯」를 누르고 「공유」를 누르세요", "Toca este «⋯» y luego «Compartir»", "Toque neste “⋯” e depois em “Compartilhar”", "Touche ce « ⋯ » puis « Partager »", "Tippe auf dieses „⋯“ und dann auf „Teilen“", "Tocca questo «⋯» e poi «Condividi»", "Нажмите «⋯», затем «Поделиться»", "Bu “⋯”e, sonra “Paylaş”a dokun", "Ketuk “⋯” ini, lalu “Bagikan”", "Chạm “⋯” này rồi chạm “Chia sẻ”", "แตะ “⋯” นี้ แล้วแตะ “แชร์”"],
+    ["點這個分享鈕（方框加往上的箭頭），看不到就先點一下網址列", "Tap this Share button (a box with an up arrow); if you can’t see it, tap the address bar first", "この共有ボタン（四角に上向き矢印）をタップ。見えなければ先にアドレスバーをタップ", "이 공유 버튼(네모에 위쪽 화살표)을 누르세요. 안 보이면 먼저 주소창을 누르세요", "Toca este botón Compartir (un cuadro con una flecha hacia arriba); si no lo ves, toca primero la barra de direcciones", "Toque neste botão Compartilhar (um quadrado com seta para cima); se não aparecer, toque primeiro na barra de endereço", "Touche ce bouton Partager (un carré avec une flèche vers le haut) ; si tu ne le vois pas, touche d’abord la barre d’adresse", "Tippe auf diesen Teilen-Knopf (Kästchen mit Pfeil nach oben); wenn du ihn nicht siehst, tippe zuerst auf die Adressleiste", "Tocca questo pulsante Condividi (un quadrato con una freccia in su); se non lo vedi, tocca prima la barra degli indirizzi", "Нажмите эту кнопку «Поделиться» (квадрат со стрелкой вверх); если её нет, сначала коснитесь адресной строки", "Bu Paylaş düğmesine dokun (yukarı oklu kutu); görmüyorsan önce adres çubuğuna dokun", "Ketuk tombol Bagikan ini (kotak dengan panah ke atas); kalau tidak ada, ketuk bilah alamat dulu", "Chạm nút Chia sẻ này (ô vuông có mũi tên lên); không thấy thì chạm thanh địa chỉ trước", "แตะปุ่มแชร์นี้ (กล่องมีลูกศรชี้ขึ้น) ถ้าไม่เห็นให้แตะแถบที่อยู่ก่อน"],
+    ["點網址列右邊的分享鈕（方框加往上的箭頭）", "Tap the Share button right of the address bar (a box with an up arrow)", "アドレスバー右の共有ボタン（四角に上向き矢印）をタップ", "주소창 오른쪽의 공유 버튼(네모에 위쪽 화살표)을 누르세요", "Toca el botón Compartir a la derecha de la barra de direcciones (un cuadro con una flecha hacia arriba)", "Toque no botão Compartilhar à direita da barra de endereço (um quadrado com seta para cima)", "Touche le bouton Partager à droite de la barre d’adresse (un carré avec une flèche vers le haut)", "Tippe rechts neben der Adressleiste auf Teilen (Kästchen mit Pfeil nach oben)", "Tocca Condividi a destra della barra degli indirizzi (un quadrato con una freccia in su)", "Нажмите «Поделиться» справа от адресной строки (квадрат со стрелкой вверх)", "Adres çubuğunun sağındaki Paylaş düğmesine dokun (yukarı oklu kutu)", "Ketuk tombol Bagikan di kanan bilah alamat (kotak dengan panah ke atas)", "Chạm nút Chia sẻ bên phải thanh địa chỉ (ô vuông có mũi tên lên)", "แตะปุ่มแชร์ทางขวาของแถบที่อยู่ (กล่องมีลูกศรชี้ขึ้น)"],
+    ["往下找「加入主畫面」點一下", "Scroll down and tap “Add to Home Screen”", "下にスクロールして「ホーム画面に追加」をタップ", "아래로 내려 「홈 화면에 추가」를 누르세요", "Baja y toca «Añadir a pantalla de inicio»", "Role para baixo e toque em “Adicionar à Tela de Início”", "Descends et touche « Sur l’écran d’accueil »", "Scrolle nach unten und tippe auf „Zum Home-Bildschirm“", "Scorri in basso e tocca «Aggiungi alla schermata Home»", "Прокрутите вниз и нажмите «На экран „Домой“»", "Aşağı kaydır ve “Ana Ekrana Ekle”ye dokun", "Gulir ke bawah dan ketuk “Tambah ke Layar Utama”", "Kéo xuống và chạm “Thêm vào MH chính”", "เลื่อนลงแล้วแตะ “เพิ่มไปยังหน้าจอโฮม”"],
+    ["往上滑開清單，點「加入主畫面」", "Swipe the list up and tap “Add to Home Screen”", "リストを上にスワイプして「ホーム画面に追加」をタップ", "목록을 위로 밀어 올리고 「홈 화면에 추가」를 누르세요", "Desliza la lista hacia arriba y toca «Añadir a pantalla de inicio»", "Deslize a lista para cima e toque em “Adicionar à Tela de Início”", "Fais glisser la liste vers le haut et touche « Sur l’écran d’accueil »", "Schiebe die Liste nach oben und tippe auf „Zum Home-Bildschirm“", "Scorri l’elenco in su e tocca «Aggiungi alla schermata Home»", "Потяните список вверх и нажмите «На экран „Домой“»", "Listeyi yukarı kaydır ve “Ana Ekrana Ekle”ye dokun", "Geser daftar ke atas dan ketuk “Tambah ke Layar Utama”", "Vuốt danh sách lên và chạm “Thêm vào MH chính”", "ปัดรายการขึ้นแล้วแตะ “เพิ่มไปยังหน้าจอโฮม”"],
+    ["往上滑開清單，點「加入主畫面」（沒看到就點「更多」）", "Swipe the list up and tap “Add to Home Screen” (not there? tap “More”)", "リストを上にスワイプして「ホーム画面に追加」（なければ「その他」）", "목록을 위로 밀어 올리고 「홈 화면에 추가」(안 보이면 「더 보기」)", "Desliza la lista hacia arriba y toca «Añadir a pantalla de inicio» (si no está, toca «Más»)", "Deslize a lista para cima e toque em “Adicionar à Tela de Início” (se não aparecer, toque em “Mais”)", "Fais glisser la liste vers le haut et touche « Sur l’écran d’accueil » (absent ? touche « Plus »)", "Schiebe die Liste nach oben und tippe auf „Zum Home-Bildschirm“ (nicht da? tippe auf „Mehr“)", "Scorri l’elenco in su e tocca «Aggiungi alla schermata Home» (non c’è? tocca «Altro»)", "Потяните список вверх и нажмите «На экран „Домой“» (нет? нажмите «Ещё»)", "Listeyi yukarı kaydır ve “Ana Ekrana Ekle”ye dokun (yoksa “Diğer”e dokun)", "Geser daftar ke atas dan ketuk “Tambah ke Layar Utama” (tidak ada? ketuk “Lainnya”)", "Vuốt danh sách lên và chạm “Thêm vào MH chính” (không thấy thì chạm “Thêm”)", "ปัดรายการขึ้นแล้วแตะ “เพิ่มไปยังหน้าจอโฮม” (ไม่เห็นให้แตะ “เพิ่มเติม”)"],
+    ["右上角點「加入」，再從主畫面的貓咪圖示打開", "Tap “Add” at the top right, then open the cat icon on your Home Screen", "右上の「追加」をタップして、ホーム画面のネコのアイコンから開く", "오른쪽 위 「추가」를 누르고 홈 화면의 고양이 아이콘으로 여세요", "Toca «Añadir» arriba a la derecha y abre el icono del gato en tu pantalla de inicio", "Toque em “Adicionar” no canto superior direito e abra o ícone do gato na tela inicial", "Touche « Ajouter » en haut à droite, puis ouvre l’icône du chat sur l’écran d’accueil", "Tippe oben rechts auf „Hinzufügen“ und öffne dann das Katzen-Symbol auf dem Home-Bildschirm", "Tocca «Aggiungi» in alto a destra, poi apri l’icona del gatto nella schermata Home", "Нажмите «Добавить» справа вверху и откройте значок кошки на главном экране", "Sağ üstte “Ekle”ye dokun, sonra ana ekrandaki kedi simgesinden aç", "Ketuk “Tambah” di kanan atas, lalu buka ikon kucing di layar utama", "Chạm “Thêm” góc phải trên, rồi mở biểu tượng con mèo trên màn hình chính", "แตะ “เพิ่ม” มุมขวาบน แล้วเปิดไอคอนแมวที่หน้าโฮม"],
+    ["點「加入」，再從主畫面的貓咪圖示打開", "Tap “Add”, then open the cat icon on your Home Screen", "「追加」をタップして、ホーム画面のネコのアイコンから開く", "「추가」를 누르고 홈 화면의 고양이 아이콘으로 여세요", "Toca «Añadir» y abre el icono del gato en tu pantalla de inicio", "Toque em “Adicionar” e abra o ícone do gato na tela inicial", "Touche « Ajouter », puis ouvre l’icône du chat sur l’écran d’accueil", "Tippe auf „Hinzufügen“ und öffne dann das Katzen-Symbol auf dem Home-Bildschirm", "Tocca «Aggiungi», poi apri l’icona del gatto nella schermata Home", "Нажмите «Добавить» и откройте значок кошки на главном экране", "“Ekle”ye dokun, sonra ana ekrandaki kedi simgesinden aç", "Ketuk “Tambah”, lalu buka ikon kucing di layar utama", "Chạm “Thêm”, rồi mở biểu tượng con mèo trên màn hình chính", "แตะ “เพิ่ม” แล้วเปิดไอคอนแมวที่หน้าโฮม"],
+    ["點「安裝」或「新增」，再從主畫面的貓咪圖示打開", "Tap “Install” or “Add”, then open the cat icon on your Home Screen", "「インストール」か「追加」をタップして、ホーム画面のネコのアイコンから開く", "「설치」 또는 「추가」를 누르고 홈 화면의 고양이 아이콘으로 여세요", "Toca «Instalar» o «Añadir» y abre el icono del gato en tu pantalla de inicio", "Toque em “Instalar” ou “Adicionar” e abra o ícone do gato na tela inicial", "Touche « Installer » ou « Ajouter », puis ouvre l’icône du chat sur l’écran d’accueil", "Tippe auf „Installieren“ oder „Hinzufügen“ und öffne dann das Katzen-Symbol auf dem Startbildschirm", "Tocca «Installa» o «Aggiungi», poi apri l’icona del gatto nella schermata Home", "Нажмите «Установить» или «Добавить» и откройте значок кошки на главном экране", "“Yükle” ya da “Ekle”ye dokun, sonra ana ekrandaki kedi simgesinden aç", "Ketuk “Instal” atau “Tambah”, lalu buka ikon kucing di layar utama", "Chạm “Cài đặt” hoặc “Thêm”, rồi mở biểu tượng con mèo trên màn hình chính", "แตะ “ติดตั้ง” หรือ “เพิ่ม” แล้วเปิดไอคอนแมวที่หน้าโฮม"],
+    ["點右下角的「≡」選單", "Tap the “≡” menu at the bottom right", "右下の「≡」メニューをタップ", "오른쪽 아래 「≡」 메뉴를 누르세요", "Toca el menú «≡» abajo a la derecha", "Toque no menu “≡” no canto inferior direito", "Touche le menu « ≡ » en bas à droite", "Tippe unten rechts auf das Menü „≡“", "Tocca il menu «≡» in basso a destra", "Нажмите меню «≡» справа внизу", "Sağ alttaki “≡” menüsüne dokun", "Ketuk menu “≡” di kanan bawah", "Chạm menu “≡” góc phải dưới", "แตะเมนู “≡” มุมขวาล่าง"],
+    ["點「新增頁面至」→「主畫面」", "Tap “Add page to” → “Home screen”", "「ページを追加」→「ホーム画面」をタップ", "「현재 페이지 추가」 → 「홈 화면」을 누르세요", "Toca «Añadir página a» → «Pantalla de inicio»", "Toque em “Adicionar página a” → “Tela inicial”", "Touche « Ajouter la page à » → « Écran d’accueil »", "Tippe auf „Seite hinzufügen zu“ → „Startbildschirm“", "Tocca «Aggiungi pagina a» → «Schermata Home»", "Нажмите «Добавить страницу» → «Главный экран»", "“Sayfayı ekle” → “Ana ekran”a dokun", "Ketuk “Tambahkan halaman ke” → “Layar utama”", "Chạm “Thêm trang vào” → “Màn hình chính”", "แตะ “เพิ่มหน้าไปยัง” → “หน้าจอหลัก”"],
+    ["點下面的「⋯」選單", "Tap the “⋯” menu at the bottom", "下の「⋯」メニューをタップ", "아래쪽 「⋯」 메뉴를 누르세요", "Toca el menú «⋯» de abajo", "Toque no menu “⋯” embaixo", "Touche le menu « ⋯ » en bas", "Tippe unten auf das Menü „⋯“", "Tocca il menu «⋯» in basso", "Нажмите меню «⋯» внизу", "Alttaki “⋯” menüsüne dokun", "Ketuk menu “⋯” di bawah", "Chạm menu “⋯” ở dưới", "แตะเมนู “⋯” ด้านล่าง"],
+    ["點「新增至手機」或「安裝」", "Tap “Add to phone” or “Install”", "「スマホに追加」か「インストール」をタップ", "「휴대폰에 추가」 또는 「설치」를 누르세요", "Toca «Añadir al teléfono» o «Instalar»", "Toque em “Adicionar ao telefone” ou “Instalar”", "Touche « Ajouter au téléphone » ou « Installer »", "Tippe auf „Zum Telefon hinzufügen“ oder „Installieren“", "Tocca «Aggiungi al telefono» o «Installa»", "Нажмите «Добавить на телефон» или «Установить»", "“Telefona ekle” ya da “Yükle”ye dokun", "Ketuk “Tambahkan ke ponsel” atau “Instal”", "Chạm “Thêm vào điện thoại” hoặc “Cài đặt”", "แตะ “เพิ่มไปยังโทรศัพท์” หรือ “ติดตั้ง”"],
+    ["點「⋮」選單", "Tap the “⋮” menu", "「⋮」メニューをタップ", "「⋮」 메뉴를 누르세요", "Toca el menú «⋮»", "Toque no menu “⋮”", "Touche le menu « ⋮ »", "Tippe auf das Menü „⋮“", "Tocca il menu «⋮»", "Нажмите меню «⋮»", "“⋮” menüsüne dokun", "Ketuk menu “⋮”", "Chạm menu “⋮”", "แตะเมนู “⋮”"],
+    ["點「安裝」或「新增至主畫面」", "Tap “Install” or “Add to Home screen”", "「インストール」か「ホーム画面に追加」をタップ", "「설치」 또는 「홈 화면에 추가」를 누르세요", "Toca «Instalar» o «Añadir a pantalla de inicio»", "Toque em “Instalar” ou “Adicionar à tela inicial”", "Touche « Installer » ou « Ajouter à l’écran d’accueil »", "Tippe auf „Installieren“ oder „Zum Startbildschirm hinzufügen“", "Tocca «Installa» o «Aggiungi a schermata Home»", "Нажмите «Установить» или «Добавить на главный экран»", "“Yükle” ya da “Ana ekrana ekle”ye dokun", "Ketuk “Instal” atau “Tambahkan ke layar utama”", "Chạm “Cài đặt” hoặc “Thêm vào màn hình chính”", "แตะ “ติดตั้ง” หรือ “เพิ่มไปยังหน้าจอหลัก”"],
+    ["點右上角的「⋮」選單", "Tap the “⋮” menu at the top right", "右上の「⋮」メニューをタップ", "오른쪽 위 「⋮」 메뉴를 누르세요", "Toca el menú «⋮» arriba a la derecha", "Toque no menu “⋮” no canto superior direito", "Touche le menu « ⋮ » en haut à droite", "Tippe oben rechts auf das Menü „⋮“", "Tocca il menu «⋮» in alto a destra", "Нажмите меню «⋮» справа вверху", "Sağ üstteki “⋮” menüsüne dokun", "Ketuk menu “⋮” di kanan atas", "Chạm menu “⋮” góc phải trên", "แตะเมนู “⋮” มุมขวาบน"],
+    ["點「安裝應用程式」或「加到主畫面」", "Tap “Install app” or “Add to Home screen”", "「アプリをインストール」か「ホーム画面に追加」をタップ", "「앱 설치」 또는 「홈 화면에 추가」를 누르세요", "Toca «Instalar aplicación» o «Añadir a pantalla de inicio»", "Toque em “Instalar app” ou “Adicionar à tela inicial”", "Touche « Installer l’appli » ou « Ajouter à l’écran d’accueil »", "Tippe auf „App installieren“ oder „Zum Startbildschirm hinzufügen“", "Tocca «Installa app» o «Aggiungi a schermata Home»", "Нажмите «Установить приложение» или «Добавить на главный экран»", "“Uygulamayı yükle” ya da “Ana ekrana ekle”ye dokun", "Ketuk “Instal aplikasi” atau “Tambahkan ke layar utama”", "Chạm “Cài đặt ứng dụng” hoặc “Thêm vào màn hình chính”", "แตะ “ติดตั้งแอป” หรือ “เพิ่มไปยังหน้าจอหลัก”"],
+    ["加到主畫面，整個螢幕都是遊戲", "Add it to your Home Screen and the game fills the whole screen", "ホーム画面に追加すれば画面いっぱいがゲーム", "홈 화면에 추가하면 화면 전체가 게임이에요", "Añádelo a la pantalla de inicio y el juego ocupará toda la pantalla", "Adicione à tela inicial e o jogo ocupa a tela toda", "Ajoute-le à l’écran d’accueil et le jeu prend tout l’écran", "Auf den Home-Bildschirm damit, dann füllt das Spiel den ganzen Bildschirm", "Aggiungilo alla schermata Home e il gioco riempie tutto lo schermo", "Добавьте на главный экран, и игра займёт весь экран", "Ana ekrana ekle, oyun tüm ekranı kaplasın", "Tambahkan ke layar utama, game memenuhi seluruh layar", "Thêm vào màn hình chính, game sẽ đầy cả màn hình", "เพิ่มไปที่หน้าโฮม เกมจะเต็มจอ"],
+    ["📲 立刻安裝", "📲 Install now", "📲 今すぐインストール", "📲 지금 설치", "📲 Instalar ahora", "📲 Instalar agora", "📲 Installer maintenant", "📲 Jetzt installieren", "📲 Installa ora", "📲 Установить сейчас", "📲 Şimdi yükle", "📲 Instal sekarang", "📲 Cài ngay", "📲 ติดตั้งเลย"],
+    ["等一下", "Later", "あとで", "나중에", "Luego", "Depois", "Plus tard", "Später", "Più tardi", "Позже", "Sonra", "Nanti", "Để sau", "ไว้ทีหลัง"],
+    ["知道了，我去點", "Got it, I’ll tap it", "わかった、タップしてくる", "알겠어요, 눌러 볼게요", "Entendido, voy a tocarlo", "Entendi, vou tocar", "Compris, j’y vais", "Verstanden, ich tippe", "Capito, ci tocco", "Понятно, нажму", "Anladım, dokunuyorum", "Oke, aku ketuk", "Hiểu rồi, mình chạm đây", "เข้าใจแล้ว ไปแตะเลย"],
+    ["用 Safari 打開才能加到主畫面", "Open it in Safari to add it to your Home Screen", "Safari で開けばホーム画面に追加できます", "Safari에서 열어야 홈 화면에 추가할 수 있어요", "Ábrelo en Safari para añadirlo a la pantalla de inicio", "Abra no Safari para adicionar à tela inicial", "Ouvre-le dans Safari pour l’ajouter à l’écran d’accueil", "In Safari öffnen, um es zum Home-Bildschirm hinzuzufügen", "Aprilo in Safari per aggiungerlo alla schermata Home", "Откройте в Safari, чтобы добавить на главный экран", "Ana ekrana eklemek için Safari’de aç", "Buka di Safari untuk menambahkannya ke layar utama", "Mở bằng Safari mới thêm được vào màn hình chính", "เปิดใน Safari ถึงจะเพิ่มไปหน้าโฮมได้"],
+    ["點右上角或右下角的「⋯」", "Tap “⋯” at the top right or bottom right", "右上か右下の「⋯」をタップ", "오른쪽 위나 오른쪽 아래의 「⋯」를 누르세요", "Toca «⋯» arriba o abajo a la derecha", "Toque em “⋯” no canto superior ou inferior direito", "Touche « ⋯ » en haut ou en bas à droite", "Tippe oben oder unten rechts auf „⋯“", "Tocca «⋯» in alto o in basso a destra", "Нажмите «⋯» справа вверху или внизу", "Sağ üst ya da sağ alttaki “⋯”e dokun", "Ketuk “⋯” di kanan atas atau kanan bawah", "Chạm “⋯” ở góc phải trên hoặc phải dưới", "แตะ “⋯” มุมขวาบนหรือขวาล่าง"],
+    ["選「用 Safari 開啟」或「在瀏覽器開啟」（網址也複製好了，可以直接貼到 Safari）", "Choose “Open in Safari” or “Open in browser” (the link is copied too, so you can paste it into Safari)", "「Safari で開く」か「ブラウザで開く」を選ぶ（URL もコピー済みなので Safari に貼り付けてもOK）", "「Safari로 열기」 또는 「브라우저에서 열기」를 고르세요 (주소도 복사해 뒀으니 Safari에 붙여 넣어도 돼요)", "Elige «Abrir en Safari» o «Abrir en el navegador» (el enlace ya está copiado, puedes pegarlo en Safari)", "Escolha “Abrir no Safari” ou “Abrir no navegador” (o link já foi copiado, dá para colar no Safari)", "Choisis « Ouvrir dans Safari » ou « Ouvrir dans le navigateur » (le lien est copié, tu peux le coller dans Safari)", "Wähle „In Safari öffnen“ oder „Im Browser öffnen“ (der Link ist kopiert, du kannst ihn in Safari einfügen)", "Scegli «Apri in Safari» o «Apri nel browser» (il link è già copiato, puoi incollarlo in Safari)", "Выберите «Открыть в Safari» или «Открыть в браузере» (ссылка уже скопирована, её можно вставить в Safari)", "“Safari’de aç” ya da “Tarayıcıda aç”ı seç (bağlantı da kopyalandı, Safari’ye yapıştırabilirsin)", "Pilih “Buka di Safari” atau “Buka di browser” (tautan sudah disalin, bisa ditempel di Safari)", "Chọn “Mở bằng Safari” hoặc “Mở trong trình duyệt” (đường dẫn đã được sao chép, có thể dán vào Safari)", "เลือก “เปิดใน Safari” หรือ “เปิดในเบราว์เซอร์” (คัดลอกลิงก์ไว้แล้ว วางใน Safari ได้เลย)"],
+    ["裝好了！從主畫面的貓咪圖示打開，整個螢幕都是遊戲", "Installed! Open the cat icon on your Home Screen and the game fills the screen", "インストール完了！ホーム画面のネコのアイコンから開くと画面いっぱいがゲーム", "설치 완료! 홈 화면의 고양이 아이콘으로 열면 화면 전체가 게임이에요", "¡Instalado! Abre el icono del gato en tu pantalla de inicio y el juego ocupa toda la pantalla", "Instalado! Abra o ícone do gato na tela inicial e o jogo ocupa a tela toda", "Installé ! Ouvre l’icône du chat sur l’écran d’accueil et le jeu prend tout l’écran", "Installiert! Öffne das Katzen-Symbol auf dem Startbildschirm, dann füllt das Spiel den Bildschirm", "Installato! Apri l’icona del gatto nella schermata Home e il gioco riempie lo schermo", "Установлено! Откройте значок кошки на главном экране — игра на весь экран", "Yüklendi! Ana ekrandaki kedi simgesinden aç, oyun tüm ekranı kaplar", "Terpasang! Buka ikon kucing di layar utama, game memenuhi layar", "Cài xong! Mở biểu tượng con mèo trên màn hình chính, game đầy cả màn hình", "ติดตั้งแล้ว! เปิดไอคอนแมวที่หน้าโฮม เกมจะเต็มจอ"],
+    ["已經裝好了：從主畫面的貓咪圖示打開，整個螢幕都是遊戲", "Already installed: open the cat icon on your Home Screen and the game fills the screen", "インストール済み：ホーム画面のネコのアイコンから開くと画面いっぱいがゲーム", "이미 설치됐어요: 홈 화면의 고양이 아이콘으로 열면 화면 전체가 게임이에요", "Ya está instalado: abre el icono del gato en tu pantalla de inicio y el juego ocupa toda la pantalla", "Já está instalado: abra o ícone do gato na tela inicial e o jogo ocupa a tela toda", "Déjà installé : ouvre l’icône du chat sur l’écran d’accueil et le jeu prend tout l’écran", "Schon installiert: Öffne das Katzen-Symbol auf dem Startbildschirm, dann füllt das Spiel den Bildschirm", "Già installato: apri l’icona del gatto nella schermata Home e il gioco riempie lo schermo", "Уже установлено: откройте значок кошки на главном экране — игра на весь экран", "Zaten yüklü: ana ekrandaki kedi simgesinden aç, oyun tüm ekranı kaplar", "Sudah terpasang: buka ikon kucing di layar utama, game memenuhi layar", "Đã cài rồi: mở biểu tượng con mèo trên màn hình chính, game đầy cả màn hình", "ติดตั้งไว้แล้ว: เปิดไอคอนแมวที่หน้าโฮม เกมจะเต็มจอ"],
+    ["你已經從主畫面打開了，這就是最好的玩法", "You’re already playing from the Home Screen: that’s the best way", "もうホーム画面から開いています。これがいちばんの遊び方", "이미 홈 화면에서 열었어요. 이게 가장 좋은 플레이 방법이에요", "Ya lo abriste desde la pantalla de inicio: es la mejor forma de jugar", "Você já abriu pela tela inicial: é o melhor jeito de jogar", "Tu l’as déjà ouvert depuis l’écran d’accueil : c’est la meilleure façon de jouer", "Du spielst schon vom Home-Bildschirm: so ist es am besten", "L’hai già aperto dalla schermata Home: è il modo migliore", "Вы уже открыли игру с главного экрана — это лучший способ", "Zaten ana ekrandan açtın, en iyi oynama şekli bu", "Kamu sudah membukanya dari layar utama, ini cara main terbaik", "Bạn đã mở từ màn hình chính, đây là cách chơi tốt nhất", "คุณเปิดจากหน้าโฮมแล้ว นี่คือวิธีเล่นที่ดีที่สุด"],
+  ];
+  I.add(R.map((r) => [r[0], r[1], r[2], r[3]])); L.slice(3).forEach((l, k) => I.addL(l, R.map((r) => [r[0], r[4 + k]])));
+})();
+
 // 音效以 WebAudio 即時合成；背景音樂由 02b_music.js 即時編曲合成（原創，無第三方取樣）。
 (() => {
   const A = (SC.audio = { ctx: null, muted: false, ready: false, volM: 1, volS: 1 }); /* 第 182 版（Yen）：音樂、音效各自的音量（0～1，玩家在選單調） */
@@ -37728,7 +37771,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
       } catch (e) { if (loud) ui.tip('這個瀏覽器不允許全螢幕', 2.5); }
     };
     const fsToggle = () => {
-      if (guideOk && !fsOn()) { $('m-fsguide').hidden = false; return; }
+      if (guideOk && !fsOn()) { if (SC.a2hs) SC.a2hs.go(); else $('m-fsguide').hidden = false; return; } // 第 329 版（Yen 11-26）：點下去直接協助加入主畫面（大箭頭指著分享鈕）
       if (fsOn()) { fsWant = false; (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc); return; }
       fsWant = true; fsTry = 0; fsEnter(true);
     };
@@ -37736,7 +37779,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     if (guideOk && fsOk) $('btn-fsguide-try').hidden = false;
     on('btn-fsguide-try', () => { $('m-fsguide').hidden = true; fsWant = true; fsTry = 0; fsEnter(true); });
     // iPhone、iPad 第一次在 Safari 打開：自動跳出一次加入主畫面圖解
-    if (guideOk && window.SC_PUBLIC) { let seen = '1'; try { seen = localStorage.getItem('sc-fsg'); localStorage.setItem('sc-fsg', '1'); } catch (e) {} if (!seen) setTimeout(() => { if (!els['m-title'].hidden) $('m-fsguide').hidden = false; }, 1500); }
+    if (guideOk && window.SC_PUBLIC) { let seen = '1'; try { seen = localStorage.getItem('sc-fsg'); localStorage.setItem('sc-fsg', '1'); } catch (e) {} if (!seen) setTimeout(() => { if (!els['m-title'].hidden) { if (SC.a2hs) SC.a2hs.go(); else $('m-fsguide').hidden = false; } }, 1500); }
     doc.addEventListener('fullscreenchange', fsSync); doc.addEventListener('webkitfullscreenchange', fsSync);
     // 被系統退出全螢幕：下一次手指離開畫面（touchend／pointerup 才算使用者操作）就再進去
     const fsBack = () => { if (fsWant && fsOk && !fsOn()) fsEnter(false); };
@@ -38224,6 +38267,164 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   };
 })();
 
+// 一鍵加入主畫面（Yen 2026-11-26「手機與平板的加入主畫面在玩的功能，請做成點下去就直接協助加入」）
+// SC.a2hs.go() 一個入口，看是哪種手機、哪個瀏覽器，做「能做到最直接」的那一步：
+//   Android（Chrome、Samsung、Edge…）：直接叫出系統的「安裝應用程式」視窗，點「安裝」就好。
+//     瀏覽器還沒給安裝事件（剛打開、或已經裝過）→ 已經裝過就說從主畫面打開；沒有的話，大箭頭指著選單鈕，一步一步標出來。
+//   iPhone／iPad：Safari 不讓網頁自己加，所以畫面上用大箭頭直接指著「分享鈕」實際的位置（直拿／橫拿、iPhone／iPad、
+//     Safari 新版的「⋯」都分開算），旁邊三個步驟一步一步亮，下一步在哪裡就指哪裡。
+//   LINE、Facebook、Instagram 等 App 裡的瀏覽器不能加：直接用 Safari／Chrome 打開（帶 ?a2hs=1，打開後自動接著跳出加入步驟）。
+// 只是協助，不改任何玩法。
+(() => {
+  const A = (SC.a2hs = {});
+  const ua = navigator.userAgent || '', $ = (id) => document.getElementById(id);
+  const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const android = /Android/i.test(ua);
+  const app = / Line\//i.test(ua) ? 'LINE' : /Instagram|Barcelona|Messenger|FBAN|FBAV|FB_IAB|FBIOS|MicroMessenger|musical_ly|BytedanceWebview|TikTok/i.test(ua) || (android && /; wv\)/.test(ua)) ? 'app' : '';
+  const br = app ? 'app' : /SamsungBrowser/i.test(ua) ? 'samsung' : /FxiOS|Firefox/i.test(ua) ? 'firefox' : /EdgiOS|EdgA|Edg\//i.test(ua) ? 'edge' : /OPiOS|OPR\//i.test(ua) ? 'opera' : /CriOS|Chrome/i.test(ua) ? 'chrome' : ios && /Safari/i.test(ua) ? 'safari' : 'other';
+  const tablet = Math.min(screen.width, screen.height) >= 600;
+  const safariV = +((ua.match(/Version\/(\d+)/) || [])[1] || 0); // Safari 26 起分享鈕收進「⋯」
+  const standalone = () => navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches);
+  A.info = { ios, android, app, br, tablet, safariV };
+
+  // Android：瀏覽器給的安裝事件留著，按下去直接叫出安裝視窗
+  let ev = null, installed = false;
+  addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); ev = e; if (el && !el.hidden) render(); });
+  addEventListener('appinstalled', () => { ev = null; installed = true; hide(); tip('裝好了！從主畫面的貓咪圖示打開，整個螢幕都是遊戲', 5); });
+  // 已經裝過（manifest 的 related_applications 指自己）：Chrome 會告訴我們，就不用再教一次
+  try { if (navigator.getInstalledRelatedApps) navigator.getInstalledRelatedApps().then((r) => { if (r && r.length) installed = true; }).catch(() => {}); } catch (e) {}
+  A.canPrompt = () => !!ev;
+
+  const css = document.createElement('style'); css.textContent = `
+#m-a2hs{position:fixed;inset:0;z-index:90;background:rgba(14,8,30,.62);display:block}
+#m-a2hs[hidden]{display:none}
+#m-a2hs .a2-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100vw - 28px));max-height:calc(100dvh - 150px);overflow:auto;box-sizing:border-box;background:#2a1b52;color:#fff;border:4px solid #1b1430;border-radius:22px;padding:16px 16px 14px;box-shadow:0 10px 0 rgba(0,0,0,.25)}
+#m-a2hs.a2-top .a2-card{top:auto;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%)}
+#m-a2hs.a2-bot .a2-card{top:max(14px,env(safe-area-inset-top));transform:translateX(-50%)}
+#m-a2hs h2{margin:0 0 10px;font:900 20px/1.2 var(--f-body)}
+#m-a2hs ol{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px}
+#m-a2hs li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.08);opacity:.55;transition:opacity .2s,background .2s}
+#m-a2hs li.on{opacity:1;background:rgba(255,210,63,.22);outline:3px solid #ffd23f}
+#m-a2hs li.ok{opacity:.8}#m-a2hs li.ok>i{background:#3ddc84}
+#m-a2hs li>i{width:34px;height:34px;border-radius:50%;background:#ff5fa2;color:#fff;display:grid;place-items:center;font:900 17px/1 var(--f-body);font-style:normal}
+#m-a2hs li span{font:800 15px/1.35 var(--f-body)}
+#m-a2hs .a2-btns{display:flex;gap:8px;flex-wrap:wrap}
+#m-a2hs .a2-btns button{flex:1 1 auto;min-height:48px;padding:8px 14px;border-radius:14px;border:3px solid #1b1430;font:900 16px/1.1 var(--f-body);cursor:pointer;background:#fff;color:#1b1430}
+#m-a2hs .a2-btns button.a2-go{background:#ffd23f;font-size:18px;flex-basis:100%;animation:a2pulse 1.1s ease-in-out infinite}
+#m-a2hs .a2-btns button:active{transform:translateY(2px)}
+#m-a2hs .a2-arrow{position:absolute;width:86px;height:110px;pointer-events:none;filter:drop-shadow(0 4px 0 rgba(0,0,0,.35))}
+#m-a2hs .a2-arrow svg{width:100%;height:100%;display:block}
+#m-a2hs .a2-arrow.dn{bottom:max(6px,env(safe-area-inset-bottom));animation:a2dn .8s ease-in-out infinite}
+#m-a2hs .a2-arrow.up{top:max(4px,env(safe-area-inset-top));animation:a2up .8s ease-in-out infinite}
+#m-a2hs .a2-arrow.up svg{transform:rotate(180deg)}
+#m-a2hs .a2-arrow.c{left:calc(50% - 43px)}#m-a2hs .a2-arrow.r{right:max(4px,env(safe-area-inset-right))}#m-a2hs .a2-arrow.r2{right:max(54px,env(safe-area-inset-right))}
+#m-a2hs .a2-lab{position:absolute;padding:6px 12px;border-radius:12px;background:#ffd23f;color:#1b1430;font:900 15px/1.2 var(--f-body);border:3px solid #1b1430;white-space:nowrap;pointer-events:none}
+#m-a2hs .a2-lab.dn{bottom:calc(max(6px,env(safe-area-inset-bottom)) + 116px)}#m-a2hs .a2-lab.up{top:calc(max(4px,env(safe-area-inset-top)) + 116px)}
+#m-a2hs .a2-lab.c{left:50%;transform:translateX(-50%)}#m-a2hs .a2-lab.r,#m-a2hs .a2-lab.r2{right:max(8px,env(safe-area-inset-right))}
+@keyframes a2dn{50%{transform:translateY(14px)}}@keyframes a2up{50%{transform:translateY(-14px)}}
+@keyframes a2pulse{50%{transform:scale(1.04)}}
+@media (max-height:460px){#m-a2hs .a2-card{width:min(560px,calc(100vw - 150px));padding:10px 12px}#m-a2hs h2{font-size:17px;margin-bottom:6px}#m-a2hs ol{grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px}#m-a2hs li{grid-template-columns:1fr;justify-items:center;text-align:center;padding:6px}#m-a2hs li span{font-size:13px}#m-a2hs .a2-arrow{width:64px;height:82px}#m-a2hs .a2-lab.dn{bottom:calc(max(6px,env(safe-area-inset-bottom)) + 86px)}#m-a2hs .a2-lab.up{top:calc(max(4px,env(safe-area-inset-top)) + 86px)}#m-a2hs .a2-arrow.c{left:calc(50% - 32px)}}`;
+  document.head.appendChild(css);
+
+  const ARROW = '<svg viewBox="0 0 86 110" aria-hidden="true"><path d="M30 4h26v58h24L43 106 6 62h24z" fill="#ffd23f" stroke="#1b1430" stroke-width="6" stroke-linejoin="round"/></svg>';
+  const land = () => innerWidth > innerHeight;
+
+  // 每種情況：箭頭指哪裡（dn 往下＝下面工具列、up 往上＝上面網址列；c 中間、r 最右、r2 右邊第二顆）＋三個步驟
+  function plan() {
+    if (ios) {
+      if (br === 'safari') {
+        const s3 = '右上角點「加入」，再從主畫面的貓咪圖示打開';
+        if (tablet) return { at: 'up r2', lab: '分享鈕在這裡', steps: ['點右上角的分享鈕（方框加往上的箭頭），看不到就點「⋯」', '往下找「加入主畫面」點一下', s3] };
+        if (safariV >= 26) return { at: land() ? 'up r' : 'dn r', lab: '先點這個「⋯」', steps: ['點這個「⋯」，再點「分享」', '往上滑開清單，點「加入主畫面」（沒看到就點「更多」）', s3] };
+        return { at: land() ? 'up r' : 'dn c', lab: '分享鈕在這裡', steps: ['點這個分享鈕（方框加往上的箭頭），看不到就先點一下網址列', '往上滑開清單，點「加入主畫面」', s3] };
+      }
+      if (br === 'chrome') return { at: 'up r', lab: '分享鈕在這裡', steps: ['點網址列右邊的分享鈕（方框加往上的箭頭）', '往下找「加入主畫面」點一下', '點「加入」，再從主畫面的貓咪圖示打開'] };
+      return { at: 'dn r', lab: '選單在這裡', steps: ['打開瀏覽器的選單「⋯」，點「分享」', '往下找「加入主畫面」點一下', '點「加入」，再從主畫面的貓咪圖示打開'] };
+    }
+    // Android 沒有安裝事件的時候
+    const s3 = '點「安裝」或「新增」，再從主畫面的貓咪圖示打開';
+    if (br === 'samsung') return { at: 'dn r', lab: '選單在這裡', steps: ['點右下角的「≡」選單', '點「新增頁面至」→「主畫面」', s3] };
+    if (br === 'edge') return { at: 'dn c', lab: '選單在這裡', steps: ['點下面的「⋯」選單', '點「新增至手機」或「安裝」', s3] };
+    if (br === 'firefox') return { at: 'up r', lab: '選單在這裡', steps: ['點「⋮」選單', '點「安裝」或「新增至主畫面」', s3] };
+    return { at: 'up r', lab: '選單在這裡', steps: ['點右上角的「⋮」選單', '點「安裝應用程式」或「加到主畫面」', s3] };
+  }
+
+  let el = null, step = 0, stepT = 0;
+  function mount() {
+    if (el) return; const ui = $('ui') || document.body; el = document.createElement('div'); el.id = 'm-a2hs'; el.hidden = true; ui.appendChild(el);
+    el.addEventListener('click', (e) => { if (e.target === el) hide(); });
+    addEventListener('resize', () => { if (el && !el.hidden) render(); });
+    // 玩家去點了瀏覽器的分享鈕：頁面會失去焦點／被分享清單蓋住，回來時把下一步亮起來
+    const adv = () => { if (el && !el.hidden && !ev && step < 2) { step++; render(); } };
+    addEventListener('blur', () => { if (el && !el.hidden) stepT = Date.now(); });
+    addEventListener('focus', () => { if (stepT && Date.now() - stepT > 400) adv(); stepT = 0; });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stepT = Date.now(); else if (stepT) { adv(); stepT = 0; } });
+  }
+  function hide() { if (el) el.hidden = true; }
+  function tip(s, d) { try { SC.ui.tip(s, d || 3.5); } catch (e) { /* 沒有提示列也沒關係 */ } }
+  function sfx() { try { SC.audio.sfx.ui(); } catch (e) {} }
+
+  function render() {
+    mount(); const card = document.createElement('div'); card.className = 'a2-card';
+    const h = document.createElement('h2'), ol = document.createElement('ol'), bt = document.createElement('div'); bt.className = 'a2-btns';
+    const btn = (t, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; if (cls) b.className = cls; b.onclick = (e) => { e.stopPropagation(); sfx(); fn(); }; bt.appendChild(b); return b; };
+    el.innerHTML = ''; el.className = '';
+    if (ev) { // Android 已經可以直接裝：只剩一顆大按鈕
+      h.textContent = '加到主畫面，整個螢幕都是遊戲'; card.append(h);
+      btn('📲 立刻安裝', 'a2-go', prompt); btn('等一下', '', hide); card.append(bt); el.append(card); el.hidden = false; return;
+    }
+    const p = plan(); h.textContent = '照箭頭點，三步加到主畫面';
+    p.steps.forEach((s, i) => { const li = document.createElement('li'); li.className = i === step ? 'on' : i < step ? 'ok' : ''; const n = document.createElement('i'); n.textContent = i < step ? '✓' : String(i + 1); const sp = document.createElement('span'); sp.textContent = s; li.append(n, sp); li.onclick = (e) => { e.stopPropagation(); step = i; render(); }; ol.append(li); });
+    btn('知道了，我去點', '', hide);
+    const fsTry = $('btn-fsguide-try'); if (ios && fsTry && !fsTry.hidden) btn('先用 Safari 全螢幕（可能會跑掉）', '', () => { hide(); fsTry.click(); });
+    card.append(h, ol, bt);
+    // 箭頭只在第一步指著按鈕；之後的步驟在瀏覽器自己的清單裡，不能指
+    if (step === 0) { const [dir, side] = p.at.split(' '); const a = document.createElement('div'); a.className = 'a2-arrow ' + dir + ' ' + side; a.innerHTML = ARROW; const l = document.createElement('div'); l.className = 'a2-lab ' + dir + ' ' + side; l.textContent = p.lab; el.append(a, l); el.classList.add(dir === 'up' ? 'a2-top' : 'a2-bot'); }
+    el.append(card); el.hidden = false; if (document.pointerLockElement) document.exitPointerLock();
+  }
+
+  function prompt() { const e = ev; if (!e) return render(); ev = null; hide();
+    try { e.prompt(); (e.userChoice || Promise.resolve({})).then((c) => { if (c && c.outcome === 'accepted') { installed = true; tip('裝好了！從主畫面的貓咪圖示打開，整個螢幕都是遊戲', 5); } }).catch(() => {}); } catch (x) { render(); } }
+
+  // App 內建瀏覽器：直接換到真正的瀏覽器，帶 a2hs=1 讓那邊一打開就接著教
+  const url = (extra) => { const u = location.href.split('#')[0].replace(/[?&](a2hs|openExternalBrowser)=1/g, '').replace(/[?&]$/, ''); return extra ? u + (u.includes('?') ? '&' : '?') + extra : u; };
+  A.openOut = () => {
+    const u = url('a2hs=1');
+    if (app === 'LINE') { location.href = u + '&openExternalBrowser=1'; return; } // LINE 認得這個參數，會用手機的預設瀏覽器打開
+    if (android) { location.href = 'intent://' + u.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end'; return; }
+    if (ios) { // iOS 17 起 x-safari-https:// 會直接叫 Safari 打開；沒反應（還在這頁）就複製網址、指著「⋯」
+      const t0 = Date.now(); location.href = 'x-safari-' + u;
+      setTimeout(() => { if (document.hidden || Date.now() - t0 > 3000) return; copy(u); mount(); el.innerHTML = ''; el.className = 'a2-bot';
+        const a = document.createElement('div'); a.className = 'a2-arrow up r'; a.innerHTML = ARROW; const l = document.createElement('div'); l.className = 'a2-lab up r'; l.textContent = '點這個「⋯」'; const c = document.createElement('div'); c.className = 'a2-card';
+        c.innerHTML = '<h2></h2><ol><li class="on"><i>1</i><span></span></li><li><i>2</i><span></span></li></ol><div class="a2-btns"><button type="button">知道了</button></div>';
+        c.querySelector('h2').textContent = '用 Safari 打開才能加到主畫面'; const s = c.querySelectorAll('li span'); s[0].textContent = '點右上角或右下角的「⋯」'; s[1].textContent = '選「用 Safari 開啟」或「在瀏覽器開啟」（網址也複製好了，可以直接貼到 Safari）';
+        c.querySelector('button').onclick = (e) => { e.stopPropagation(); hide(); }; el.append(a, l, c); el.hidden = false; }, 1200);
+      return;
+    }
+    copy(u);
+  };
+  function copy(u) { const done = () => tip('網址複製好了，打開 Safari 或 Chrome 貼上就能玩'); try { navigator.clipboard.writeText(u).then(done, () => tip(u)); } catch (e) { tip(u); } }
+
+  // 唯一入口：點下去就做最直接的那一步
+  A.go = () => {
+    if (standalone()) { tip('你已經從主畫面打開了，這就是最好的玩法'); return; }
+    if (app) { A.openOut(); return; }
+    if (ev) { prompt(); return; } // Android：直接跳出系統的安裝視窗
+    if (!ios && installed) { tip('已經裝好了：從主畫面的貓咪圖示打開，整個螢幕都是遊戲', 5); return; }
+    step = 0;
+    if (!ios) { // Android 剛打開時安裝事件可能晚一點才來：等一下下（按鍵的使用者操作還有效），來了就直接跳安裝
+      let n = 0; const w = setInterval(() => { if (ev) { clearInterval(w); prompt(); } else if (++n >= 6) { clearInterval(w); render(); } }, 150); return;
+    }
+    render();
+  };
+
+  // 從 App 內建瀏覽器跳過來（?a2hs=1）：首頁出現後自動接著教；網址上的參數拿掉，加到主畫面時才是乾淨的網址
+  if (/[?&]a2hs=1/.test(location.search) && !standalone() && !app) {
+    try { history.replaceState(null, '', url()); } catch (e) {}
+    let k = 0; const t = setInterval(() => { if (++k > 60) return clearInterval(t); if (!(SC.home && SC.home.on)) return; clearInterval(t); try { localStorage.setItem('sc-devtip', '1'); localStorage.setItem('sc-fsg', '1'); } catch (e) {} A.go(); }, 500);
+  }
+})();
+
 // 裝置小提示（Yen 2026-11-23「平板與手機 iOS 與 Android 各瀏覽器的最佳優化體驗也進行重點提示教學」）
 // 看是哪一種手機／平板、哪一個瀏覽器，挑最重要的 2～3 件事告訴玩家，能直接做的附一個按鈕：
 //   iPhone／iPad → 加入主畫面（沒有網址列、不會被手勢退出）；Android → 安裝成 App、全螢幕（會自動轉橫向）；
@@ -38244,8 +38445,8 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   DT.info = { ios, android, app, br, tablet, coarse };
 
   // Android 的「安裝應用程式」：瀏覽器給了安裝事件就留著，按鈕直接叫出安裝視窗
-  let installEv = null; addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installEv = e; });
-  addEventListener('appinstalled', () => { installEv = null; });
+  // 第 329 版起安裝事件由 09dt_a2hs.js（SC.a2hs）接，按鈕都走 SC.a2hs.go()：點下去直接協助加入
+  const go = () => { hide(); SC.a2hs.go(); };
 
   const css = document.createElement('style'); css.textContent = `
 #m-devtip,#m-fsguide{z-index:85}/* 首頁（#home z-index 6）上面也要看得到；加入主畫面圖解原本 z-index 5 會被首頁蓋住 */
@@ -38267,13 +38468,13 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   function tips() {
     const T = [], fsOk = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled), home = standalone();
     if (app) {
-      T.push(['🧭', '用瀏覽器打開再玩', app === 'LINE' ? 'LINE 裡的瀏覽器不能 Google 登入、不能全螢幕，積分賽也要登入才能打。' : '這個 App 裡的瀏覽器不能 Google 登入、不能全螢幕，積分賽也要登入才能打。', '用瀏覽器打開', openOut]);
+      T.push(['🧭', '用瀏覽器打開再玩', app === 'LINE' ? 'LINE 裡的瀏覽器不能 Google 登入、不能全螢幕，積分賽也要登入才能打。' : '這個 App 裡的瀏覽器不能 Google 登入、不能全螢幕，積分賽也要登入才能打。', '用瀏覽器打開', () => { hide(); SC.a2hs.openOut(); }]);
       T.push(['⋯', '打不開的話', ios ? '點右上角或右下角的「⋯」，選「用 Safari 開啟」或「在瀏覽器開啟」。' : '點右上角的「⋮」，選「用瀏覽器開啟」或「在 Chrome 開啟」。', '複製網址', copyUrl]);
       T.push(['📱', '手機橫著拿', '左手搖桿走路，右手拖曳轉視角、按住射擊。']);
       return T;
     }
     if (ios) {
-      if (!home) T.push(['➕', '加入主畫面再玩', '從主畫面打開沒有網址列，畫面最大，兩隻手操作也不會被縮小手勢退出。', '看怎麼加', a2hs]);
+      if (!home) T.push(['➕', '加入主畫面再玩', '從主畫面打開沒有網址列，畫面最大，兩隻手操作也不會被縮小手勢退出。', '一鍵加入', go]);
       else T.push(['✅', '你已經從主畫面打開', '這就是最好的玩法：沒有網址列、整個螢幕都是遊戲。']);
       if (br !== 'safari') T.push(['🧭', '用 Safari 最穩', 'iPhone、iPad 上的瀏覽器都用 Safari 的引擎，速度差不多；加入主畫面用 Safari 最簡單。']);
       T.push(['🔋', '關掉低電量模式', '低電量模式會讓畫面只剩一半的流暢度（每秒 30 張），打對戰前先關掉。']);
@@ -38283,7 +38484,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
     }
     if (android) {
       const how = br === 'samsung' ? '從主畫面打開就是全螢幕。點右下角的「≡」選單，選「新增頁面至」→「主畫面」。' : br === 'firefox' ? '從主畫面打開就是全螢幕。點「⋮」選單，選「安裝」或「新增至主畫面」。' : br === 'edge' ? '從主畫面打開就是全螢幕。點「⋯」選單，選「新增至手機」或「安裝」。' : '從主畫面打開就是全螢幕。點右上角的「⋮」選單，選「安裝應用程式」或「加到主畫面」。';
-      if (!home) T.push(['➕', '安裝成 App', how, installEv ? '安裝' : '', installEv ? install : null]);
+      if (!home) T.push(['➕', '安裝成 App', how, '一鍵安裝', go]);
       if (!home && fsOk) T.push(['⛶', '先用全螢幕玩', '按全螢幕會藏起網址列和系統列，手機會自動轉成橫的。', '全螢幕', full]);
       if (br === 'samsung') T.push(['🌙', '顏色怪怪的？', 'Samsung Internet 的「深色模式」會把遊戲顏色變暗或反白，到選單 → 設定關掉，或讓網站用原本的顏色。']);
       else if (br === 'firefox' || br === 'opera' || br === 'other') T.push(['🧭', '卡卡的話換 Chrome', '3D 畫面在 Chrome 和 Samsung Internet 通常最順。']);
@@ -38297,15 +38498,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
 
   // ---------- 動作 ----------
   const url = () => location.href.split('#')[0];
-  function openOut() {
-    const u = url();
-    if (app === 'LINE') { location.href = u + (u.includes('?') ? '&' : '?') + 'openExternalBrowser=1'; return; } // LINE 認得這個參數，會用手機的預設瀏覽器打開
-    if (android) { location.href = 'intent://' + u.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end'; return; }
-    copyUrl(); // iPhone 上其他 App 沒有網頁能用的方法，只能複製網址讓玩家貼到 Safari
-  }
   function copyUrl() { const u = url(), done = () => tip('網址複製好了，打開 Safari 或 Chrome 貼上就能玩'); const no = () => tip(u); try { navigator.clipboard.writeText(u).then(done, no); } catch (e) { no(); } }
-  function a2hs() { hide(); const g = $('m-fsguide'); if (!g) return; const s = g.querySelector('.fsg-steps li span'); if (s) s.textContent = br === 'safari' ? (tablet ? '點 Safari 右上角的分享鈕（方框加往上的箭頭）' : '點 Safari 下面的分享鈕（方框加往上的箭頭），看不到就先點「⋯」') : br === 'chrome' ? '點 Chrome 網址列右邊的分享鈕（方框加往上的箭頭）' : '打開瀏覽器的選單「⋯」，點「分享」'; g.hidden = false; }
-  function install() { if (!installEv) return; const e = installEv; installEv = null; e.prompt(); hide(); }
   function full() { hide(); const f = $('btn-full2'); if (f) f.click(); }
   function tip(s) { try { SC.ui.tip(s, 3); } catch (e) { /* 沒有提示列也沒關係 */ } }
 
@@ -38334,7 +38527,7 @@ SC.i18n.pat(/^還有(\d+)層！$/, (m, li) => [m[1] === '1' ? '1 more layer!' : 
   const auto = setInterval(() => {
     if (!(coarse || app) || !window.SC_PUBLIC && !/[?&]devtip\b/.test(location.search)) return clearInterval(auto);
     if (seen()) return clearInterval(auto);
-    const busy = document.querySelector('#pf-card:not([hidden]), #m-fsguide:not([hidden]), #m-rejoin:not([hidden]), .ac-wrap, .rkd-ov:not([hidden])');
+    const busy = document.querySelector('#pf-card:not([hidden]), #m-fsguide:not([hidden]), #m-a2hs:not([hidden]), #m-rejoin:not([hidden]), .ac-wrap, .rkd-ov:not([hidden])');
     if (!(SC.home && SC.home.on) || busy) { waitT = 0; return; }
     if ((waitT += 0.5) < 2) return;
     clearInterval(auto); mark(); DT.show();
@@ -47670,6 +47863,20 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-26", "", "手機和平板的「加入主畫面」改成點一下就直接幫你加：Android 直接跳出安裝視窗；iPhone、iPad 用大箭頭指著分享鈕，三個步驟一步一步亮；在 LINE、Facebook 裡打開的會直接換到 Safari 或 Chrome 再接著教",
+      { en: "Add to Home Screen on phones and tablets now helps in one tap: Android shows the install window right away; on iPhone and iPad a big arrow points at the Share button and the three steps light up one by one; opened inside LINE or Facebook, it switches to Safari or Chrome and carries on",
+        ja: "スマホ・タブレットの「ホーム画面に追加」がワンタップで手伝うように：Android はすぐインストール画面が出ます。iPhone・iPad は大きな矢印が共有ボタンを指して、3つのステップが順番に光ります。LINE や Facebook の中で開いたときは Safari や Chrome に切り替えて続きを案内します",
+        ko: "휴대폰·태블릿의 「홈 화면에 추가」가 한 번 누르면 바로 도와줘요: Android는 설치 창이 바로 떠요. iPhone·iPad는 큰 화살표가 공유 버튼을 가리키고 세 단계가 차례로 빛나요. LINE이나 Facebook 안에서 열면 Safari나 Chrome으로 바꿔서 이어서 알려 줘요",
+        es: "Añadir a la pantalla de inicio en móviles y tabletas ahora ayuda con un toque: en Android sale la ventana de instalación al instante; en iPhone y iPad una gran flecha señala el botón Compartir y los tres pasos se iluminan uno a uno; si lo abres dentro de LINE o Facebook, cambia a Safari o Chrome y sigue",
+        pt: "Adicionar à tela inicial em celulares e tablets agora ajuda com um toque: no Android a janela de instalação aparece na hora; no iPhone e iPad uma seta grande aponta o botão Compartilhar e os três passos acendem um a um; aberto dentro do LINE ou Facebook, troca para o Safari ou Chrome e continua",
+        fr: "L’ajout à l’écran d’accueil sur téléphone et tablette aide maintenant en un geste : sur Android la fenêtre d’installation s’ouvre tout de suite ; sur iPhone et iPad une grande flèche montre le bouton Partager et les trois étapes s’allument une à une ; ouvert dans LINE ou Facebook, il passe dans Safari ou Chrome et continue",
+        de: "„Zum Home-Bildschirm“ auf Handy und Tablet hilft jetzt mit einem Tipp: Android zeigt sofort das Installationsfenster; auf iPhone und iPad zeigt ein großer Pfeil auf den Teilen-Knopf und die drei Schritte leuchten nacheinander; in LINE oder Facebook geöffnet, wechselt es zu Safari oder Chrome und macht dort weiter",
+        it: "Aggiungi alla schermata Home su telefoni e tablet ora aiuta con un tocco: su Android compare subito la finestra di installazione; su iPhone e iPad una grande freccia indica il pulsante Condividi e i tre passi si illuminano uno alla volta; se aperto dentro LINE o Facebook, passa a Safari o Chrome e continua",
+        ru: "Добавление на главный экран на телефонах и планшетах теперь помогает в одно касание: на Android сразу открывается окно установки; на iPhone и iPad большая стрелка показывает на кнопку «Поделиться», а три шага подсвечиваются по очереди; если игра открыта в LINE или Facebook, она переходит в Safari или Chrome и продолжает",
+        tr: "Telefon ve tabletlerde ana ekrana ekleme artık tek dokunuşla yardım ediyor: Android’de yükleme penceresi hemen açılır; iPhone ve iPad’de büyük bir ok Paylaş düğmesini gösterir ve üç adım sırayla yanar; LINE ya da Facebook içinde açılınca Safari veya Chrome’a geçip devam eder",
+        id: "Tambah ke layar utama di ponsel dan tablet kini membantu sekali ketuk: Android langsung menampilkan jendela instal; di iPhone dan iPad panah besar menunjuk tombol Bagikan dan tiga langkah menyala satu per satu; kalau dibuka di LINE atau Facebook, pindah ke Safari atau Chrome lalu lanjut",
+        vi: "Thêm vào màn hình chính trên điện thoại và máy tính bảng giờ giúp bằng một chạm: Android hiện ngay cửa sổ cài đặt; iPhone và iPad có mũi tên lớn chỉ vào nút Chia sẻ, ba bước sáng lần lượt; mở trong LINE hoặc Facebook thì chuyển sang Safari hoặc Chrome rồi tiếp tục",
+        th: "การเพิ่มไปหน้าโฮมบนมือถือและแท็บเล็ตช่วยได้ในแตะเดียว: Android ขึ้นหน้าต่างติดตั้งทันที; iPhone และ iPad มีลูกศรใหญ่ชี้ปุ่มแชร์ และสามขั้นตอนจะสว่างทีละขั้น; ถ้าเปิดใน LINE หรือ Facebook จะสลับไป Safari หรือ Chrome แล้วสอนต่อ" }],
     ["2026-11-26", "", "太陽谷變成 30 倍大的冒險世界：草原、森林、溪谷、紅岩台地、丘陵、雲霧高原，遠方有雪山；加入經驗值和等級，15 隻怪物王分散在世界各地，越遠越強，每隻都保留原本的招式和破解方法；有野外小怪可以練功、營火可以快速移動（M 開地圖）；加入冒險故事，有開場、遇到怪物王、解放、最終決戰的劇情畫面和配樂",
       { en: "Sun Valley is now an adventure world 30 times bigger: meadows, forests, river valleys, red-rock mesas, hills, misty highlands and snowy peaks in the distance. New XP and levels; the 15 monster kings are spread across the world, stronger the farther they are, and each keeps its original moves and weak spot. Wild monsters to train on, campfires for fast travel (M opens the map), and a new adventure story with cutscenes and music for the opening, meeting each king, freeing them and the final battle",
         ja: "たいようの谷が30倍の広さのぼうけんワールドに：草原、森、谷川、赤い岩の台地、丘、きりの高原、遠くには雪山。経験値とレベルを追加。15体のモンスター王は世界中にいて、遠いほど強く、それぞれ元の技と弱点そのまま。野生モンスターで修行、たき火でワープ（Mで地図）。オープニング、王との出会い、解放、最終決戦の物語シーンと音楽も追加",
