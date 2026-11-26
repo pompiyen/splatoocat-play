@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v332';</script><script>window.SC_BUILD='7c8cbfbf2a6b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v333';</script><script>window.SC_BUILD='358beba97fd3';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/SC_BUILD='([0-9a-f]+)'/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -44749,6 +44749,11 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
 (() => {
   const I = SC.i18n, L = ['en', 'ja', 'ko', 'es', 'pt', 'fr', 'de', 'it', 'ru', 'tr', 'id', 'vi', 'th'];
   const R = [
+    ["去過的營地（點一下傳送）", "Visited camps (tap to travel)", "行ったキャンプ（タップでワープ）", "가 본 캠프 (탭하면 이동)", "Campamentos visitados (toca para viajar)", "Acampamentos visitados (toque para viajar)", "Camps visités (touche pour y aller)", "Besuchte Lager (tippen zum Reisen)", "Accampamenti visitati (tocca per viaggiare)", "Посещённые лагеря (нажми, чтобы перенестись)", "Gidilen kamplar (dokun, ışınlan)", "Perkemahan yang dikunjungi (ketuk untuk pergi)", "Trại đã ghé (chạm để dịch chuyển)", "แคมป์ที่เคยไป (แตะเพื่อวาร์ป)"],
+    ["重生點", "Respawn point", "ふっかつ地点", "부활 지점", "Punto de reaparición", "Ponto de renascimento", "Point de réapparition", "Wiedereinstiegspunkt", "Punto di rinascita", "Точка возрождения", "Yeniden doğma noktası", "Titik bangkit", "Điểm hồi sinh", "จุดเกิดใหม่"],
+    ["還沒去過", "Not visited yet", "まだ行ってない", "아직 안 가 봄", "Sin visitar", "Ainda não visitado", "Pas encore visité", "Noch nicht besucht", "Non ancora visitato", "Ещё не был", "Henüz gidilmedi", "Belum dikunjungi", "Chưa ghé", "ยังไม่เคยไป"],
+    ["已記錄營地！倒下會從這裡重生", "Camp saved! If you go down, you’ll respawn here", "キャンプを記録したよ！たおれたらここからふっかつ", "캠프를 기록했어요! 쓰러지면 여기서 부활해요", "¡Campamento guardado! Si caes, reaparecerás aquí", "Acampamento salvo! Se cair, você renasce aqui", "Camp enregistré ! Si tu tombes, tu réapparaîtras ici", "Lager gespeichert! Wenn du umfällst, startest du hier neu", "Accampamento salvato! Se vai KO, riapparirai qui", "Лагерь сохранён! Если упадёшь, возродишься здесь", "Kamp kaydedildi! Düşersen burada yeniden doğarsın", "Perkemahan tersimpan! Kalau jatuh, kamu bangkit di sini", "Đã lưu trại! Nếu gục ngã, bạn sẽ hồi sinh ở đây", "บันทึกแคมป์แล้ว! ถ้าล้มจะเกิดใหม่ที่นี่"],
+    ["在最後記錄的營地重生了", "Respawned at your last saved camp", "最後に記録したキャンプでふっかつした", "마지막으로 기록한 캠프에서 부활했어요", "Reapareciste en el último campamento guardado", "Você renasceu no último acampamento salvo", "Tu réapparais au dernier camp enregistré", "Am zuletzt gespeicherten Lager neu gestartet", "Sei riapparso all’ultimo accampamento salvato", "Ты возродился в последнем сохранённом лагере", "Son kaydedilen kampta yeniden doğdun", "Bangkit di perkemahan terakhir yang tersimpan", "Đã hồi sinh ở trại lưu gần nhất", "เกิดใหม่ที่แคมป์ที่บันทึกล่าสุด"],
     // Yen 11-26「太陽谷的怪物角色重新設計成符合故事場景背景的怪物」：10 隻王的新名字和提示
     ["菇菇山怪", "Mushroom Ogre", "キノコ山オニ", "버섯 산도깨비", "Ogro Seta", "Ogro Cogumelo", "Ogre Champignon", "Pilzoger", "Orco Fungo", "Грибной огр", "Mantar Dev", "Raksasa Jamur", "Yêu Tinh Nấm", "ยักษ์เห็ด"],
     ["飄飄水母仙", "Drifting Jelly Sage", "ふわふわクラゲ仙人", "둥실둥실 해파리 선인", "Sabia Medusa Flotante", "Sábia Água-viva Flutuante", "Sage Méduse Flottante", "Schwebende Quallenweise", "Saggia Medusa Fluttuante", "Парящая медуза-мудрец", "Süzülen Denizanası Bilge", "Ubur-ubur Bijak Melayang", "Tiên Sứa Bồng Bềnh", "เซียนแมงกะพรุนล่องลอย"],
@@ -45606,6 +45611,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     foe = null; allQ = false; visited = new Set(prog.camps); lastCamp = CAMPS[0]; introT = 0; exitArm = false; regNow = null; regT = 0;
     const p = c.player(); p.pos.set(0, hgt(0, 136), 136); p.vel.set(0, 0, 0); p.yaw = Math.PI; if (SC.game.cam) { SC.game.cam.yaw = Math.PI; SC.game.cam.pitch = -0.1; }
     mod.spawn = { x: 0, z: 136 }; inkAt(0, 136, true); BG.update(0, 136, true);
+    if (prog.last > 0 && CAMPS[prog.last] && visited.has(prog.last)) { lastCamp = CAMPS[prog.last]; mod.spawn = { x: lastCamp.x, z: lastCamp.z }; } // Yen 11-26「重生還是回上一個營地紀錄點」
     if (SC.audio) { SC.audio.music('rpg', true); SC.audio.musicLevel && SC.audio.musicLevel(0); }
     evapInit(); waterOn(true); hud(true); hudUpd(true); ipAttach(p);
     prog.met = prog.met || []; if (prog.story && sprite) sprite.visible = true;
@@ -45616,6 +45622,8 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   };
   const left = () => mons.filter((e) => !e.dead).length;
   function off() { RP.active = false; ipDetach(); waterOn(false); hud(false); foe = null; lineM && (lineM.visible = false); if (bigEl) bigEl.hidden = true; }
+  // 營地紀錄點：走到營火旁邊（或用地圖傳送過去）就記錄，倒下從最後記錄的營地重生（Yen 11-26「重生還是回上一個營地紀錄點」）
+  function setCamp(i, say) { const c = CAMPS[i]; if (!c) return; lastCamp = c; mod.spawn = { x: c.x, z: c.z }; prog.last = i; save(prog); if (say && ctx) ctx.tip('已記錄營地！倒下會從這裡重生', 2.2); }
   function toCamp(p, c0) { const c = c0 || lastCamp; p.pos.set(c.x, hgt(c.x, c.z) + 0.2, c.z); p.vel.set(0, 0, 0); inkAt(c.x, c.z, true); BG.update(c.x, c.z, true); }
   // 墨水格子跟著玩家搬（離中心 60 公尺就搬一次；30 秒會蒸發的水，搬的時候清掉看不太出來）
   function inkAt(x, z, force) { if (!force && Math.hypot(x - inkO.x, z - inkO.z) < 60) return; inkO = { x: Math.round(x / 10) * 10, z: Math.round(z / 10) * 10 }; if (SC.ink.setOrigin) SC.ink.setOrigin(inkO.x, inkO.z, hgt); evapInit(); }
@@ -45991,10 +45999,9 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (dizzy && (!foe || foe === boss || foe.mob)) dizzy.visible = false;
     evapTick(dt);
     if (p) {
-      if (p.alive && deadP) { p.yaw = Math.PI; if (SC.game.cam) { SC.game.cam.yaw = Math.PI; SC.game.cam.pitch = -0.1; } ctx.tip('回到村子了！去過的營火可以按 M 傳送回去', 4); } deadP = !p.alive; // 在村子重生：面向山谷裡面
+      if (p.alive && deadP) { if (lastCamp === CAMPS[0]) { p.yaw = Math.PI; if (SC.game.cam) { SC.game.cam.yaw = Math.PI; SC.game.cam.pitch = -0.1; } } inkAt(p.pos.x, p.pos.z, true); BG.update(p.pos.x, p.pos.z, true); ctx.tip('在最後記錄的營地重生了', 3); } deadP = !p.alive; // 倒下後在最後記錄的營地重生
       // 營地：走過就記住（存起來，大地圖上可以傳送）
-      CAMPS.forEach((c, i) => { if (!visited.has(i) && Math.hypot(p.pos.x - c.x, p.pos.z - c.z) < 14) { visited.add(i); if (i) { prog.camps = [...visited]; save(prog); ctx.tip('營地', 1.4); sfx('swap'); } } });
-      if (p.alive) { let best = null, bd = 1e9; visited.forEach((i) => { const c = CAMPS[i], d = Math.hypot(p.pos.x - c.x, p.pos.z - c.z); if (d < bd) { bd = d; best = c; } }); if (best) lastCamp = best; } // Yen 11-26「死掉的時候應該要從初始的小鎮開始重生」：倒下一律回村子（mod.spawn 固定在出生點），營火只用來快速移動
+      CAMPS.forEach((c, i) => { if (!p.alive || Math.hypot(p.pos.x - c.x, p.pos.z - c.z) >= 14) return; if (!visited.has(i)) { visited.add(i); if (i) { prog.camps = [...visited]; sfx('swap'); } } if (lastCamp !== c) setCamp(i, true); });
       // 世界邊界：最外圈的高山
       if (p.alive) { p.pos.x = SC.clamp(p.pos.x, -BG.LIM, BG.LIM); p.pos.z = SC.clamp(p.pos.z, -BG.LIM, BG.LIM); }
       // 南邊的木拱門：走進門裡回沐沐小鎮
@@ -46026,9 +46033,15 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     hudEl.hidden = false;
   }
   const W2M = (x, z, S) => [((x + BG.BIG) / (BG.BIG * 2)) * S, ((z + BG.BIG) / (BG.BIG * 2)) * S];
-  function drawMarks(g, S, sc, ox, oz) { // sc：一公尺幾點；ox/oz：畫面左上角的世界座標
+  function drawMarks(g, S, sc, ox, oz, big) { // sc：一公尺幾點；ox/oz：畫面左上角的世界座標
     const P = (x, z) => [(x - ox) * sc, (z - oz) * sc];
-    CAMPS.forEach((c, i) => { const [x, y] = P(c.x, c.z); if (x < -20 || y < -20 || x > S + 20 || y > S + 20) return; g.globalAlpha = visited.has(i) ? 1 : 0.45; g.fillStyle = visited.has(i) ? '#ffd23f' : '#fff7e6'; g.strokeStyle = '#5a3a1a'; g.lineWidth = 2; g.beginPath(); g.moveTo(x, y - 7); g.lineTo(x + 6, y + 5); g.lineTo(x - 6, y + 5); g.closePath(); g.fill(); g.stroke(); g.globalAlpha = 1; });
+    const k = big ? 2.2 : 1; // 大地圖的圖示畫大一點
+    CAMPS.forEach((c, i) => { const [x, y] = P(c.x, c.z); if (x < -30 || y < -30 || x > S + 30 || y > S + 30) return; const v = visited.has(i) || i === 0, cur = lastCamp === c;
+      if (v) { // 去過的營地：金色圓底＋營火；最後記錄的營地多一圈閃亮的外框
+        if (cur) { g.fillStyle = 'rgba(255,210,63,.35)'; g.beginPath(); g.arc(x, y, 15 * k, 0, 6.3); g.fill(); g.strokeStyle = '#ff7a2a'; g.lineWidth = 3 * k; g.beginPath(); g.arc(x, y, 12.5 * k, 0, 6.3); g.stroke(); }
+        g.fillStyle = '#ffd23f'; g.strokeStyle = '#5a3a1a'; g.lineWidth = 2 * k; g.beginPath(); g.arc(x, y, 8.5 * k, 0, 6.3); g.fill(); g.stroke();
+        g.fillStyle = '#ff6a2a'; g.beginPath(); g.moveTo(x, y - 6 * k); g.quadraticCurveTo(x + 5 * k, y + 1 * k, x, y + 5 * k); g.quadraticCurveTo(x - 5 * k, y + 1 * k, x, y - 6 * k); g.fill(); g.fillStyle = '#fff2a0'; g.beginPath(); g.arc(x, y + 2 * k, 2 * k, 0, 6.3); g.fill(); }
+      else { g.globalAlpha = 0.75; g.fillStyle = '#9a9488'; g.strokeStyle = '#fff'; g.lineWidth = 1.5 * k; g.beginPath(); g.moveTo(x, y - 6 * k); g.lineTo(x + 5 * k, y + 4 * k); g.lineTo(x - 5 * k, y + 4 * k); g.closePath(); g.fill(); g.stroke(); g.globalAlpha = 1; } });
     mons.forEach((e) => { const [x, y] = P(e.pos.x, e.pos.z); if (x < -30 || y < -30 || x > S + 30 || y > S + 30) return; g.font = '900 15px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
       if (e.dead && e.dying <= 0) { g.fillStyle = 'rgba(90,58,26,.55)'; g.fillText('✓', x, y); return; } g.fillStyle = e.aggro ? '#ff3c3c' : e.lv > PL() + 5 ? '#7a2a8a' : '#c65a3a'; g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(x, y, 7, 0, 6.3); g.fill(); g.stroke(); g.fillStyle = '#fff'; g.font = '900 9px sans-serif'; g.fillText(e.lv, x, y + 0.5); });
     parts.forEach((q) => { if (!q.on || q.done) return; const [x, y] = P(q.pos.x, q.pos.z); g.fillStyle = q.kind === 'bucket' ? '#2f9fff' : '#ffd23f'; g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(x, y, 5, 0, 6.3); g.fill(); g.stroke(); });
@@ -46047,19 +46060,36 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
     if (bigEl && !bigEl.hidden) drawBig();
   }
   // 大地圖（M 或點小地圖）：王在哪裡、幾級、打倒了沒；點走過的營地可以傳送
+  // 大地圖（Yen 11-26「點地圖看不清楚，要可以放大，去過的營地區分不出來」）：可以放大縮小（滾輪、兩指、＋－按鈕）、拖曳移動；
+  // 點一下去過的營地就傳送（拖曳不算點）。去過的營地是金色營火，最後記錄的重生點多一圈橘色外框，沒去過的是灰色小三角形。
+  const MV = { cx: 0, cz: 0, z: 1 }, ptr = new Map(); let drag = null;
+  const mvClamp = () => { MV.z = SC.clamp(MV.z, 1, 6); const h = BG.BIG / MV.z; MV.cx = SC.clamp(MV.cx, -BG.BIG + h, BG.BIG - h); MV.cz = SC.clamp(MV.cz, -BG.BIG + h, BG.BIG - h); };
+  const cvPt = (cv, e) => { const r = cv.getBoundingClientRect(), h = BG.BIG / MV.z; return [MV.cx - h + ((e.clientX - r.left) / r.width) * h * 2, MV.cz - h + ((e.clientY - r.top) / r.height) * h * 2]; };
+  function zoomAt(f, wx, wz) { const z0 = MV.z; MV.z = SC.clamp(MV.z * f, 1, 6); const k = z0 / MV.z; if (wx != null) { MV.cx = wx + (MV.cx - wx) * k; MV.cz = wz + (MV.cz - wz) * k; } mvClamp(); drawBig(); }
   function bigMap(on) {
     if (on && !bigEl) {
       bigEl = document.createElement('div'); bigEl.id = 'rpg-big'; bigEl.hidden = true;
-      bigEl.innerHTML = `<div class="rpg-bin"><canvas width="1024" height="1024"></canvas><b class="rpg-bt">地圖</b><p>點一下走過的營地就能傳送過去</p><button type="button" class="rpg-x" aria-label="✕">✕</button></div>`;
+      bigEl.innerHTML = `<div class="rpg-bin"><canvas width="1024" height="1024"></canvas><b class="rpg-bt">地圖</b><div class="rpg-zm"><button type="button" data-z="1">＋</button><button type="button" data-z="-1">－</button></div><p class="rpg-lg"><span class="on">🔥</span><span>去過的營地（點一下傳送）</span><span class="cur">◎</span><span>重生點</span><span class="no">▲</span><span>還沒去過</span></p><button type="button" class="rpg-x" aria-label="✕">✕</button></div>`;
       (document.getElementById('app') || document.body).appendChild(bigEl);
-      bigEl.addEventListener('pointerdown', (e) => { e.stopPropagation(); if (e.target.closest('.rpg-x') || e.target === bigEl) { e.preventDefault(); bigMap(false); return; } const cv = e.target.closest('canvas'); if (!cv) return; e.preventDefault(); const r = cv.getBoundingClientRect(), x = ((e.clientX - r.left) / r.width) * BG.BIG * 2 - BG.BIG, z = ((e.clientY - r.top) / r.height) * BG.BIG * 2 - BG.BIG;
-        let best = -1, bd = 40; visited.forEach((i) => { const c = CAMPS[i], d = Math.hypot(c.x - x, c.z - z); if (d < bd) { bd = d; best = i; } }); const p = ctx && ctx.player(); if (best >= 0 && p && p.alive) { bigMap(false); fade(() => { toCamp(p, CAMPS[best]); lastCamp = CAMPS[best]; }); } });
+      const cv = bigEl.querySelector('canvas');
+      bigEl.addEventListener('pointerdown', (e) => { e.stopPropagation(); if (e.target.closest('.rpg-x') || e.target === bigEl) { e.preventDefault(); bigMap(false); return; } const zb = e.target.closest('[data-z]'); if (zb) { e.preventDefault(); zoomAt(+zb.dataset.z > 0 ? 1.6 : 1 / 1.6); } });
+      cv.addEventListener('pointerdown', (e) => { e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (er) {} ptr.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (ptr.size === 1) drag = { x: e.clientX, y: e.clientY, cx: MV.cx, cz: MV.cz, moved: 0 }; else { drag = null; const [a, b] = [...ptr.values()]; ptr.pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), z: MV.z }; } });
+      cv.addEventListener('pointermove', (e) => { if (!ptr.has(e.pointerId)) return; ptr.set(e.pointerId, { x: e.clientX, y: e.clientY }); const r = cv.getBoundingClientRect();
+        if (ptr.size >= 2 && ptr.pinch) { const [a, b] = [...ptr.values()], d = Math.hypot(a.x - b.x, a.y - b.y), [wx, wz] = cvPt(cv, { clientX: (a.x + b.x) / 2, clientY: (a.y + b.y) / 2 }); zoomAt((ptr.pinch.z * d) / Math.max(20, ptr.pinch.d) / MV.z, wx, wz); return; }
+        if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.moved = Math.max(drag.moved, Math.hypot(dx, dy)); const m = (BG.BIG * 2) / MV.z / r.width; MV.cx = drag.cx - dx * m; MV.cz = drag.cz - dy * m; mvClamp(); drawBig(); });
+      const up = (e) => { if (!ptr.has(e.pointerId)) return; ptr.delete(e.pointerId); if (ptr.size < 2) ptr.pinch = null;
+        if (drag && ptr.size === 0 && drag.moved < 10) { const [x, z] = cvPt(cv, e), r = cv.getBoundingClientRect(), near = 22 * ((BG.BIG * 2) / MV.z / r.width) + 10; let best = -1, bd = near; visited.forEach((i) => { const c = CAMPS[i], d = Math.hypot(c.x - x, c.z - z); if (d < bd) { bd = d; best = i; } }); const p = ctx && ctx.player(); if (best >= 0 && p && p.alive) { bigMap(false); fade(() => { toCamp(p, CAMPS[best]); setCamp(best, false); }); } }
+        if (ptr.size === 0) drag = null; };
+      cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', (e) => { ptr.delete(e.pointerId); drag = null; ptr.pinch = null; });
+      cv.addEventListener('wheel', (e) => { e.preventDefault(); const [x, z] = cvPt(cv, e); zoomAt(e.deltaY < 0 ? 1.25 : 0.8, x, z); }, { passive: false });
     }
-    if (!bigEl) return; bigEl.hidden = !on; if (on) { try { if (document.pointerLockElement) document.exitPointerLock(); } catch (e) {} drawBig(); }
+    if (!bigEl) return; bigEl.hidden = !on; if (on) { try { if (document.pointerLockElement) document.exitPointerLock(); } catch (e) {} const p = ctx && ctx.player(); MV.z = 3; if (p) { MV.cx = p.pos.x; MV.cz = p.pos.z; } mvClamp(); drawBig(); }
   }
-  function drawBig() { const g = bigEl.querySelector('canvas').getContext('2d'), S = 1024; g.drawImage(worldCv, 0, 0); g.font = '900 22px sans-serif'; g.textAlign = 'center'; g.fillStyle = 'rgba(255,247,230,.9)'; g.strokeStyle = 'rgba(90,58,26,.7)'; g.lineWidth = 4;
-    BG.REG.forEach((r) => { if (r.id === 'sun') return; const [x, y] = W2M(r.x, r.z, S); const t = (SC.tr ? SC.tr(r.n) : r.n); g.strokeText(t, x, y - 34); g.fillText(t, x, y - 34); });
-    g.save(); drawMarks(g, S, S / (BG.BIG * 2), -BG.BIG, -BG.BIG); g.restore(); }
+  function drawBig() { const cv = bigEl.querySelector('canvas'), g = cv.getContext('2d'), S = 1024, h = BG.BIG / MV.z, ox = MV.cx - h, oz = MV.cz - h, sc = S / (h * 2), wk = worldCv.width / (BG.BIG * 2);
+    g.imageSmoothingEnabled = true; g.drawImage(worldCv, (ox + BG.BIG) * wk, (oz + BG.BIG) * wk, h * 2 * wk, h * 2 * wk, 0, 0, S, S);
+    g.font = '900 ' + Math.round(20 + MV.z * 3) + 'px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = 'rgba(255,247,230,.92)'; g.strokeStyle = 'rgba(90,58,26,.75)'; g.lineWidth = 5;
+    BG.REG.forEach((r) => { if (r.id === 'sun' && MV.z < 2.5) return; const x = (r.x - ox) * sc, y = (r.z - oz) * sc - 40; if (x < -100 || y < -40 || x > S + 100 || y > S + 40) return; const t = (SC.tr ? SC.tr(r.n) : r.n); g.strokeText(t, x, y); g.fillText(t, x, y); });
+    g.save(); drawMarks(g, S, sc, ox, oz, true); g.restore(); }
   document.addEventListener('keydown', (e) => { if (!RP.active || e.code !== 'KeyM' || e.repeat) return; if (SC.input && !SC.input.active && !(bigEl && !bigEl.hidden)) return; e.preventDefault(); e.stopImmediatePropagation(); bigMap(!(bigEl && !bigEl.hidden)); }, true);
   // 血條：只在打怪物的時候出現，名字換成那隻怪物
   function setFoe(e) {
@@ -46072,7 +46102,7 @@ html:not([data-lang^=zh]):not([data-lang=ja]):not([data-lang=ko]) #home .hd .hd-
   const upd0 = mod.update; mod.update = (dt) => { upd0(dt); syncFoe(); };
   RP._mons = mons; RP._boss = () => boss; RP._h = hgt; RP._kill = (i) => { const e = mons[i]; if (e && e.alive) { e.hp = 1; hurtM(e, 5, null, null, true); } }; RP._wake = (q) => wakeBoss(!!q); RP._ctx = () => ctx; RP._elder = () => ELDER; RP._sprite = (on, x, y, z) => { if (!sprite) return; sprite.visible = on; if (x != null) sprite.position.set(x, y, z); spr.free = 3.5; };
   RP._dim = (dark, gold) => { if (!sun) return; sun.intensity = dark ? 0.7 : gold ? 2.8 : 2.3; hemi.intensity = dark ? 0.55 : 1.25; }; RP._killB = () => { if (boss.alive) { boss.hp = 1; boss.mode = 'walk'; hurtB(5); } }; RP._prog = () => prog; RP._calm = (e, on) => { if (!e || e.alive) return; e.g.visible = on; if (on) { e.g.scale.setScalar(1); e.g.rotation.set(0, e.yaw || 0, 0); e.g.position.set(e.pos.x, hgt(e.pos.x, e.pos.z), e.pos.z); } }; // 解放劇情：守護者安靜地站在原地 RP._ghost = (on) => { if (!boss || boss.on) return; boss.g.visible = on; if (on) { boss.g.position.set(BOSSF.x, hgt(BOSSF.x, BOSSF.z - 4) - 7, BOSSF.z - 4); boss.g.rotation.set(0, 0, 0); } }; // 開場劇情：日蝕巨像半埋在地裡的黑影
-  RP._mobs = mobs; RP._orbs = orbs; RP._zones = zones; RP._parts = parts; RP._setLv = (l) => { prog.lv = l; prog.xp = 0; save(prog); hudUpd(true); }; RP._tp = (x, z) => { const p = ctx.player(); p.pos.set(x, hgt(x, z) + 0.5, z); p.vel.set(0, 0, 0); inkAt(x, z, true); BG.update(x, z, true); mobT = 0; }; RP._map = bigMap; RP._crack = (i, w) => crack(mons[i], w);
+  RP._camps = () => CAMPS; RP._mobs = mobs; RP._orbs = orbs; RP._zones = zones; RP._parts = parts; RP._setLv = (l) => { prog.lv = l; prog.xp = 0; save(prog); hudUpd(true); }; RP._tp = (x, z) => { const p = ctx.player(); p.pos.set(x, hgt(x, z) + 0.5, z); p.vel.set(0, 0, 0); inkAt(x, z, true); BG.update(x, z, true); mobT = 0; }; RP._map = bigMap; RP._crack = (i, w) => crack(mons[i], w);
 
   const CSS = `
 body.rpg-on #boss-pips,body.rpg-on #trick-badge{display:none!important}
@@ -46098,7 +46128,10 @@ body.rpg-on .h-clock,body.rpg-on .h-roster,body.rpg-on #lives,body.rpg-on #ko-li
 #rpg-big .rpg-bin{position:relative;width:min(92vw,86vh);aspect-ratio:1;border-radius:22px;border:6px solid #fff7e6;box-shadow:0 6px 0 rgba(27,20,48,.4);overflow:hidden;background:#6f8f62}
 #rpg-big canvas{width:100%;height:100%;display:block;cursor:pointer}
 #rpg-big .rpg-bt{position:absolute;left:14px;top:10px;background:#fff7e6;color:#5a3a1a;font-weight:900;border-radius:12px;padding:3px 12px}
-#rpg-big p{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);margin:0;background:rgba(255,247,230,.92);color:#5a3a1a;font-weight:800;font-size:13px;border-radius:12px;padding:4px 12px;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
+#rpg-big .rpg-lg{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);margin:0;background:rgba(255,247,230,.94);color:#5a3a1a;font-weight:800;font-size:13px;border-radius:12px;padding:4px 12px;white-space:nowrap;max-width:94%;overflow:hidden;text-overflow:ellipsis;display:flex;gap:5px;align-items:center;pointer-events:none}
+#rpg-big .rpg-lg .on{background:#ffd23f;border:2px solid #5a3a1a;border-radius:50%;width:20px;height:20px;display:grid;place-items:center;font-size:11px}#rpg-big .rpg-lg .cur{color:#ff7a2a;font-size:18px;margin-left:6px}#rpg-big .rpg-lg .no{color:#9a9488;margin-left:6px}
+#rpg-big .rpg-zm{position:absolute;right:10px;top:56px;display:flex;flex-direction:column;gap:8px}#rpg-big .rpg-zm button{width:44px;height:44px;border:0;border-radius:50%;background:#fff7e6;color:#5a3a1a;font:900 24px/1 inherit;cursor:pointer;box-shadow:0 3px 0 rgba(27,20,48,.3)}
+#rpg-big canvas{touch-action:none;cursor:grab}
 #rpg-big .rpg-x{position:absolute;right:10px;top:8px;width:40px;height:40px;border:0;border-radius:50%;background:#fff7e6;color:#5a3a1a;font:900 20px/1 inherit;cursor:pointer;box-shadow:0 3px 0 rgba(27,20,48,.3)}
 @media (max-width:700px),(max-height:500px){#rpg-hud .rpg-map{width:110px;height:110px;top:52px;right:8px}#rpg-hud .rpg-cnt{top:168px;right:12px;padding:2px 8px}#rpg-hud .rpg-cnt b{font-size:16px}#rpg-hud .rpg-lv{top:200px;right:8px;width:118px;padding:3px 8px}#rpg-hud .rpg-lv b{font-size:15px}#rpg-hud .rpg-pop{top:236px}#rpg-hud .rpg-reg b{font-size:28px}}
 `;
@@ -47898,6 +47931,20 @@ body.rpg-story #hud,body.rpg-story #rpg-hud,body.rpg-story .touch,body.rpg-story
 (() => {
   window.SC = window.SC || {};
   SC.CHANGELOG = [
+    ["2026-11-26", "", "冒險世界：倒下改回最後記錄的營地重生（走到營火旁邊就會記錄）；大地圖可以放大縮小、拖曳移動，去過的營地是金色營火、重生點有橘色外框、沒去過的是灰色三角形",
+      { en: "Adventure World: you now respawn at the last camp you saved (walk up to a campfire to save it); the big map can zoom and pan, visited camps show as gold campfires, your respawn point has an orange ring, and unvisited camps are gray triangles",
+        ja: "ぼうけんワールド：たおれたら最後に記録したキャンプでふっかつ（たき火に近づくと記録）。大きい地図は拡大・縮小・ドラッグ移動ができ、行ったキャンプは金色のたき火、ふっかつ地点はオレンジのわく、まだのキャンプは灰色の三角",
+        ko: "모험 월드: 쓰러지면 마지막으로 기록한 캠프에서 부활해요(모닥불 가까이 가면 기록). 큰 지도는 확대·축소·드래그가 되고, 가 본 캠프는 금색 모닥불, 부활 지점은 주황 테두리, 안 가 본 캠프는 회색 삼각형이에요",
+        es: "Mundo de aventura: ahora reapareces en el último campamento guardado (acércate a una fogata para guardarlo); el mapa grande permite acercar y mover, los campamentos visitados son fogatas doradas, tu punto de reaparición tiene un aro naranja y los no visitados son triángulos grises",
+        pt: "Mundo de aventura: agora você renasce no último acampamento salvo (chegue perto de uma fogueira para salvar); o mapa grande dá zoom e arrasta, acampamentos visitados são fogueiras douradas, o ponto de renascimento tem um anel laranja e os não visitados são triângulos cinza",
+        fr: "Monde d’aventure : tu réapparais au dernier camp enregistré (approche-toi d’un feu de camp pour l’enregistrer) ; la grande carte se zoome et se déplace, les camps visités sont des feux dorés, ton point de réapparition a un anneau orange et les camps non visités sont des triangles gris",
+        de: "Abenteuerwelt: Du startest jetzt am zuletzt gespeicherten Lager neu (geh zu einem Lagerfeuer, um zu speichern); die große Karte lässt sich zoomen und verschieben, besuchte Lager sind goldene Feuer, dein Wiedereinstiegspunkt hat einen orangen Ring, unbesuchte Lager sind graue Dreiecke",
+        it: "Mondo d’avventura: ora riappari all’ultimo accampamento salvato (avvicinati a un falò per salvarlo); la mappa grande si ingrandisce e si sposta, gli accampamenti visitati sono falò dorati, il punto di rinascita ha un anello arancione e quelli non visitati sono triangoli grigi",
+        ru: "Мир приключений: теперь возрождаешься в последнем сохранённом лагере (подойди к костру, чтобы сохраниться); большую карту можно приближать и двигать, посещённые лагеря — золотые костры, точка возрождения — с оранжевым кольцом, непосещённые — серые треугольники",
+        tr: "Macera Dünyası: artık son kaydettiğin kampta yeniden doğuyorsun (kaydetmek için kamp ateşine yaklaş); büyük harita yakınlaşıp kaydırılabiliyor, gidilen kamplar altın kamp ateşi, yeniden doğma noktan turuncu halkalı, gidilmeyenler gri üçgen",
+        id: "Dunia Petualangan: sekarang bangkit di perkemahan terakhir yang tersimpan (dekati api unggun untuk menyimpan); peta besar bisa diperbesar dan digeser, perkemahan yang dikunjungi berupa api unggun emas, titik bangkit bercincin oranye, dan yang belum dikunjungi segitiga abu-abu",
+        vi: "Thế giới phiêu lưu: giờ hồi sinh ở trại lưu gần nhất (đến gần lửa trại để lưu); bản đồ lớn phóng to và kéo được, trại đã ghé là lửa trại vàng, điểm hồi sinh có vòng cam, trại chưa ghé là tam giác xám",
+        th: "โลกผจญภัย: ตอนนี้เกิดใหม่ที่แคมป์ที่บันทึกล่าสุด (เดินไปใกล้กองไฟเพื่อบันทึก) แผนที่ใหญ่ซูมและลากได้ แคมป์ที่เคยไปเป็นกองไฟสีทอง จุดเกิดใหม่มีวงสีส้ม แคมป์ที่ยังไม่เคยไปเป็นสามเหลี่ยมสีเทา" }],
     ["2026-11-26", "", "沐沐小鎮也能調整按鈕位置：手機、平板在小鎮點 ⚙️ 設定 →「調整按鈕位置」，拖到順手的地方，和對戰用同一份設定",
       { en: "You can move buttons in MooMoo Town too: on phones and tablets tap ⚙️ Settings → Move buttons and drag them where you like; it shares the same layout as battles", ja: "沐沐の町でもボタンの位置を変えられるように：スマホ・タブレットで ⚙️ 設定 →「ボタンの位置を変える」でドラッグ。バトルと同じ設定だよ", ko: "무무 마을에서도 버튼 위치를 바꿀 수 있어요: 휴대폰·태블릿에서 ⚙️ 설정 → '버튼 위치 바꾸기'로 끌어서 옮기세요. 대전과 같은 설정을 써요", es: "También puedes mover los botones en el Pueblo MooMoo: en móvil y tableta toca ⚙️ Ajustes → Mover botones y arrástralos; usa la misma disposición que las batallas", pt: "Agora dá para mover os botões na Vila MooMoo: no celular e tablet toque em ⚙️ Configurações → Mover botões e arraste; usa o mesmo layout das batalhas", fr: "On peut aussi déplacer les boutons au village MooMoo : sur téléphone et tablette, ⚙️ Réglages → Déplacer les boutons, puis glisse-les ; même disposition qu’en combat", de: "Auch im MooMoo-Dorf lassen sich die Tasten verschieben: auf Handy und Tablet ⚙️ Einstellungen → Tasten verschieben und ziehen; gleiche Anordnung wie im Kampf", it: "Ora puoi spostare i pulsanti anche nel villaggio MooMoo: su telefono e tablet tocca ⚙️ Impostazioni → Sposta pulsanti e trascinali; stessa disposizione delle battaglie", ru: "Кнопки теперь можно двигать и в городке MooMoo: на телефоне и планшете ⚙️ Настройки → «Переместить кнопки» и перетащите; раскладка общая с боями", tr: "MooMoo Kasabası'nda da düğmeleri taşıyabilirsin: telefon ve tablette ⚙️ Ayarlar → Düğmeleri taşı ile sürükle; savaşlarla aynı düzen kullanılır", id: "Tombol kini bisa dipindah juga di Kota MooMoo: di ponsel dan tablet ketuk ⚙️ Pengaturan → Pindahkan tombol lalu seret; tata letaknya sama dengan pertarungan", vi: "Giờ có thể di chuyển nút ở Thị trấn MooMoo: trên điện thoại và máy tính bảng chạm ⚙️ Cài đặt → Di chuyển nút rồi kéo; dùng chung bố cục với trận đấu", th: "ย้ายปุ่มในเมืองมูมูได้แล้ว: บนมือถือและแท็บเล็ตแตะ ⚙️ ตั้งค่า → ย้ายปุ่ม แล้วลากไปวาง ใช้การจัดวางเดียวกับการต่อสู้" }],
     ["2026-11-26", "", "冒險世界的怪物王換成奇幻世界的怪物，符合太陽谷的故事：熔岩跳跳蛙、飄飄水母仙、鹿角衝衝兔、狐狸聖騎士、苔石魔像、旋風橡果精、咚咚樹鼓精、冰原企鵝戰士、翠鱗小龍、菇菇山怪；招式和破解方法不變",
