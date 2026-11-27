@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="彩貓大戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v373';</script><script>window.SC_BUILD='57fcff20586b';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>彩貓大戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="彩貓大戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v374';</script><script>window.SC_BUILD='e6ea675734cd';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>彩貓大戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -45647,8 +45647,8 @@ paypalOnly: true,
 donateUrl: 'https://p.ecpay.com.tw/FDC2624',
 paypal: 'https://www.paypal.com/ncp/payment/KLQB22CD7ZXL4',
 donateNote: '遊戲免費遊玩，贊助用於支持開發與營運。贊助屬數位服務，不寄送實體商品，也不影響遊戲內容。',
-village: ['（已移除）'],
-devs: { kiKG0MkGFcaYDZEMZfE9wECarJF3: '系統開發者1', IGDg6FRQ82az0OATspLrzcpwksC2: '系統開發者2' },
+village: ['b5e57e47588fbe3c24125f13368bccc1f6cde5193cf62a5f12f81e99fe8a5eb5'],
+devs: { '3c3fbaa1813ea9b2b07d891540bd183f04b90d301c25bd3aad3c1913818b5c5c': '系統開發者1', '350a00e87170487b64523078dbea0deb0552e88b0a7b855fd6d99d9aa333cd2c': '系統開發者2' },
 contact: 'pompiyen@gmail.com',
 xsolla: null,
 };
@@ -46184,12 +46184,26 @@ const avatar = (u) => (u && u.photo ? `<img alt="" src="${esc(u.photo)}" referre
 const I_FR = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3.6" fill="currentColor"/><circle cx="16.5" cy="9" r="3" fill="currentColor"/><path d="M1.5 20c.6-4 3.4-6.2 7-6.2s6.4 2.2 7 6.2z" fill="currentColor"/><path d="M16.2 13.6c3.3 0 5.7 2 6.3 5.6h-5.4c-.3-2.2-1.2-4-2.6-5.3.5-.2 1.1-.3 1.7-.3z" fill="currentColor"/></svg>';
 const CHEER_MAX = 120, lang = () => (SC.i18n && SC.i18n.lang) || 'zh';
 const cheer = { text: '', busy: false, msg: '', ok: false, more: false, give: false, inbox: null, inboxErr: '', sentAt: 0, seenAt: 0, kind: '', filter: 'all' };
-const devName = () => (account.user && CONFIG.devs && CONFIG.devs[account.user.uid]) || '';
-const devRb = () => { const k = Object.keys(CONFIG.devs || {}), i = account.user ? k.indexOf(account.user.uid) : -1; return i < 0 ? '' : 'dev' + (i + 1); };
+const keys = { uid: null, code: null, dev: '', vil: '', v: 0 };
+const hex = (buf) => Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, '0')).join('');
+const keyOf = {
+dev: async (uid) => hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('sc-dev:' + uid))),
+vil: async (code) => { const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(String(code).toUpperCase()), 'PBKDF2', false, ['deriveBits']); return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new TextEncoder().encode('sc-village'), iterations: 120000 }, k, 256)); },
+};
+const keysNow = () => {
+const uid = account.user ? account.user.uid : null, code = account.user ? fr.code || null : null;
+if (!(crypto && crypto.subtle)) return keys;
+if (uid !== keys.uid) { keys.uid = uid; keys.dev = ''; if (uid) keyOf.dev(uid).then((h) => { if (keys.uid === uid) { keys.dev = h; keys.v++; } }).catch(() => {}); }
+if (code !== keys.code) { keys.code = code; keys.vil = ''; if (code) keyOf.vil(code).then((h) => { if (keys.code === code) { keys.vil = h; keys.v++; } }).catch(() => {}); }
+return keys;
+};
+account.myKeys = async () => (account.user ? { dev: await keyOf.dev(account.user.uid), village: fr.code ? await keyOf.vil(fr.code) : '' } : null);
+const devName = () => { const k = keysNow().dev; return (k && CONFIG.devs && CONFIG.devs[k]) || ''; };
+const devRb = () => { const d = keysNow().dev, i = d ? Object.keys(CONFIG.devs || {}).indexOf(d) : -1; return i < 0 ? '' : 'dev' + (i + 1); };
 const repBy = (c) => { if (!c.rb || c.rb === 'admin') return '💬 作者回覆'; const v = Object.values(CONFIG.devs || {}), i = /^dev(\d+)$/.test(c.rb) ? +c.rb.slice(3) - 1 : 0; return '💬 ' + (v[i] || v[0] || '系統開發者') + ' 回覆'; };
 const KTAG = (c) => (c.k === 'bug' ? '🐞 Debug' : PAYTAG[c.pay] || PAYTAG['']);
 const isAdmin = () => !!(account.user && CONFIG.contact && account.user.email && account.user.email.toLowerCase() === CONFIG.contact.toLowerCase());
-account.isDev = () => isAdmin() || !!devName() || !!(account.user && fr.code && (CONFIG.village || []).includes(fr.code));
+account.isDev = () => isAdmin() || !!devName() || !!(account.user && (() => { const v = keysNow().vil; return !!v && (CONFIG.village || []).includes(v); })());
 const pl = { rows: null, rooms: null, up: 0, err: '', at: 0, tab: 'list', days: 7, ev: null, evErr: '', sel: '' };
 const MODE_N = { net: '連線', versus: '單機', boss: '貓咪歷險', sandbox: '練習', walk: '散步' };
 const RULE_N = { turf: '塗地戰', knockout: '擊倒戰', zombie: '殭屍戰', mix: '積分賽', conquest: '佔領戰', tsunami: '殭屍海嘯', ranked: '積分賽' };
