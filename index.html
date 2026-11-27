@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v362';</script><script>window.SC_BUILD='225dbbbdaa75';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v363';</script><script>window.SC_BUILD='c50b66052aae';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -37758,7 +37758,8 @@ BRIDGES.forEach((b) => { const br = new THREE.Group(); br.position.set(b.x, 0, b
 for (let i = 0; i < n; i++) { const u = (i + 0.5) / n - 0.5, y = 0.5 + Math.cos(u * Math.PI) * 0.45 - 0.16, pl = mesh(new THREE.BoxGeometry(b.w, 0.3, L / n - 0.1), i % 2 ? wd : wd2, 0, y, u * L, br); pl.rotation.x = Math.atan((Math.sin(u * Math.PI) * 0.45 * Math.PI) / L); }
 [-1, 1].forEach((sd) => { for (let i = 0; i < 6; i++) { const u = i / 5 - 0.5; mesh(new THREE.CylinderGeometry(0.15, 0.15, 1.3, 6), dk, (sd * b.w) / 2, 0.5 + Math.cos(u * Math.PI) * 0.45 + 0.55, u * L * 0.94, br); }
 const pts = []; for (let i = 0; i <= 10; i++) { const u = i / 10 - 0.5; pts.push(new V3((sd * b.w) / 2, 0.5 + Math.cos(u * Math.PI) * 0.45 + 1.15, u * L * 0.94)); } mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 12, 0.11, 5), dk, 0, 0, 0, br); }); });
-const fo = new THREE.Group(); root.add(fo); fo.rotation.y = 0; fo.scale.setScalar(3);
+function statue(parent, still) {
+const fo = new THREE.Group(); parent.add(fo); fo.rotation.y = 0; fo.scale.setScalar(3);
 { const AT = SC.townArt, sg = low ? 12 : 24, stone = mat(0xe6dcf0, { map: AT.tx('stone', 10, 0.35), rough: 0.85 }), stone2 = mat(0xd2c6e0, { map: AT.tx('stone', 8, 0.35), rough: 0.85 }), marble = mat(0xfffaf2, { map: AT.tx('plaster', 2, 2), rough: 0.38 }), cream = mat(0xffe9cf, { rough: 0.4 }), pink = mat(0xffa3c2, { rough: 0.4 }), gold = mat(0xffcf3a, { rough: 0.28, metalness: 0.35, emissive: 0x5a3a00, emissiveIntensity: 0.25 }), dark = mat(0x3a3350, { rough: 0.5 });
 mesh(new THREE.CylinderGeometry(4.4, 4.6, 0.7, 8), stone2, 0, 0.35, 0, fo).rotation.y = Math.PI / 8;
 mesh(new THREE.CylinderGeometry(3.95, 4.15, 0.7, 8), stone, 0, 1.05, 0, fo).rotation.y = Math.PI / 8;
@@ -37783,11 +37784,13 @@ const mo = mesh(new THREE.TorusGeometry(0.2, 0.05, 6, 12, Math.PI), dark, 0, -0.
 { const cl = mesh(new THREE.TorusGeometry(1.45, 0.2, 8, sg), gold, 0, 4.55, 0.25, cat); cl.rotation.x = Math.PI / 2 - 0.15; S(0.38, gold, 0, 4.2, 1.7); }
 const tailG = new THREE.Group(); cat.add(tailG); { const pts = []; for (let k = 0; k <= 14; k++) { const u = k / 14, a = -Math.PI / 2 - 0.3 + u * Math.PI * 1.35; pts.push(new V3(Math.cos(a) * (2.6 + u * 0.3), 0.35 + u * u * 1.6, Math.sin(a) * 2.6 - 0.3)); } const tl = mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), low ? 16 : 32, 0.42, low ? 6 : 10), marble, 0, 0, 0, tailG); void tl; S(0.45, marble, pts[14].x, pts[14].y, pts[14].z).removeFromParent(); mesh(new THREE.SphereGeometry(0.45, low ? 10 : 16, low ? 8 : 12), marble, pts[14].x, pts[14].y, pts[14].z, tailG); }
 const halo = new THREE.Group(); halo.position.set(0, 7.0, -0.9); cat.add(halo); { const hr = mesh(new THREE.TorusGeometry(2.6, 0.18, 8, low ? 24 : 48), gold, 0, 0, 0, halo); void hr; for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2, sp = mesh(new THREE.ConeGeometry(0.22, 0.8, 4), gold, Math.cos(a) * 3.05, Math.sin(a) * 3.05, 0, halo); sp.rotation.z = a - Math.PI / 2; } }
-anim.push((tt) => { halo.rotation.z = tt * 0.25; });
+if (!still) anim.push((tt) => { halo.rotation.z = tt * 0.25; });
 const spk = []; for (let k = 0; k < 6; k++) spk.push(mesh(new THREE.OctahedronGeometry(0.32), glow(INK[k]), 0, 0, 0, fo));
-anim.push((tt) => spk.forEach((o, k) => { const a = tt * 0.6 + (k * Math.PI) / 3; o.position.set(Math.cos(a) * 5.2, 9 + Math.sin(tt * 1.3 + k) * 1.2, Math.sin(a) * 5.2); o.rotation.y = tt * 2; }));
-statueShow(fo, { cat, head, ar, br, halo, tailG, spk });
+const spkAt = (tt) => spk.forEach((o, k) => { const a = tt * 0.6 + (k * Math.PI) / 3; o.position.set(Math.cos(a) * 5.2, 9 + Math.sin(tt * 1.3 + k) * 1.2, Math.sin(a) * 5.2); o.rotation.y = tt * 2; });
+if (still) { spkAt(0); const sk = new Set(spk); [fo, cat, head, ar, br, halo, tailG].forEach((g) => statueLocalMerge(g, sk)); } else { anim.push(spkAt); statueShow(fo, { cat, head, ar, br, halo, tailG, spk }); }
 if (!low) for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2 + Math.PI / 8, x = Math.cos(a) * 4.25, z = Math.sin(a) * 4.25; mesh(new THREE.SphereGeometry(0.3, 8, 6), mat(INK[k % 6]), x, 0.95, z, fo); mesh(new THREE.SphereGeometry(0.4, 8, 6), mat(0x63c94f), x, 0.8, z, fo); } }
+return fo; }
+const fo = statue(root, false); T._statue = (parent) => statue(parent, true);
 { const fm = mat(0xfff3d6), post = (x, z, h) => mesh(new THREE.BoxGeometry(0.22, 1.1, 0.22), fm, x, h + 0.55, z, root), rail = (x, z, h, L, rx) => { mesh(new THREE.BoxGeometry(rx ? 0.16 : L, 0.16, rx ? L : 0.16), fm, x, h + 0.9, z, root); };
 for (let x = -99; x <= 99; x += 3) { if (Math.abs(x) < 10) continue; const z = -66.8, h = H(x, z); if (h < TOP.up - 0.3 || SE(x, z) > 101) continue; post(x, z, h); if (x + 3 <= 99 && Math.abs(x + 3) >= 10 && SE(x + 3, z) <= 101) rail(x + 1.5, z, h, 3); }
 for (let x = -19; x <= 19; x += 3) { if (Math.abs(x) < 9) continue; const z = -84.1, h = H(x, z); if (h < TOP.hill - 0.3) continue; post(x, z, h); if (x + 3 <= 19 && Math.abs(x + 3) >= 9) rail(x + 1.5, z, h, 3); }
@@ -38843,7 +38846,7 @@ if (back) { const bd = spawnOut(back); pos.set(back.door.x + back.dx * bd, 0, ba
 path = null; pathSpot = null; vel.set(0, 0, 0); vy = 0; onGround = true; last.copy(pos); arReset = true;
 const In = SC.input; In.release(); In.cancelActions(); In.consume(); In.active = true; hud.querySelector('.tw-hint').textContent = touchHint(); hintT = 0;
 if (SC.devtip && SC.devtip.defer) SC.devtip.defer();
-if (SC.farm && SC.farm.welcome) { const g = SC.farm.welcome(); if (g) say('🎁 ' + tr('歡迎來到小鎮！送你 🪙 {n} 代幣，可以去服飾店買衣服').replace('{n}', g)); }
+if (SC.farm && SC.farm.welcome && !(SC.plaza && (SC.plaza.sticky || !SC.plaza.isDev()))) { const g = SC.farm.welcome(); if (g) say('🎁 ' + tr('歡迎來到小鎮！送你 🪙 {n} 代幣，可以去服飾店買衣服').replace('{n}', g)); }
 };
 T.hide = () => { ipOff(); clEnd('', null, true); if (CL.ov) CL.ov.hidden = true; if (SC.fish && SC.fish.on && SC.fish.on()) SC.fish.stop(); if (SC.input) SC.input.scope = false; zoom = 1; scopeEl(0); T.on = false; autoFreed = false; inkSave(true); shots.length = 0; if (ARN.q) ARN.q.forEach((l) => (l.length = 0)); if (SC.fx && SC.fx.root && SC.fx.home) { SC.fx.drawBlobs([]); SC.fx.home.add(SC.fx.root); } if (picker) picker.hidden = true; if (setEl) setEl.hidden = true; document.getElementById('app').classList.remove('in-town'); if (hud) { hud.hidden = true; prompt.hidden = true; } const In = SC.input; if (In) { In.release(); In.active = false; } if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); };
 T.frame = (dt) => {
@@ -39979,13 +39982,13 @@ root = new THREE.Group(); scene.add(root);
 { const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#4a4b5c'; x.fillRect(0, 0, 256, 256); for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) { const v = 70 + ((i * 7 + j * 13) % 5) * 4; x.fillStyle = `rgb(${v},${v + 1},${v + 14})`; x.fillRect(i * 64 + 2, j * 64 + 2, 60, 60); } const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.repeat.set(32, 32); tx.anisotropy = 4;
 const g = new THREE.Mesh(new THREE.PlaneGeometry(520, 520), new THREE.MeshLambertMaterial({ map: tx })); g.rotation.x = -Math.PI / 2; g.receiveShadow = !low; root.add(g); }
 const ring = (r, w, c, op) => { const m = new THREE.Mesh(new THREE.RingGeometry(r - w / 2, r + w / 2, 96), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: op || 0.9 })); m.rotation.x = -Math.PI / 2; m.position.y = 0.04; root.add(m); return m; };
-ring(12, 0.35, 0xa56bff); ring(30, 0.25, 0x2fd0ff, 0.7); ring(R0 - 1.5, 0.5, 0xff3d9a, 0.8);
+ring(16.5, 0.35, 0xa56bff); ring(30, 0.25, 0x2fd0ff, 0.7); ring(R0 - 1.5, 0.5, 0xff3d9a, 0.8);
 DOORS.forEach((D) => { const [x, z] = U(D.a, (R0 + 12) / 2), L = R0 - 14, st = new THREE.Mesh(new THREE.PlaneGeometry(0.5, L), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.55 })); st.rotation.x = -Math.PI / 2; st.rotation.z = (D.a * Math.PI) / 180 + Math.PI / 2; st.position.set(x, 0.05, z); root.add(st); });
 { const n = 72, gm = new THREE.MeshLambertMaterial({ color: 0x9fdcff, transparent: true, opacity: 0.28 }), lm = glow(0x8fe2ff); for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2, deg = (-a * 180) / Math.PI; if (DOORS.some((D) => Math.abs((((deg - D.a) % 360) + 540) % 360 - 180) < 5)) continue; const x = Math.cos(a) * (R0 + 1), z = Math.sin(a) * (R0 + 1), ry = -a + Math.PI / 2; const w = mesh(new THREE.BoxGeometry(7.4, 1.6, 0.25), gm, x, 0.8, z); w.rotation.y = ry; w.castShadow = false; const l = mesh(new THREE.BoxGeometry(7.4, 0.12, 0.3), lm, x, 1.66, z); l.rotation.y = ry; } }
 { const box = new THREE.BoxGeometry(1, 1, 1); for (let i = 0; i < 40; i++) { const a = (i / 40) * Math.PI * 2 + 0.05, r = 130 + (i % 4) * 22, x = Math.cos(a) * r, z = Math.sin(a) * r, w = 16 + (i % 5) * 4, h = 30 + ((i * 37) % 70), tx = winTex(i + 1); tx.repeat.set(Math.max(1, Math.round(w / 10)), Math.max(1, Math.round(h / 20))); const b = new THREE.Mesh(box, new THREE.MeshBasicMaterial({ map: tx, color: 0xbfbfd8 })); b.scale.set(w, h, w); b.position.set(x, h / 2, z); b.rotation.y = -a; root.add(b); }
 [['SPALACAT', 0xff3d9a, 200], ['貓咪大漆戰', 0x2fd0ff, 290], ['⚡ ' + tr('積分賽'), 0xffd23f, 20], ['🎨 ' + tr('塗地戰'), 0x7cf05a, 110]].forEach(([t, c, deg]) => { const [x, z] = U(deg, 112), s = sign(t, c, 36, 9, true); s.position.set(x, 30, z); s.lookAt(0, 30, 0); root.add(s); const p = mesh(new THREE.BoxGeometry(1.2, 26, 1.2), mat(0x2a2a3a), x, 13, z); void p; }); }
 { const bm = mat(0x2c2c3a), wm = mat(0xc98c55), pm = mat(0x3a3a4a), tm = mat(0x58c070), lm = glow(0xfff1d0); const BN = [], PL = [];
-for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2 + 0.31, [x, z] = [Math.cos(a) * 22, Math.sin(a) * 22]; BN.push([x, z, -a]); }
+for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2 + 0.628, [x, z] = [Math.cos(a) * 24, Math.sin(a) * 24]; BN.push([x, z, -a]); }
 for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + 0.15, [x, z] = [Math.cos(a) * 52, Math.sin(a) * 52]; PL.push([x, z]); }
 BN.forEach(([x, z, ry]) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g); mesh(new THREE.BoxGeometry(1.4, 0.25, 4.6), wm, 0, 1, 0, g); mesh(new THREE.BoxGeometry(1.2, 0.95, 0.3), bm, 0, 0.47, -1.9, g); mesh(new THREE.BoxGeometry(1.2, 0.95, 0.3), bm, 0, 0.47, 1.9, g); solids.push({ x, z, r: 1.6 }); });
 PL.forEach(([x, z], i) => { mesh(new THREE.BoxGeometry(4.6, 1, 4.6), pm, x, 0.5, z); mesh(new THREE.SphereGeometry(2.1 + (i % 2) * 0.4, 12, 8), tm, x, 3.6 + (i % 2) * 0.3, z); mesh(new THREE.CylinderGeometry(0.22, 0.28, 2, 6), mat(0x6b4a2a), x, 1.8, z); solids.push({ x, z, r: 3 }); });
@@ -40003,20 +40006,12 @@ anim.push((t) => { inner.material.opacity = (D.busy ? 0.55 : 0.3) + 0.08 * Math.
 D.spot = spot({ k: D.k, n: D.n, s: '', i: D.i, x, z, y: 19, dx: px, dz: pz, btn: '' }); });
 buildHud();
 }
-const GEMS = [0xff4040, 0xff8a2a, 0xffd23f, 0x5fd05a, 0x2f9cff, 0x5a4ae0];
 function buildStatue() {
-const g = new THREE.Group(); root.add(g); const st = 0xf4f2f6, base = mat(0x1c1b2c, { rough: 0.25 });
-mesh(new THREE.CylinderGeometry(6.4, 6.8, 1, 6), base, 0, 0.5, 0, g); mesh(new THREE.CylinderGeometry(4.6, 5, 3.4, 6), base, 0, 2.7, 0, g); mesh(new THREE.TorusGeometry(5, 0.12, 6, 48), glow(0xa56bff), 0, 4.45, 0, g).rotation.x = Math.PI / 2;
-const cat = new THREE.Group(); cat.position.y = 4.4; g.add(cat); const sm = mat(st, { rough: 0.3 });
-mesh(new THREE.SphereGeometry(2.6, 20, 16), sm, 0, 2.4, 0, cat).scale.set(1, 1.15, 0.9);
-mesh(new THREE.SphereGeometry(2, 20, 16), sm, 0, 5.6, 0.3, cat);
-[-1, 1].forEach((s) => { const e = mesh(new THREE.ConeGeometry(0.75, 1.6, 4), sm, s * 1.15, 7.4, 0.2, cat); e.rotation.z = -s * 0.3; mesh(new THREE.SphereGeometry(0.75, 10, 8), sm, s * 1.2, 0.7, 1.6, cat).scale.set(1, 0.6, 1.3); mesh(new THREE.SphereGeometry(0.28, 8, 6), glow(0x2fd0ff), s * 0.7, 5.8, 2.1, cat); });
-{ const tail = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.45, 8, 20, Math.PI * 1.2), sm); tail.position.set(0, 1, -1.6); tail.rotation.set(Math.PI / 2, 0, 0.4); cat.add(tail); const tip = mesh(new THREE.ConeGeometry(0.55, 1.4, 8), glow(0xa56bff), -2.1, 1, -2.3, cat); tip.rotation.z = 1.2; }
-for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2 + Math.PI / 2, x = Math.cos(a) * 4.7, z = Math.sin(a) * 4.7; mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.4, 12), mat(0x0e0d18), x, 2.9, z, g).rotation.set(Math.PI / 2, 0, -a + Math.PI / 2);
-if (i < 6) { const gem = mesh(new THREE.OctahedronGeometry(0.55, 0), glow(GEMS[i]), x * 1.05, 2.9, z * 1.05, g); anim.push((t) => { gem.rotation.y = t * 0.8 + i; gem.scale.setScalar(1 + 0.08 * Math.sin(t * 1.6 + i)); }); } }
-solids.push({ x: 0, z: 0, r: 7 });
-const pl = new THREE.Group(); pl.position.set(0, 0, 10); root.add(pl); mesh(new THREE.BoxGeometry(2.6, 2.6, 0.6), base, 0, 1.3, 0, pl); const sg = sign('📜 ' + tr('翻彩的傳說'), 0xa56bff, 2.3, 0.6, true); sg.position.set(0, 1.9, 0.31); pl.add(sg); solids.push({ x: 0, z: 10, r: 1.6 });
-spot({ k: 'lore', n: '貓神像的石碑', s: '翻彩的傳說', i: '📜', x: 0, z: 10, y: 4.2, dx: 0, dz: 13, btn: '看看' });
+const base = mat(0x1c1b2c, { rough: 0.25 });
+if (T._statue) T._statue(root);
+solids.push({ x: 0, z: 0, r: 14.2 });
+const pl = new THREE.Group(); pl.position.set(0, 0, 17.5); root.add(pl); mesh(new THREE.BoxGeometry(2.6, 2.6, 0.6), base, 0, 1.3, 0, pl); const sg = sign('📜 ' + tr('翻彩的傳說'), 0xa56bff, 2.3, 0.6, true); sg.position.set(0, 1.9, 0.31); pl.add(sg); solids.push({ x: 0, z: 17.5, r: 1.6 });
+spot({ k: 'lore', n: '貓神像的石碑', s: '翻彩的傳說', i: '📜', x: 0, z: 17.5, y: 4.2, dx: 0, dz: 20.5, btn: '看看' });
 }
 let hud = null, bubBox = null, barEl = null, chatEl = null, emoEl = null, loreEl = null, infoEl = null, menuEl = null;
 const EMO = [['push', '🫸', '推一下'], ['wave', '👋', '揮手'], ['heart', '🫶', '比愛心'], ['five', '🙌', '擊掌'], ['gift', '🍙', '送飯糰']];
@@ -40233,7 +40228,7 @@ leave: () => { P.on = false; if (hud) hud.hidden = true; closeChat(); if (loreEl
 let offTimer = 0;
 P.zone = zone;
 P.open = () => { P.sticky = true; if (!T.on) { T.show(); return; } enter(); };
-function enter() { if (!built) build(); if (T.zone() === zone) return; let at = { x: 0, z: 22, face: Math.PI }; if (P.last && Math.hypot(P.last.x, P.last.z) < R0) { const L = Math.hypot(P.last.x, P.last.z) || 1, k = Math.max(0, L - 3.5) / L; at = { x: P.last.x * k, z: P.last.z * k, face: Math.atan2(-P.last.x, -P.last.z) }; } P.last = null; T.setZone(zone, at); }
+function enter() { if (!built) build(); if (T.zone() === zone) return; let at = { x: 0, z: 26, face: Math.PI }; if (P.last && Math.hypot(P.last.x, P.last.z) < R0) { const L = Math.hypot(P.last.x, P.last.z) || 1, k = Math.max(0, L - 3.5) / L; at = { x: P.last.x * k, z: P.last.z * k, face: Math.atan2(-P.last.x, -P.last.z) }; } P.last = null; T.setZone(zone, at); }
 let riceSaid = false;
 { const real = T.show; T.show = (...a) => { real(...a); if (!T.on) return; if (P.sticky || !P.isDev()) enter(); else if (!riceSaid) { riceSaid = true; say(tr('🍙 飯糰貓村：漆貓最愛吃鮭魚飯糰，所以這個村子就叫飯糰貓村！')); } }; }
 window.addEventListener('keydown', (e) => {
