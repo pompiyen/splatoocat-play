@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v354';</script><script>window.SC_BUILD='aff3e9e774c9';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v355';</script><script>window.SC_BUILD='75b0540ba3c7';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1394,8 +1394,7 @@ body.tut-skill #zq-btn::after, body.tut-sp #sp-btn::after { content: '☝'; posi
 .tw-pt { white-space: nowrap; }
 .tw-tools { align-items: center; } .tw-tools .rkd-badge { position: static; pointer-events: auto; cursor: pointer; }
 .tw-rkw:empty { display: none; }
-/* 第 213 版（Yen 12:58）：選貓咪只在沐沐小鎮的「我的家」，選單裡不再出現 */
-#m-title #kind-opt { display: none !important; }
+/* 第 213 版（Yen 12:58）選貓咪曾經只在沐沐小鎮的「我的家」；2026-11-27 Yen「連線與單機也可直接選角色」：出戰準備的「我的裝備」又可以直接選貓咪（樣式在檔案最後） */
 .tw-prow { grid-template-columns: repeat(2, 1fr) !important; }
 .tw-prow .pick b, .tw-prow .pick small { white-space: nowrap; }
 .tw-pgo { white-space: nowrap; }
@@ -1780,6 +1779,19 @@ html[data-lang^=zh] .chat-stk .emo-b small { white-space: nowrap; letter-spacing
 /* 試玩報告 v317 T5：手機直式小鎮右上角 6 顆圖示照螢幕寬度縮小，⚙️ 不會被擠出畫面 */
 html .portrait .town .tw-tools .tw-ic { width: clamp(32px, calc((100vw - 140px) / 6 - 5px), 40px); height: clamp(32px, calc((100vw - 140px) / 6 - 5px), 40px); font-size: clamp(15px, calc((100vw - 140px) / 13), 19px); }
 html .portrait .town .tw-name { margin-right: -36px; } /* 名牌縮成 0.72 倍後右邊空出來的位置還給圖示 */
+
+/* 2026-11-27 Yen「連線與單機也可直接選角色」：單機對戰、連線對戰、積分賽的「我的裝備」最上面直接選貓咪。
+   六隻排成一排（窄的時候 3×2），只放臉和名字，說明收起來；點了照舊會喵一聲、跳出 3D 預覽 */
+#m-title.sx #kind-opt #pick-kind { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+#m-title.sx #kind-opt #pick-kind .cat-pick { padding: 6px 2px 7px; row-gap: 2px; min-width: 0; }
+#m-title.sx #kind-opt #pick-kind .cat-pick svg { width: 44px; height: 44px; }
+#m-title.sx #kind-opt #pick-kind .cat-pick small { display: none; }
+#m-title.sx #kind-opt #pick-kind .cat-pick b { font-size: min(16px, 2.9cqi); }
+@container (max-width: 380px) { #m-title.sx #kind-opt #pick-kind .cat-pick b { font-size: 13px; } }
+@media (max-width: 760px), (orientation: portrait) { #m-title.sx #kind-opt #pick-kind { grid-template-columns: repeat(3, minmax(0, 1fr)); } #m-title.sx #kind-opt #pick-kind .cat-pick b { font-size: 14px; } }
+@media (max-height: 520px) { #m-title.sx #kind-opt #pick-kind .cat-pick svg { width: 34px; height: 34px; } }
+/* 單機對戰等出戰準備頁：「我的裝備」在右邊，寬螢幕的 3D 預覽改放左邊，才不會蓋住正在選的貓咪 */
+#ui:has(#m-title.sx.step-setup:not(.lb)) .cat-view.wide { right: auto; left: max(3vw, 24px); }
 
 </style>
 <div id="app">
@@ -35914,7 +35926,7 @@ if (n.ranked) { $('rk-go-msg').textContent = $('net-msg2').textContent; const cd
 };
 const modeSync = () => { SC.net.ink = sel.ink;
 { const pr = SC.inkPair(sel.ink) || SC.PALETTES[0], t = $('m-title'), hx = (c) => '#' + c.hex.toString(16).padStart(6, '0'); t.style.setProperty('--ca', hx(pr.a)); t.style.setProperty('--cb', hx(pr.b)); t.style.setProperty('--cc', hx(pr.c || SC.thirdInk(pr))); }
-{ const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = sel.mode === 'net'; $('wpn-opt').hidden = modeKey() === 'ranked'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '開始教學' : sel.mode === 'boss' ? '挑戰怪物' : '開戰！';
+{ const rkh = $('rk-opt'), on = modeKey() === 'ranked', was = !rkh.hidden; rkh.hidden = !on; if (on && SC.ranked) SC.ranked.open(was ? undefined : 'rank'); else rkh.innerHTML = ''; } $('versus-opts').hidden = sel.mode !== 'versus'; $('kind-opt').hidden = false;   $('wpn-opt').hidden = modeKey() === 'ranked'; $('stage-opt').hidden = sel.mode !== 'boss'; $('lede').textContent = LEDE[modeKey()](); ui.modeSyncPicks && ui.modeSyncPicks(); $('btn-start').textContent = sel.mode === 'sandbox' ? '開始教學' : sel.mode === 'boss' ? '挑戰怪物' : '開戰！';
 SC.net.profile({ n: myNick(), k: sel.kind, w: sel.weapon, u: (SC.account && SC.account.user && SC.account.user.uid) || '' }); netSync();
 };
 const worldOf = (st) => Math.ceil((+st || 1) / 5);
@@ -35938,7 +35950,7 @@ const g = $(groupId), sync = () => g.querySelectorAll('.pick').forEach((b) => b.
 g.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return;
 if (key === 'mode') { const rk = b.dataset.v === 'ranked';
 if (sel.mode === 'net' && !!sel.rk !== rk && SC.net.code) SC.net.leave(); sel.rk = rk; sel[key] = rk ? 'net' : b.dataset.v; }
-else sel[key] = b.dataset.v; sync(); modeSync(); click(); if (key === 'mode') ui.menuStep('setup'); if (key === 'kind') { SC.audio.sfx.meow(b.dataset.v); b.classList.remove('meow'); void b.offsetWidth; b.classList.add('meow'); if (SC.catView) SC.catView.show(b.dataset.v); } }); sync();
+else sel[key] = b.dataset.v; sync(); modeSync(); click(); if (key === 'mode') ui.menuStep('setup'); if (key === 'kind') { SC.audio.sfx.meow(b.dataset.v); b.classList.remove('meow'); void b.offsetWidth; b.classList.add('meow'); const hero = document.querySelector('#m-title .lb-hero'); if (SC.catView && !(hero && hero.offsetParent)) SC.catView.show(b.dataset.v); } }); sync();
 };
 const click = () => { SC.audio.init(); SC.audio.sfx.ui(); };
 ui.selNow = () => sel;
@@ -45723,6 +45735,8 @@ if (useFb) load().catch(() => { fbp = null; });
 (() => {
 window.SC = window.SC || {};
 SC.CHANGELOG = [
+["2026-11-27", "", "單機對戰、連線對戰、積分賽可以直接選貓咪：在「我的裝備」最上面點一隻就換，下面的裝備條也看得到現在的貓咪",
+{ en: "Pick your cat right in Solo Battle, Online Battle and Ranked: tap one at the top of My gear. The gear bar shows your current cat too", ja: "ひとりで対戦・オンライン対戦・ランク戦で、そのままネコをえらべるようになったよ。「そうび」のいちばん上でタップしてね。下のそうびバーにも今のネコが出るよ", ko: "싱글 대전, 온라인 대전, 랭크전에서 바로 고양이를 고를 수 있어요. ‘내 장비’ 맨 위에서 눌러요. 아래 장비 바에도 지금 고양이가 보여요", es: "Elige tu gato directamente en Batalla en solitario, en línea y clasificatoria: tócalo arriba en Mi equipo. La barra de equipo también muestra tu gato", pt: "Escolha seu gato direto na Batalha solo, online e ranqueada: toque nele no topo de Meu equipamento. A barra de equipamento também mostra seu gato", fr: "Choisis ton chat directement en Combat solo, en ligne et classé : touche-le en haut de Mon équipement. La barre d'équipement montre aussi ton chat", de: "Wähle deine Katze direkt im Solo-Kampf, Online-Kampf und Ranglistenspiel: oben in Meine Ausrüstung antippen. Die Ausrüstungsleiste zeigt auch deine Katze", it: "Scegli il tuo gatto direttamente in Battaglia in solitaria, online e classificata: toccalo in cima a Il mio equipaggiamento. Anche la barra mostra il tuo gatto", ru: "Кота теперь можно выбрать прямо в одиночном, сетевом и рейтинговом бою: нажми на него вверху «Моего снаряжения». Панель снаряжения тоже показывает кота", tr: "Kediyi artık Tek kişilik, Çevrim içi ve Dereceli savaşta doğrudan seçebilirsin: Ekipmanım'ın en üstünden dokun. Ekipman çubuğu da kedini gösterir", id: "Pilih kucing langsung di Tanding solo, online, dan peringkat: ketuk di bagian atas Perlengkapanku. Bilah perlengkapan juga menampilkan kucingmu", vi: "Chọn mèo ngay trong Đấu đơn, Đấu online và Đấu xếp hạng: chạm vào ở đầu mục Trang bị của tôi. Thanh trang bị cũng hiện mèo của bạn", th: "เลือกแมวได้ทันทีในโหมดสู้คนเดียว ออนไลน์ และจัดอันดับ แตะที่ด้านบนของอุปกรณ์ของฉัน แถบอุปกรณ์ก็แสดงแมวของคุณด้วย" }],
 ["2026-11-27", "", "愛心面板重新開放贊助，目前只能用 PayPal 贊助",
 { en: "Sponsorship is open again in the heart panel, through PayPal only for now", ja: "ハートパネルでの応援（寄付）を再開しました。いまはPayPalのみです", ko: "하트 패널에서 후원을 다시 받아요. 지금은 PayPal로만 가능해요", es: "Las donaciones vuelven a estar abiertas en el panel del corazón, por ahora solo con PayPal", pt: "As doações voltaram no painel do coração, por enquanto só pelo PayPal", fr: "Les dons sont de nouveau ouverts dans le panneau cœur, uniquement via PayPal pour l'instant", de: "Spenden sind im Herz-Menü wieder möglich, vorerst nur über PayPal", it: "Le donazioni sono di nuovo aperte nel pannello cuore, per ora solo tramite PayPal", ru: "Пожертвования в панели сердца снова открыты, пока только через PayPal", tr: "Kalp panelinde bağışlar yeniden açıldı, şimdilik yalnızca PayPal ile", id: "Donasi di panel hati dibuka lagi, untuk sekarang hanya lewat PayPal", vi: "Đã mở lại ủng hộ trong bảng trái tim, hiện chỉ qua PayPal", th: "เปิดรับการสนับสนุนในแผงหัวใจอีกครั้ง ตอนนี้ผ่าน PayPal เท่านั้น" }],
 ['2026-11-26', '', '沐沐小鎮修正：從房子出來站遠一點，鏡頭不再抬到屋頂上看不到貓；點菜園、靶場會自己走坡道上去，不再卡在崖下；第一次進小鎮送 100 代幣；手機直式右上角 ⚙️ 不再被擠出畫面，裝置提示不會蓋住小鎮；名牌會避開上面的按鈕',
@@ -47109,6 +47123,7 @@ const css = document.createElement('style'); css.textContent = `
 /* 裝備列 */
 .lb-gear{position:absolute;z-index:3;bottom:0;display:flex;align-items:center;gap:10px;padding:8px 10px 8px 12px;border-radius:18px;background:rgba(27,20,48,.9);border:3px solid #fff;box-shadow:var(--pop);cursor:pointer;color:#fff;font:900 15px/1 var(--f-body);white-space:nowrap;transform:translateX(-50%)}
 .lb-gear .lb-w{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:#fff;border:2px solid #1b1430;position:relative}.lb-gear .lb-w svg{width:36px;height:36px}.lb-gear .lb-w i{position:absolute;left:-6px;top:-7px;width:18px;height:18px;border-radius:50%;background:#ffd23f;border:2px solid #1b1430;color:#1b1430;font:900 11px/14px var(--f-body);text-align:center;font-style:normal}
+.lb-gear .lb-cat{display:grid;place-items:center;width:clamp(56px,4.6vw,74px);height:clamp(56px,4.6vw,74px)}.lb-gear .lb-cat svg{width:100%;height:100%;background:var(--cream,#fff8e7);border-radius:50%;border:3px solid #1b1430;padding:3px;box-sizing:border-box}
 .lb-gear .lb-ink{display:grid;place-items:center;width:40px;height:40px}.lb-gear .lb-ink svg{width:38px;height:38px}
 .lb-gear .lb-go{padding:8px 12px;border-radius:12px;background:#fff;color:#1b1430;border:2px solid #1b1430}
 .lb-gear:hover .lb-go,.lb-gear:focus-visible .lb-go{background:#ffd23f}
@@ -47264,10 +47279,13 @@ have.forEach((x) => x.remove());
 for (let i = 0; i < want; i++) { const li = mk('li', 'lb-seat', '<span class="lb-sf" aria-hidden="true">+</span>'), b = document.createElement('b'); b.textContent = '等待加入…'; li.appendChild(b); ul.appendChild(li); }
 }
 let gearSig = '';
+let gearKind = '';
 function paintGear() {
 const s = sel(), wv = $('wpn-opt') && !$('wpn-opt').hidden, lo = wv ? (s.loadout || []).slice(0, 2) : [], ink = s.ink || '';
+if (s.kind !== gearKind) { gearKind = s.kind; gearSig = ''; }
 const sig = [lo.join(','), ink, wv, SC.i18n ? SC.i18n.lang : ''].join('|'); if (sig === gearSig) return; gearSig = sig;
 let h = '';
+{ const kf = $('pick-kind') && $('pick-kind').querySelector(`.pick[data-v="${s.kind || 'maomao'}"] svg`); if (kf) h += `<span class="lb-cat">${kf.outerHTML}</span>`; }
 lo.forEach((w, i) => { const b = $('pick-wpn') && $('pick-wpn').querySelector(`.pick[data-v="${w}"] svg`); h += `<span class="lb-w"><i>${i + 1}</i>${b ? b.outerHTML : ''}</span>`; });
 const ib = $('pick-ink') && $('pick-ink').querySelector('.pick.on'); if (ib) h += `<span class="lb-ink" style="${ib.getAttribute('style') || ''}">${ib.innerHTML}</span>`;
 h += `<span class="lb-go">${T('換裝備')}</span>`;
