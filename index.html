@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="彩貓大戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v364';</script><script>window.SC_BUILD='67b358e40fe7';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>彩貓大戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="彩貓大戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v365';</script><script>window.SC_BUILD='fef1a64d507e';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>彩貓大戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1835,6 +1835,72 @@ html .portrait .town .tw-name { margin-right: -36px; } /* 名牌縮成 0.72 倍�
 @media (max-height: 520px) { #m-title.sx #kind-opt #pick-kind .cat-pick svg { width: 34px; height: 34px; } }
 /* 單機對戰等出戰準備頁：「我的裝備」在右邊，寬螢幕的 3D 預覽改放左邊，才不會蓋住正在選的貓咪 */
 #ui:has(#m-title.sx.step-setup:not(.lb)) .cat-view.wide { right: auto; left: max(3vw, 24px); }
+/* 沐沐廣場 v3（Yen 11-27「廣場的互動與互動視覺再優化 連線機制與站位等等更為明確」）：門上看板、排隊卡、找對戰、出發畫面、互動對象、冷卻、聊天紀錄 */
+.tw-lbl.pz-dl { display: none !important; }
+.pz-info { pointer-events: none; align-items: center; }
+.pz-ch.off { color: #ffb4b4; }
+.pz-find { pointer-events: auto; display: flex; align-items: center; gap: 5px; margin-left: 4px; padding: 4px 12px 4px 9px; border: 3px solid #1b1430; border-radius: 999px; background: linear-gradient(160deg, #ffe27a, #ffc21f); color: #1b1430; font: 900 15px/1 var(--f-display); cursor: pointer; box-shadow: 0 2px 0 #1b1430; }
+.pz-find kbd { font: 800 10px/1 var(--f-body); background: #1b1430; color: #fff; border-radius: 5px; padding: 2px 4px; }
+#app.is-touch .pz-find kbd { display: none; }
+.pz-doors { position: absolute; inset: 0; overflow: hidden; }
+.pz-door { --c: #fff; position: absolute; left: 0; top: 0; transform-origin: 50% 100%; min-width: 168px; padding: 8px 12px 9px; background: rgba(20, 16, 40, .88); color: #fff; border: 3px solid var(--c); border-radius: 16px; box-shadow: 0 0 18px color-mix(in srgb, var(--c) 55%, transparent), 0 4px 0 rgba(0, 0, 0, .35); text-align: center; will-change: transform; display: grid; gap: 5px; }
+.pz-door.hot { background: rgba(28, 20, 54, .94); }
+.pz-door.mine { box-shadow: 0 0 0 3px #fff, 0 0 26px var(--c); }
+.pz-dh { display: flex; align-items: center; justify-content: center; gap: 6px; } .pz-dh i { font-style: normal; font-size: 22px; } .pz-dh b { font: 900 19px/1.1 var(--f-display); white-space: nowrap; }
+.pz-dh em { font: 900 14px/1 var(--f-body); font-style: normal; color: #1b1430; background: var(--c); border-radius: 999px; padding: 3px 7px; }
+.pz-door small { font: 800 13px/1.25 var(--f-body); color: #ffe9a8; white-space: nowrap; }
+.pz-seats { display: flex; justify-content: center; gap: 5px; }
+.pz-seats i { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .35); box-sizing: border-box; }
+.pz-seats i.need { border-color: rgba(255, 255, 255, .8); }
+.pz-seats i.on { background: var(--c, #ffd23f); border-color: #fff; box-shadow: 0 0 8px var(--c, #ffd23f); }
+.pz-cd { height: 7px; border-radius: 99px; background: rgba(255, 255, 255, .18); overflow: hidden; } .pz-cd i { display: block; height: 100%; background: #fff; border-radius: 99px; transition: width .25s linear; }
+.pz-q { position: absolute; left: 50%; top: calc(60px + var(--sat)); transform: translateX(-50%); width: min(380px, calc(100% - 24px)); box-sizing: border-box; display: grid; gap: 6px; padding: 10px 14px 9px; background: rgba(20, 16, 40, .92); color: #fff; border: 3px solid #fff; border-radius: 18px; box-shadow: 0 6px 0 rgba(0, 0, 0, .3); pointer-events: auto; text-align: center; animation: pzIn .22s ease-out; }
+.pz-q[hidden] { display: none; }
+.pz-qh { --c: #ffd23f; display: flex; align-items: center; justify-content: center; gap: 8px; font: 900 20px/1.1 var(--f-display); } .pz-qh i { font-style: normal; font-size: 24px; } .pz-qh span { font: 800 12px/1 var(--f-body); color: #1b1430; background: var(--c); padding: 4px 8px; border-radius: 99px; animation: pzBlink 1.2s ease-in-out infinite; }
+.pz-q .pz-seats i { width: 20px; height: 20px; }
+.pz-q:has(.pz-qh) { --c: inherit; }
+.pz-qn { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; } .pz-qn span { font: 800 13px/1 var(--f-body); padding: 4px 8px; border-radius: 99px; background: rgba(255, 255, 255, .14); } .pz-qn span.me { background: #ffd23f; color: #1b1430; }
+.pz-qs { font: 900 16px/1.25 var(--f-body); color: #ffe9a8; }
+.pz-q small { font: 700 12px/1.2 var(--f-body); opacity: .7; }
+.pz-qb { justify-self: center; border: 3px solid #1b1430; border-radius: 14px; background: linear-gradient(160deg, #ffe27a, #ffc21f); color: #1b1430; font: 900 17px/1 var(--f-display); padding: 9px 22px; cursor: pointer; }
+@keyframes pzIn { from { opacity: 0; transform: translate(-50%, -8px); } }
+@keyframes pzBlink { 50% { opacity: .55; } }
+.pz-ov2 { position: absolute; inset: 0; pointer-events: auto; display: grid; place-items: center; background: rgba(27, 20, 48, .45); }
+.pz-ov2[hidden] { display: none; }
+.pz-fcard { width: min(440px, calc(100vw - 32px)); gap: 8px; max-height: calc(100% - 40px); overflow-y: auto; }
+.pz-card p.pz-fsub { min-height: 0; font: 700 14px/1.4 var(--f-body); opacity: .8; }
+.pz-frow { --c: #fff; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 3px solid #1b1430; border-left: 10px solid var(--c); border-radius: 14px; background: #fff; }
+.pz-frow i { font-style: normal; font-size: 28px; } .pz-frow span { flex: 1; min-width: 0; display: grid; gap: 2px; } .pz-frow b { font: 900 18px/1.1 var(--f-display); } .pz-frow small { font: 700 12px/1.2 var(--f-body); opacity: .75; }
+.pz-frow em { font: 900 13px/1 var(--f-body); font-style: normal; background: #ffd23f; padding: 6px 10px; border-radius: 99px; }
+.pz-fgo { border: 3px solid #1b1430; border-radius: 12px; background: var(--c); color: #1b1430; font: 900 14px/1 var(--f-body); padding: 8px 10px; cursor: pointer; white-space: nowrap; }
+.pz-go { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle, color-mix(in srgb, var(--c, #fff) 35%, transparent), rgba(20, 16, 40, .8) 70%); pointer-events: auto; animation: pzFade .25s ease-out; }
+.pz-go[hidden] { display: none; }
+.pz-gocard { display: grid; gap: 8px; justify-items: center; color: #fff; text-align: center; }
+.pz-goi { font-size: 64px; animation: pzPop .5s cubic-bezier(.2, 1.6, .4, 1); }
+.pz-gocard h2 { margin: 0; font: 900 clamp(30px, 6vw, 52px)/1 var(--f-display); -webkit-text-stroke: .14em #1b1430; paint-order: stroke fill; }
+.pz-gocard > b { font: 900 24px/1 var(--f-display); color: var(--c); -webkit-text-stroke: .12em #1b1430; paint-order: stroke fill; }
+.pz-gocard small { font: 800 14px/1 var(--f-body); opacity: .85; }
+.pz-gocard .pz-cd { width: 240px; } .pz-gocard .pz-cd i { width: 0; animation: pzBar linear forwards; }
+@keyframes pzBar { to { width: 100%; } } @keyframes pzFade { from { opacity: 0; } } @keyframes pzPop { from { transform: scale(.2); } }
+.pz-tgt { position: absolute; left: 50%; bottom: calc(86px + var(--sab)); transform: translateX(-50%); padding: 4px 12px; border-radius: 99px; background: rgba(27, 20, 48, .78); color: #fff; font: 800 13px/1.2 var(--f-body); white-space: nowrap; }
+.pz-tgt.none { opacity: .75; font-weight: 700; } .pz-tgt b { color: #ffe27a; }
+.pz-b { position: relative; overflow: hidden; transition: opacity .2s, filter .2s; }
+.pz-b.off { opacity: .45; filter: grayscale(.8); }
+.pz-b.cd::after { content: ''; position: absolute; inset: 0; background: rgba(27, 20, 48, .45); transform-origin: 0 50%; animation: pzCd var(--cdt, 700ms) linear forwards; pointer-events: none; }
+@keyframes pzCd { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.pz-log { position: absolute; left: calc(14px + var(--sal, 0px)); bottom: calc(96px + var(--sab)); width: min(330px, 40%); display: flex; flex-direction: column; gap: 3px; pointer-events: none; }
+.pz-ln { align-self: flex-start; max-width: 100%; padding: 4px 10px; border-radius: 12px; background: rgba(27, 20, 48, .74); color: #fff; font: 700 14px/1.3 var(--f-body); word-break: break-word; transition: opacity .6s; animation: pzFade .2s ease-out; }
+.pz-ln b { color: #8fe2ff; margin-right: 6px; } .pz-ln.sys { color: #ffe9a8; } .pz-ln.off { opacity: 0; }
+.pz-tag[data-q]:not([data-q=""])::before { content: attr(data-q) ' '; }
+.pz-bub::after { content: ''; position: absolute; left: 10px; bottom: -11px; border: 8px solid transparent; border-top-color: #1b1430; border-bottom: 0; }
+.pz-emo { font-size: 40px; animation: pzPop .35s cubic-bezier(.2, 1.6, .4, 1); }
+#app.is-touch .pz-tgt { bottom: calc(70px + var(--sab)); left: calc(50% - 30px); font-size: 12px; }
+#app.is-touch .pz-log { left: auto; right: 12px; bottom: auto; top: calc(110px + var(--sat)); width: min(260px, 42%); align-items: flex-end; } #app.is-touch .pz-ln { align-self: flex-end; font-size: 12px; }
+#app.is-touch .pz-q { top: calc(54px + var(--sat)); width: min(320px, calc(100% - 180px)); padding: 7px 10px; gap: 4px; } #app.is-touch .pz-qh { font-size: 16px; }
+@media (max-width: 620px) { #app.is-touch .pz-q { width: calc(100% - 24px); } .pz-find b { display: none; } }
+.pz-doors { z-index: 0; } .pz-q, .pz-ov2, .pz-go, .pz-menu, .pz-ov { z-index: 2; } .pz-door.mine { display: none; }
+@media (max-width: 620px) { .pz-info > b span { display: none; } #app.is-touch .pz-q, #app:not(.is-touch) .pz-q { top: calc(150px + var(--sat)); width: calc(100% - 24px); } .pz-ov2 { place-items: start center; padding-top: calc(140px + var(--sat)); } .pz-fcard { max-height: calc(100% - 160px); } }
+@media (max-height: 500px) { #app.is-touch .pz-q, #app:not(.is-touch) .pz-q { width: min(300px, 40%); gap: 3px; padding: 6px 10px; } .pz-q .pz-qn, .pz-q small { display: none; } .pz-qh { font-size: 15px; } .pz-q .pz-seats i { width: 14px; height: 14px; } .pz-qs { font-size: 13px; } .pz-door { min-width: 140px; } }
 
 </style>
 <div id="app">
@@ -19465,6 +19531,27 @@ const R = [
 ['站進光圈排隊（{a}～{m} 人）', 'Step into the ring to queue ({a}–{m} players)', '光の輪に入って並ぼう（{a}～{m} 人）', '빛의 원에 들어가 줄 서기 ({a}~{m}명)', 'Entra en el círculo para hacer cola ({a}–{m} jugadores)', 'Entre no círculo para entrar na fila ({a}–{m} jogadores)', 'Entre dans le cercle pour attendre ({a}–{m} joueurs)', 'Stell dich in den Ring ({a}–{m} Spieler)', 'Entra nel cerchio per metterti in coda ({a}–{m} giocatori)', 'Встань в круг, чтобы ждать ({a}–{m} игроков)', 'Sıraya girmek için halkaya gir ({a}–{m} oyuncu)', 'Masuk ke lingkaran untuk antre ({a}–{m} pemain)', 'Đứng vào vòng sáng để xếp hàng ({a}–{m} người)', 'ยืนในวงแสงเพื่อเข้าคิว ({a}–{m} คน)'],
 ['人到齊了！一起去 {n}…', 'Everyone’s here! Heading to {n} together…', 'そろった！いっしょに {n} へ…', '다 모였어요! 같이 {n}(으)로…', '¡Ya estáis todos! Vamos juntos a {n}…', 'Todo mundo aqui! Indo juntos para {n}…', 'Tout le monde est là ! En route pour {n}…', 'Alle da! Gemeinsam zu {n} …', 'Ci siete tutti! Andiamo insieme a {n}…', 'Все в сборе! Вместе идём в {n}…', 'Herkes geldi! Birlikte {n}’e gidiyoruz…', 'Semua sudah kumpul! Bersama ke {n}…', 'Đủ người rồi! Cùng đi {n}…', 'มาครบแล้ว! ไป {n} ด้วยกัน…'],
 ['{n} 號・{m}/{c} 人', '#{n} · {m}/{c} players', '{n} 号・{m}/{c} 人', '{n}호 · {m}/{c}명', 'n.º {n} · {m}/{c}', 'nº {n} · {m}/{c}', 'n° {n} · {m}/{c}', 'Nr. {n} · {m}/{c}', 'n. {n} · {m}/{c}', '№ {n} · {m}/{c}', '{n}. · {m}/{c} kişi', '#{n} · {m}/{c} pemain', 'Số {n} · {m}/{c} người', 'หมายเลข {n} · {m}/{c} คน'],
+['找對戰', 'Find a match', '対戦をさがす', '대전 찾기', 'Buscar partida', 'Achar partida', 'Trouver un match', 'Match finden', 'Trova partita', 'Найти бой', 'Maç bul', 'Cari pertandingan', 'Tìm trận', 'หาคู่ต่อสู้'],
+['選一道門，走進光圈排隊；人數夠了會一起進同一場', 'Pick a door and step into its ring; when enough players join, you all go into the same match', 'とびらを選んで光の輪に入ろう。人数がそろうとみんなで同じ試合へ', '문을 골라 빛의 원에 들어가세요. 인원이 차면 다 같이 같은 판으로 가요', 'Elige una puerta y entra en su círculo; cuando haya gente suficiente, entráis juntos a la misma partida', 'Escolha uma porta e entre no círculo; com gente suficiente, todos vão para a mesma partida', 'Choisis une porte et entre dans son cercle ; quand il y a assez de joueurs, vous partez ensemble dans le même match', 'Wähle ein Tor und stell dich in den Ring; sind genug da, geht ihr zusammen ins gleiche Match', 'Scegli una porta ed entra nel cerchio; quando siete abbastanza, entrate insieme nella stessa partita', 'Выбери дверь и встань в круг; когда наберётся народ, все вместе попадёте в один бой', 'Bir kapı seç ve halkaya gir; yeterli kişi olunca hep birlikte aynı maça girersiniz', 'Pilih pintu dan masuk ke lingkarannya; kalau pemain cukup, kalian masuk ke pertandingan yang sama', 'Chọn một cánh cổng và đứng vào vòng sáng; đủ người là cả nhóm vào cùng một trận', 'เลือกประตูแล้วเข้าไปยืนในวงแสง พอคนครบจะเข้าแมตช์เดียวกันพร้อมกัน'],
+['{a}～{m} 人', '{a}–{m} players', '{a}～{m} 人', '{a}~{m}명', '{a}–{m} jugadores', '{a}–{m} jogadores', '{a}–{m} joueurs', '{a}–{m} Spieler', '{a}–{m} giocatori', '{a}–{m} игроков', '{a}–{m} oyuncu', '{a}–{m} pemain', '{a}–{m} người', '{a}–{m} คน'],
+['{n} 人在排', '{n} waiting', '{n} 人が待機中', '{n}명 대기 중', '{n} esperando', '{n} esperando', '{n} en attente', '{n} warten', '{n} in attesa', '{n} ждут', '{n} kişi bekliyor', '{n} menunggu', '{n} người đang chờ', '{n} คนรออยู่'],
+['沒人在排', 'Nobody waiting', 'まだだれもいない', '대기 중인 사람 없음', 'Nadie esperando', 'Ninguém esperando', 'Personne en attente', 'Niemand wartet', 'Nessuno in attesa', 'Никого нет', 'Bekleyen yok', 'Belum ada yang menunggu', 'Chưa có ai chờ', 'ยังไม่มีใครรอ'],
+['你在排', 'You’re here', '並んでいます', '대기 중', 'Estás aquí', 'Você está aqui', 'Tu y es', 'Du stehst hier', 'Sei qui', 'Ты здесь', 'Buradasın', 'Kamu di sini', 'Bạn đang ở đây', 'คุณอยู่ที่นี่'],
+['帶我去', 'Take me', 'つれてって', '데려가 줘', 'Llévame', 'Me leve', 'Y aller', 'Hinbringen', 'Portami', 'Отвести', 'Götür', 'Antar aku', 'Dẫn tôi', 'พาไป'],
+['走去{n}的光圈…', 'Walking to the {n} ring…', '{n} の光の輪へ…', '{n} 빛의 원으로 가는 중…', 'Yendo al círculo de {n}…', 'Indo ao círculo de {n}…', 'En route vers le cercle {n}…', 'Unterwegs zum Ring: {n}…', 'Verso il cerchio di {n}…', 'Идём к кругу «{n}»…', '{n} halkasına gidiliyor…', 'Menuju lingkaran {n}…', 'Đang đi tới vòng {n}…', 'กำลังเดินไปวง {n}…'],
+['還差 {k} 人就能開打', '{k} more to start', 'あと {k} 人で始められる', '{k}명 더 있으면 시작', 'Faltan {k} para empezar', 'Faltam {k} para começar', 'Encore {k} pour commencer', 'Noch {k} bis zum Start', 'Ne mancano {k} per iniziare', 'Нужно ещё {k}', 'Başlamak için {k} kişi daha', 'Kurang {k} lagi untuk mulai', 'Cần thêm {k} người', 'ขาดอีก {k} คนก็เริ่มได้'],
+['準備出發…', 'Getting ready…', '出発の準備中…', '출발 준비 중…', 'Preparando…', 'Preparando…', 'Préparation…', 'Gleich geht’s los…', 'Si parte a breve…', 'Готовимся…', 'Hazırlanıyor…', 'Bersiap…', 'Chuẩn bị xuất phát…', 'กำลังเตรียมออกเดินทาง…'],
+['人滿了，馬上出發！', 'Full! Leaving now!', '満員！すぐ出発！', '꽉 찼어요! 바로 출발!', '¡Lleno! ¡Salimos ya!', 'Lotado! Saindo já!', 'Complet ! On part !', 'Voll! Los geht’s!', 'Pieno! Si parte!', 'Мест нет! Отправляемся!', 'Doldu! Hemen çıkıyoruz!', 'Penuh! Berangkat sekarang!', 'Đủ người! Xuất phát ngay!', 'เต็มแล้ว! ออกเดินทางเลย!'],
+['{s} 秒後出發・還能再加 {k} 人', 'Leaving in {s} s · room for {k} more', '{s} 秒後に出発・あと {k} 人入れる', '{s}초 후 출발 · {k}명 더 들어올 수 있어요', 'Salida en {s} s · caben {k} más', 'Saída em {s} s · cabem mais {k}', 'Départ dans {s} s · encore {k} places', 'Start in {s} s · noch {k} Plätze', 'Si parte tra {s} s · posto per altri {k}', 'Старт через {s} с · ещё {k} мест', '{s} sn sonra çıkış · {k} kişilik yer var', 'Berangkat {s} dtk lagi · muat {k} lagi', 'Xuất phát sau {s} giây · còn {k} chỗ', 'ออกใน {s} วิ · รับเพิ่มได้อีก {k} คน'],
+['積分賽要先登入', 'Sign in to play Ranked', 'ランク戦はログインが必要', '랭크전은 로그인이 필요해요', 'Inicia sesión para jugar Clasificatoria', 'Entre para jogar Ranqueada', 'Connecte-toi pour jouer en Classé', 'Für Ranglisten anmelden', 'Accedi per giocare la Classificata', 'Для рейтинговых боёв нужен вход', 'Dereceli için giriş yap', 'Masuk dulu untuk main Peringkat', 'Đăng nhập để chơi Xếp hạng', 'เข้าสู่ระบบก่อนเล่นจัดอันดับ'],
+['排隊中', 'In queue', '待機中', '대기 중', 'En cola', 'Na fila', 'En file', 'In der Schlange', 'In coda', 'В очереди', 'Sırada', 'Mengantre', 'Đang xếp hàng', 'กำลังรอ'],
+['這一場滿了，你排下一場', 'This match is full; you’re next in line', 'この試合は満員。次の試合に並んでいます', '이번 판은 꽉 찼어요. 다음 판 대기 중', 'Esta partida está llena; vas en la siguiente', 'Esta partida está cheia; você vai na próxima', 'Ce match est complet ; tu passes au suivant', 'Dieses Match ist voll; du bist beim nächsten dabei', 'Questa partita è piena; sei nella prossima', 'Этот бой заполнен — ты в следующем', 'Bu maç dolu; sıradaki maçtasın', 'Pertandingan ini penuh; kamu ikut berikutnya', 'Trận này đã đủ; bạn vào trận sau', 'แมตช์นี้เต็มแล้ว คุณได้คิวถัดไป'],
+['走出光圈就取消排隊', 'Step out of the ring to leave the queue', '光の輪から出ると取り消し', '빛의 원에서 나가면 대기 취소', 'Sal del círculo para dejar la cola', 'Saia do círculo para sair da fila', 'Sors du cercle pour quitter la file', 'Verlass den Ring, um abzubrechen', 'Esci dal cerchio per lasciare la coda', 'Выйди из круга, чтобы отменить', 'Sıradan çıkmak için halkadan çık', 'Keluar dari lingkaran untuk batal', 'Bước ra khỏi vòng để hủy', 'ออกจากวงเพื่อยกเลิก'],
+['人到齊了！', 'Everyone’s here!', 'そろった！', '다 모였어요!', '¡Ya estáis todos!', 'Todo mundo aqui!', 'Tout le monde est là !', 'Alle da!', 'Ci siamo tutti!', 'Все в сборе!', 'Herkes burada!', 'Semua sudah kumpul!', 'Đủ người rồi!', 'ครบแล้ว!'],
+['正在進入對戰房…', 'Joining the battle room…', '対戦ルームに入っています…', '대전방에 들어가는 중…', 'Entrando en la sala…', 'Entrando na sala…', 'Entrée dans la salle…', 'Betrete den Kampfraum…', 'Entrata nella stanza…', 'Входим в комнату боя…', 'Savaş odasına giriliyor…', 'Masuk ke ruang pertarungan…', 'Đang vào phòng đấu…', 'กำลังเข้าห้องต่อสู้…'],
+['離線，重試中…', 'Offline, retrying…', 'オフライン・再接続中…', '오프라인, 다시 연결 중…', 'Sin conexión, reintentando…', 'Offline, tentando de novo…', 'Hors ligne, nouvel essai…', 'Offline, neuer Versuch…', 'Offline, riprovo…', 'Нет связи, пробуем снова…', 'Çevrimdışı, yeniden deneniyor…', 'Offline, mencoba lagi…', 'Mất kết nối, đang thử lại…', 'ออฟไลน์ กำลังลองใหม่…'],
+['走近別人，就能推一下、擊掌、送飯糰', 'Get close to someone to push, high five or give onigiri', 'だれかに近づくと、おす・ハイタッチ・おにぎりができる', '누군가에게 다가가면 밀기, 하이파이브, 주먹밥 주기를 할 수 있어요', 'Acércate a alguien para empujar, chocar los cinco o dar onigiri', 'Chegue perto de alguém para empurrar, bater aqui ou dar onigiri', 'Approche-toi de quelqu’un pour pousser, taper dans la main ou offrir un onigiri', 'Geh nah an jemanden ran: schubsen, abklatschen, Onigiri schenken', 'Avvicinati a qualcuno per spingere, battere il cinque o regalare onigiri', 'Подойди к кому-нибудь: толкнуть, дать пять, подарить онигири', 'Birine yaklaş: it, çak, onigiri ver', 'Dekati seseorang untuk mendorong, tos, atau memberi onigiri', 'Lại gần ai đó để đẩy, đập tay hoặc tặng cơm nắm', 'เข้าใกล้ใครสักคนเพื่อผลัก ไฮไฟว์ หรือให้ข้าวปั้น'],
+['出發！', 'Go!', '出発！', '출발!', '¡Vamos!', 'Vamos!', 'C’est parti !', 'Los!', 'Via!', 'Поехали!', 'Hadi!', 'Berangkat!', 'Xuất phát!', 'ไปเลย!'],
 ];
 I.add(R.map((r) => r.slice(0, 4))); if (I.addL) L.slice(3).forEach((l, j) => I.addL(l, R.map((r) => [r[0], r[4 + j]])));
 })();
@@ -37876,7 +37963,7 @@ const r = route(a, b); if (r) return r;
 for (let d = 2; d <= 8; d += 2) for (let k = 0; k < 12; k++) { const an = (k / 12) * Math.PI * 2, q = new V3(a.x + Math.sin(an) * d, 0, a.z + Math.cos(an) * d); if (blocked(q.x, q.z, 0.9) || walkH(q.x, q.z) < -0.45) continue; const r2 = route(q, b); if (r2) return [q, ...r2]; }
 return null;
 }
-function walkTo(p, spot) { path = (Z ? null : routeFrom(pos, p)) || [p.clone()]; pathSpot = spot || null; hintT = 99; }
+function walkTo(p, spot, pts) { path = (pts && pts.length ? pts.map((q) => q.clone()) : null) || (Z ? null : routeFrom(pos, p)) || [p.clone()];   pathSpot = spot || null; hintT = 99; }
 let fireWas = false, animSt = null, lungeT = 0, lungeV = 0, fEdge = false, dashUsed = false, rollFrom = 0, zoom = 1;
 T.lunge = (v, t) => { lungeV = v; lungeT = t; };
 let pushT = 0, pushX = 0, pushZ = 0;
@@ -38891,7 +38978,7 @@ if (!Z && at == null) { const f = SPOTS.find((s) => s.k === 'farm'); if (f) { po
 }
 T.setZone = (z, at) => { if (!T.on) T.show(); setZone(z, at); };
 T.zone = () => Z; T._house = (...a) => house(...a); T._face = (f) => { face = f; arReset = true; }; T._look = (y, p) => { yaw = y; if (p != null) camPitch = p; arReset = true; };   T._low = () => low; T._mesh = (...a) => mesh(...a); T._mat = (c, o) => mat(c, o);
-T._ui = () => ({ hud, lblBox, prompt, say, click, walkTo: (p, s) => walkTo(p, s) });
+T._ui = () => ({ hud, lblBox, prompt, say, click, walkTo: (p, s, pts) => walkTo(p, s, pts) });
 T._setNear = (s) => { near = s; }; T._sols = () => solids; T._route = (a, b) => route(a, b); T._topW = (x, z) => topW(x, z); T._camera = () => cam; T.spots = SPOTS; T._rt = RT; T._shots = () => shots; T._aim = () => [aimPoint().clone(), mzl.clone(), face, yaw]; T._pos = pos; T._walkTo = walkTo; T._H = walkH; T._view = (x, z, yw, pt) => { pos.set(x, zW(x, z), z); yaw = yw; face = yw; if (pt != null) camPitch = pt; arReset = true; fp = null; last.copy(pos); };
 const I = SC.i18n;
 I.add([
@@ -39961,7 +40048,7 @@ const DOORS = [
 ];
 const POOL = { turf: 'sc-q', knockout: 'sc-qk', zombie: 'sc-qz', cpu: 'sc-qc', ranked: 'sc-ra' };
 const waitS = (D, n) => (n >= D.max ? 2 : D.rule === 'zombie' ? (n >= 2 ? 10 : 15) : n >= 3 ? 10 : 18);
-const PAD_R = 4.6;
+const PAD_R = 4.6, SEAT_G = new THREE.CircleGeometry(0.72, 20);
 const mat = (c, o) => (T._mat ? T._mat(c, o) : new THREE.MeshLambertMaterial({ color: c }));
 const glow = (c, k = 1) => new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(k) });
 const mesh = (g, m, x, y, z, par) => { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = !low && !m.isMeshBasicMaterial; o.receiveShadow = !low; (par || root).add(o); return o; };
@@ -39989,7 +40076,7 @@ DOORS.forEach((D) => { const [x, z] = U(D.a, (R0 + 12) / 2), L = R0 - 14, st = n
 [['SPALACAT', 0xff3d9a, 200], ['彩貓大戰', 0x2fd0ff, 290], ['⚡ ' + tr('積分賽'), 0xffd23f, 20], ['🎨 ' + tr('塗地戰'), 0x7cf05a, 110]].forEach(([t, c, deg]) => { const [x, z] = U(deg, 112), s = sign(t, c, 36, 9, true); s.position.set(x, 30, z); s.lookAt(0, 30, 0); root.add(s); const p = mesh(new THREE.BoxGeometry(1.2, 26, 1.2), mat(0x2a2a3a), x, 13, z); void p; }); }
 { const bm = mat(0x2c2c3a), wm = mat(0xc98c55), pm = mat(0x3a3a4a), tm = mat(0x58c070), lm = glow(0xfff1d0); const BN = [], PL = [];
 for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2 + 0.628, [x, z] = [Math.cos(a) * 24, Math.sin(a) * 24]; BN.push([x, z, -a]); }
-for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + 0.15, [x, z] = [Math.cos(a) * 52, Math.sin(a) * 52]; PL.push([x, z]); }
+for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + 0.15, [x, z] = [Math.cos(a) * 52, Math.sin(a) * 52]; if (DOORS.some((D) => { let d = a + (D.a * Math.PI) / 180; d = Math.atan2(Math.sin(d), Math.cos(d)); return Math.abs(d) < 0.21; })) continue; PL.push([x, z]); }
 BN.forEach(([x, z, ry]) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g); mesh(new THREE.BoxGeometry(1.4, 0.25, 4.6), wm, 0, 1, 0, g); mesh(new THREE.BoxGeometry(1.2, 0.95, 0.3), bm, 0, 0.47, -1.9, g); mesh(new THREE.BoxGeometry(1.2, 0.95, 0.3), bm, 0, 0.47, 1.9, g); solids.push({ x, z, r: 1.6 }); });
 PL.forEach(([x, z], i) => { mesh(new THREE.BoxGeometry(4.6, 1, 4.6), pm, x, 0.5, z); mesh(new THREE.SphereGeometry(2.1 + (i % 2) * 0.4, 12, 8), tm, x, 3.6 + (i % 2) * 0.3, z); mesh(new THREE.CylinderGeometry(0.22, 0.28, 2, 6), mat(0x6b4a2a), x, 1.8, z); solids.push({ x, z, r: 3 }); });
 for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2, x = Math.cos(a) * 38, z = Math.sin(a) * 38; mesh(new THREE.CylinderGeometry(0.16, 0.2, 7, 8), pm, x, 3.5, z); const l = mesh(new THREE.BoxGeometry(0.3, 2.2, 0.3), lm, x, 7.2, z); l.castShadow = false; solids.push({ x, z, r: 0.5 }); } }
@@ -39997,11 +40084,14 @@ buildStatue();
 DOORS.forEach((D) => { const [x, z] = U(D.a, R0 + 0.8), ry = Math.atan2(-x, -z), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g);
 const fm = mat(0x24243a); [-5, 5].forEach((ox) => { mesh(new THREE.BoxGeometry(1.4, 13, 1.6), fm, ox, 6.5, 0, g); mesh(new THREE.BoxGeometry(0.25, 12, 0.3), glow(D.col), ox * 0.86, 6.5, 0.82, g); solids.push({ x: x + Math.cos(ry) * ox, z: z - Math.sin(ry) * ox, r: 1.1 }); });
 mesh(new THREE.BoxGeometry(11.4, 1.6, 1.6), fm, 0, 13.6, 0, g); mesh(new THREE.BoxGeometry(10, 0.25, 0.3), glow(D.col), 0, 12.7, 0.82, g);
-const inner = new THREE.Mesh(new THREE.PlaneGeometry(8.6, 12.4), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.35, side: THREE.DoubleSide })); inner.position.set(0, 6.4, 0); g.add(inner); D.glow = inner.material;
+const inner = new THREE.Mesh(new THREE.PlaneGeometry(8.6, 12.4), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.35, depthWrite: false })); inner.position.set(0, 6.4, 0); g.add(inner); D.glow = inner.material;
 const sg = sign(D.i + ' ' + tr(D.n), D.col, 10, 2.5, true); sg.position.set(0, 16.2, 0.2); g.add(sg);
-const [px, pz] = U(D.a, R0 - 8), pad = new THREE.Mesh(new THREE.RingGeometry(PAD_R - 0.7, PAD_R, 40), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.95 })); pad.rotation.x = -Math.PI / 2; pad.position.set(px, 0.07, pz); root.add(pad);
+const [px, pz] = U(D.a, R0 - 12), pad = new THREE.Mesh(new THREE.RingGeometry(PAD_R - 0.7, PAD_R, 40), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.95 })); pad.rotation.x = -Math.PI / 2; pad.position.set(px, 0.07, pz); root.add(pad);
 const fill = new THREE.Mesh(new THREE.CircleGeometry(PAD_R - 0.7, 40), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.2 })); fill.rotation.x = -Math.PI / 2; fill.position.set(px, 0.06, pz); root.add(fill);
 D.px = px; D.pz = pz; D.pad = pad; D.fill = fill; pads.push(D);
+D.seats = []; for (let i = 0; i < D.max; i++) { const a = (i / D.max) * Math.PI * 2 - Math.PI / 2, m = new THREE.Mesh(SEAT_G, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.22 })); m.rotation.x = -Math.PI / 2; m.position.set(px + Math.cos(a) * (PAD_R - 2), 0.09, pz + Math.sin(a) * (PAD_R - 2)); root.add(m); D.seats.push(m); }
+const beam = new THREE.Mesh(new THREE.CylinderGeometry(PAD_R - 0.4, PAD_R - 0.4, 16, 32, 1, true), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); beam.position.set(px, 8, pz); beam.visible = false; root.add(beam); D.beam = beam;
+D.arcM = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95, side: THREE.DoubleSide }); D.arc = null; D.arcQ = -1;
 anim.push((t) => { inner.material.opacity = (D.busy ? 0.55 : 0.3) + 0.08 * Math.sin(t * 2 + D.a); });
 D.spot = spot({ k: D.k, n: D.n, s: '', i: D.i, x, z, y: 19, dx: px, dz: pz, btn: '' }); });
 buildHud();
@@ -40013,18 +40103,24 @@ solids.push({ x: 0, z: 0, r: 14.2 });
 const pl = new THREE.Group(); pl.position.set(0, 0, 17.5); root.add(pl); mesh(new THREE.BoxGeometry(2.6, 2.6, 0.6), base, 0, 1.3, 0, pl); const sg = sign('📜 ' + tr('翻彩的傳說'), 0xa56bff, 2.3, 0.6, true); sg.position.set(0, 1.9, 0.31); pl.add(sg); solids.push({ x: 0, z: 17.5, r: 1.6 });
 spot({ k: 'lore', n: '貓神像的石碑', s: '翻彩的傳說', i: '📜', x: 0, z: 17.5, y: 4.2, dx: 0, dz: 20.5, btn: '看看' });
 }
+let qEl = null, logEl = null, tgtEl = null, goEl = null, findEl = null, autoGo = '';
 let hud = null, bubBox = null, barEl = null, chatEl = null, emoEl = null, loreEl = null, infoEl = null, menuEl = null;
 const EMO = [['push', '🫸', '推一下'], ['wave', '👋', '揮手'], ['heart', '🫶', '比愛心'], ['five', '🙌', '擊掌'], ['gift', '🍙', '送飯糰']];
 function buildHud() {
 const th = T._ui().hud; hud = document.createElement('div'); hud.className = 'pz-hud'; hud.hidden = true;
-hud.innerHTML = `<div class="pz-info"><b>⛲ <span>沐沐廣場</span></b><span class="pz-ch"></span></div><div class="pz-bubs"></div>
+hud.innerHTML = `<div class="pz-info"><b>⛲ <span>沐沐廣場</span></b><span class="pz-ch"></span><button type="button" class="pz-find" data-pz="find"><span aria-hidden="true">⚔️</span><b>找對戰</b><kbd>M</kbd></button></div><div class="pz-bubs"></div><div class="pz-doors"></div><div class="pz-q" hidden></div><div class="pz-log" aria-live="polite"></div><div class="pz-tgt"></div><div class="pz-go" hidden></div><div class="pz-fov pz-ov2" hidden></div>
       <div class="pz-bar"><button type="button" class="pz-b pz-say" data-pz="say" aria-label="說話"><span aria-hidden="true">💬</span><b>說話</b><kbd>T</kbd></button>${EMO.map(([k, e, n], i) => `<button type="button" class="pz-b pz-e" data-pz="${k}" aria-label="${n}"><span aria-hidden="true">${e}</span><b>${n}</b><kbd>${i + 1}</kbd></button>`).join('')}</div>
       <form class="pz-chat" hidden><input type="text" maxlength="40" enterkeyhint="send" autocomplete="off" placeholder="說點什麼…（按 Enter 送出）" aria-label="說點什麼"><button type="submit" class="pz-send">送出</button><button type="button" class="pz-cx" aria-label="關閉">✕</button></form>
       <div class="pz-menu" hidden></div><div class="pz-ov" hidden></div>`;
 th.appendChild(hud);
 const box = T._ui().lblBox; spots.forEach((s) => { const d = document.createElement('button'); d.type = 'button'; d.className = 'tw-lbl' + (s.k.startsWith('d-') ? ' pz-dl' : ''); d.style.visibility = 'hidden'; d.innerHTML = `<span class="tw-li">${s.i}</span><b>${esc(s.n)}</b><small>${esc(s.s)}</small>`; d.onclick = () => { T._ui().click(); T._ui().walkTo(s.door, s); }; box.appendChild(d); s.el = d; s.door.y = 0; });
+qEl = hud.querySelector('.pz-q'); logEl = hud.querySelector('.pz-log'); tgtEl = hud.querySelector('.pz-tgt'); goEl = hud.querySelector('.pz-go'); findEl = hud.querySelector('.pz-fov');
+const dbox = hud.querySelector('.pz-doors'); DOORS.forEach((D) => { const el = document.createElement('div'); el.className = 'pz-door'; el.style.setProperty('--c', hex(D.col)); el.setAttribute('translate', 'no'); dbox.appendChild(el); D.bd = el; D.bdSig = ''; });
+hud.querySelector('.pz-find').addEventListener('click', (e) => { e.stopPropagation(); T._ui().click(); findOpen(); });
+qEl.addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (!b) return; T._ui().click(); if (b.dataset.q === 'login' && acc() && acc().open) acc().open(); else if (b.dataset.q === 'find') findOpen(); });
+findEl.addEventListener('click', (e) => { const b = e.target.closest('[data-go]'); if (b) { T._ui().click(); findEl.hidden = true; goDoor(DOORS.find((D) => D.k === b.dataset.go)); return; } if (e.target === findEl || e.target.closest('.pz-x')) findEl.hidden = true; });
 bubBox = hud.querySelector('.pz-bubs'); barEl = hud.querySelector('.pz-bar'); chatEl = hud.querySelector('.pz-chat'); loreEl = hud.querySelector('.pz-ov'); infoEl = hud.querySelector('.pz-ch'); menuEl = hud.querySelector('.pz-menu');
-hud.addEventListener('pointerdown', (e) => { if (e.target.closest('.pz-bar, .pz-chat, .pz-menu, .pz-ov, .pz-tag')) e.stopPropagation(); });
+hud.addEventListener('pointerdown', (e) => { if (e.target.closest('.pz-bar, .pz-chat, .pz-menu, .pz-ov, .pz-ov2, .pz-tag, .pz-find, .pz-q')) e.stopPropagation(); });
 barEl.addEventListener('click', (e) => { const b = e.target.closest('[data-pz]'); if (!b) return; T._ui().click(); if (b.dataset.pz === 'say') openChat(); else gesture(b.dataset.pz); });
 chatEl.addEventListener('submit', (e) => { e.preventDefault(); sendChat(chatEl.querySelector('input').value); closeChat(); });
 chatEl.querySelector('.pz-cx').onclick = () => closeChat();
@@ -40033,6 +40129,38 @@ loreEl.addEventListener('click', (e) => { if (e.target === loreEl || e.target.cl
 menuEl.addEventListener('click', (e) => { const b = e.target.closest('[data-pm]'); if (!b) { if (e.target === menuEl) menuEl.hidden = true; return; } T._ui().click(); const c = cats.get(menuEl.dataset.id); menuEl.hidden = true; if (!c) return; if (b.dataset.pm === 'mute') { muted.add(c.key); say('🔇 ' + tr('已經把 {n} 靜音了（看不到他說的話和動作）').replace('{n}', c.name)); } else if (b.dataset.pm === 'unmute') { muted.delete(c.key); say('🔈 ' + tr('取消靜音了')); } else if (b.dataset.pm === 'friend' && c.uid && acc() && acc().friendReq) { acc().friendReq(c.uid).then((ok) => say(ok ? '🤝 ' + tr('送出好友邀請了！') : tr('等一下再試'))); } });
 }
 const say = (m) => { try { T._ui().say(m); } catch (e) {} };
+function findOpen() {
+if (!findEl) return; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+findEl.innerHTML = `<div class="pz-card pz-fcard"><button type="button" class="pz-x" aria-label="關閉">✕</button><h3>⚔️ ${esc(tr('找對戰'))}</h3><p class="pz-fsub">${esc(tr('選一道門，走進光圈排隊；人數夠了會一起進同一場'))}</p>${DOORS.map((D) => { const di = doorInfo[D.k] || { n: 0 }, mine = myDoor === D.k;
+return `<div class="pz-frow" style="--c:${hex(D.col)}"><i>${D.i}</i><span><b>${esc(tr(D.n))}</b><small>${esc(tr('{a}～{m} 人').replace('{a}', D.min).replace('{m}', D.max))}・${esc(di.n ? tr('{n} 人在排').replace('{n}', di.n) : tr('沒人在排'))}</small></span>${mine ? `<em>${esc(tr('你在排'))}</em>` : `<button type="button" class="pz-fgo" data-go="${D.k}">${esc(tr('帶我去'))} ▶</button>`}</div>`; }).join('')}</div>`;
+findEl.hidden = false;
+}
+function route(a, b) { const pts = [], ex = b.x - a.x, ez = b.z - a.z, LL = ex * ex + ez * ez || 1, u = Math.max(0, Math.min(1, -(a.x * ex + a.z * ez) / LL)), d = Math.hypot(a.x + ex * u, a.z + ez * u);
+if (d < 19) { const A = Math.atan2(a.z, a.x); let df = Math.atan2(b.z, b.x) - A; df = Math.atan2(Math.sin(df), Math.cos(df)); const n = Math.abs(df) > 2 ? 3 : 2; for (let i = 1; i < n; i++) { const t = A + (df * i) / n; pts.push(new V3(Math.cos(t) * 21, 0, Math.sin(t) * 21)); } }
+pts.push(new V3(b.x, 0, b.z)); return pts; }
+function goDoor(D) { if (!D || !P.on) return; const to = new V3(D.px, 0, D.pz); autoGo = D.k; T._ui().walkTo(to, null, route(myPos(), to)); say(D.i + ' ' + tr('走去{n}的光圈…').replace('{n}', tr(D.n))); }
+function addLog(name, text, sys) { if (!logEl) return; const d = document.createElement('div'); d.className = 'pz-ln' + (sys ? ' sys' : ''); d.innerHTML = name ? `<b>${esc(name)}</b>${esc(text)}` : esc(text); logEl.appendChild(d); while (logEl.children.length > 6) logEl.firstChild.remove(); setTimeout(() => { d.classList.add('off'); setTimeout(() => d.remove(), 600); }, 14000); }
+const fxs = []; const PG = new THREE.SphereGeometry(0.22, 6, 4);
+function burst(x, y, z, col, n, sp, up) { if (!scene) return; for (let i = 0; i < n && fxs.length < 260; i++) { const m = new THREE.Mesh(PG, new THREE.MeshBasicMaterial({ color: col, transparent: true })); m.position.set(x, y, z); const a = Math.random() * 6.283, v = sp * (0.5 + Math.random() * 0.6); scene.add(m); fxs.push({ m, t: 0, life: 0.7 + Math.random() * 0.3, vx: Math.cos(a) * v, vz: Math.sin(a) * v, vy: (up || 0.6) * sp * (0.6 + Math.random() * 0.6) }); } }
+function shock(x, z, col) { if (!scene) return; const m = new THREE.Mesh(new THREE.RingGeometry(0.75, 1, 32), new THREE.MeshBasicMaterial({ color: col, transparent: true, side: THREE.DoubleSide, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.15, z); scene.add(m); fxs.push({ m, t: 0, life: 0.45, ring: 1 }); }
+let riceG = null;
+function toss(a, b, done) { if (!scene) return; if (!riceG) { riceG = new THREE.Group(); const r = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.7, 3), new THREE.MeshLambertMaterial({ color: 0xffffff })); r.rotation.x = Math.PI / 2; r.rotation.y = Math.PI / 2; riceG.add(r); const n = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.62, 0.74), new THREE.MeshLambertMaterial({ color: 0x1f3a2a })); n.position.y = -0.45; riceG.add(n); }
+const g = riceG.clone(); scene.add(g); fxs.push({ m: g, t: 0, life: 0.7, arc: { a: a.clone(), b: b.clone() }, done }); }
+function fxTick(dt) { for (let i = fxs.length - 1; i >= 0; i--) { const f = fxs[i]; f.t += dt; const u = f.t / f.life;
+if (u >= 1) { scene && f.m.parent && f.m.parent.remove(f.m); if (f.m.material) f.m.material.dispose(); if (f.ring) f.m.geometry.dispose(); fxs.splice(i, 1); if (f.done) f.done(); continue; }
+if (f.arc) { f.m.position.lerpVectors(f.arc.a, f.arc.b, u); f.m.position.y += Math.sin(Math.PI * u) * 4.5; f.m.rotation.y += dt * 9; continue; }
+if (f.ring) { const k = 1 + u * 5; f.m.scale.set(k, k, k); f.m.material.opacity = 1 - u; continue; }
+f.vy -= 22 * dt; f.m.position.x += f.vx * dt; f.m.position.y += f.vy * dt; f.m.position.z += f.vz * dt; f.m.material.opacity = 1 - u * u; f.m.scale.setScalar(1 - u * 0.6); } }
+function gestFx(k, from, to, toC, fromC) {
+const mid = to ? new V3((from.x + to.x) / 2, (from.y + to.y) / 2, (from.z + to.z) / 2) : null;
+if (fromC) fromC.hop = 0.4;
+if (k === 'push' && to) { shock(to.x, to.z, 0xffffff); burst(to.x, to.y + 1.5, to.z, 0xe8e4f4, 10, 7, 0.5); if (toC) { if (toC.cat) toC.cat.squash = 0.45; toC.hop = 0.3; } showEmo(to.x, to.y, to.z, 'push'); }
+else if (k === 'wave') { showEmo(from.x, from.y, from.z, 'wave'); burst(from.x, from.y + 5, from.z, 0xffd23f, 6, 4, 0.8); }
+else if (k === 'heart') { showEmo(from.x, from.y, from.z, 'heart'); burst(from.x, from.y + 4, from.z, 0xff6fa8, 10, 5, 0.9); if (to) { setTimeout(() => showEmo(to.x, to.y, to.z, 'heart'), 250); } }
+else if (k === 'five' && to) { if (toC) toC.hop = 0.4; burst(mid.x, mid.y + 4, mid.z, 0xffd23f, 16, 9, 0.7); shock(mid.x, mid.z, 0xffd23f); showEmo(mid.x, mid.y + 0.5, mid.z, 'five'); }
+else if (k === 'gift' && to) { toss(new V3(from.x, from.y + 3, from.z), new V3(to.x, to.y + 3, to.z), () => { burst(to.x, to.y + 3, to.z, 0xffffff, 10, 6, 0.8); showEmo(to.x, to.y, to.z, 'gift'); if (toC && toC.cat) toC.cat.squash = -0.25; }); }
+else showEmo(from.x, from.y, from.z, k);
+}
 let chatOpen = false;
 function openChat() { if (!chatEl) return; chatEl.hidden = false; chatOpen = true; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); const i = chatEl.querySelector('input'); i.value = ''; setTimeout(() => i.focus(), 0); }
 function closeChat() { if (!chatEl) return; chatEl.hidden = true; chatOpen = false; const i = chatEl.querySelector('input'); i.blur(); }
@@ -40070,6 +40198,7 @@ const m = new THREE.MeshLambertMaterial({ color: 0xffffff }); lite = new THREE.I
 const eg = new THREE.ConeGeometry(0.5, 1.1, 6); ears = new THREE.InstancedMesh(eg, m, CAP * 2); ears.count = 0; ears.frustumCulled = false; scene.add(ears); return lite;
 }
 function lod(dt) {
+for (const c of cats.values()) if (c.hop > 0) c.hop -= dt;
 const p = myPos(); if (!p) return; const list = [...cats.values()];
 if ((lodT -= dt) <= 0) { lodT = 0.4; for (const c of list) c.d = Math.hypot(c.x - p.x, c.z - p.z); list.sort((a, b) => a.d - b.d); const F = fullN(); list.forEach((c, i) => { c.full = i < F && c.d < 90; }); }
 const im = liteMesh(); let n = 0; const now = performance.now() / 1000;
@@ -40078,7 +40207,7 @@ if (c.full && !c.cat) getModel(c); else if (!c.full && c.cat) freeModel(c);
 if (c.cat) { const cat = c.cat, g = cat.group;
 if (c.lk !== c.lkW && SC.wear && SC.wear.show) { c.lk = c.lkW; try { SC.wear.show(cat, c.lk); } catch (e) {} }
 if (c.col !== c.rgb) { c.col = c.rgb; cat.setTeamColor(new THREE.Color(((c.rgb >> 16) & 255) / 255, ((c.rgb >> 8) & 255) / 255, (c.rgb & 255) / 255)); }
-g.position.set(c.x, c.y, c.z); g.rotation.y = c.f + (c.spin > 0 ? (c.spin -= dt) * 12 : 0); if (cat.squash) cat.squash *= Math.exp(-10 * dt);
+g.position.set(c.x, c.y + (c.hop > 0 ? Math.sin(Math.PI * (1 - c.hop / 0.4)) * 1.4 : 0), c.z); g.rotation.y = c.f + (c.spin > 0 ? (c.spin -= dt) * 12 : 0); if (cat.squash) cat.squash *= Math.exp(-10 * dt);
 const a = c.a; try { cat.animate(dt, { speed: +a[0] || 0, onGround: !!a[1], vy: +a[2] || 0, form: 'biped', submerged: false, pitch: 0, firing: false, rolling: false, charge: 0, t: now }); } catch (e) {}
 } else if (n < CAP) { liteO.position.set(c.x, c.y, c.z); liteO.rotation.set(0, c.f, 0); liteO.updateMatrix(); im.setMatrixAt(n, liteO.matrix); im.setColorAt(n, liteCol.setHex(c.rgb));
 for (let s2 = -1; s2 <= 1; s2 += 2) { const j = n * 2 + (s2 > 0 ? 1 : 0), cs = Math.cos(c.f), sn = Math.sin(c.f); liteO.position.set(c.x + cs * 0.7 * s2, c.y + 3.75, c.z - sn * 0.7 * s2); liteO.rotation.set(0, c.f, -0.3 * s2); liteO.updateMatrix(); ears.setMatrixAt(j, liteO.matrix); ears.setColorAt(j, liteCol); }
@@ -40099,20 +40228,18 @@ const k = 1 - Math.exp(-12 * dt); if (Math.hypot(Q[0] - c.x, Q[2] - c.z) > 12) {
 c.x += (Q[0] - c.x) * k; c.y += (Q[1] - c.y) * k; c.z += (Q[2] - c.z) * k; let df = Q[3] - c.f; df = Math.atan2(Math.sin(df), Math.cos(df)); c.f += df * k;
 c.a = Array.isArray(pr.a) ? pr.a : [];
 c.dr = typeof pr.dr === 'string' ? pr.dr : ''; c.dj = typeof pr.dj === 'number' ? pr.dj : 0;
+if (c.tagQ !== c.dr) { c.tagQ = c.dr; const D = DOORS.find((q) => q.k === c.dr); c.tag.dataset.q = D ? D.i : ''; }
 return c;
 }
 function onEv(c, e) {
 const ty = e[1]; if (muted.has(c.key)) return;
-if (ty === 's' && typeof e[2] === 'string') { bubble(c, clean(e[2])); return; }
-if (ty === 'g' && typeof e[2] === 'string' && EMO.some((m) => m[0] === e[2])) { const to = typeof e[3] === 'string' ? e[3] : ''; showEmo(c.x, c.y, c.z, e[2], c); if (to === myId) gotGesture(c, e[2], e[4], e[5]); else { const t2 = cats.get(to); if (t2 && (e[2] === 'five')) showEmo(t2.x, t2.y, t2.z, 'five', t2); } }
+if (ty === 's' && typeof e[2] === 'string') { const t = clean(e[2]); bubble(c, t); addLog(c.name, t); return; }
+if (ty === 'g' && typeof e[2] === 'string' && EMO.some((m) => m[0] === e[2])) { const to = typeof e[3] === 'string' ? e[3] : ''; const t2 = to === myId ? null : cats.get(to), tp = to === myId ? myPos() : t2 ? { x: t2.x, y: t2.y, z: t2.z } : null; gestFx(e[2], { x: c.x, y: c.y, z: c.z }, tp, t2, c); if (to === myId) gotGesture(c, e[2], e[4], e[5]); }
 }
 let pushedT = 0;
 function gotGesture(c, k, dx, dz) {
-if (k === 'push') { if (performance.now() - pushedT < 700) return; pushedT = performance.now(); const L = Math.hypot(+dx || 0, +dz || 0) || 1; T.shove((dx / L) * 24, (dz / L) * 24, 0.22, 16); sfx('boing'); say('🫸 ' + tr('{n} 推了你一下！').replace('{n}', c.name)); }
-else if (k === 'gift') { sfx('ding'); say('🍙 ' + tr('{n} 送你一個鮭魚飯糰！').replace('{n}', c.name)); }
-else if (k === 'five') { sfx('pop'); say('🙌 ' + tr('和 {n} 擊掌！').replace('{n}', c.name)); showEmo(myPos().x, myPos().y, myPos().z, 'five'); }
-else if (k === 'heart') say('🫶 ' + tr('{n} 對你比愛心').replace('{n}', c.name));
-else if (k === 'wave') say('👋 ' + tr('{n} 跟你揮手').replace('{n}', c.name));
+if (k === 'push') { if (performance.now() - pushedT < 700) return; pushedT = performance.now(); const L = Math.hypot(+dx || 0, +dz || 0) || 1; T.shove((dx / L) * 24, (dz / L) * 24, 0.22, 16); sfx('boing'); say('🫸 ' + tr('{n} 推了你一下！').replace('{n}', c.name)); addLog('', '🫸 ' + tr('{n} 推了你一下！').replace('{n}', c.name), 1); }
+else { const m = k === 'gift' ? '🍙 ' + tr('{n} 送你一個鮭魚飯糰！') : k === 'five' ? '🙌 ' + tr('和 {n} 擊掌！') : k === 'heart' ? '🫶 ' + tr('{n} 對你比愛心') : k === 'wave' ? '👋 ' + tr('{n} 跟你揮手') : ''; if (!m) return; const t = m.replace('{n}', c.name); sfx(k === 'gift' ? 'ding' : 'pop'); say(t); addLog('', t, 1); }
 }
 const myPos = () => T._pos;
 function nearest(maxD) { let best = null, bd = maxD; const p = myPos(); for (const c of cats.values()) { const d = Math.hypot(c.x - p.x, c.z - p.z); if (d < bd) { bd = d; best = c; } } return best; }
@@ -40122,13 +40249,14 @@ if (!P.on) return; const now = performance.now(); if (now - gestT < (k === 'push
 const p = myPos(), need = k === 'push' || k === 'five' || k === 'gift', tgt = nearest(k === 'push' ? 4 : 6);
 if (need && !tgt) { say(tr('旁邊沒有人，走近一點再試試')); return; }
 let dx = 0, dz = 0; if (tgt) { dx = tgt.x - p.x; dz = tgt.z - p.z; const L = Math.hypot(dx, dz) || 1; dx /= L; dz /= L; T._face(Math.atan2(dx, dz)); }
-if (k === 'push') { T.lunge(12, 0.12); sfx('swing'); if (tgt.cat) tgt.cat.squash = 0.4; }
+if (k === 'push') { T.lunge(12, 0.12); sfx('swing'); }
 else if (k === 'wave' || k === 'heart') sfx('pop'); else sfx('ding');
-showEmo(p.x, p.y, p.z, k); ev(['g', k, tgt ? tgt.id : '', r2(dx), r2(dz)]);
+gestFx(k, { x: p.x, y: p.y, z: p.z }, tgt ? { x: tgt.x, y: tgt.y, z: tgt.z } : null, tgt, null); ev(['g', k, tgt ? tgt.id : '', r2(dx), r2(dz)]);
+const btn = barEl && barEl.querySelector(`[data-pz="${k}"]`); if (btn) { btn.style.setProperty('--cdt', (k === 'push' ? 1200 : 700) + 'ms'); btn.classList.remove('cd'); void btn.offsetWidth; btn.classList.add('cd'); }
 }
 function sendChat(txt) {
 const t = clean(txt); if (!t) return; const now = performance.now(); if (now - chatT < 1500) { say(tr('說慢一點喔')); return; } chatT = now;
-bubble(null, t); ev(['s', t]);
+bubble(null, t); ev(['s', t]); addLog(myName(), t);
 }
 let myBub = null;
 function bubble(c, text) {
@@ -40137,7 +40265,7 @@ el.textContent = text; el.classList.remove('off'); void el.offsetWidth; el.class
 }
 let myBubT = 0; const pops = [];
 const EMOI = Object.fromEntries(EMO.map((m) => [m[0], m[1]]));
-function showEmo(x, y, z, k, c) { const el = document.createElement('div'); el.className = 'pz-emo'; el.textContent = EMOI[k] || '✨'; bubBox.appendChild(el); pops.push({ el, x, y: y + 6.5, z, t: 0 }); if (c && c.cat && k === 'heart') c.cat.squash = -0.2; if (SC.fx && SC.fx.burst && k === 'heart') { try { SC.fx.burst(x, y + 4, z, new THREE.Color(0xff6fa8), 8, 10, 0.5); } catch (e) {} } }
+function showEmo(x, y, z, k, c) { const el = document.createElement('div'); el.className = 'pz-emo'; el.textContent = EMOI[k] || '✨'; bubBox.appendChild(el); pops.push({ el, x, y: y + 6.5, z, t: 0 });  }
 function tagMenu(id) { const c = cats.get(id); if (!c) return; menuEl.dataset.id = id; const m = muted.has(c.key), fr = c.uid && myUid() && acc() && acc().isFriend && !acc().isFriend(c.uid) && c.uid !== myUid();
 menuEl.innerHTML = `<div class="pz-mcard"><b translate="no">${esc(c.name)}</b>${fr ? `<button type="button" class="btn" data-pm="friend">🤝 ${esc(tr('加好友'))}</button>` : ''}<button type="button" class="btn" data-pm="${m ? 'unmute' : 'mute'}">${m ? '🔈 ' + esc(tr('取消靜音')) : '🔇 ' + esc(tr('靜音'))}</button></div>`; menuEl.hidden = false; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); }
 let myDoor = '', myDoorAt = 0, lead = { d: '', since: 0, go: null, busy: false }, launched = false, doorInfo = {};
@@ -40145,7 +40273,7 @@ const inPad = (D, x, z) => Math.hypot(x - D.px, z - D.pz) < PAD_R - 0.3;
 function doorTick() {
 const p = myPos(), now = Date.now(); let d = ''; for (const D of DOORS) if (inPad(D, p.x, p.z)) d = D.k;
 if (d && DOORS.find((D) => D.k === d).ranked && acc() && acc().needed && !acc().user) { if (myDoor !== 'need-login') say('⚡ ' + tr('積分賽要先登入，走到門前按「登入」')); d = 'need-login'; }
-if (d !== myDoor) { myDoor = d; myDoorAt = now; if (d && d !== 'need-login') sfx('ding'); }
+if (d !== myDoor) { myDoor = d; myDoorAt = now; if (d && d !== 'need-login') { sfx('ding'); const D = DOORS.find((q) => q.k === d); shock(D.px, D.pz, D.col); burst(p.x, 1, p.z, D.col, 12, 6, 0.9); if (autoGo === d) setTimeout(() => { if (myDoor === d) T._look(Math.atan2(-D.px, -D.pz), -0.18); }, 1200); } else if (!d && myDoorAt) sfx('ui'); autoGo = ''; }
 const ids = myId ? [{ id: myId, dr: myDoor, dj: myDoorAt, me: true }] : [{ id: 'me', dr: myDoor, dj: myDoorAt, me: true }]; for (const c of cats.values()) if (c.dr) ids.push({ id: c.id, dr: c.dr, dj: c.dj, c });
 doorInfo = {};
 for (const D of DOORS) {
@@ -40154,21 +40282,42 @@ let wait = null; if (ld && ld.me) { if (n >= D.min) { if (lead.d !== D.k || !lea
 else if (ld && ld.c) { const g = cats.get(ld.id); const gp = g && g.dg; if (typeof gp === 'number' && isFinite(gp)) wait = Math.max(0, gp); }
 if (lead.d === D.k && !(ld && ld.me)) { lead.d = ''; lead.since = 0; lead.go = null; }
 doorInfo[D.k] = { n, wait, mem };
-const st = n ? (wait != null ? tr('{n}/{m} 人・{s} 秒後出發').replace('{n}', n).replace('{m}', D.max).replace('{s}', Math.ceil(wait)) : tr('{n}/{m} 人・還差 {k} 人').replace('{n}', n).replace('{m}', D.max).replace('{k}', D.min - n)) : tr('站進光圈排隊（{a}～{m} 人）').replace('{a}', D.min).replace('{m}', D.max);
-if (D.spot.s !== st) { D.spot.s = st; D.spot.dirty = true; const sm = D.spot.el && D.spot.el.querySelector('small'); if (sm) sm.textContent = st; }
-const on = n > 0; D.fill.material.opacity = on ? 0.38 + 0.18 * Math.sin(performance.now() / 180) : 0.18; D.glow.emissiveIntensity = on ? 0.55 : 0.22;
+doorLook(D, n, wait, mem);
 }
-if (!launched && myDoor && myId) { const mem = (doorInfo[myDoor] || {}).mem || [], ld = mem[0]; if (ld && ld.c) { const g = cats.get(ld.id), go = g && g.go; if (go && go.d === myDoor && Array.isArray(go.ids) && go.ids.includes(myId) && Math.abs(now - (+go.t || 0)) < 60000 && go.i >= 1 && go.i <= 99) launch(DOORS.find((D) => D.k === go.d), go.i | 0, 350); } }
+queueCard();
+if (!launched && myDoor && myId) { const mem = (doorInfo[myDoor] || {}).mem || [], ld = mem[0]; if (ld && ld.c) { const g = cats.get(ld.id), go = g && g.go; if (go && go.d === myDoor && Array.isArray(go.ids) && go.ids.includes(myId) && Math.abs(now - (+go.t || 0)) < 60000 && go.i >= 1 && go.i <= 99) launch(DOORS.find((D) => D.k === go.d), go.i | 0, 600, go.ids); } }
+}
+function doorSt(D, n, wait) { return !n ? tr('站進光圈排隊（{a}～{m} 人）').replace('{a}', D.min).replace('{m}', D.max) : n < D.min ? tr('還差 {k} 人就能開打').replace('{k}', D.min - n) : wait == null ? tr('準備出發…') : wait < 0.5 ? tr('出發！') : n >= D.max ? tr('人滿了，馬上出發！') : tr('{s} 秒後出發・還能再加 {k} 人').replace('{s}', Math.ceil(wait)).replace('{k}', D.max - n); }
+const seatsHtml = (D, n) => Array.from({ length: D.max }, (_, i) => `<i class="${i < n ? 'on' : ''}${i < D.min ? ' need' : ''}"></i>`).join('');
+function setArc(D, frac) { const q = Math.round(Math.max(0, Math.min(1, frac)) * 48); if (q === D.arcQ) return; D.arcQ = q; if (D.arc) { root.remove(D.arc); D.arc.geometry.dispose(); D.arc = null; } if (!q) return; D.arc = new THREE.Mesh(new THREE.RingGeometry(PAD_R + 0.2, PAD_R + 0.85, 48, 1, Math.PI / 2, (q / 48) * Math.PI * 2), D.arcM); D.arc.rotation.x = -Math.PI / 2; D.arc.position.set(D.px, 0.08, D.pz); root.add(D.arc); }
+function doorLook(D, n, wait, mem) {
+const filled = Math.min(n, D.max), tm = performance.now() / 1000; D.seats.forEach((m, i) => { const on = i < filled; m.material.color.setHex(on ? D.col : 0xffffff); m.material.opacity = on ? 1 : i < D.min ? 0.4 : 0.2; });
+const tot = waitS(D, n); setArc(D, wait != null ? wait / tot : 0);
+D.beam.visible = n > 0 && myDoor !== D.k;   D.beam.material.opacity = wait != null ? 0.2 + 0.1 * Math.sin(tm * 8) : 0.1; D.busy = n > 0;
+D.fill.material.opacity = n ? 0.32 + 0.12 * Math.sin(tm * 3) : 0.16;
+const st = doorSt(D, n, wait), pc = wait != null ? Math.round((wait / tot) * 100) : -1, sig = n + '|' + st + '|' + pc + '|' + (myDoor === D.k);
+if (D.bd && sig !== D.bdSig) { D.bdSig = sig; D.bd.classList.toggle('hot', n > 0); D.bd.classList.toggle('mine', myDoor === D.k);
+D.bd.innerHTML = `<div class="pz-dh"><i>${D.i}</i><b>${esc(tr(D.n))}</b><em>${filled}/${D.max}</em></div><div class="pz-seats">${seatsHtml(D, filled)}</div><small>${esc(st)}</small>${pc >= 0 ? `<div class="pz-cd"><i style="width:${pc}%"></i></div>` : ''}`; }
+}
+let qSig = '';
+function queueCard() {
+if (!qEl) return; let html = '';
+if (myDoor === 'need-login') html = `<div class="pz-qh">⚡ ${esc(tr('積分賽要先登入'))}</div><button type="button" class="pz-qb" data-q="login">${esc(tr('登入'))}</button>`;
+else if (myDoor) { const D = DOORS.find((q) => q.k === myDoor), di = doorInfo[myDoor] || { n: 1, wait: null, mem: [] }, n = Math.min(di.n, D.max);
+const names = di.mem.slice(0, D.max).map((q) => (q.me ? tr('你') : (q.c && q.c.name) || tr('玩家'))), pos = di.mem.findIndex((q) => q.me), over = pos >= D.max;
+html = `<div class="pz-qh" style="--c:${hex(D.col)}"><i>${D.i}</i><b>${esc(tr(D.n))}</b><span>${esc(tr('排隊中'))}</span></div><div class="pz-seats">${seatsHtml(D, n)}</div><div class="pz-qn">${names.map((x, i) => `<span class="${di.mem[i] && di.mem[i].me ? 'me' : ''}">${esc(x)}</span>`).join('')}</div><div class="pz-qs">${esc(over ? tr('這一場滿了，你排下一場') : doorSt(D, di.n, di.wait))}</div>${di.wait != null ? `<div class="pz-cd"><i style="width:${Math.round((di.wait / waitS(D, di.n)) * 100)}%"></i></div>` : ''}<small>${esc(tr('走出光圈就取消排隊'))}</small>`; }
+if (html !== qSig) { qSig = html; qEl.innerHTML = html; qEl.hidden = !html; const D = DOORS.find((q) => q.k === myDoor); qEl.style.setProperty('--c', D ? hex(D.col) : '#ffd23f'); }
 }
 async function startGroup(D, mem) {
 lead.busy = true; let pick = 1 + Math.floor(Math.random() * 6);
 try { const api = SC.relay && (await SC.relay.use('room')); if (api && api.peek) { const names = []; for (let i = 1; i <= 16; i++) names.push(POOL[D.rule] + i); const seen = await api.peek(names, 2500); if (seen) for (let i = 1; i <= 16; i++) { if (!(seen[POOL[D.rule] + i] || []).some((q) => q && q.v === 1)) { pick = i; break; } } } } catch (e) {}
 lead.busy = false; if (!P.on || myDoor !== D.k) return;
 lead.go = { d: D.k, i: pick, ids: mem.map((q) => (q.me ? myId : q.id)), t: Date.now() }; sendNow();
-launch(D, pick, 1100);
+launch(D, pick, 1100, lead.go.ids);
 }
-function launch(D, i, ms) {
-if (launched || !D) return; launched = true; say('🚪 ' + tr('人到齊了！一起去 {n}…').replace('{n}', tr(D.n))); sfx('win');
+function launch(D, i, ms, ids) {
+if (launched || !D) return; launched = true; sfx('win');
+if (goEl) { const nm = (ids || []).map((id) => (id === myId ? tr('你') : (cats.get(id) || {}).name || tr('玩家'))); goEl.style.setProperty('--c', hex(D.col)); goEl.innerHTML = `<div class="pz-gocard"><div class="pz-goi">${D.i}</div><h2>${esc(tr('人到齊了！'))}</h2><b>${esc(tr(D.n))}</b><div class="pz-qn">${nm.map((x) => `<span>${esc(x)}</span>`).join('')}</div><small>${esc(tr('正在進入對戰房…'))}</small><div class="pz-cd"><i style="animation-duration:${ms + 600}ms"></i></div></div>`; goEl.hidden = false; setTimeout(() => { if (goEl) goEl.hidden = true; }, ms + 2500); }
 setTimeout(() => { if (!P.on) { launched = false; return; }
 P.sticky = true; P.last = { x: D.px, z: D.pz + 0 }; leaveNow(); const sel = (SC.ui && SC.ui.selNow && SC.ui.selNow()) || {};
 T.enter(D.ranked ? 'ranked' : 'net');
@@ -40178,7 +40327,7 @@ launched = false; }, ms);
 }
 let sendNowF = false; const sendNow = () => { sendNowF = true; sendT = 0; };
 function netTick(dt) {
-if (!room) { if (!joining && (!offT || performance.now() - offT > 20000)) connect(); return; }
+if (!room) { if (infoEl) { const v = joining ? tr('連線中…') : tr('離線，重試中…'); if (infoEl.textContent !== v) { infoEl.textContent = v; infoEl.className = 'pz-ch off'; } } if (!joining && (!offT || performance.now() - offT > 20000)) connect(); return; }
 const now = performance.now(); while (evs.length && now - evs[0].t > 1200) evs.shift();
 const peers = room.peers(), live = new Set();
 for (const p of peers) { if (p.isMe || !p.presence || p.presence.pz !== 1) continue; const c = catFor(p, dt); if (!c) continue; live.add(p.peer);
@@ -40186,7 +40335,7 @@ const pr = p.presence; c.dg = typeof pr.dg === 'number' ? pr.dg : null; c.go = p
 const E = Array.isArray(pr.e) ? pr.e : []; let last = lastSeq.get(p.peer); if (last == null) last = E.reduce((m, e) => Math.max(m, Array.isArray(e) ? +e[0] || 0 : 0), 0);
 for (const e of E) { if (!Array.isArray(e) || !(e[0] > last) || e.length > 8) continue; last = e[0]; onEv(c, e); } lastSeq.set(p.peer, last); }
 for (const [id, c] of cats) if (!live.has(id)) { dropCat(c); cats.delete(id); lastSeq.delete(id); }
-if (infoEl) { const v = tr('{n} 號・{m}/{c} 人').replace('{n}', roomNo).replace('{m}', cats.size + 1).replace('{c}', CAP); if (infoEl.textContent !== v) infoEl.textContent = v; }
+if (infoEl) { const v = tr('{n} 號・{m}/{c} 人').replace('{n}', roomNo).replace('{m}', cats.size + 1).replace('{c}', CAP); if (infoEl.textContent !== v) { infoEl.textContent = v; infoEl.className = 'pz-ch'; } }
 if ((sendT -= dt) > 0 && !sendNowF) return; sendT = 0.1 * Math.max(1, (cats.size + 1) / 30); const forced = sendNowF; sendNowF = false; const m = T.netMe(); if (!m) return; const a = m.a || {}, rgb = T._myRgb ? T._myRgb() : null;
 const di = doorInfo[myDoor], dg = lead.d === myDoor && di && di.wait != null && di.mem[0] && di.mem[0].me ? Math.round(di.wait * 10) / 10 : null;
 const pr = { pz: 1, u: myUid(), n: myName(), k: m.k, lk: SC.wear && SC.wear.code ? SC.wear.code() : '', c: rgb ? (rgb[0] << 16) | (rgb[1] << 8) | rgb[2] : null, p: [r2(m.x), r2(m.y), r2(m.z), r2(m.f)], a: [r2(a.speed || 0), a.onGround ? 1 : 0, r2(a.vy || 0)], e: evs.map((x) => x.e), dr: myDoor === 'need-login' ? '' : myDoor, dj: myDoorAt, dg, go: lead.go && lead.go.d === myDoor ? lead.go : null };
@@ -40194,11 +40343,17 @@ const key = JSON.stringify(pr); if (key === lastSent && !forced) return; lastSen
 }
 let lastSent = '';
 function leaveNow() { disconnect(); }
-const pv = new V3();
+const pv = new V3(); let tRing = null, tSig = null;
 function frame(dt, t) {
 for (const f of anim) f(t, dt);
-netTick(dt); lod(dt); doorTick();
+netTick(dt); lod(dt); doorTick(); fxTick(dt);
 const cam = T._camera(); if (!cam || !hud) return; const W = hud.clientWidth, Hh = hud.clientHeight;
+for (const D of DOORS) { const el = D.bd; if (!el) continue; const d = Math.hypot(D.px - cam.position.x, D.pz - cam.position.z); pv.set(D.px, 8.5, D.pz).project(cam); const vis = d < 125 && pv.z < 1 && pv.x > -1.1 && pv.x < 1.1 && pv.y > -1.1 && pv.y < 1.15;
+el.style.visibility = vis ? '' : 'hidden'; if (vis) { const k = Math.max(0.5, Math.min(1, 34 / d)); el.style.transform = `translate(${(((pv.x + 1) / 2) * W).toFixed(1)}px,${(((1 - pv.y) / 2) * Hh).toFixed(1)}px) translate(-50%,-100%) scale(${k.toFixed(2)})`; el.style.zIndex = String(1000 - Math.round(d)); } }
+{ const tg = nearest(6), p = myPos(); if (!tRing) { tRing = new THREE.Mesh(new THREE.RingGeometry(1.5, 1.9, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false })); tRing.rotation.x = -Math.PI / 2; scene.add(tRing); }
+tRing.visible = !!tg; if (tg) { tRing.position.set(tg.x, tg.y + 0.12, tg.z); tRing.scale.setScalar(1 + 0.08 * Math.sin(t * 6)); }
+const dd = tg ? Math.hypot(tg.x - p.x, tg.z - p.z) : 99, sig = tg ? tg.id + (dd < 4) : '';
+if (sig !== tSig) { tSig = sig; tgtEl.innerHTML = tg ? `👉 <b>${esc(tg.name)}</b>` : esc(tr('走近別人，就能推一下、擊掌、送飯糰')); tgtEl.classList.toggle('none', !tg); if (barEl) barEl.querySelectorAll('[data-pz]').forEach((b) => { const k = b.dataset.pz; b.classList.toggle('off', (k === 'push' && dd >= 4) || ((k === 'five' || k === 'gift') && !tg)); }); } }
 const place = (el, x, y, z, up) => { pv.set(x, y + up, z).project(cam); const vis = pv.z < 1 && pv.x > -1.2 && pv.x < 1.2 && pv.y > -1.2 && pv.y < 1.2; el.style.visibility = vis ? '' : 'hidden'; if (vis) el.style.transform = `translate(${(((pv.x + 1) / 2) * W).toFixed(1)}px,${(((1 - pv.y) / 2) * Hh).toFixed(1)}px) translate(-50%,-100%)`; return vis; };
 for (const c of cats.values()) { const far = !c.cat || Math.hypot(c.x - cam.position.x, c.z - cam.position.z) > 70; c.tag.style.display = far ? 'none' : ''; if (!far) place(c.tag, c.x, c.y, c.z, 4.6); if (c.bub) { c.bubT -= dt; if (c.bubT <= 0 || muted.has(c.key)) c.bub.classList.add('off'); place(c.bub, c.x, c.y, c.z, 6.4); } }
 if (myBub) { myBubT -= dt; if (myBubT <= 0) myBub.classList.add('off'); const p = myPos(); place(myBub, p.x, p.y, p.z, 5.6); }
@@ -40210,7 +40365,7 @@ for (const c of cats.values()) { const dx = p.x - c.x, dz = p.z - c.z, d = Math.
 const r = Math.hypot(p.x, p.z); if (r > R0 - 0.5) { p.x *= (R0 - 0.5) / r; p.z *= (R0 - 0.5) / r; }
 }
 function near(p) {
-for (const D of DOORS) if (inPad(D, p.x, p.z)) { D.spot.btn = D.ranked && acc() && acc().needed && !acc().user ? '登入' : ''; return D.spot; }
+for (const D of DOORS) if (inPad(D, p.x, p.z)) return null;
 let best = null, bd = 1e9; for (const s of spots) { if (s.k.startsWith('d-')) continue; const d = Math.hypot(p.x - s.door.x, p.z - s.door.z); if (d < 4.6 && d < bd) { bd = d; best = s; } } return best;
 }
 function act(k) {
@@ -40223,7 +40378,7 @@ return false;
 const zone = { H, out, collide, near, act, frame, shops: ['set', 'heart', 'task', 'stk', 'sandbox'],   exitAt: () => false,
 get scene() { return scene; }, get sun() { return sun; }, get spots() { return spots; }, get solids() { return solids; },
 enterZone: () => { P.on = true; launched = false; myDoor = ''; lead = { d: '', since: 0, go: null, busy: false }; if (hud) hud.hidden = false; document.getElementById('app').classList.add('in-plaza'); const th = T._ui().hud; if (th) th.classList.add('in-plaza'); T.holdWeapon('none'); clearTimeout(offTimer); connect(); },
-leave: () => { P.on = false; if (hud) hud.hidden = true; closeChat(); if (loreEl) loreEl.hidden = true; if (menuEl) menuEl.hidden = true; document.getElementById('app').classList.remove('in-plaza'); const th = T._ui().hud; if (th) th.classList.remove('in-plaza'); T.holdWeapon(); offTimer = setTimeout(() => { if (!P.on) disconnect(); }, 1500); },
+leave: () => { P.on = false; if (hud) hud.hidden = true; closeChat(); if (loreEl) loreEl.hidden = true; if (menuEl) menuEl.hidden = true; if (findEl) findEl.hidden = true; document.getElementById('app').classList.remove('in-plaza'); const th = T._ui().hud; if (th) th.classList.remove('in-plaza'); T.holdWeapon(); offTimer = setTimeout(() => { if (!P.on) disconnect(); }, 1500); },
 };
 let offTimer = 0;
 P.zone = zone;
@@ -40233,7 +40388,8 @@ let riceSaid = false;
 { const real = T.show; T.show = (...a) => { real(...a); if (!T.on) return; if (P.sticky || !P.isDev()) enter(); else if (!riceSaid) { riceSaid = true; say(tr('🍙 飯糰貓村：彩貓最愛吃鮭魚飯糰，所以這個村子就叫飯糰貓村！')); } }; }
 window.addEventListener('keydown', (e) => {
 if (!P.on || !T.on || T.zone() !== zone) return; const tg = e.target; if (tg && /INPUT|TEXTAREA|SELECT/.test(tg.tagName)) return;
-if (document.querySelector('.ac-wrap, .rkd-ov:not([hidden]), .stk-ov:not([hidden]), .fm-ov:not([hidden]), .tw-set:not([hidden])') || (loreEl && !loreEl.hidden)) { if (e.code === 'Escape' && loreEl && !loreEl.hidden) { loreEl.hidden = true; e.stopPropagation(); } return; }
+if (document.querySelector('.ac-wrap, .rkd-ov:not([hidden]), .stk-ov:not([hidden]), .fm-ov:not([hidden]), .tw-set:not([hidden])') || (loreEl && !loreEl.hidden) || (findEl && !findEl.hidden)) { if (e.code === 'Escape' || e.code === 'KeyM') { if (loreEl && !loreEl.hidden) loreEl.hidden = true; if (findEl && !findEl.hidden) findEl.hidden = true; e.stopPropagation(); } return; }
+if (e.code === 'KeyM' && !e.repeat) { e.preventDefault(); e.stopPropagation(); findOpen(); return; }
 if (e.code === 'KeyT' || e.code === 'Slash' || (e.code === 'Enter' && T._ui().prompt.hidden)) { e.preventDefault(); e.stopPropagation(); openChat(); return; }
 const m = /^(Digit|Numpad)([1-5])$/.exec(e.code); if (m && !e.repeat) { e.preventDefault(); e.stopPropagation(); gesture(EMO[+m[2] - 1][0]); }
 }, true);
@@ -46309,6 +46465,8 @@ SC.CHANGELOG = [
 { en: "In Sun Valley the ink bomb is now a Colorberry Bomb and ink cat form is a Spirit Cat wearing an ancient mask (they work the same)", ja: "太陽の谷では、インクボムが彩りの実ボムに、インクネコが古代の仮面をつけた彩霊ネコになりました（性能はそのまま）", ko: "태양 계곡에서 잉크 폭탄은 채색 열매 폭탄, 잉크 고양이는 고대 가면을 쓴 채색 영혼 고양이가 됐어요 (성능은 그대로)", es: "En el Valle del Sol la bomba de tinta ahora es una Baya de color y la forma de gato de tinta es un Gato espíritu con máscara antigua (funcionan igual)", pt: "No Vale do Sol a bomba de tinta virou Fruta colorida e a forma de gato de tinta virou um Gato espírito com máscara antiga (funcionam igual)", fr: "Dans la Vallée du Soleil, la bombe d'encre devient une Baie de couleur et le chat d'encre un Chat-esprit au masque ancien (même fonctionnement)", de: "Im Sonnental ist die Tintenbombe jetzt eine Farbbeere und die Tintenkatze eine Geisterkatze mit uralter Maske (funktionieren gleich)", it: "Nella Valle del Sole la bomba d'inchiostro ora è una Bacca colorata e il gatto d'inchiostro un Gatto spirito con maschera antica (funzionano allo stesso modo)", ru: "В Солнечной долине чернильная бомба стала Цветной ягодой, а чернильный кот — Котом-духом в древней маске (работают так же)", tr: "Güneş Vadisi'nde mürekkep bombası artık Renk Meyvesi, mürekkep kedi de kadim maskeli Ruh Kedi (aynı şekilde çalışır)", id: "Di Lembah Matahari bom tinta kini Buah Warna dan wujud kucing tinta kini Kucing Roh bertopeng kuno (fungsinya sama)", vi: "Ở Thung lũng Mặt Trời, bom mực giờ là Quả mọng màu và dạng mèo mực là Mèo linh hồn đeo mặt nạ cổ (công dụng y như cũ)", th: "ในหุบเขาตะวัน ระเบิดหมึกกลายเป็นผลเบอร์รี่สี และร่างแมวหมึกกลายเป็นแมววิญญาณสีที่สวมหน้ากากโบราณ (ใช้งานเหมือนเดิม)" }],
 ["2026-11-27", "", "首頁拿掉「全部模式」，最下面多一顆「教學試玩」",
 {"en": "Home screen: the All Modes button is gone; a new Tutorial button sits at the bottom", "ja": "ホーム画面：「すべてのモード」をなくして、いちばん下に「チュートリアル」ボタンを追加", "ko": "홈 화면: '모든 모드'를 없애고 맨 아래에 '튜토리얼' 버튼을 추가했어요", "es": "Pantalla de inicio: se quitó «Todos los modos» y hay un nuevo botón de Tutorial abajo", "pt": "Tela inicial: o botão Todos os modos saiu e há um novo botão de Tutorial embaixo", "fr": "Écran d’accueil : le bouton Tous les modes disparaît, un nouveau bouton Tutoriel est en bas", "de": "Startbildschirm: „Alle Modi“ ist weg, unten gibt es jetzt einen Tutorial-Knopf", "it": "Schermata iniziale: tolto «Tutte le modalità», in basso c’è un nuovo pulsante Tutorial", "ru": "Главный экран: кнопки «Все режимы» больше нет, внизу появилась кнопка «Обучение»", "tr": "Ana ekran: Tüm Modlar düğmesi kalktı, en alta yeni bir Eğitim düğmesi geldi", "id": "Layar utama: tombol Semua Mode dihapus, ada tombol Tutorial baru di bawah", "vi": "Màn hình chính: bỏ nút Tất cả chế độ, thêm nút Hướng dẫn ở dưới cùng", "th": "หน้าแรก: เอาปุ่มทุกโหมดออก และมีปุ่มบทสอนใหม่อยู่ด้านล่าง"}],
+["2026-11-27", "", "沐沐廣場優化：每道門上方有看板（座位、幾人在等、倒數）；站進光圈有排隊卡，看得到跟誰一起排；「找對戰」（M）列出每道門，點「帶我去」自動走過去；人到齊有全畫面出發；互動會標出對象，推人、擊掌、愛心、丟飯糰都有新特效；角落有聊天紀錄",
+{"en": "MooMoo Plaza polish: every door has a board showing seats, how many are waiting and the countdown; a queue card shows who you're queued with; Find a match (M) lists every door and walks you there; a full-screen send-off when the team is ready; gestures now show who they target, with new push, high five, heart and flying-onigiri effects; chat log in the corner", "ja": "ムームー広場を改良：とびらごとに席・待ち人数・カウントダウンの看板、並んでいる仲間がわかる待機カード、「対戦をさがす」（M）で一覧からとびらまで自動で歩く、そろったら全画面で出発、動作の相手がわかる表示とおす・ハイタッチ・ハート・おにぎりを投げる新エフェクト、すみにチャット履歴", "ko": "무무 광장 다듬기: 문마다 자리·대기 인원·카운트다운 안내판, 같이 대기 중인 사람을 보여 주는 대기 카드, '대전 찾기'(M)로 문 목록에서 자동으로 걸어가기, 다 모이면 전체 화면 출발 연출, 동작 대상 표시와 밀기·하이파이브·하트·날아가는 주먹밥 효과, 구석에 채팅 기록", "es": "Mejoras en la Plaza MooMoo: cada puerta tiene un cartel con plazas, gente esperando y cuenta atrás; una tarjeta de cola muestra con quién esperas; Buscar partida (M) lista las puertas y te lleva; despedida a pantalla completa al reunir el equipo; los gestos muestran a quién van, con nuevos efectos de empujón, choque de manos, corazón y onigiri volador; historial de chat en la esquina", "pt": "Melhorias na Praça MooMoo: cada porta tem um painel com vagas, quantos esperam e contagem; um cartão de fila mostra com quem você espera; Achar partida (M) lista as portas e te leva até lá; despedida em tela cheia quando o time fecha; gestos mostram o alvo, com novos efeitos de empurrão, bate aqui, coração e onigiri voador; histórico do chat no canto", "fr": "Place MooMoo peaufinée : chaque porte affiche places, joueurs en attente et compte à rebours ; une carte de file montre avec qui tu attends ; Trouver un match (M) liste les portes et t’y emmène ; départ plein écran quand l’équipe est prête ; les gestes montrent leur cible, avec de nouveaux effets de poussée, tape-m’en-cinq, cœur et onigiri volant ; historique du chat dans un coin", "de": "MooMoo-Platz verfeinert: jedes Tor zeigt Plätze, Wartende und Countdown; eine Warteschlangen-Karte zeigt, mit wem du wartest; Match finden (M) listet alle Tore und bringt dich hin; Vollbild-Abschied, wenn das Team steht; Gesten zeigen ihr Ziel, mit neuen Effekten für Schubsen, Abklatschen, Herz und fliegendes Onigiri; Chatverlauf in der Ecke", "it": "Piazza MooMoo rifinita: ogni porta ha un pannello con posti, giocatori in attesa e conto alla rovescia; una scheda di coda mostra con chi aspetti; Trova partita (M) elenca le porte e ti accompagna; partenza a schermo intero quando la squadra è pronta; i gesti mostrano il bersaglio, con nuovi effetti per spinta, batti cinque, cuore e onigiri volante; cronologia chat nell’angolo", "ru": "Площадь МуМу доработана: у каждой двери табло с местами, ожидающими и отсчётом; карточка очереди показывает, с кем ты ждёшь; «Найти бой» (M) — список дверей и автопроход к ним; полноэкранные проводы, когда команда собрана; жесты показывают, к кому они, с новыми эффектами толчка, «дай пять», сердечка и летящего онигири; история чата в углу", "tr": "MooMoo Meydanı iyileştirildi: her kapıda koltuk, bekleyen sayısı ve geri sayım panosu; sıra kartı kiminle beklediğini gösterir; Maç bul (M) tüm kapıları listeler ve seni götürür; ekip toplanınca tam ekran uğurlama; hareketler hedefini gösterir, yeni itme, çak, kalp ve uçan onigiri efektleri; köşede sohbet geçmişi", "id": "Alun-alun MooMoo dipoles: tiap pintu punya papan kursi, jumlah yang menunggu dan hitung mundur; kartu antrean menunjukkan kamu antre dengan siapa; Cari pertandingan (M) menampilkan semua pintu dan mengantarmu; pelepasan layar penuh saat tim lengkap; gerakan menunjukkan targetnya, dengan efek baru dorong, tos, hati, dan onigiri terbang; riwayat obrolan di pojok", "vi": "Quảng trường MooMoo được trau chuốt: mỗi cổng có bảng chỗ ngồi, số người chờ và đếm ngược; thẻ hàng chờ cho biết bạn chờ cùng ai; Tìm trận (M) liệt kê các cổng và dẫn bạn tới; màn hình tiễn khi đủ đội; cử chỉ hiện rõ đối tượng, hiệu ứng mới cho đẩy, đập tay, tim và cơm nắm bay; lịch sử trò chuyện ở góc", "th": "ปรับลานมูมู: ทุกประตูมีป้ายบอกที่นั่ง คนที่รอ และนับถอยหลัง การ์ดคิวบอกว่ารอกับใคร หาคู่ต่อสู้ (M) แสดงทุกประตูและพาเดินไป ฉากส่งตัวเต็มจอเมื่อทีมครบ ท่าทางบอกเป้าหมายชัดเจนพร้อมเอฟเฟกต์ใหม่ของการผลัก ไฮไฟว์ หัวใจ และข้าวปั้นลอย ประวัติแชตที่มุมจอ"}],
 ["2026-11-27", "", "沐沐廣場改版：更大的傍晚城市廣場和霓虹對戰傳送門，一間最多 100 人；拿掉小鎮的店和 NPC 貓咪，廣場專門用來找人開打",
 {"en": "MooMoo Plaza redone: a bigger modern city square at dusk with neon battle portals, up to 100 players per plaza; the town shops and NPC cats are gone, so the plaza is all about finding a match", "ja": "ムームー広場をリニューアル：夕暮れの広い現代的な街の広場とネオンの対戦ゲート、1つの広場に最大100人；町のお店とNPCのネコはなくなり、対戦相手を探す場所になりました", "ko": "무무 광장 새단장: 해 질 녘의 더 넓은 현대 도시 광장과 네온 대전 포털, 광장 하나에 최대 100명; 마을 상점과 NPC 고양이는 없어지고 대전 상대를 찾는 곳이 됐어요", "es": "Plaza MooMoo renovada: una plaza urbana moderna más grande al atardecer con portales de batalla de neón, hasta 100 jugadores por plaza; ya no están las tiendas del pueblo ni los gatos NPC: la plaza es para encontrar partida", "pt": "Praça MooMoo renovada: uma praça urbana moderna maior ao entardecer com portais de batalha neon, até 100 jogadores por praça; as lojas da vila e os gatos NPC saíram, a praça é para achar partida", "fr": "Place MooMoo refaite : une place urbaine moderne plus grande au crépuscule avec des portails de combat néon, jusqu’à 100 joueurs par place ; plus de boutiques du village ni de chats PNJ, la place sert à trouver une partie", "de": "MooMoo-Platz neu: ein größerer moderner Stadtplatz in der Abenddämmerung mit Neon-Kampfportalen, bis zu 100 Spieler pro Platz; die Dorfläden und NPC-Katzen sind weg, der Platz ist zum Matchfinden da", "it": "Piazza MooMoo rinnovata: una piazza cittadina moderna più grande al tramonto con portali di battaglia al neon, fino a 100 giocatori per piazza; niente più negozi del villaggio né gatti PNG, la piazza serve a trovare partite", "ru": "Площадь МуМу обновлена: большая современная городская площадь в сумерках с неоновыми порталами боёв, до 100 игроков на площади; магазинов деревни и NPC-котов больше нет, площадь — чтобы найти бой", "tr": "MooMoo Meydanı yenilendi: akşam vakti daha büyük, modern bir şehir meydanı ve neon savaş kapıları, meydan başına 100 oyuncuya kadar; köy dükkânları ve NPC kediler kalktı, meydan maç bulmak için", "id": "Alun-alun MooMoo diperbarui: alun-alun kota modern yang lebih besar saat senja dengan portal pertarungan neon, hingga 100 pemain per alun-alun; toko desa dan kucing NPC dihapus, alun-alun untuk mencari pertandingan", "vi": "Quảng trường MooMoo làm mới: quảng trường thành phố hiện đại rộng hơn lúc hoàng hôn với cổng đấu neon, tối đa 100 người mỗi quảng trường; bỏ cửa hàng làng và mèo NPC, quảng trường để tìm trận", "th": "ปรับโฉมลานมูมู: ลานเมืองทันสมัยยามเย็นที่กว้างขึ้นพร้อมประตูต่อสู้นีออน สูงสุด 100 คนต่อลาน; เอาร้านในหมู่บ้านและแมว NPC ออก ลานนี้มีไว้หาคู่ต่อสู้"}],
 ["2026-11-27", "", "太陽谷的武器換成上古彩貓的樣式和名字：彩露葫蘆、彩紋石輪、星脈長笛、彩螺號角、彩羽刃（功能完全不變）",
