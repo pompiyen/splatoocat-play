@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v360';</script><script>window.SC_BUILD='a5bd241f0111';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v361';</script><script>window.SC_BUILD='4824d373643f';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -22832,7 +22832,7 @@ const g = cv.getContext('2d'); g.clearRect(0, 0, 256, 96);
 text = SC.tr(text); SC.i18n.fit(g, text, 236, 44); g.textAlign = 'center'; g.textBaseline = 'middle';
 g.lineJoin = 'round'; g.lineWidth = 12; g.strokeStyle = '#1b1430'; g.strokeText(text, 128, 50); g.fillStyle = css; g.fillText(text, 128, 50); tagTex.needsUpdate = true;
 };
-cat.setWeapon = (id) => { cat.weaponId = id; Object.keys(weapons).forEach((k) => (weapons[k].visible = k === id && !cat.bombOn && !cat.heroOn)); }; cat.hand = hand; cat.bodyG = body; cat.biped = biped;
+cat.setWeapon = (id) => { cat.weaponId = id; Object.keys(weapons).forEach((k) => (weapons[k].visible = k === id && !cat.bombOn && !cat.heroOn)); }; cat.hand = hand; cat.inkBody = inkBody; cat.handBomb = handBomb;   cat.bodyG = body; cat.biped = biped;
 cat.bowDraw = (k) => { const b = weapons.W06.userData.bow, z = b.tz - 1.25 * k, p = b.str.geometry.attributes.position; p.setZ(1, z); p.needsUpdate = true; b.arw.visible = k > 0.02; b.arw.position.z = z + 1.3; cat.drawK = k; };
 let handL = null; cat.dual = (on) => { cat.dualOn = !!on; if (on && !handL) { handL = new THREE.Group(); handL.position.set(0.85, 2.3, 0.95); handL.add(weaponModel('W05', mTeamGloss)); body.add(handL); } if (handL) handL.visible = !!on; };
 cat.bladeK = (k) => { weapons.W05.scale.set(1 + (k - 1) * 0.25, 1 + (k - 1) * 0.25, k); if (handL) handL.children[0].scale.copy(weapons.W05.scale); };
@@ -32058,7 +32058,7 @@ function bombBall(mat, team) { team.getHSL(_hsl); const yellow = _hsl.h > 0.09 &
 function spawnBomb(a, x, y, z, vx, vy, vz) {
 if (a.cat && G.armorOn) a.cat.tossT = 1;
 const mesh = bombMeshes.find((q) => !q.visible) || bombMeshes[0]; { let me = mesh.getObjectByName('mech'); const on = !!(G.armorOn && SC.nadeModel); if (on && !me) { const tm = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.12 }); me = SC.nadeModel('bomb', tm); me.name = 'mech'; me.scale.setScalar(1.45); me.traverse((o) => { if (o.isMesh && o.material === tm) o.name = 'mt'; }); mesh.add(me); } mesh.children.forEach((c) => (c.visible = (c === me) === on)); if (on) { const mt = me.getObjectByName('mt'); if (mt) mt.material.color.copy(colors[a.team]); } }
-mesh.visible = true; mesh.userData.m.material.color.copy(colors[a.team]); bombBall(mesh.userData.ball, colors[a.team]);
+mesh.visible = true; mesh.userData.m.material.color.copy(colors[a.team]); bombBall(mesh.userData.ball, colors[a.team]); if (SC.relic && SC.relic.bomb) SC.relic.bomb(mesh, colors[a.team]);
 bombs.push({ x, y, z, vx, vy, vz, team: a.team, owner: a, mesh, armed: -1, born: G.time, beep: 0 });
 if (near(a) > 0.2) A.sfx.bombThrow();
 }
@@ -43184,6 +43184,8 @@ const R = [
 ["星脈長笛", "Starvein Flute", "星脈の長笛", "별줄기 장피리", "Flauta de vena estelar", "Flauta veia-estelar", "Flûte de veine stellaire", "Sternader-Flöte", "Flauto di vena stellare", "Флейта звёздной жилы", "Yıldız Damarı Flütü", "Seruling Urat Bintang", "Sáo mạch sao", "ขลุ่ยสายดาว"],
 ["彩螺號角", "Conch Horn", "彩貝のほら貝", "채색 소라 나팔", "Caracola de color", "Concha-trombeta", "Conque de couleur", "Farbmuschelhorn", "Conchiglia-corno", "Цветной рог-раковина", "Renkli Deniz Kabuğu Boru", "Terompet Kerang Warna", "Tù và ốc màu", "แตรหอยสังข์สี"],
 ["彩羽刃", "Plume Blade", "彩羽の刃", "채색 깃털 칼날", "Hoja de pluma", "Lâmina de pena", "Lame-plume", "Federklinge", "Lama di piuma", "Перо-клинок", "Tüy Bıçak", "Bilah Bulu", "Lưỡi lông vũ", "ใบมีดขนนก"],
+["彩漿果", "Colorberry Bomb", "彩りの実ボム", "채색 열매 폭탄", "Baya de color", "Fruta colorida", "Baie de couleur", "Farbbeere", "Bacca colorata", "Цветная ягода", "Renk Meyvesi", "Buah Warna", "Quả mọng màu", "ผลเบอร์รี่สี"],
+["彩靈貓", "Spirit Cat", "彩霊ネコ", "채색 영혼 고양이", "Gato espíritu", "Gato espírito", "Chat-esprit", "Geisterkatze", "Gatto spirito", "Кот-дух", "Ruh Kedi", "Kucing Roh", "Mèo linh hồn", "แมววิญญาณสี"],
 ];
 I.add(R.map((r) => r.slice(0, 4)));
 if (I.addL) L.slice(3).forEach((l, j) => I.addL(l, R.map((r) => [r[0], r[4 + j]])));
@@ -43191,10 +43193,10 @@ if (I.addL) L.slice(3).forEach((l, j) => I.addL(l, R.map((r) => [r[0], r[4 + j]]
 
 
 (() => {
-const NAME = { W01: '彩露葫蘆', W02: '彩紋石輪', W03: '星脈長笛', W04: '彩螺號角', W05: '彩羽刃' };
+const NAME = { W01: '彩露葫蘆', W02: '彩紋石輪', W03: '星脈長笛', W04: '彩螺號角', W05: '彩羽刃' }, NAME2 = { bomb: ['墨水彈', '彩漿果'], cat: ['墨貓', '彩靈貓'] };
 const H = Math.PI / 2, std = (c, r = 0.6, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: r, ...o });
 let M = null;
-const mats = () => M || (M = { wood: std(0x8a5a34, 0.75), dark: std(0x5a3920, 0.8), ivory: std(0xf3e7cc, 0.45), gourd: std(0xe9bf6c, 0.5), stone: std(0xb8b0a2, 0.85, { flatShading: true }), stoneD: std(0x8d8578, 0.85, { flatShading: true }), gold: std(0xe0ac3a, 0.3, { metalness: 0.4 }), shell: std(0xfbe9dc, 0.4), shellP: std(0xf2b7a6, 0.45) });
+const mats = () => M || (M = { wood: std(0x8a5a34, 0.75), dark: std(0x5a3920, 0.8), ivory: std(0xf3e7cc, 0.45), gourd: std(0xe9bf6c, 0.5), stone: std(0xb8b0a2, 0.85, { flatShading: true }), stoneD: std(0x8d8578, 0.85, { flatShading: true }), gold: std(0xe0ac3a, 0.3, { metalness: 0.4 }), shell: std(0xfbe9dc, 0.4), shellP: std(0xf2b7a6, 0.45), leaf: std(0x5fae4a, 0.6, { flatShading: true }), glow: std(0xffffff, 0.2, { emissive: 0xffffff, emissiveIntensity: 0.6, transparent: true, opacity: 0.35 }) });
 const mesh = (geo, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); m.castShadow = true; return m; };
 const C = (r1, r2, l, n = 14) => new THREE.CylinderGeometry(r1, r2, l, n), S = (r, a = 16, b = 12) => new THREE.SphereGeometry(r, a, b), T = (r, t, n = 16) => new THREE.TorusGeometry(r, t, 6, n);
 const teamMats = (cat) => { const t = std(0xffffff, 0.3), g = std(0xffffff, 0.15, { emissiveIntensity: 0.55, transparent: true, opacity: 0.9 }); t.color = cat.color; g.color = cat.color; g.emissive = cat.color; return { t, g }; };
@@ -43254,13 +43256,39 @@ vane(0.5, 0.035, m.ivory, 1.85, 1.45); vane(0.4, 0.07, tm.t, 1.8, 1.25);
 return 2.6;
 },
 };
+function fruit(r, tm) { const m = mats(), g = new THREE.Group();
+const body = mesh(S(r, 18, 14), tm.t); body.scale.set(1, 0.92, 1); g.add(body);
+for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2, s = mesh(T(r * 0.98, r * 0.06, 20), m.gold, 0, 0, 0, H, a, 0); s.scale.set(1, 1, 0.92); g.add(s); void a; }
+for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2 + 0.5; g.add(mesh(S(r * 0.16, 8, 6), tm.g, Math.cos(a) * r * 0.86, r * 0.32, Math.sin(a) * r * 0.86)); }
+g.add(mesh(C(r * 0.12, r * 0.16, r * 0.45, 8), m.wood, 0, r * 1.05, 0)); g.add(mesh(T(r * 0.2, r * 0.05, 10), m.gold, 0, r * 0.86, 0, H));
+const leaf = mesh(S(r * 0.4, 10, 8), m.leaf, r * 0.32, r * 1.12, 0, 0, 0, -0.6); leaf.scale.set(1, 0.18, 0.55); g.add(leaf);
+return g; }
+function spirit(tm) { const m = mats(), g = new THREE.Group(), prof = [];
+for (let k = 0; k <= 20; k++) { const t = k / 20, y = t * 2.5, r = t < 0.45 ? Math.sqrt(Math.max(0, 1 - Math.pow(1 - t / 0.45, 2))) * 1.1 : 1.1 * Math.pow(Math.max(0, 1 - (t - 0.45) / 0.55), 0.9) * (1 - 0.15 * Math.sin((t - 0.45) * 20)); prof.push(new THREE.Vector2(Math.max(k === 20 ? 0.001 : 0.02, r), y)); }
+g.add(mesh(new THREE.LatheGeometry(prof, 24), tm.g, 0, 0.05, 0));
+g.add(mesh(new THREE.LatheGeometry(prof.map((v) => new THREE.Vector2(v.x * 0.62, v.y * 0.8)), 16), m.glow, 0, 0.1, 0));
+const mask = new THREE.Group(); mask.position.set(0, 1.35, 0.78); g.add(mask);
+const face = mesh(S(0.62, 18, 12), m.wood, 0, 0, 0); face.scale.set(1, 0.85, 0.38); mask.add(face);
+[-1, 1].forEach((s) => { const ear = mesh(new THREE.ConeGeometry(0.24, 0.5, 4), m.wood, s * 0.42, 0.55, -0.05, 0, 0, -s * 0.35); mask.add(ear); mask.add(mesh(new THREE.ConeGeometry(0.11, 0.26, 4), tm.t, s * 0.42, 0.55, 0.06, 0, 0, -s * 0.35));
+mask.add(mesh(S(0.13, 10, 8), m.gold, s * 0.22, 0.06, 0.2)); mask.add(mesh(S(0.07, 8, 6), m.dark, s * 0.22, 0.06, 0.29));
+[0, 1].forEach((i) => { const w = mesh(new THREE.BoxGeometry(0.28, 0.035, 0.03), tm.t, s * 0.42, -0.12 - i * 0.08, 0.18, 0, 0, s * (0.15 + i * 0.12)); mask.add(w); }); });
+mask.add(mesh(new THREE.ConeGeometry(0.07, 0.12, 3), m.dark, 0, -0.08, 0.25, Math.PI, 0, 0));
+mask.add(mesh(new THREE.ConeGeometry(0.09, 0.3, 4), m.gold, 0, 0.4, 0.2, 0.2, 0, 0));
+const tail = new THREE.Group(); tail.position.set(0, 0.6, -0.9); g.add(tail);
+for (let i = 0; i < 6; i++) { const t = i / 5; tail.add(mesh(S(0.3 - t * 0.17, 10, 8), i === 5 ? m.ivory : tm.g, Math.sin(t * 3) * 0.35, t * 1.7, -t * 0.7 + t * t * 0.5)); }
+g.userData.tail = tail; return g; }
 const R = (SC.relic = { names: NAME, on: false });
 let saved = null; const ORIG = {}; Object.keys(NAME).forEach((k) => (ORIG[k] = (SC.CFG[k] || {}).name));
 function skin(cat) {
 if (!cat || !cat.weapons || cat.relic) return; const m = mats(), tm = teamMats(cat);
 Object.keys(BUILD).forEach((k) => { const g = cat.weapons[k]; if (!g) return; const ud = g.userData; g.children.slice().forEach((c) => g.remove(c)); delete ud.pump; delete ud.bolt; ud.muzzle = BUILD[k](g, m, tm, ud); });
+if (cat.handBomb) { cat.handBomb.children.slice().forEach((c) => cat.handBomb.remove(c)); cat.handBomb.add(fruit(0.55, tm)); }
+if (cat.inkBody) { const ib = cat.inkBody; ib.children.slice().forEach((c) => ib.remove(c)); const sp = spirit(tm); ib.add(sp); cat.relicSpirit = sp; }
 cat.relic = true;
 }
+R.bomb = (mesh, col) => { let r = mesh.getObjectByName('relic'); if (!R.on) { if (r) r.visible = false; return; }
+if (!r) { const t = std(0xffffff, 0.3), g = std(0xffffff, 0.15, { emissiveIntensity: 0.55 }); r = fruit(1.2, { t, g }); r.name = 'relic'; r.userData.t = t; r.userData.g = g; mesh.add(r); }
+mesh.children.forEach((c) => (c.visible = c === r)); r.userData.t.color.copy(col); r.userData.g.color.copy(col); r.userData.g.emissive.copy(col); };
 const ICON = {
 W01: '<path d="M28 44v12" stroke="#1b1430" stroke-width="7" stroke-linecap="round"/><path d="M28 44v12" stroke="#8a5a34" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="24" cy="36" rx="16" ry="14" fill="#e9bf6c" stroke="#1b1430" stroke-width="3.2"/><circle cx="42" cy="28" r="9" fill="#e9bf6c" stroke="#1b1430" stroke-width="3.2"/><path d="M49 24l8-5" stroke="#1b1430" stroke-width="7" stroke-linecap="round"/><path d="M49 24l8-5" stroke="#8a5a34" stroke-width="3.5" stroke-linecap="round"/><path d="M12 34q12 6 24 0" fill="none" stroke="var(--wc, var(--a))" stroke-width="3.5" stroke-linecap="round"/><circle cx="60" cy="15" r="3.4" fill="var(--wc, var(--a))"/>',
 W02: '<path d="M10 8l20 24" stroke="#1b1430" stroke-width="8" stroke-linecap="round"/><path d="M10 8l20 24" stroke="#8a5a34" stroke-width="4" stroke-linecap="round"/><rect x="14" y="32" width="44" height="22" rx="10" fill="#b8b0a2" stroke="#1b1430" stroke-width="3.2"/><path d="M24 33v20M36 33v20M48 33v20" stroke="var(--wc, var(--a))" stroke-width="3.5"/>',
@@ -43268,7 +43296,16 @@ W03: '<path d="M8 50L52 14" stroke="#1b1430" stroke-width="9" stroke-linecap="ro
 W04: '<path d="M8 32l38-16v32z" fill="#fbe9dc" stroke="#1b1430" stroke-width="3.2" stroke-linejoin="round"/><path d="M18 28q4 4 0 8M28 24q5 8 0 16" fill="none" stroke="#f2b7a6" stroke-width="3"/><ellipse cx="48" cy="32" rx="6" ry="17" fill="var(--wc, var(--a))" stroke="#1b1430" stroke-width="3.2"/><path d="M30 42v14" stroke="#1b1430" stroke-width="7" stroke-linecap="round"/><path d="M30 42v14" stroke="#8a5a34" stroke-width="3.5" stroke-linecap="round"/>',
 W05: '<path d="M10 56l8-8" stroke="#1b1430" stroke-width="8" stroke-linecap="round"/><path d="M10 56l8-8" stroke="#8a5a34" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="46" r="4" fill="#e0ac3a" stroke="#1b1430" stroke-width="2.6"/><path d="M22 44C30 20 44 8 58 6 56 22 44 36 22 44z" fill="var(--wc, var(--a))" stroke="#1b1430" stroke-width="3.2" stroke-linejoin="round"/><path d="M22 44L56 8" stroke="#f3e7cc" stroke-width="2.6"/>',
 };
+const ICON2 = {
+bomb: '<path d="M32 14v-6" stroke="#1b1430" stroke-width="6" stroke-linecap="round"/><path d="M32 14v-6" stroke="#8a5a34" stroke-width="3" stroke-linecap="round"/><path d="M34 10q10-8 18-2-8 8-18 2z" fill="#5fae4a" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><circle cx="32" cy="36" r="21" fill="var(--wc, var(--a))" stroke="#1b1430" stroke-width="3.2"/><path d="M32 15q-12 21 0 42M32 15q12 21 0 42" fill="none" stroke="#e0ac3a" stroke-width="2.8"/><circle cx="22" cy="28" r="3.4" fill="#fff" opacity=".7"/>',
+cat: '<path d="M32 6C18 22 10 34 10 44a22 14 0 0 0 44 0C54 34 46 22 32 6z" fill="var(--wc, var(--a))" stroke="#1b1430" stroke-width="3.2" stroke-linejoin="round"/><path d="M20 30l2-10 7 7M44 30l-2-10-7 7" fill="#8a5a34" stroke="#1b1430" stroke-width="2.6" stroke-linejoin="round"/><ellipse cx="32" cy="34" rx="13" ry="10" fill="#8a5a34" stroke="#1b1430" stroke-width="2.8"/><circle cx="26.5" cy="33" r="3" fill="#e0ac3a"/><circle cx="37.5" cy="33" r="3" fill="#e0ac3a"/>',
+};
+function chipSwap2(on) {
+const bs = document.querySelectorAll('.w-chip.bomb'); [['bomb', bs[0]], ['cat', bs[1]]].forEach(([k, c]) => { if (!c) return; const svg = c.querySelector('svg'), b = c.querySelector('b'); if (!c._relic) c._relic = { svg: svg ? svg.innerHTML : '' };
+if (svg) svg.innerHTML = on ? ICON2[k] : c._relic.svg; if (b) b.textContent = SC.tr ? SC.tr(NAME2[k][on ? 1 : 0]) : NAME2[k][on ? 1 : 0]; });
+}
 function chipSwap(on) {
+chipSwap2(on);
 document.querySelectorAll('.w-chip[data-w]').forEach((c) => { const k = c.dataset.w; if (!NAME[k]) return; const svg = c.querySelector('svg'), b = c.querySelector('b'); if (!c._relic) c._relic = { svg: svg ? svg.innerHTML : '', name: ORIG[k] };
 if (svg) svg.innerHTML = on ? ICON[k] : c._relic.svg; if (b) b.textContent = SC.tr ? SC.tr(on ? NAME[k] : c._relic.name) : on ? NAME[k] : c._relic.name; });
 }
@@ -43780,7 +43817,7 @@ let go = null; const enemy = orbs.find((o) => o.on && !o.back && Math.hypot(o.po
 if (enemy && spr.cd <= 0) { go = enemy.pos; if (sprite.position.distanceTo(enemy.pos) < 2.2) { if (!orbHit(enemy, 9999) || enemy.on) { enemy.back = true; enemy.target.alive = false; } spr.cd = 7; ctx.burst(enemy.pos.x, enemy.pos.y, enemy.pos.z, new THREE.Color(0xffe27a), 16, 14, 0.4); sfx('rpgHit', 'open'); if (!spr.t2) { spr.t2 = 1; ctx.tip('小晴把子彈彈回去了！', 2.2); } } }
 else if (full && foe && foe.alive && !foe.dead && Math.hypot(foe.pos.x - p.pos.x, foe.pos.z - p.pos.z) < 60) { spr.ch = 0; const e = foe, y = e.pos.y + (e.y || 0) + (e.d && e.d.hy ? e.d.hy * 0.55 : 2), dmg = e.max * (0.06 + 0.01 * vs);
 sprBeam(sprite.position, new V3(e.pos.x, y, e.pos.z)); if (e === boss) hurtB(dmg, p, 'light'); else { hurtM(e, dmg, null, 'light', e.mob); if (!e.mob && e.vul > 0) e.vul += 1.5; } ctx.burst(e.pos.x, y, e.pos.z, new THREE.Color(0xfff2a0), 26, 18, 0.5); sfx('firework'); if (!spr.t3) { spr.t3 = 1; ctx.tip('彩光連擊！打中怪物會幫小晴集光，集滿她就會幫你打', 3.5); } }
-else if (!foe && (p.vel ? Math.hypot(p.vel.x, p.vel.z) > 4 : true)) { const t = curTgt && curTgt(); if (t) { const dx = t.x - p.pos.x, dz = t.z - p.pos.z, d = Math.hypot(dx, dz); if (d > 50) { spr.v.set(p.pos.x + (dx / d) * 14, p.pos.y + 4.5 + Math.sin(now * 3) * 0.4, p.pos.z + (dz / d) * 14); if (spr.lead <= 0) { spr.lead = 0.3; ctx.burst(sprite.position.x, sprite.position.y - 0.5, sprite.position.z, new THREE.Color(0xffe27a), 2, 3, 0.9); } } } }
+else if (!foe && (p.vel ? Math.hypot(p.vel.x, p.vel.z) > 4 : true)) { const t = curTgt && curTgt(); if (t) { const dx = t.x - p.pos.x, dz = t.z - p.pos.z, d = Math.hypot(dx, dz); if (d > 50) { spr.v.set(p.pos.x + (dx / d) * 14, p.pos.y + 4.5 + Math.sin(now * 3) * 0.4, p.pos.z + (dz / d) * 14);   } } }
 if (go) spr.v.copy(go);
 sprite.position.lerp(spr.v, Math.min(1, dt * (go ? 14 : 4))); sprite.rotation.y = yaw + Math.PI;
 const k = Math.min(1, spr.ch / SPR_N); if (core) { core.material.emissiveIntensity = 1 + k * 1.6 + (full ? Math.sin(now * 12) * 0.5 : 0); core.scale.setScalar(0.55 * (1 + k * 0.35)); }
@@ -46255,6 +46292,8 @@ if (useFb) load().catch(() => { fbp = null; });
 (() => {
 window.SC = window.SC || {};
 SC.CHANGELOG = [
+["2026-11-27", "", "太陽谷的墨水彈換成彩漿果、墨貓換成戴著上古面具的彩靈貓（功能不變）；小晴帶路時不再一直掉小光點",
+{ en: "In Sun Valley the ink bomb is now a Colorberry Bomb and ink cat form is a Spirit Cat wearing an ancient mask (they work the same)", ja: "太陽の谷では、インクボムが彩りの実ボムに、インクネコが古代の仮面をつけた彩霊ネコになりました（性能はそのまま）", ko: "태양 계곡에서 잉크 폭탄은 채색 열매 폭탄, 잉크 고양이는 고대 가면을 쓴 채색 영혼 고양이가 됐어요 (성능은 그대로)", es: "En el Valle del Sol la bomba de tinta ahora es una Baya de color y la forma de gato de tinta es un Gato espíritu con máscara antigua (funcionan igual)", pt: "No Vale do Sol a bomba de tinta virou Fruta colorida e a forma de gato de tinta virou um Gato espírito com máscara antiga (funcionam igual)", fr: "Dans la Vallée du Soleil, la bombe d'encre devient une Baie de couleur et le chat d'encre un Chat-esprit au masque ancien (même fonctionnement)", de: "Im Sonnental ist die Tintenbombe jetzt eine Farbbeere und die Tintenkatze eine Geisterkatze mit uralter Maske (funktionieren gleich)", it: "Nella Valle del Sole la bomba d'inchiostro ora è una Bacca colorata e il gatto d'inchiostro un Gatto spirito con maschera antica (funzionano allo stesso modo)", ru: "В Солнечной долине чернильная бомба стала Цветной ягодой, а чернильный кот — Котом-духом в древней маске (работают так же)", tr: "Güneş Vadisi'nde mürekkep bombası artık Renk Meyvesi, mürekkep kedi de kadim maskeli Ruh Kedi (aynı şekilde çalışır)", id: "Di Lembah Matahari bom tinta kini Buah Warna dan wujud kucing tinta kini Kucing Roh bertopeng kuno (fungsinya sama)", vi: "Ở Thung lũng Mặt Trời, bom mực giờ là Quả mọng màu và dạng mèo mực là Mèo linh hồn đeo mặt nạ cổ (công dụng y như cũ)", th: "ในหุบเขาตะวัน ระเบิดหมึกกลายเป็นผลเบอร์รี่สี และร่างแมวหมึกกลายเป็นแมววิญญาณสีที่สวมหน้ากากโบราณ (ใช้งานเหมือนเดิม)" }],
 ["2026-11-27", "", "首頁拿掉「全部模式」，最下面多一顆「教學試玩」",
 {"en": "Home screen: the All Modes button is gone; a new Tutorial button sits at the bottom", "ja": "ホーム画面：「すべてのモード」をなくして、いちばん下に「チュートリアル」ボタンを追加", "ko": "홈 화면: '모든 모드'를 없애고 맨 아래에 '튜토리얼' 버튼을 추가했어요", "es": "Pantalla de inicio: se quitó «Todos los modos» y hay un nuevo botón de Tutorial abajo", "pt": "Tela inicial: o botão Todos os modos saiu e há um novo botão de Tutorial embaixo", "fr": "Écran d’accueil : le bouton Tous les modes disparaît, un nouveau bouton Tutoriel est en bas", "de": "Startbildschirm: „Alle Modi“ ist weg, unten gibt es jetzt einen Tutorial-Knopf", "it": "Schermata iniziale: tolto «Tutte le modalità», in basso c’è un nuovo pulsante Tutorial", "ru": "Главный экран: кнопки «Все режимы» больше нет, внизу появилась кнопка «Обучение»", "tr": "Ana ekran: Tüm Modlar düğmesi kalktı, en alta yeni bir Eğitim düğmesi geldi", "id": "Layar utama: tombol Semua Mode dihapus, ada tombol Tutorial baru di bawah", "vi": "Màn hình chính: bỏ nút Tất cả chế độ, thêm nút Hướng dẫn ở dưới cùng", "th": "หน้าแรก: เอาปุ่มทุกโหมดออก และมีปุ่มบทสอนใหม่อยู่ด้านล่าง"}],
 ["2026-11-27", "", "沐沐廣場改版：更大的傍晚城市廣場和霓虹對戰傳送門，一間最多 100 人；拿掉小鎮的店和 NPC 貓咪，廣場專門用來找人開打",
