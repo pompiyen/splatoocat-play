@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v356';</script><script>window.SC_BUILD='7227947e4105';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v357';</script><script>window.SC_BUILD='56a4e382025c';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -1780,6 +1780,49 @@ html[data-lang^=zh] .chat-stk .emo-b small { white-space: nowrap; letter-spacing
 html .portrait .town .tw-tools .tw-ic { width: clamp(32px, calc((100vw - 140px) / 6 - 5px), 40px); height: clamp(32px, calc((100vw - 140px) / 6 - 5px), 40px); font-size: clamp(15px, calc((100vw - 140px) / 13), 19px); }
 html .portrait .town .tw-name { margin-right: -36px; } /* 名牌縮成 0.72 倍後右邊空出來的位置還給圖示 */
 
+/* ───── 沐沐廣場（09tp_plaza.js，Yen 2026-11-27）＋飯糰小鎮只給開發者 ───── */
+#app:not(.sc-dev) .dev-only { display: none !important; }
+.hd-dev { position: absolute; left: 0; bottom: calc(100% + 10px); display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border: 3px solid #1b1430; border-radius: 14px 18px 12px 16px; background: linear-gradient(160deg, #fff7ea, #ffe2b8); color: #1b1430; box-shadow: 0 4px 0 #1b1430; font: 900 16px/1.1 var(--f-display); cursor: pointer; pointer-events: auto; }
+.hd-dev i { font-style: normal; font-size: 22px; } .hd-dev small { font: 700 12px/1 var(--f-body); color: #8a4a2a; }
+.tw-devnote { color: #ffd6a0 !important; }
+.pz-hud { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.pz-hud[hidden] { display: none; }
+.town.in-plaza .fm-hud, .town.in-plaza .tw-wpn, .town.in-plaza .tw-col, .town.in-plaza .tw-wash, .town.in-plaza .tw-mouse { display: none !important; }
+#app.is-touch.in-town.in-plaza .touch .t-btn.t-fire, #app.is-touch.in-town.in-plaza .touch .t-btn.t-cat, #app.is-touch.in-town.in-plaza .touch .t-btn.t-bomb, #app.is-touch.in-town.in-plaza .touch .t-btn.t-w { display: none !important; }
+#app.is-touch.in-town.in-plaza .touch .t-btn.t-jump { display: flex !important; }
+.pz-info { position: absolute; left: 50%; top: calc(14px + var(--sat)); transform: translateX(-50%); display: flex; align-items: baseline; gap: 10px; padding: 6px 16px; background: rgba(27, 20, 48, .82); color: #fff; border: 3px solid #fff; border-radius: 999px; font: 900 18px/1.1 var(--f-display); white-space: nowrap; }
+.pz-info span { font: 700 13px/1 var(--f-body); color: #ffe9a8; }
+.town.in-plaza .tw-hint { top: calc(62px + var(--sat)); }
+.pz-bar { position: absolute; left: 50%; bottom: calc(14px + var(--sab)); transform: translateX(-50%); display: flex; gap: 6px; pointer-events: auto; max-width: calc(100% - 24px); }
+.pz-b { display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 64px; padding: 5px 8px 4px; border: 3px solid #1b1430; border-radius: 14px; background: #fff7ea; color: #1b1430; box-shadow: 0 3px 0 #1b1430; cursor: pointer; font: 800 12px/1.1 var(--f-body); }
+.pz-b span { font-size: 22px; line-height: 1; } .pz-b kbd { font: 700 10px/1 var(--f-body); opacity: .55; }
+.pz-b.pz-say { background: linear-gradient(160deg, #8fe2ff, #2fb4f5); }
+.pz-b:active { transform: translateY(2px); box-shadow: 0 1px 0 #1b1430; }
+#app.is-touch .pz-b kbd { display: none; }
+#app.is-touch .pz-bar { left: calc(50% - 30px); bottom: calc(10px + var(--sab)); } #app.is-touch .pz-b { min-width: 46px; padding: 4px 5px; } #app.is-touch .pz-b b { display: none; }
+.town.in-plaza .tw-prompt { bottom: calc(96px + var(--sab)); }
+.pz-chat { position: absolute; left: 50%; bottom: calc(92px + var(--sab)); transform: translateX(-50%); display: flex; gap: 6px; width: min(560px, calc(100% - 24px)); pointer-events: auto; padding: 6px; background: rgba(27, 20, 48, .88); border: 3px solid #fff; border-radius: 16px; }
+.pz-chat[hidden] { display: none; }
+.pz-chat input { flex: 1; min-width: 0; font: 700 17px/1.2 var(--f-body); padding: 8px 10px; border-radius: 10px; border: 0; }
+.pz-chat button { border: 0; border-radius: 10px; padding: 0 12px; font: 800 15px/1 var(--f-body); cursor: pointer; } .pz-send { background: #ffd23f; } .pz-cx { background: #fff; }
+.pz-bubs { position: absolute; inset: 0; overflow: hidden; }
+.pz-tag { position: absolute; left: 0; top: 0; pointer-events: auto; padding: 2px 9px; background: rgba(27, 20, 48, .72); color: #fff; border: 2px solid rgba(255, 255, 255, .85); border-radius: 999px; font: 800 13px/1.2 var(--f-body); white-space: nowrap; cursor: pointer; will-change: transform; }
+.pz-tag.mute { opacity: .45; text-decoration: line-through; }
+.pz-bub { position: absolute; left: 0; top: 0; max-width: 220px; padding: 7px 12px; background: #fff; color: #1b1430; border: 3px solid #1b1430; border-radius: 16px 16px 16px 4px; font: 700 15px/1.3 var(--f-body); box-shadow: 0 3px 0 rgba(27, 20, 48, .5); word-break: break-word; transition: opacity .5s; will-change: transform; }
+.pz-bub.off { opacity: 0; }
+.pz-emo { position: absolute; left: 0; top: 0; font-size: 34px; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .25)); will-change: transform; }
+.pz-menu, .pz-ov { position: absolute; inset: 0; pointer-events: auto; display: grid; place-items: center; background: rgba(27, 20, 48, .35); }
+.pz-menu[hidden], .pz-ov[hidden] { display: none; }
+.pz-mcard, .pz-card { position: relative; background: #fff7ea; color: #1b1430; border: 4px solid #1b1430; border-radius: 22px; box-shadow: 0 6px 0 #1b1430; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
+.pz-mcard b { font: 900 20px/1.2 var(--f-display); text-align: center; }
+.pz-card { width: min(460px, calc(100vw - 40px)); background: linear-gradient(170deg, #f6f0e4, #e8dcc6); }
+.pz-card h3 { margin: 0; font: 900 22px/1.2 var(--f-display); } .pz-card p { margin: 0; font: 700 17px/1.6 var(--f-body); min-height: 5.2em; }
+.pz-x { position: absolute; right: 10px; top: 8px; border: 0; background: none; font-size: 20px; cursor: pointer; }
+.pz-dots { display: flex; gap: 6px; justify-content: center; } .pz-dots i { width: 9px; height: 9px; border-radius: 50%; background: #c9bba2; } .pz-dots i.on { background: #a56bff; }
+.pz-next { align-self: flex-end; }
+#app .town.in-plaza .tw-prompt { bottom: calc(104px + var(--sab)) !important; }
+.pz-next { border: 3px solid #1b1430; border-radius: 14px; background: linear-gradient(160deg, #ffe27a, #ffc21f); color: #1b1430; font: 900 17px/1 var(--f-display); padding: 9px 18px; box-shadow: 0 3px 0 #1b1430; cursor: pointer; }
+#app.is-touch.in-town.in-plaza .tw-hint { top: calc(58px + var(--sat)) !important; left: 50% !important; max-width: calc(100% - 240px); white-space: normal; text-align: center; }
 /* 2026-11-27 Yen「連線與單機也可直接選角色」：單機對戰、連線對戰、積分賽的「我的裝備」最上面直接選貓咪。
    六隻排成一排（窄的時候 3×2），只放臉和名字，說明收起來；點了照舊會喵一聲、跳出 3D 預覽 */
 #m-title.sx #kind-opt #pick-kind { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
@@ -7960,6 +8003,7 @@ const T = '丟丢並并亂乱佔占併并來来係系個个們们倉仓側侧傘
 const T2 = '嚨咙煩烦鳥鸟睏困嬌娇討讨評评鉤钩鈞钧館馆獵猎銅铜誌志頒颁義义詳详據据錘锤冊册遲迟霧雾綜综柵栅誕诞驟骤鎮镇闖闯歷历';
 if (SC.i18n && SC.i18n.setHans) SC.i18n.setHans([...T + T2]);
 if (SC.i18n && SC.i18n.setHans) SC.i18n.setHans([...T + T2 + '覺觉該该饋馈蝕蚀劍剑囪囱壯壮擬拟溫温窯窑織织莊庄蓮莲薑姜褲裤遺遗遼辽鋪铺鎧铠闊阔騎骑麗丽漿浆聖圣脈脉']);
+if (SC.i18n && SC.i18n.setHans) SC.i18n.setHans([...T + T2 + '覺觉該该饋馈蝕蚀劍剑囪囱壯壮擬拟溫温窯窑織织莊庄蓮莲薑姜褲裤遺遗遼辽鋪铺鎧铠闊阔騎骑麗丽漿浆聖圣脈脉' + '僅仅夥伙飯饭鮭鲑']);
 })();
 
 
@@ -19364,6 +19408,63 @@ const R = [
 I.add([['阿肥', 'Afei', 'アフェイ', '아페이']]);
 L.forEach((l, k) => I.addL(l, R.map((r) => [r[0], r[1 + k]])));
 SC.trName = (n) => { const m = /^(\D+?)(\d*)$/.exec(String(n || '')); if (!m || !SC.tr) return n; const b = SC.tr(m[1]); return b === m[1] ? n : b + (m[2] ? ' ' + m[2] : ''); };
+})();
+
+
+(() => {
+const I = SC.i18n, L = ['en', 'ja', 'ko', 'es', 'pt', 'fr', 'de', 'it', 'ru', 'tr', 'id', 'vi', 'th'];
+const R = [
+['沐沐廣場', 'MooMoo Plaza', 'ムームー広場', '무무 광장', 'Plaza MooMoo', 'Praça MooMoo', 'Place MooMoo', 'MooMoo-Platz', 'Piazza MooMoo', 'Площадь МуМу', 'MooMoo Meydanı', 'Alun-alun MooMoo', 'Quảng trường MooMoo', 'ลานมูมู'],
+['和大家聊天、湊人開打', 'Chat and team up for battles', 'みんなとおしゃべり・仲間を集めてバトル', '같이 수다 떨고 모여서 대전', 'Charla y reúne equipo para luchar', 'Converse e junte gente para jogar', 'Discute et forme une équipe', 'Plaudern und Teams bilden', 'Chiacchiera e forma una squadra', 'Общайся и собирай команду', 'Sohbet et, takım kur', 'Ngobrol dan kumpulkan tim', 'Trò chuyện và rủ nhau đấu', 'คุยกันและรวมทีมไปสู้'],
+['飯糰小鎮', 'Onigiri Town', 'おにぎりタウン', '주먹밥 마을', 'Pueblo Onigiri', 'Vila Onigiri', 'Village Onigiri', 'Onigiri-Dorf', 'Villaggio Onigiri', 'Городок Онигири', 'Onigiri Kasabası', 'Kota Onigiri', 'Thị trấn Onigiri', 'เมืองโอนิกิริ'],
+['僅開發者可進入試玩', 'Developers only (test build)', '開発者だけが入れる試作版', '개발자만 들어갈 수 있는 테스트판', 'Solo desarrolladores (prueba)', 'Só desenvolvedores (teste)', 'Développeurs seulement (test)', 'Nur Entwickler (Testversion)', 'Solo sviluppatori (prova)', 'Только для разработчиков (тест)', 'Yalnızca geliştiriciler (test)', 'Khusus pengembang (uji coba)', 'Chỉ nhà phát triển (bản thử)', 'เฉพาะผู้พัฒนา (ทดลอง)'],
+['🍙 僅開發者可進入試玩', '🍙 Developers only (test build)', '🍙 開発者だけが入れる試作版', '🍙 개발자만 들어갈 수 있는 테스트판', '🍙 Solo desarrolladores (prueba)', '🍙 Só desenvolvedores (teste)', '🍙 Développeurs seulement (test)', '🍙 Nur Entwickler (Testversion)', '🍙 Solo sviluppatori (prova)', '🍙 Только для разработчиков (тест)', '🍙 Yalnızca geliştiriciler (test)', '🍙 Khusus pengembang (uji coba)', '🍙 Chỉ nhà phát triển (bản thử)', '🍙 เฉพาะผู้พัฒนา (ทดลอง)'],
+['🍙 飯糰小鎮：漆貓最愛吃鮭魚飯糰，所以小鎮就叫飯糰小鎮！', '🍙 Onigiri Town: ink cats love salmon rice balls more than anything, so the town is named after them!', '🍙 おにぎりタウン：ネコたちの大好物はシャケおにぎり。だから町の名前もおにぎり！', '🍙 주먹밥 마을: 잉크 고양이들이 제일 좋아하는 음식이 연어 주먹밥이라서 마을 이름도 주먹밥!', '🍙 Pueblo Onigiri: ¡a los gatos de tinta les encantan las bolas de arroz con salmón, por eso el pueblo se llama así!', '🍙 Vila Onigiri: os gatos de tinta amam bolinhos de arroz com salmão, por isso a vila tem esse nome!', '🍙 Village Onigiri : les chats d’encre adorent les boulettes de riz au saumon, d’où le nom du village !', '🍙 Onigiri-Dorf: Tintenkatzen lieben Lachs-Reisbällchen über alles, daher der Name!', '🍙 Villaggio Onigiri: i gatti d’inchiostro adorano le polpette di riso al salmone, da qui il nome!', '🍙 Городок Онигири: чернильные коты обожают рисовые шарики с лососем, отсюда и название!', '🍙 Onigiri Kasabası: mürekkep kediler en çok somonlu pirinç toplarını sever, adı da buradan geliyor!', '🍙 Kota Onigiri: kucing tinta paling suka nasi kepal salmon, makanya kotanya dinamai begitu!', '🍙 Thị trấn Onigiri: mèo mực mê nhất cơm nắm cá hồi, nên thị trấn mang tên này!', '🍙 เมืองโอนิกิริ: แมวหมึกชอบข้าวปั้นแซลมอนที่สุด เมืองเลยชื่อนี้!'],
+['回廣場', 'Back to plaza', '広場へ戻る', '광장으로', 'Volver a la plaza', 'Voltar à praça', 'Retour à la place', 'Zurück zum Platz', 'Torna in piazza', 'На площадь', 'Meydana dön', 'Kembali ke alun-alun', 'Về quảng trường', 'กลับลาน'],
+['回去', 'Back', 'もどる', '돌아가기', 'Volver', 'Voltar', 'Retour', 'Zurück', 'Indietro', 'Назад', 'Geri', 'Kembali', 'Quay lại', 'กลับ'],
+['說話', 'Talk', '話す', '말하기', 'Hablar', 'Falar', 'Parler', 'Reden', 'Parla', 'Сказать', 'Konuş', 'Bicara', 'Nói', 'พูด'],
+['推一下', 'Push', 'おす', '밀기', 'Empujar', 'Empurrar', 'Pousser', 'Schubsen', 'Spingi', 'Толкнуть', 'İt', 'Dorong', 'Đẩy', 'ผลัก'],
+['揮手', 'Wave', '手をふる', '손 흔들기', 'Saludar', 'Acenar', 'Saluer', 'Winken', 'Saluta', 'Помахать', 'El salla', 'Lambai', 'Vẫy tay', 'โบกมือ'],
+['比愛心', 'Heart', 'ハート', '하트', 'Corazón', 'Coração', 'Cœur', 'Herz', 'Cuore', 'Сердечко', 'Kalp', 'Hati', 'Thả tim', 'หัวใจ'],
+['擊掌', 'High five', 'ハイタッチ', '하이파이브', 'Chócala', 'Toca aqui', 'Tape-m’en cinq', 'High five', 'Batti cinque', 'Дай пять', 'Çak bir beşlik', 'Tos', 'Đập tay', 'ไฮไฟว์'],
+['送飯糰', 'Give onigiri', 'おにぎりをあげる', '주먹밥 주기', 'Regalar onigiri', 'Dar onigiri', 'Offrir un onigiri', 'Onigiri schenken', 'Regala onigiri', 'Подарить онигири', 'Onigiri ver', 'Beri onigiri', 'Tặng cơm nắm', 'ให้ข้าวปั้น'],
+['說點什麼…（按 Enter 送出）', 'Say something… (Enter to send)', 'なにか話そう…（Enterで送信）', '무슨 말이든… (Enter로 보내기)', 'Di algo… (Enter para enviar)', 'Diga algo… (Enter para enviar)', 'Dis quelque chose… (Entrée pour envoyer)', 'Sag etwas… (Enter zum Senden)', 'Scrivi qualcosa… (Invio per inviare)', 'Скажи что-нибудь… (Enter — отправить)', 'Bir şey söyle… (Göndermek için Enter)', 'Katakan sesuatu… (Enter untuk kirim)', 'Nói gì đó… (Enter để gửi)', 'พูดอะไรสักอย่าง… (กด Enter เพื่อส่ง)'],
+['說點什麼', 'Say something', 'なにか話そう', '무슨 말이든', 'Di algo', 'Diga algo', 'Dis quelque chose', 'Sag etwas', 'Scrivi qualcosa', 'Скажи что-нибудь', 'Bir şey söyle', 'Katakan sesuatu', 'Nói gì đó', 'พูดอะไรสักอย่าง'],
+['選你的貓咪', 'Pick your cat', 'ネコをえらぶ', '고양이 고르기', 'Elige tu gato', 'Escolha seu gato', 'Choisis ton chat', 'Wähle deine Katze', 'Scegli il tuo gatto', 'Выбери кота', 'Kedini seç', 'Pilih kucingmu', 'Chọn mèo của bạn', 'เลือกแมวของคุณ'],
+['探險小徑', 'Adventure Trail', '冒険の小道', '탐험 오솔길', 'Sendero de aventura', 'Trilha da aventura', 'Sentier d’aventure', 'Abenteuerpfad', 'Sentiero dell’avventura', 'Тропа приключений', 'Macera Patikası', 'Jalur Petualangan', 'Lối mạo hiểm', 'ทางผจญภัย'],
+['殭屍保衛戰', 'Zombie Defense', 'ゾンビ防衛戦', '좀비 방어전', 'Defensa zombi', 'Defesa zumbi', 'Défense zombie', 'Zombie-Abwehr', 'Difesa zombie', 'Зомби-оборона', 'Zombi Savunması', 'Pertahanan Zombi', 'Phòng thủ zombie', 'ป้องกันซอมบี้'],
+['看看', 'Look', '見る', '보기', 'Mirar', 'Ver', 'Regarder', 'Ansehen', 'Guarda', 'Смотреть', 'Bak', 'Lihat', 'Xem', 'ดู'],
+['登入', 'Sign in', 'ログイン', '로그인', 'Iniciar sesión', 'Entrar', 'Se connecter', 'Anmelden', 'Accedi', 'Войти', 'Giriş yap', 'Masuk', 'Đăng nhập', 'เข้าสู่ระบบ'],
+['等一下再試', 'Try again in a moment', 'あとでもう一度', '잠시 후 다시', 'Inténtalo en un momento', 'Tente de novo daqui a pouco', 'Réessaie dans un instant', 'Gleich nochmal versuchen', 'Riprova tra poco', 'Попробуй чуть позже', 'Birazdan tekrar dene', 'Coba lagi sebentar', 'Thử lại sau chút nữa', 'ลองใหม่อีกสักครู่'],
+['貓神像的石碑', 'Cat God Stone', 'ネコ神像の石碑', '고양이 신상 비석', 'Piedra del Dios Gato', 'Pedra do Deus Gato', 'Stèle du Dieu Chat', 'Stein der Katzengottheit', 'Stele del Dio Gatto', 'Камень Кота-божества', 'Kedi Tanrı Taşı', 'Prasasti Dewa Kucing', 'Bia đá Thần Mèo', 'ศิลาเทพแมว'],
+['翻彩的傳說', 'The Legend of the Color Turn', '色返しの伝説', '색 뒤집기의 전설', 'La leyenda del Giro de Color', 'A lenda da Virada de Cor', 'La légende du Retour des couleurs', 'Die Legende der Farbwende', 'La leggenda del Giro dei Colori', 'Легенда о Цветовороте', 'Renk Dönümü Efsanesi', 'Legenda Putaran Warna', 'Truyền thuyết Lật Màu', 'ตำนานการพลิกสี'],
+['下一段', 'Next', 'つぎへ', '다음', 'Siguiente', 'Próximo', 'Suivant', 'Weiter', 'Avanti', 'Дальше', 'Sonraki', 'Berikutnya', 'Tiếp', 'ถัดไป'],
+['很久很久以前，千彩原的顏色是活的。彩脈在地底下流動，從六座彩泉湧上來。', 'Long, long ago, the colors of the Thousand-Hue Plains were alive. Color veins flowed underground and welled up from six color springs.', 'むかしむかし、千彩原の色は生きていました。彩脈が地の下を流れ、六つの彩泉からわき出していたのです。', '아주 먼 옛날, 천채원의 색은 살아 있었어요. 색의 맥이 땅속을 흐르다가 여섯 개의 색 샘에서 솟아올랐지요.', 'Hace mucho, mucho tiempo, los colores de las Llanuras de Mil Tonos estaban vivos. Las vetas de color corrían bajo tierra y brotaban de seis fuentes.', 'Há muito, muito tempo, as cores das Planícies dos Mil Tons eram vivas. Veios de cor corriam sob a terra e brotavam de seis fontes.', 'Il y a très, très longtemps, les couleurs des Plaines aux Mille Teintes étaient vivantes. Des veines de couleur coulaient sous terre et jaillissaient de six sources.', 'Vor langer, langer Zeit waren die Farben der Tausendfarben-Ebene lebendig. Farbadern flossen unter der Erde und sprudelten aus sechs Farbquellen.', 'Tanto, tanto tempo fa, i colori della Piana dei Mille Toni erano vivi. Vene di colore scorrevano sottoterra e sgorgavano da sei sorgenti.', 'Давным-давно краски Равнины Тысячи Оттенков были живыми. Цветные жилы текли под землёй и били из шести цветных источников.', 'Çok çok uzun zaman önce Bin Renk Ovası’nın renkleri canlıydı. Renk damarları yerin altında akar, altı renk pınarından fışkırırdı.', 'Dahulu kala, warna-warna di Padang Seribu Rona itu hidup. Urat warna mengalir di bawah tanah dan memancar dari enam mata air warna.', 'Ngày xửa ngày xưa, màu sắc ở Đồng Nghìn Sắc là màu sống. Mạch màu chảy dưới lòng đất và trào lên từ sáu suối màu.', 'นานมาแล้ว สีของทุ่งพันสีนั้นมีชีวิต สายสีไหลอยู่ใต้ดินและผุดขึ้นจากน้ำพุสีทั้งหก'],
+['顏色一停下來，就會慢慢睡成灰灰的褪石。所以墨貓們要讓顏色一直動。', 'When color stops moving, it slowly falls asleep into gray fadestone. That is why ink cats keep the colors moving.', '色は止まると、だんだん眠って灰色の褪石になってしまいます。だからネコたちは色を動かし続けるのです。', '색은 멈추면 천천히 잠들어 회색 바랜돌이 돼요. 그래서 잉크 고양이들은 색을 계속 움직이게 하지요.', 'Cuando el color se detiene, se duerme poco a poco y se vuelve piedra gris. Por eso los gatos de tinta mantienen los colores en movimiento.', 'Quando a cor para, ela adormece aos poucos e vira pedra cinzenta. Por isso os gatos de tinta mantêm as cores em movimento.', 'Quand la couleur s’arrête, elle s’endort peu à peu en pierre grise. C’est pour ça que les chats d’encre font bouger les couleurs.', 'Bleibt Farbe stehen, schläft sie langsam ein und wird zu grauem Bleichstein. Darum halten die Tintenkatzen die Farben in Bewegung.', 'Quando il colore si ferma, si addormenta piano piano e diventa pietra grigia. Per questo i gatti d’inchiostro tengono i colori in movimento.', 'Если цвет останавливается, он медленно засыпает и превращается в серый блёклый камень. Поэтому чернильные коты не дают краскам стоять на месте.', 'Renk durursa yavaş yavaş uyuyup gri soluk taşa dönüşür. Bu yüzden mürekkep kediler renkleri hep hareket ettirir.', 'Kalau warna berhenti bergerak, ia perlahan tertidur menjadi batu pudar yang kelabu. Karena itu kucing tinta selalu membuat warna bergerak.', 'Màu mà đứng yên sẽ dần ngủ say thành đá phai xám xịt. Vì vậy những chú mèo mực luôn giữ cho màu chuyển động.', 'ถ้าสีหยุดนิ่ง มันจะค่อย ๆ หลับกลายเป็นหินซีดสีเทา แมวหมึกจึงต้องทำให้สีเคลื่อนไหวอยู่เสมอ'],
+['兩種顏色碰在一起的時候最亮，這就是「翻彩」。每一場對戰都是翻彩祭：對手不是壞人，是一起把世界翻亮的夥伴。', 'Colors shine brightest when two of them meet: that is the “Color Turn”. Every battle is a Color Turn festival. Your rivals are not villains, but partners who brighten the world with you.', 'ふたつの色がぶつかるとき、いちばん明るく光ります。それが「色返し」。バトルはぜんぶ色返し祭り。相手は悪者じゃなく、いっしょに世界を明るくする仲間です。', '두 색이 부딪칠 때 가장 밝게 빛나요. 그게 바로 ‘색 뒤집기’예요. 모든 대전은 색 뒤집기 축제예요. 상대는 나쁜 편이 아니라 함께 세상을 밝히는 친구랍니다.', 'Los colores brillan más cuando dos se encuentran: eso es el «Giro de Color». Cada combate es una fiesta del Giro. Tus rivales no son villanos, sino compañeros que iluminan el mundo contigo.', 'As cores brilham mais quando duas se encontram: isso é a “Virada de Cor”. Cada partida é uma festa da Virada. Os rivais não são vilões, são parceiros que iluminam o mundo com você.', 'Les couleurs brillent le plus quand deux se rencontrent : c’est le « Retour des couleurs ». Chaque combat est une fête. Tes rivaux ne sont pas des méchants, mais des partenaires qui illuminent le monde avec toi.', 'Farben leuchten am hellsten, wenn zwei aufeinandertreffen: Das ist die „Farbwende“. Jeder Kampf ist ein Farbwende-Fest. Gegner sind keine Bösewichte, sondern Partner, die mit dir die Welt erhellen.', 'I colori brillano di più quando due si incontrano: è il «Giro dei Colori». Ogni battaglia è una festa del Giro. I rivali non sono cattivi, ma compagni che illuminano il mondo con te.', 'Краски ярче всего, когда встречаются две. Это и есть «Цветоворот». Каждая битва — праздник Цветоворота. Соперники не злодеи, а друзья, вместе с которыми ты делаешь мир ярче.', 'Renkler en çok iki renk karşılaşınca parlar: İşte bu “Renk Dönümü”. Her savaş bir Renk Dönümü şenliğidir. Rakiplerin kötü değil, dünyayı seninle aydınlatan ortaklardır.', 'Warna paling terang saat dua warna bertemu: itulah “Putaran Warna”. Setiap pertandingan adalah pesta Putaran Warna. Lawanmu bukan penjahat, tapi teman yang ikut menerangi dunia.', 'Màu sáng nhất khi hai màu chạm nhau: đó là “Lật Màu”. Mỗi trận đấu là một lễ hội Lật Màu. Đối thủ không phải kẻ xấu, mà là bạn cùng làm thế giới rực rỡ.', 'สีจะสว่างที่สุดเมื่อสองสีมาเจอกัน นั่นคือ “การพลิกสี” ทุกการต่อสู้คือเทศกาลพลิกสี คู่แข่งไม่ใช่ตัวร้าย แต่เป็นเพื่อนที่ช่วยกันทำให้โลกสดใส'],
+['第一隻墨貓沐沐掉進了彩泉，把顏色舔進毛裡，尾巴從此變成一支筆。這座廣場就是用她的名字取的。', 'The first ink cat, MooMoo, fell into a color spring and licked the color into her fur. From then on her tail was a brush. This plaza is named after her.', '最初のネコ、ムームーは彩泉に落ちて、色を毛になめこみました。それからしっぽは筆になったのです。この広場は彼女の名前からつけられました。', '첫 번째 잉크 고양이 무무는 색 샘에 빠져 색을 털에 핥아 넣었어요. 그때부터 꼬리가 붓이 되었지요. 이 광장은 무무의 이름을 딴 거예요.', 'La primera gata de tinta, MooMoo, cayó en una fuente de color y se lamió el color en el pelaje. Desde entonces su cola es un pincel. Esta plaza lleva su nombre.', 'A primeira gata de tinta, MooMoo, caiu numa fonte de cor e lambeu a cor para o pelo. Desde então sua cauda é um pincel. Esta praça tem o nome dela.', 'La première chatte d’encre, MooMoo, est tombée dans une source de couleur et a léché la couleur dans sa fourrure. Depuis, sa queue est un pinceau. Cette place porte son nom.', 'Die erste Tintenkatze MooMoo fiel in eine Farbquelle und leckte die Farbe in ihr Fell. Seitdem ist ihr Schwanz ein Pinsel. Dieser Platz trägt ihren Namen.', 'La prima gatta d’inchiostro, MooMoo, cadde in una sorgente di colore e se lo leccò nel pelo. Da allora la sua coda è un pennello. Questa piazza porta il suo nome.', 'Первая чернильная кошка МуМу упала в цветной источник и вылизала краску в шёрстку. С тех пор её хвост — кисточка. Эта площадь названа в её честь.', 'İlk mürekkep kedi MooMoo bir renk pınarına düştü ve rengi tüylerine yaladı. O günden beri kuyruğu bir fırça. Bu meydan onun adını taşıyor.', 'Kucing tinta pertama, MooMoo, jatuh ke mata air warna dan menjilati warna itu ke bulunya. Sejak itu ekornya menjadi kuas. Alun-alun ini dinamai dengan namanya.', 'Chú mèo mực đầu tiên, MooMoo, rơi xuống suối màu và liếm màu vào bộ lông. Từ đó đuôi cô thành cây cọ. Quảng trường này mang tên cô.', 'มูมู แมวหมึกตัวแรก ตกลงไปในน้ำพุสีแล้วเลียสีเข้าไปในขน ตั้งแต่นั้นหางของเธอก็กลายเป็นพู่กัน ลานนี้ตั้งชื่อตามเธอ'],
+['貓神像上嵌著六顆彩晶。第七個座位一直空著……聽說，那是夜晚的顏色。', 'Six color crystals are set in the Cat God statue. The seventh seat has always been empty… They say it belongs to the color of night.', 'ネコ神像には六つの彩晶がはめこまれています。七つ目の席はずっと空いたまま……それは夜の色だといわれています。', '고양이 신상에는 여섯 개의 색 수정이 박혀 있어요. 일곱 번째 자리는 늘 비어 있지요… 그건 밤의 색이라고 해요.', 'La estatua del Dios Gato lleva seis cristales de color. El séptimo hueco siempre ha estado vacío… Dicen que es el color de la noche.', 'A estátua do Deus Gato tem seis cristais de cor. O sétimo lugar sempre esteve vazio… Dizem que é a cor da noite.', 'La statue du Dieu Chat porte six cristaux de couleur. La septième place est toujours restée vide… On dit que c’est la couleur de la nuit.', 'In der Katzengottheit stecken sechs Farbkristalle. Der siebte Platz war immer leer … Man sagt, er gehört der Farbe der Nacht.', 'Nella statua del Dio Gatto sono incastonati sei cristalli di colore. Il settimo posto è sempre stato vuoto… Dicono sia il colore della notte.', 'В статуе Кота-божества шесть цветных кристаллов. Седьмое место всегда пустовало… Говорят, оно принадлежит цвету ночи.', 'Kedi Tanrı heykelinde altı renk kristali var. Yedinci yuva hep boş kaldı… Gecenin rengine ait olduğu söylenir.', 'Patung Dewa Kucing dihiasi enam kristal warna. Tempat ketujuh selalu kosong… Katanya, itu milik warna malam.', 'Tượng Thần Mèo gắn sáu viên tinh thể màu. Chỗ thứ bảy vẫn luôn để trống… Nghe nói đó là màu của bóng đêm.', 'รูปปั้นเทพแมวประดับคริสตัลสีหกเม็ด ช่องที่เจ็ดว่างมาตลอด… ว่ากันว่านั่นคือสีของยามค่ำคืน'],
+['已經把 {n} 靜音了（看不到他說的話和動作）', '{n} is muted (you won’t see their messages or actions)', '{n} をミュートしました（話や動きが見えなくなります）', '{n} 님을 음소거했어요 (말과 동작이 안 보여요)', '{n} silenciado (no verás sus mensajes ni gestos)', '{n} silenciado (você não verá mensagens nem gestos)', '{n} est en sourdine (tu ne verras plus ses messages ni ses gestes)', '{n} stummgeschaltet (keine Nachrichten oder Aktionen mehr)', '{n} silenziato (non vedrai messaggi né gesti)', '{n} без звука (не увидишь его сообщения и действия)', '{n} susturuldu (mesajlarını ve hareketlerini görmeyeceksin)', '{n} dibisukan (pesan dan aksinya tidak terlihat)', 'Đã tắt tiếng {n} (không thấy tin nhắn và hành động)', 'ปิดเสียง {n} แล้ว (จะไม่เห็นข้อความและท่าทาง)'],
+['取消靜音了', 'Unmuted', 'ミュートを解除しました', '음소거를 해제했어요', 'Silencio quitado', 'Som reativado', 'Sourdine retirée', 'Stummschaltung aufgehoben', 'Audio riattivato', 'Звук включён', 'Sessiz kaldırıldı', 'Bisu dibatalkan', 'Đã bỏ tắt tiếng', 'ยกเลิกปิดเสียงแล้ว'],
+['取消靜音', 'Unmute', 'ミュート解除', '음소거 해제', 'Quitar silencio', 'Reativar som', 'Retirer la sourdine', 'Stumm aufheben', 'Riattiva', 'Включить звук', 'Sesi aç', 'Batal bisu', 'Bỏ tắt tiếng', 'ยกเลิกปิดเสียง'],
+['送出好友邀請了！', 'Friend request sent!', 'フレンド申請を送りました！', '친구 신청을 보냈어요!', '¡Solicitud de amistad enviada!', 'Pedido de amizade enviado!', 'Demande d’ami envoyée !', 'Freundschaftsanfrage gesendet!', 'Richiesta di amicizia inviata!', 'Заявка в друзья отправлена!', 'Arkadaşlık isteği gönderildi!', 'Permintaan teman terkirim!', 'Đã gửi lời mời kết bạn!', 'ส่งคำขอเป็นเพื่อนแล้ว!'],
+['歡迎來到沐沐廣場 {n} 號！走到門前的光圈就能湊人開打', 'Welcome to MooMoo Plaza #{n}! Step into a ring by a door to team up and battle', 'ムームー広場 {n} 号へようこそ！とびらの前の光の輪に入ると仲間を集めてバトル', '무무 광장 {n}호에 온 걸 환영해요! 문 앞 빛의 원에 들어가면 모여서 대전해요', '¡Bienvenido a la Plaza MooMoo n.º {n}! Entra en un círculo junto a una puerta para formar equipo', 'Bem-vindo à Praça MooMoo nº {n}! Entre num círculo perto de uma porta para formar time', 'Bienvenue sur la place MooMoo n° {n} ! Entre dans un cercle devant une porte pour former une équipe', 'Willkommen auf dem MooMoo-Platz Nr. {n}! Stell dich in einen Ring vor einer Tür, um ein Team zu bilden', 'Benvenuto nella Piazza MooMoo n. {n}! Entra in un cerchio davanti a una porta per fare squadra', 'Добро пожаловать на площадь МуМу № {n}! Встань в круг у двери, чтобы собрать команду', 'MooMoo Meydanı {n}’e hoş geldin! Takım kurmak için bir kapının önündeki halkaya gir', 'Selamat datang di Alun-alun MooMoo #{n}! Masuk ke lingkaran di depan pintu untuk membentuk tim', 'Chào mừng đến Quảng trường MooMoo số {n}! Đứng vào vòng sáng trước cửa để rủ nhau đấu', 'ยินดีต้อนรับสู่ลานมูมู หมายเลข {n}! ยืนในวงแสงหน้าประตูเพื่อรวมทีมไปสู้'],
+['連不上廣場，先自己逛逛（等一下會再試）', 'Can’t reach the plaza: look around on your own for now (will retry soon)', '広場につながりません。まずはひとりで歩いてみよう（あとでまた試します）', '광장에 연결할 수 없어요. 먼저 혼자 둘러보세요 (잠시 후 다시 시도)', 'No se pudo conectar a la plaza: explora solo por ahora (se reintentará)', 'Não deu para conectar à praça: explore sozinho por enquanto (vamos tentar de novo)', 'Impossible de rejoindre la place : explore seul pour l’instant (nouvel essai bientôt)', 'Platz nicht erreichbar: schau dich erst mal allein um (neuer Versuch gleich)', 'Impossibile collegarsi alla piazza: esplora da solo per ora (nuovo tentativo a breve)', 'Не удалось подключиться к площади: пока погуляй один (скоро попробуем снова)', 'Meydana bağlanılamadı: şimdilik tek başına gez (birazdan tekrar denenecek)', 'Tidak bisa terhubung ke alun-alun: jelajahi sendiri dulu (akan dicoba lagi)', 'Không vào được quảng trường: tạm thời tự dạo nhé (sẽ thử lại)', 'เชื่อมต่อลานไม่ได้ เดินเล่นคนเดียวไปก่อน (จะลองใหม่เร็ว ๆ นี้)'],
+['{n} 推了你一下！', '{n} pushed you!', '{n} におされた！', '{n} 님이 밀었어요!', '¡{n} te empujó!', '{n} te empurrou!', '{n} t’a poussé !', '{n} hat dich geschubst!', '{n} ti ha spinto!', '{n} толкнул тебя!', '{n} seni itti!', '{n} mendorongmu!', '{n} đẩy bạn một cái!', '{n} ผลักคุณ!'],
+['{n} 送你一個鮭魚飯糰！', '{n} gave you a salmon onigiri!', '{n} がシャケおにぎりをくれた！', '{n} 님이 연어 주먹밥을 줬어요!', '¡{n} te regaló un onigiri de salmón!', '{n} te deu um onigiri de salmão!', '{n} t’a offert un onigiri au saumon !', '{n} hat dir ein Lachs-Onigiri geschenkt!', '{n} ti ha regalato un onigiri al salmone!', '{n} подарил тебе онигири с лососем!', '{n} sana somonlu onigiri verdi!', '{n} memberimu onigiri salmon!', '{n} tặng bạn một cơm nắm cá hồi!', '{n} ให้ข้าวปั้นแซลมอนกับคุณ!'],
+['和 {n} 擊掌！', 'High five with {n}!', '{n} とハイタッチ！', '{n} 님과 하이파이브!', '¡Chócala con {n}!', 'Toca aqui com {n}!', 'Tape-m’en cinq avec {n} !', 'High five mit {n}!', 'Batti cinque con {n}!', 'Дай пять с {n}!', '{n} ile çak!', 'Tos dengan {n}!', 'Đập tay với {n}!', 'ไฮไฟว์กับ {n}!'],
+['{n} 對你比愛心', '{n} sent you a heart', '{n} がハートを送ってくれた', '{n} 님이 하트를 보냈어요', '{n} te mandó un corazón', '{n} te mandou um coração', '{n} t’envoie un cœur', '{n} schickt dir ein Herz', '{n} ti manda un cuore', '{n} показывает тебе сердечко', '{n} sana kalp yolladı', '{n} mengirimimu hati', '{n} thả tim cho bạn', '{n} ส่งหัวใจให้คุณ'],
+['{n} 跟你揮手', '{n} waves at you', '{n} が手をふっている', '{n} 님이 손을 흔들어요', '{n} te saluda', '{n} acena para você', '{n} te salue', '{n} winkt dir zu', '{n} ti saluta', '{n} машет тебе', '{n} sana el sallıyor', '{n} melambai padamu', '{n} vẫy tay với bạn', '{n} โบกมือให้คุณ'],
+['旁邊沒有人，走近一點再試試', 'No one is close. Walk up to someone and try again', '近くにだれもいません。近づいてからもう一度', '근처에 아무도 없어요. 가까이 가서 다시 해 봐요', 'No hay nadie cerca. Acércate y vuelve a intentarlo', 'Não tem ninguém perto. Chegue mais perto e tente de novo', 'Personne à côté. Approche-toi et réessaie', 'Niemand in der Nähe. Geh näher ran und versuch es nochmal', 'Nessuno vicino. Avvicinati e riprova', 'Рядом никого. Подойди ближе и попробуй снова', 'Yakında kimse yok. Birine yaklaşıp tekrar dene', 'Tidak ada orang di dekatmu. Mendekatlah lalu coba lagi', 'Không có ai gần. Lại gần hơn rồi thử lại', 'ไม่มีใครอยู่ใกล้ ๆ เดินเข้าไปใกล้แล้วลองใหม่'],
+['說慢一點喔', 'Slow down a little', 'ちょっとゆっくり話そう', '조금 천천히 말해요', 'Más despacio', 'Mais devagar', 'Doucement', 'Etwas langsamer', 'Più piano', 'Помедленнее', 'Biraz yavaş', 'Pelan-pelan ya', 'Chậm lại chút nhé', 'ช้าลงหน่อยนะ'],
+['積分賽要先登入，走到門前按「登入」', 'Ranked needs sign-in: press “Sign in” at the door', 'ランクマッチはログインが必要：とびらの前で「ログイン」', '랭크전은 로그인이 필요해요: 문 앞에서 ‘로그인’', 'Las clasificatorias requieren iniciar sesión: pulsa «Iniciar sesión» en la puerta', 'Ranqueada exige login: toque em “Entrar” na porta', 'Le classé demande une connexion : appuie sur « Se connecter » devant la porte', 'Ranglisten brauchen Anmeldung: an der Tür „Anmelden“ drücken', 'Le classificate richiedono l’accesso: premi «Accedi» alla porta', 'Для рейтинга нужно войти: нажми «Войти» у двери', 'Dereceli için giriş gerekir: kapıda “Giriş yap”a bas', 'Peringkat perlu masuk: tekan “Masuk” di pintu', 'Xếp hạng cần đăng nhập: bấm “Đăng nhập” ở cửa', 'แรงก์ต้องเข้าสู่ระบบ: กด “เข้าสู่ระบบ” ที่หน้าประตู'],
+['{n}/{m} 人・{s} 秒後出發', '{n}/{m} players · leaving in {s} s', '{n}/{m} 人・{s} 秒後に出発', '{n}/{m}명 · {s}초 후 출발', '{n}/{m} jugadores · salida en {s} s', '{n}/{m} jogadores · saída em {s} s', '{n}/{m} joueurs · départ dans {s} s', '{n}/{m} Spieler · Start in {s} s', '{n}/{m} giocatori · partenza tra {s} s', '{n}/{m} игроков · старт через {s} с', '{n}/{m} oyuncu · {s} sn sonra çıkış', '{n}/{m} pemain · berangkat {s} dtk lagi', '{n}/{m} người · xuất phát sau {s} giây', '{n}/{m} คน · ออกเดินทางใน {s} วิ'],
+['{n}/{m} 人・還差 {k} 人', '{n}/{m} players · need {k} more', '{n}/{m} 人・あと {k} 人', '{n}/{m}명 · {k}명 더 필요', '{n}/{m} jugadores · faltan {k}', '{n}/{m} jogadores · faltam {k}', '{n}/{m} joueurs · encore {k}', '{n}/{m} Spieler · noch {k}', '{n}/{m} giocatori · ne mancano {k}', '{n}/{m} игроков · нужно ещё {k}', '{n}/{m} oyuncu · {k} kişi daha', '{n}/{m} pemain · kurang {k}', '{n}/{m} người · thiếu {k} người', '{n}/{m} คน · ขาดอีก {k} คน'],
+['站進光圈排隊（{a}～{m} 人）', 'Step into the ring to queue ({a}–{m} players)', '光の輪に入って並ぼう（{a}～{m} 人）', '빛의 원에 들어가 줄 서기 ({a}~{m}명)', 'Entra en el círculo para hacer cola ({a}–{m} jugadores)', 'Entre no círculo para entrar na fila ({a}–{m} jogadores)', 'Entre dans le cercle pour attendre ({a}–{m} joueurs)', 'Stell dich in den Ring ({a}–{m} Spieler)', 'Entra nel cerchio per metterti in coda ({a}–{m} giocatori)', 'Встань в круг, чтобы ждать ({a}–{m} игроков)', 'Sıraya girmek için halkaya gir ({a}–{m} oyuncu)', 'Masuk ke lingkaran untuk antre ({a}–{m} pemain)', 'Đứng vào vòng sáng để xếp hàng ({a}–{m} người)', 'ยืนในวงแสงเพื่อเข้าคิว ({a}–{m} คน)'],
+['人到齊了！一起去 {n}…', 'Everyone’s here! Heading to {n} together…', 'そろった！いっしょに {n} へ…', '다 모였어요! 같이 {n}(으)로…', '¡Ya estáis todos! Vamos juntos a {n}…', 'Todo mundo aqui! Indo juntos para {n}…', 'Tout le monde est là ! En route pour {n}…', 'Alle da! Gemeinsam zu {n} …', 'Ci siete tutti! Andiamo insieme a {n}…', 'Все в сборе! Вместе идём в {n}…', 'Herkes geldi! Birlikte {n}’e gidiyoruz…', 'Semua sudah kumpul! Bersama ke {n}…', 'Đủ người rồi! Cùng đi {n}…', 'มาครบแล้ว! ไป {n} ด้วยกัน…'],
+['{n} 號・{m}/{c} 人', '#{n} · {m}/{c} players', '{n} 号・{m}/{c} 人', '{n}호 · {m}/{c}명', 'n.º {n} · {m}/{c}', 'nº {n} · {m}/{c}', 'n° {n} · {m}/{c}', 'Nr. {n} · {m}/{c}', 'n. {n} · {m}/{c}', '№ {n} · {m}/{c}', '{n}. · {m}/{c} kişi', '#{n} · {m}/{c} pemain', 'Số {n} · {m}/{c} người', 'หมายเลข {n} · {m}/{c} คน'],
+];
+I.add(R.map((r) => r.slice(0, 4))); if (I.addL) L.slice(3).forEach((l, j) => I.addL(l, R.map((r) => [r[0], r[4 + j]])));
 })();
 
 
@@ -37723,7 +37824,7 @@ buildHud();
 }
 function buildHud() {
 hud = document.createElement('div'); hud.id = 'town'; hud.className = 'town'; hud.hidden = true;
-hud.innerHTML = `<div class="tw-top"><div class="tw-name"><b>沐沐小鎮</b><small translate="no">MooMoo Town</small><small class="tw-cov"></small></div><div class="tw-tools"><span class="tw-rkw"></span><button type="button" class="tw-ic tw-wpn" data-go="wpn" aria-label="換武器"></button><button type="button" class="tw-ic tw-col" aria-label="換墨水顏色"><i></i></button><button type="button" class="tw-ic tw-wash" aria-label="把小鎮洗乾淨">🧽</button><button type="button" class="tw-ic" data-go="heart" aria-label="愛心小舖">❤️</button><button type="button" class="tw-ic" data-go="set" aria-label="設定">⚙️</button></div></div>
+hud.innerHTML = `<div class="tw-top"><div class="tw-name"><b>飯糰小鎮</b><small class="tw-devnote">🍙 僅開發者可進入試玩</small><small class="tw-cov"></small></div><div class="tw-tools"><span class="tw-rkw"></span><button type="button" class="tw-ic tw-wpn" data-go="wpn" aria-label="換武器"></button><button type="button" class="tw-ic tw-col" aria-label="換墨水顏色"><i></i></button><button type="button" class="tw-ic tw-wash" aria-label="把小鎮洗乾淨">🧽</button><button type="button" class="tw-ic" data-go="heart" aria-label="愛心小舖">❤️</button><button type="button" class="tw-ic" data-go="set" aria-label="設定">⚙️</button></div></div>
       <div class="tw-lbls"></div><div class="tw-bub" hidden></div>
       <div class="tw-hint"></div><button type="button" class="tw-mouse"></button><div class="tw-aim" aria-hidden="true"></div><button type="button" class="tw-jump" aria-label="跳">⤒<small>跳</small></button>
       <div class="tw-prompt" hidden><span class="tw-pi"></span><span class="tw-pt"><b></b><small></small></span><button type="button" class="btn primary tw-pgo">進入</button><kbd class="tw-pk">E</kbd></div>
@@ -37743,7 +37844,7 @@ const teamCol = () => { try { const v = getComputedStyle(document.getElementById
 let homeRoof = null;
 function refreshCats() {
 const sel = (SC.ui && SC.ui.selNow && SC.ui.selNow()) || {}, kind = SC.CAT_KINDS && SC.CAT_KINDS[sel.kind] ? sel.kind : 'maomao';
-if (!me || meKind !== kind) { if (me) scene.remove(me.group); me = SC.makeCat(kind); meKind = kind; if (SC.wear) SC.wear.apply(me); me.setWeapon('none'); arMake(kind); if (me.setTag) me.setTag('', '#fff', false); me.group.traverse((o) => { if (o.isMesh) o.castShadow = !low; }); scene.add(me.group); }
+if (!me || meKind !== kind) { if (me) scene.remove(me.group); me = SC.makeCat(kind); meKind = kind; if (SC.wear) SC.wear.apply(me); me.setWeapon('none'); arMake(kind); if (me.setTag) me.setTag('', '#fff', false); me.group.traverse((o) => { if (o.isMesh) o.castShadow = !low; }); (Z ? Z.scene : scene).add(me.group); }
 try { me.setWeapon(wpn()); } catch (e) {}
 const tc = teamCol(); me.setTeamColor(tc); if (homeRoof) homeRoof.color.copy(tc);
 }
@@ -37761,6 +37862,8 @@ return null;
 function walkTo(p, spot) { path = (Z ? null : routeFrom(pos, p)) || [p.clone()]; pathSpot = spot || null; hintT = 99; }
 let fireWas = false, animSt = null, lungeT = 0, lungeV = 0, fEdge = false, dashUsed = false, rollFrom = 0, zoom = 1;
 T.lunge = (v, t) => { lungeV = v; lungeT = t; };
+let pushT = 0, pushX = 0, pushZ = 0;
+T.shove = (vx, vz, tt, up) => { pushX = vx; pushZ = vz; pushT = tt || 0.25; if (up && onGround) { vy = up; onGround = false; } if (me) me.squash = 0.3; };
 let frozT = 0, frozU = 0; T.freeze = (sec) => { frozT = sec; frozU = performance.now() + sec * 1000; }; T.frozen = () => frozT > 0;
 let vy = 0, onGround = true, jumps = 0, camPitch = -0.14, camDist = 15, fp = null, jumpReq = false, last = new V3();
 let fpEy = null, fpK = null; const fpTo = new V3();
@@ -37809,6 +37912,7 @@ waterFx(dt, wet, dive, ml);
 const tx = ml ? (mx / ml) * spd : 0, tz = ml ? (mz / ml) * spd : 0, k = onGround ? 14 : 5;
 vel.x = SC.damp(vel.x, tx, k, dt); vel.z = SC.damp(vel.z, tz, k, dt);
 if (lungeT > 0) { lungeT -= dt; vel.x = Math.sin(face) * lungeV; vel.z = Math.cos(face) * lungeV; }   dashFrame(dt);
+if (pushT > 0) { pushT -= dt; vel.x = pushX; vel.z = pushZ; }
 if (ml > 0.05) face = angTo(face, Math.atan2(mx, mz), 14 * dt);
 const G = CF().GRAVITY || 196.2;
 if (want && (onGround || jumps < 2)) { const h = onGround ? CF().GROUND_JUMP_HEIGHT || 12.675 : CF().AIR_JUMP_HEIGHT || 8.775; vy = Math.sqrt(2 * G * h); jumps = onGround ? 1 : jumps + 1; onGround = false; try { SC.audio.sfx.jump(jumps); } catch (e) {} me.squash = -0.3; }
@@ -38694,9 +38798,10 @@ show(mine); if (A && A.clay) A.clay.top().then((L) => show(L.length ? L.map((r) 
 T._clay = () => CL; T._clStart = () => clStart(); T._clHit = (d) => clHit(d); T._clStep = (n, dt) => { for (let i = 0; i < n; i++) clFrame(dt); }; T._ray = (o, d, m) => arRay(o, d, m); T._objSplat = (p, n, r, rgb) => objSplat(p, n, r, rgb); T._hitS = () => hitS; T._cat = () => ST; T._orbBreak = (q) => orbBreak(q);
 T.enter = (k) => {
 if (Z && Z.act && Z.act(k)) return;
-if (Z && !['menu', 'versus', 'net', 'ranked'].includes(k)) return;
+const zShop = !!(Z && Z.shops && Z.shops.includes(k));
+if (Z && !zShop && !['menu', 'versus', 'net', 'ranked'].includes(k)) return;
 if (!Z && k === 'farm' && SC.farm) { SC.farm.open(); return; }
-if (!Z && k === 'boss' && SC.rpg && SC.rpg.open) { SC.rpg.open(true); return; }
+if ((!Z || zShop) && k === 'boss' && SC.rpg && SC.rpg.open) { SC.rpg.open(true); return; }
 const mt = $('m-title'); if (!mt) return; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
 if (k === 'heart') { const b = mt.querySelector('.ac-btn.heart'); if (b) b.click(); else if (SC.changelog && SC.changelog.open) SC.changelog.open(); return; }
 if (k === 'stk') { if (SC.stk) SC.stk.open(); return; }
@@ -38747,7 +38852,7 @@ camera(dt); SC.dof.draw(R, Z ? Z.scene : scene, cam);
 T.init = (renderer, isLow) => {
 R = renderer; low = !!isLow; try { if (SC.perf && SC.perf.info && SC.perf.info().eff === 'low') low = true; } catch (e) {}
 window.addEventListener('keydown', onKey, true);
-const act = document.querySelector('#m-title .actions'); if (act && !$('btn-town')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn icon tw-back'; b.id = 'btn-town'; b.setAttribute('aria-label', '回沐沐小鎮'); b.innerHTML = '🏠<span>回小鎮</span>'; b.onclick = () => { click(); if (SC.net.code) SC.net.leave(); if (SC.home) SC.home.back(); else T.show(); }; act.insertBefore(b, act.firstChild); }
+const act = document.querySelector('#m-title .actions'); if (act && !$('btn-town')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn icon tw-back'; b.id = 'btn-town'; b.setAttribute('aria-label', '回去'); b.innerHTML = '🏠<span>回小鎮</span>'; b.onclick = () => { click(); if (SC.net.code) SC.net.leave(); if (SC.home) SC.home.back(); else T.show(); }; act.insertBefore(b, act.firstChild); }
 const mb = $('btn-mode-back'); if (mb) mb.addEventListener('click', () => { if (!fromAll) { if (SC.home) SC.home.back(); else T.show(); } });
 window.addEventListener('keydown', (e) => { if (e.code !== 'Escape' || T.on) return; const mt = $('m-title'); if (!mt || mt.hidden || !mt.classList.contains('step-mode')) return; if (document.querySelector('.menu.dim:not([hidden]), .ac-wrap, .rkd-ov:not([hidden]), .stk-ov:not([hidden])')) return; e.preventDefault(); click(); if (SC.net && SC.net.code) SC.net.leave(); if (SC.home) SC.home.back(); else T.show(); });
 };
@@ -39811,6 +39916,300 @@ const RR = [
 ['天使翅膀', 'Angel wings', '天使のはね', '천사 날개', 'Alas de ángel', 'Asas de anjo', 'Ailes d’ange', 'Engelsflügel', 'Ali d’angelo', 'Крылья ангела', 'Melek kanatları', 'Sayap malaikat', 'Cánh thiên thần', 'ปีกนางฟ้า'],
 ], XR = ['es', 'pt', 'fr', 'de', 'it', 'ru', 'tr', 'id', 'vi', 'th'];
 const I = SC.i18n; if (I && I.add) { I.add(RR.map((r) => r.slice(0, 4))); if (I.addL) XR.forEach((l, j) => I.addL(l, RR.map((r) => [r[0], r[4 + j]]))); }
+})();
+
+
+(() => {
+const T = SC.town; if (!T) return;
+const P = (SC.plaza = { on: false, sticky: false, _dev: false });
+const V3 = THREE.Vector3, tr = (s) => (SC.tr ? SC.tr(s) : s), esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';');
+const CAP = 16, ROOMS = 30, R0 = 44;
+const r2 = (v) => Math.round(v * 100) / 100;
+const acc = () => SC.account, myUid = () => (acc() && acc().user ? acc().user.uid : '');
+P.isDev = () => !!(P._dev || (acc() && acc().isDev && acc().isDev()));
+const sfx = (k, ...a) => { try { const f = SC.audio && SC.audio.sfx && SC.audio.sfx[k]; if (f) f(...a); } catch (e) {} };
+const myName = () => { const N = SC.net; let n = ''; try { if (acc() && acc().user && acc().name) n = N.clean(acc().name()); } catch (e) {} if (!n) { try { n = N.clean(JSON.parse(localStorage.getItem('splatoocat-web') || '{}').nick || ''); } catch (e) {} } return n || tr('玩家') + guestNo; };
+const guestNo = 100 + Math.floor(Math.random() * 900);
+const clean = (t) => (SC.net && SC.net.cleanText ? SC.net.cleanText(t) : String(t || '').slice(0, 40));
+let built = false, scene = null, sun = null, root = null, low = false;
+const spots = [], solids = [], anim = [], npcs = [], pads = [];
+const H = (x, z) => { const r = Math.hypot(x, z); return r < R0 + 2 ? 0 : Math.min(14, (r - R0 - 2) * 0.9); };
+const out = (x, z) => Math.hypot(x, z) > R0;
+const DOORS = [
+{ k: 'd-turf', rule: 'turf', n: '塗地戰', i: '🎨', min: 2, max: 4, col: 0xff4f9a, a: 162 },
+{ k: 'd-ko', rule: 'knockout', n: '擊倒戰', i: '💥', min: 2, max: 4, col: 0xff8a2a, a: 126 },
+{ k: 'd-rank', rule: 'ranked', n: '積分賽', i: '⚡', min: 2, max: 4, col: 0xffd23f, a: 90, ranked: true },
+{ k: 'd-zb', rule: 'zombie', n: '殭屍保衛戰', i: '🧟', min: 1, max: 6, col: 0x8be04a, a: 54 },
+{ k: 'd-cpu', rule: 'cpu', n: '一起打電腦', i: '🤖', min: 2, max: 4, col: 0x2fc8ff, a: 18 },
+];
+const POOL = { turf: 'sc-q', knockout: 'sc-qk', zombie: 'sc-qz', cpu: 'sc-qc', ranked: 'sc-ra' };
+const waitS = (D, n) => (n >= D.max ? 2 : D.rule === 'zombie' ? (n >= 2 ? 10 : 15) : n >= 3 ? 10 : 18);
+const SHOPS = [
+{ k: 'sandbox', kind: 'maomao', n: '教學站', s: '教學試玩', i: '🎈' },
+{ k: 'stk', kind: 'banban', n: '貼紙庫', s: '貼紙本', i: '📒' },
+{ k: 'task', kind: 'taro', n: '任務所', s: '每日任務', i: '📋' },
+{ k: 'wear', kind: 'mochi', n: '喵喵服飾店', s: '用代幣買衣服', i: '👗' },
+{ k: 'heart', kind: 'meiqiu', n: '愛心補給站', s: '贊助和更新日誌', i: '❤️' },
+{ k: 'home', kind: 'shuang', n: '換貓咪', s: '選你的貓咪', i: '🐱' },
+];
+const mat = (c, o) => (T._mat ? T._mat(c, o) : new THREE.MeshLambertMaterial({ color: c }));
+const mesh = (g, m, x, y, z, par) => { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = !low; o.receiveShadow = !low; (par || root).add(o); return o; };
+const sign = (txt, col, w, h) => { const c = document.createElement('canvas'); c.width = 512; c.height = 128; const x = c.getContext('2d'); x.fillStyle = '#fff7ea'; x.fillRect(0, 0, 512, 128); x.strokeStyle = '#' + col.toString(16).padStart(6, '0'); x.lineWidth = 16; x.strokeRect(8, 8, 496, 112); x.fillStyle = '#1b1430'; x.font = 'bold 60px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, 256, 68, 470); const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tx })); };
+function spot(o) { o.door = new V3(o.dx, 0, o.dz); o.gy = 0; o.free = true; o.soon = false; if (o.btn == null) o.btn = '進入'; spots.push(o); return o; }
+const U = (deg, r) => { const a = (deg * Math.PI) / 180; return [Math.cos(a) * r, -Math.sin(a) * r]; };
+function build() {
+built = true; low = !!(T._low && T._low());
+scene = new THREE.Scene(); scene.background = new THREE.Color(0xcfe9f7); scene.fog = new THREE.Fog(0xe9e2d0, 110, 260);
+scene.add(new THREE.HemisphereLight(0xfff2d6, 0x6f8f4a, 1.25));
+sun = new THREE.DirectionalLight(0xffe2b0, 1.75); sun.position.set(-40, 60, 35); scene.add(sun); scene.add(sun.target);
+if (!low) { sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); const sc = sun.shadow.camera; sc.left = sc.bottom = -70; sc.right = sc.top = 70; sc.near = 10; sc.far = 180; sun.shadow.bias = -0.0015; }
+root = new THREE.Group(); scene.add(root);
+{ const SZ = 240, SEG = low ? 90 : 140, gg = new THREE.PlaneGeometry(SZ, SZ, SEG, SEG); gg.rotateX(-Math.PI / 2); const pa = gg.attributes.position, cols = new Float32Array(pa.count * 3), c = new THREE.Color();
+const CS = new THREE.Color(0xeadfc8), CS2 = new THREE.Color(0xd9c9a8), CR = new THREE.Color(0xc96f4a), CG = new THREE.Color(0x92d662), CG2 = new THREE.Color(0x76c052);
+for (let i = 0; i < pa.count; i++) { const x = pa.getX(i), z = pa.getZ(i), r = Math.hypot(x, z); pa.setY(i, H(x, z) + (r > R0 + 4 ? Math.sin(x * 0.15) * Math.cos(z * 0.13) * 1.5 : 0));
+if (r < R0 - 1) { c.copy(CS); if (Math.floor(r / 4) % 2) c.lerp(CS2, 0.55); if (Math.abs(r - 20) < 0.7 || Math.abs(r - 9) < 0.5) c.copy(CR); } else if (r < R0 + 0.6) c.copy(CR); else c.copy(CG).lerp(CG2, 0.5 + 0.5 * Math.sin(x * 0.2 + z * 0.17));
+cols[i * 3] = c.r; cols[i * 3 + 1] = c.g; cols[i * 3 + 2] = c.b; }
+gg.setAttribute('color', new THREE.BufferAttribute(cols, 3)); gg.computeVertexNormals(); const gm = new THREE.Mesh(gg, new THREE.MeshLambertMaterial({ vertexColors: true })); gm.receiveShadow = !low; root.add(gm); }
+{ const n = 64; for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2, x = Math.cos(a) * (R0 + 1.2), z = Math.sin(a) * (R0 + 1.2), deg = (-a * 180) / Math.PI; const nearDoor = DOORS.some((D) => Math.abs((((deg - D.a) % 360) + 540) % 360 - 180) < 7); if (nearDoor) continue; const m = mesh(new THREE.BoxGeometry(4.6, 1.1, 1.2), mat(0xe2d6bf), x, 0.55, z); m.rotation.y = -a + Math.PI / 2; } }
+for (let i = 0; i < 22; i++) { const a = (i / 22) * Math.PI * 2 + 0.13, r = R0 + 10 + (i % 3) * 6, x = Math.cos(a) * r, z = Math.sin(a) * r, y = H(x, z), s = 1 + (i % 4) * 0.2; mesh(new THREE.CylinderGeometry(0.5 * s, 0.7 * s, 3 * s, 6), mat(0x8a5a32), x, y + 1.5 * s, z); mesh(new THREE.ConeGeometry(3 * s, 6 * s, 7), mat(i % 2 ? 0x4fae5a : 0x3f9a50), x, y + 5.5 * s, z); mesh(new THREE.ConeGeometry(2.2 * s, 4.5 * s, 7), mat(0x5bbd63), x, y + 8 * s, z); }
+{ const F = []; for (let i = 0; i < 60; i++) { const a = Math.random() * Math.PI * 2, r = R0 + 2.5 + Math.random() * 6; F.push([Math.cos(a) * r, Math.sin(a) * r]); } const fl = new THREE.InstancedMesh(new THREE.SphereGeometry(0.4, 6, 4), new THREE.MeshLambertMaterial(), F.length), m4 = new THREE.Matrix4(), cc = new THREE.Color(); F.forEach(([x, z], i) => { fl.setMatrixAt(i, m4.makeTranslation(x, H(x, z) + 0.4, z)); fl.setColorAt(i, cc.setHex([0xff6fa8, 0xffd23f, 0xffffff, 0xa56bff, 0xff8a2a][i % 5])); }); root.add(fl); }
+buildStatue();
+[[-14, 26, 0.5], [14, 26, -0.5], [-27, 8, 1.3], [27, 8, -1.3]].forEach(([x, z, ry]) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g); mesh(new THREE.BoxGeometry(4.4, 0.3, 1.3), mat(0xc98c55), 0, 1, 0, g); mesh(new THREE.BoxGeometry(4.4, 1.1, 0.25), mat(0xc98c55), 0, 1.7, -0.6, g); [-1.8, 1.8].forEach((bx) => mesh(new THREE.BoxGeometry(0.3, 1, 1.1), mat(0x6b4a2a), bx, 0.5, 0, g)); solids.push({ x, z, r: 1.8 }); });
+[[-9, 33], [9, 33], [-33, -9], [33, -9]].forEach(([x, z]) => { mesh(new THREE.CylinderGeometry(0.18, 0.24, 6, 8), mat(0x3a3a4a), x, 3, z); const lamp = mesh(new THREE.SphereGeometry(0.6, 10, 8), new THREE.MeshBasicMaterial({ color: 0xfff1b0 }), x, 6.3, z); lamp.castShadow = false; solids.push({ x, z, r: 0.5 }); });
+SHOPS.forEach((S, i) => { const deg = 270 - 150 + i * 60, [x, z] = U(deg, 13), [dx, dz] = U(deg, 16.6); const c = SC.makeCat(S.kind); c.setWeapon('none'); c.group.position.set(x, 0, z); c.group.rotation.y = Math.atan2(dx - x, dz - z); c.group.traverse((o) => { if (o.isMesh) o.castShadow = !low; }); root.add(c.group); npcs.push({ c, ph: i * 1.3, f: c.group.rotation.y }); solids.push({ x, z, r: 1.4 });
+const st = mesh(new THREE.CylinderGeometry(1.5, 1.7, 0.4, 16), mat(0xffffff), x, 0.2, z); void st;
+spot({ k: S.k, n: S.n, s: S.s, i: S.i, x, z, y: 6.2, dx, dz }); });
+{ const [x, z] = U(-90, R0 - 0.5); [-3.2, 3.2].forEach((ox) => { mesh(new THREE.BoxGeometry(0.9, 7, 0.9), mat(0x8a5a32), x + ox, 3.5, z); solids.push({ x: x + ox, z, r: 0.8 }); }); mesh(new THREE.BoxGeometry(8, 1, 1.2), mat(0x6b4a2a), x, 7.3, z); const sg = sign('🌿 ' + tr('探險小徑'), 0x3f9a50, 6, 1.5); sg.position.set(x, 8.8, z - 0.7); sg.rotation.y = Math.PI; root.add(sg);
+spot({ k: 'boss', n: '探險小徑', s: '冒險世界・太陽谷', i: '🌿', x, z, y: 10, dx: x, dz: z - 4 }); }
+DOORS.forEach((D) => { const [x, z] = U(D.a, R0 + 0.6), ry = Math.atan2(-x, -z), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g);
+[-3.4, 3.4].forEach((ox) => { const m = mesh(new THREE.BoxGeometry(1.2, 8.5, 1.2), mat(0xfff3d6), ox, 4.25, 0, g); void m; solids.push({ x: x + Math.cos(ry) * ox, z: z - Math.sin(ry) * ox, r: 0.9 }); });
+mesh(new THREE.TorusGeometry(3.4, 0.6, 8, 20, Math.PI), mat(D.col), 0, 8.5, 0, g); const door = mesh(new THREE.BoxGeometry(5.6, 8, 0.3), mat(0x2a2240), 0, 4, -0.4, g); door.material = new THREE.MeshLambertMaterial({ color: 0x2a2240, emissive: D.col, emissiveIntensity: 0.25 }); D.glow = door.material;
+const sg = sign(D.i + ' ' + tr(D.n), D.col, 6.4, 1.6); sg.position.set(0, 13.2, 0.4); g.add(sg);
+const [px, pz] = U(D.a, R0 - 5.6), pad = new THREE.Mesh(new THREE.RingGeometry(2.7, 3.4, 32), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.85 })); pad.rotation.x = -Math.PI / 2; pad.position.set(px, 0.06, pz); root.add(pad);
+const fill = new THREE.Mesh(new THREE.CircleGeometry(2.7, 32), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.22 })); fill.rotation.x = -Math.PI / 2; fill.position.set(px, 0.05, pz); root.add(fill);
+D.px = px; D.pz = pz; D.pad = pad; D.fill = fill; pads.push(D);
+D.spot = spot({ k: D.k, n: D.n, s: '', i: D.i, x, z, y: 15.5, dx: px, dz: pz, btn: '' }); });
+for (let i = 0; i < 5; i++) { const cl = new THREE.Group(); [[0, 0, 4], [3.5, -0.6, 3], [-3.5, -0.8, 3]].forEach(([x, y, r]) => { const m = mesh(new THREE.SphereGeometry(r, 10, 8), new THREE.MeshLambertMaterial({ color: 0xffffff }), x, y, 0, cl); m.castShadow = false; }); cl.position.set(-110 + i * 50, 50 + (i % 3) * 6, -70 - (i % 2) * 40); scene.add(cl); const sp = 1 + (i % 3) * 0.5; anim.push((t, dt) => { cl.position.x += dt * sp; if (cl.position.x > 140) cl.position.x = -140; }); }
+buildHud();
+}
+const GEMS = [0xff4040, 0xff8a2a, 0xffd23f, 0x5fd05a, 0x2f9cff, 0x5a4ae0];
+function buildStatue() {
+const g = new THREE.Group(); root.add(g); const st = 0xe6e0d6, st2 = 0xcfc7b8;
+mesh(new THREE.CylinderGeometry(5.4, 6, 1.2, 28), mat(st2), 0, 0.6, 0, g); mesh(new THREE.CylinderGeometry(4.2, 4.6, 3, 28), mat(st), 0, 2.7, 0, g); mesh(new THREE.CylinderGeometry(4.6, 4.4, 0.5, 28), mat(st2), 0, 4.45, 0, g);
+const cat = new THREE.Group(); cat.position.y = 4.7; g.add(cat);
+mesh(new THREE.SphereGeometry(2.6, 18, 14), mat(st), 0, 2.4, 0, cat).scale.set(1, 1.15, 0.9);
+mesh(new THREE.SphereGeometry(2, 18, 14), mat(st), 0, 5.6, 0.3, cat);
+[-1, 1].forEach((s) => { const e = mesh(new THREE.ConeGeometry(0.75, 1.6, 4), mat(st), s * 1.15, 7.4, 0.2, cat); e.rotation.z = -s * 0.3; mesh(new THREE.SphereGeometry(0.75, 10, 8), mat(st2), s * 1.2, 0.7, 1.6, cat).scale.set(1, 0.6, 1.3); mesh(new THREE.SphereGeometry(0.28, 8, 6), new THREE.MeshLambertMaterial({ color: 0x3a3550 }), s * 0.7, 5.8, 2.1, cat); });
+{ const tail = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.45, 8, 20, Math.PI * 1.2), mat(st)); tail.position.set(0, 1, -1.6); tail.rotation.set(Math.PI / 2, 0, 0.4); cat.add(tail); const tip = mesh(new THREE.ConeGeometry(0.55, 1.4, 8), mat(0xa56bff), -2.1, 1, -2.3, cat); tip.rotation.z = 1.2; }
+for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2 + Math.PI / 2, x = Math.cos(a) * 4.45, z = Math.sin(a) * 4.45; mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.5, 10), mat(0x9a8f7c), x, 2.9, z, g).rotation.set(Math.PI / 2, 0, -a + Math.PI / 2);
+if (i < 6) { const gem = mesh(new THREE.OctahedronGeometry(0.5, 0), new THREE.MeshLambertMaterial({ color: GEMS[i], emissive: GEMS[i], emissiveIntensity: 0.45 }), x * 1.04, 2.9, z * 1.04, g); gem.castShadow = false; anim.push((t) => { gem.rotation.y = t * 0.8 + i; gem.material.emissiveIntensity = 0.35 + 0.2 * Math.sin(t * 1.6 + i); }); } }
+solids.push({ x: 0, z: 0, r: 6.3 });
+const pl = new THREE.Group(); pl.position.set(0, 0, 8.6); pl.rotation.x = -0.18; root.add(pl); mesh(new THREE.BoxGeometry(3.2, 2.2, 0.5), mat(0xbdb3a2), 0, 1.1, 0, pl); const sg = sign('📜 ' + tr('翻彩的傳說'), 0xa56bff, 2.9, 0.75); sg.position.set(0, 1.5, 0.27); pl.add(sg); solids.push({ x: 0, z: 8.6, r: 1.7 });
+spot({ k: 'lore', n: '貓神像的石碑', s: '翻彩的傳說', i: '📜', x: 0, z: 8.6, y: 4.2, dx: 0, dz: 11.6, btn: '看看' });
+}
+let hud = null, bubBox = null, barEl = null, chatEl = null, emoEl = null, loreEl = null, infoEl = null, menuEl = null;
+const EMO = [['push', '🫸', '推一下'], ['wave', '👋', '揮手'], ['heart', '🫶', '比愛心'], ['five', '🙌', '擊掌'], ['gift', '🍙', '送飯糰']];
+function buildHud() {
+const th = T._ui().hud; hud = document.createElement('div'); hud.className = 'pz-hud'; hud.hidden = true;
+hud.innerHTML = `<div class="pz-info"><b>⛲ <span>沐沐廣場</span></b><span class="pz-ch"></span></div><div class="pz-bubs"></div>
+      <div class="pz-bar"><button type="button" class="pz-b pz-say" data-pz="say" aria-label="說話"><span aria-hidden="true">💬</span><b>說話</b><kbd>T</kbd></button>${EMO.map(([k, e, n], i) => `<button type="button" class="pz-b pz-e" data-pz="${k}" aria-label="${n}"><span aria-hidden="true">${e}</span><b>${n}</b><kbd>${i + 1}</kbd></button>`).join('')}</div>
+      <form class="pz-chat" hidden><input type="text" maxlength="40" enterkeyhint="send" autocomplete="off" placeholder="說點什麼…（按 Enter 送出）" aria-label="說點什麼"><button type="submit" class="pz-send">送出</button><button type="button" class="pz-cx" aria-label="關閉">✕</button></form>
+      <div class="pz-menu" hidden></div><div class="pz-ov" hidden></div>`;
+th.appendChild(hud);
+const box = T._ui().lblBox; spots.forEach((s) => { const d = document.createElement('button'); d.type = 'button'; d.className = 'tw-lbl' + (s.k.startsWith('d-') ? ' pz-dl' : ''); d.style.visibility = 'hidden'; d.innerHTML = `<span class="tw-li">${s.i}</span><b>${esc(s.n)}</b><small>${esc(s.s)}</small>`; d.onclick = () => { T._ui().click(); T._ui().walkTo(s.door, s); }; box.appendChild(d); s.el = d; s.door.y = 0; });
+bubBox = hud.querySelector('.pz-bubs'); barEl = hud.querySelector('.pz-bar'); chatEl = hud.querySelector('.pz-chat'); loreEl = hud.querySelector('.pz-ov'); infoEl = hud.querySelector('.pz-ch'); menuEl = hud.querySelector('.pz-menu');
+hud.addEventListener('pointerdown', (e) => { if (e.target.closest('.pz-bar, .pz-chat, .pz-menu, .pz-ov, .pz-tag')) e.stopPropagation(); });
+barEl.addEventListener('click', (e) => { const b = e.target.closest('[data-pz]'); if (!b) return; T._ui().click(); if (b.dataset.pz === 'say') openChat(); else gesture(b.dataset.pz); });
+chatEl.addEventListener('submit', (e) => { e.preventDefault(); sendChat(chatEl.querySelector('input').value); closeChat(); });
+chatEl.querySelector('.pz-cx').onclick = () => closeChat();
+chatEl.querySelector('input').addEventListener('keydown', (e) => { if (e.code === 'Escape') { e.preventDefault(); e.stopPropagation(); closeChat(); } });
+loreEl.addEventListener('click', (e) => { if (e.target === loreEl || e.target.closest('.pz-x')) { loreEl.hidden = true; return; } if (e.target.closest('.pz-next')) { lorePage = (lorePage + 1) % LORE.length; loreDraw(); sfx('ui'); } });
+menuEl.addEventListener('click', (e) => { const b = e.target.closest('[data-pm]'); if (!b) { if (e.target === menuEl) menuEl.hidden = true; return; } T._ui().click(); const c = cats.get(menuEl.dataset.id); menuEl.hidden = true; if (!c) return; if (b.dataset.pm === 'mute') { muted.add(c.key); say('🔇 ' + tr('已經把 {n} 靜音了（看不到他說的話和動作）').replace('{n}', c.name)); } else if (b.dataset.pm === 'unmute') { muted.delete(c.key); say('🔈 ' + tr('取消靜音了')); } else if (b.dataset.pm === 'friend' && c.uid && acc() && acc().friendReq) { acc().friendReq(c.uid).then((ok) => say(ok ? '🤝 ' + tr('送出好友邀請了！') : tr('等一下再試'))); } });
+}
+const say = (m) => { try { T._ui().say(m); } catch (e) {} };
+let chatOpen = false;
+function openChat() { if (!chatEl) return; chatEl.hidden = false; chatOpen = true; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); const i = chatEl.querySelector('input'); i.value = ''; setTimeout(() => i.focus(), 0); }
+function closeChat() { if (!chatEl) return; chatEl.hidden = true; chatOpen = false; const i = chatEl.querySelector('input'); i.blur(); }
+const LORE = [
+'很久很久以前，千彩原的顏色是活的。彩脈在地底下流動，從六座彩泉湧上來。',
+'顏色一停下來，就會慢慢睡成灰灰的褪石。所以墨貓們要讓顏色一直動。',
+'兩種顏色碰在一起的時候最亮，這就是「翻彩」。每一場對戰都是翻彩祭：對手不是壞人，是一起把世界翻亮的夥伴。',
+'第一隻墨貓沐沐掉進了彩泉，把顏色舔進毛裡，尾巴從此變成一支筆。這座廣場就是用她的名字取的。',
+'貓神像上嵌著六顆彩晶。第七個座位一直空著……聽說，那是夜晚的顏色。',
+];
+let lorePage = 0;
+function loreDraw() { loreEl.innerHTML = `<div class="pz-card"><button type="button" class="pz-x" aria-label="關閉">✕</button><h3>📜 ${esc(tr('翻彩的傳說'))}</h3><p>${esc(tr(LORE[lorePage]))}</p><div class="pz-dots">${LORE.map((_, i) => `<i class="${i === lorePage ? 'on' : ''}"></i>`).join('')}</div><button type="button" class="pz-next">${esc(tr('下一段'))} ▶</button></div>`; }
+function loreOpen() { if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); loreDraw(); loreEl.hidden = false; }
+let room = null, roomNo = 0, joining = false, tok = 0, myId = '', seq = 0, evs = [], sendT = 0, lastSeq = new Map(), offT = 0;
+const cats = new Map(), muted = new Set();
+async function connect() {
+if (room || joining || !SC.relay) return; joining = true; const my = ++tok;
+try { const api = await SC.relay.use('room'); let pick = 1;
+if (api.peek) { const names = []; for (let i = 1; i <= 8; i++) names.push('pz' + i); let seen = null; try { seen = await api.peek(names, 2500); } catch (e) { seen = null; } if (seen) { pick = 0; for (let i = 1; i <= 8; i++) { const n = (seen['pz' + i] || []).filter((q) => q && q.pz === 1).length; if (n < CAP) { pick = i; break; } } if (!pick) pick = 9 + Math.floor(Math.random() * (ROOMS - 8)); } }
+if (my !== tok) return; const rm = await api.join('pz' + pick); if (my !== tok || !P.on) { rm.leave(); return; } room = rm; roomNo = pick; myId = (rm.peers().find((p) => p.isMe) || {}).peer || ''; seq = 0; evs = []; lastSeq.clear(); offT = 0;
+say('⛲ ' + tr('歡迎來到沐沐廣場 {n} 號！走到門前的光圈就能湊人開打').replace('{n}', pick));
+} catch (e) { if (my === tok) say(tr('連不上廣場，先自己逛逛（等一下會再試）')); offT = performance.now(); } finally { if (my === tok) joining = false; }
+}
+function disconnect() { tok++; joining = false; if (room) { try { room.leave(); } catch (e) {} } room = null; roomNo = 0; cats.forEach((c) => dropCat(c)); cats.clear(); lastSeq.clear(); evs = []; }
+const ev = (e) => { evs.push({ t: performance.now(), e: [++seq, ...e] }); if (evs.length > 30) evs.shift(); };
+function dropCat(c) { if (c.cat && c.cat.group.parent) c.cat.group.parent.remove(c.cat.group); if (c.tag) c.tag.remove(); if (c.bub) c.bub.remove(); }
+function catFor(p, dt) {
+const pr = p.presence, kind = SC.CAT_KINDS && SC.CAT_KINDS[pr.k] ? pr.k : 'maomao'; let c = cats.get(p.peer);
+if (c && c.kind !== kind) { dropCat(c); cats.delete(p.peer); c = null; }
+const Q = Array.isArray(pr.p) && pr.p.length === 4 && pr.p.every((v) => typeof v === 'number' && isFinite(v) && Math.abs(v) < 300) ? pr.p : null; if (!Q) return null;
+if (!c) { const cat = SC.makeCat(kind); try { cat.setWeapon('none'); } catch (e) {} cat.group.position.set(Q[0], Q[1], Q[2]); scene.add(cat.group); const tag = document.createElement('button'); tag.type = 'button'; tag.className = 'pz-tag'; tag.setAttribute('translate', 'no'); tag.onclick = (e) => { e.stopPropagation(); tagMenu(p.peer); }; bubBox.appendChild(tag);
+c = { id: p.peer, cat, kind, x: Q[0], y: Q[1], z: Q[2], f: Q[3], name: '', col: -1, tag, bub: null, bubT: 0, spin: 0 }; cats.set(p.peer, c); }
+const nm = (SC.net && SC.net.clean ? SC.net.clean(pr.n) : String(pr.n || '').slice(0, 8)) || tr('玩家'); if (nm !== c.name) { c.name = nm; c.tag.textContent = nm; }
+c.uid = typeof pr.u === 'string' ? pr.u.slice(0, 40) : ''; c.key = c.uid || p.peer; c.tag.classList.toggle('mute', muted.has(c.key));
+if (SC.wear && SC.wear.show) SC.wear.show(c.cat, typeof pr.lk === 'string' ? pr.lk : '');
+if (typeof pr.c === 'number' && pr.c !== c.col) { c.col = pr.c; c.cat.setTeamColor(new THREE.Color(((pr.c >> 16) & 255) / 255, ((pr.c >> 8) & 255) / 255, (pr.c & 255) / 255)); }
+const k = 1 - Math.exp(-12 * dt); if (Math.hypot(Q[0] - c.x, Q[2] - c.z) > 12) { c.x = Q[0]; c.y = Q[1]; c.z = Q[2]; }
+c.x += (Q[0] - c.x) * k; c.y += (Q[1] - c.y) * k; c.z += (Q[2] - c.z) * k; let df = Q[3] - c.f; df = Math.atan2(Math.sin(df), Math.cos(df)); c.f += df * k;
+const g = c.cat.group; if (g.parent !== scene) scene.add(g); g.position.set(c.x, c.y, c.z); g.rotation.y = c.f + (c.spin > 0 ? (c.spin -= dt) * 12 : 0);
+const a = Array.isArray(pr.a) ? pr.a : []; if (c.cat.squash) c.cat.squash *= Math.exp(-10 * dt);
+try { c.cat.animate(dt, { speed: +a[0] || 0, onGround: !!a[1], vy: +a[2] || 0, form: 'biped', submerged: false, pitch: 0, firing: false, rolling: false, charge: 0, t: performance.now() / 1000 }); } catch (e) {}
+c.dr = typeof pr.dr === 'string' ? pr.dr : ''; c.dj = typeof pr.dj === 'number' ? pr.dj : 0;
+return c;
+}
+function onEv(c, e) {
+const ty = e[1]; if (muted.has(c.key)) return;
+if (ty === 's' && typeof e[2] === 'string') { bubble(c, clean(e[2])); return; }
+if (ty === 'g' && typeof e[2] === 'string' && EMO.some((m) => m[0] === e[2])) { const to = typeof e[3] === 'string' ? e[3] : ''; showEmo(c.x, c.y, c.z, e[2], c); if (to === myId) gotGesture(c, e[2], e[4], e[5]); else { const t2 = cats.get(to); if (t2 && (e[2] === 'five')) showEmo(t2.x, t2.y, t2.z, 'five', t2); } }
+}
+let pushedT = 0;
+function gotGesture(c, k, dx, dz) {
+if (k === 'push') { if (performance.now() - pushedT < 700) return; pushedT = performance.now(); const L = Math.hypot(+dx || 0, +dz || 0) || 1; T.shove((dx / L) * 24, (dz / L) * 24, 0.22, 16); sfx('boing'); say('🫸 ' + tr('{n} 推了你一下！').replace('{n}', c.name)); }
+else if (k === 'gift') { sfx('ding'); say('🍙 ' + tr('{n} 送你一個鮭魚飯糰！').replace('{n}', c.name)); }
+else if (k === 'five') { sfx('pop'); say('🙌 ' + tr('和 {n} 擊掌！').replace('{n}', c.name)); showEmo(myPos().x, myPos().y, myPos().z, 'five'); }
+else if (k === 'heart') say('🫶 ' + tr('{n} 對你比愛心').replace('{n}', c.name));
+else if (k === 'wave') say('👋 ' + tr('{n} 跟你揮手').replace('{n}', c.name));
+}
+const myPos = () => T._pos;
+function nearest(maxD) { let best = null, bd = maxD; const p = myPos(); for (const c of cats.values()) { if (!c.cat.group.visible) continue; const d = Math.hypot(c.x - p.x, c.z - p.z); if (d < bd) { bd = d; best = c; } } return best; }
+let gestT = 0, chatT = 0;
+function gesture(k) {
+if (!P.on) return; const now = performance.now(); if (now - gestT < (k === 'push' ? 1200 : 700)) return; gestT = now;
+const p = myPos(), need = k === 'push' || k === 'five' || k === 'gift', tgt = nearest(k === 'push' ? 4 : 6);
+if (need && !tgt) { say(tr('旁邊沒有人，走近一點再試試')); return; }
+let dx = 0, dz = 0; if (tgt) { dx = tgt.x - p.x; dz = tgt.z - p.z; const L = Math.hypot(dx, dz) || 1; dx /= L; dz /= L; T._face(Math.atan2(dx, dz)); }
+if (k === 'push') { T.lunge(12, 0.12); sfx('swing'); tgt.cat.squash = 0.4; }
+else if (k === 'wave' || k === 'heart') sfx('pop'); else sfx('ding');
+showEmo(p.x, p.y, p.z, k); ev(['g', k, tgt ? tgt.id : '', r2(dx), r2(dz)]);
+}
+function sendChat(txt) {
+const t = clean(txt); if (!t) return; const now = performance.now(); if (now - chatT < 1500) { say(tr('說慢一點喔')); return; } chatT = now;
+bubble(null, t); ev(['s', t]);
+}
+let myBub = null;
+function bubble(c, text) {
+let el = c ? c.bub : myBub; if (!el) { el = document.createElement('div'); el.className = 'pz-bub'; el.setAttribute('translate', 'no'); bubBox.appendChild(el); if (c) c.bub = el; else myBub = el; }
+el.textContent = text; el.classList.remove('off'); void el.offsetWidth; el.classList.add('pop'); if (c) c.bubT = 6; else myBubT = 6; sfx('ui');
+}
+let myBubT = 0; const pops = [];
+const EMOI = Object.fromEntries(EMO.map((m) => [m[0], m[1]]));
+function showEmo(x, y, z, k, c) { const el = document.createElement('div'); el.className = 'pz-emo'; el.textContent = EMOI[k] || '✨'; bubBox.appendChild(el); pops.push({ el, x, y: y + 6.5, z, t: 0 }); if (c && k === 'heart') c.cat.squash = -0.2; if (SC.fx && SC.fx.burst && k === 'heart') { try { SC.fx.burst(x, y + 4, z, new THREE.Color(0xff6fa8), 8, 10, 0.5); } catch (e) {} } }
+function tagMenu(id) { const c = cats.get(id); if (!c) return; menuEl.dataset.id = id; const m = muted.has(c.key), fr = c.uid && myUid() && acc() && acc().isFriend && !acc().isFriend(c.uid) && c.uid !== myUid();
+menuEl.innerHTML = `<div class="pz-mcard"><b translate="no">${esc(c.name)}</b>${fr ? `<button type="button" class="btn" data-pm="friend">🤝 ${esc(tr('加好友'))}</button>` : ''}<button type="button" class="btn" data-pm="${m ? 'unmute' : 'mute'}">${m ? '🔈 ' + esc(tr('取消靜音')) : '🔇 ' + esc(tr('靜音'))}</button></div>`; menuEl.hidden = false; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); }
+let myDoor = '', myDoorAt = 0, lead = { d: '', since: 0, go: null, busy: false }, launched = false, doorInfo = {};
+const inPad = (D, x, z) => Math.hypot(x - D.px, z - D.pz) < 3.1;
+function doorTick() {
+const p = myPos(), now = Date.now(); let d = ''; for (const D of DOORS) if (inPad(D, p.x, p.z)) d = D.k;
+if (d && DOORS.find((D) => D.k === d).ranked && acc() && acc().needed && !acc().user) { if (myDoor !== 'need-login') say('⚡ ' + tr('積分賽要先登入，走到門前按「登入」')); d = 'need-login'; }
+if (d !== myDoor) { myDoor = d; myDoorAt = now; if (d && d !== 'need-login') sfx('ding'); }
+const ids = myId ? [{ id: myId, dr: myDoor, dj: myDoorAt, me: true }] : [{ id: 'me', dr: myDoor, dj: myDoorAt, me: true }]; for (const c of cats.values()) if (c.dr) ids.push({ id: c.id, dr: c.dr, dj: c.dj, c });
+doorInfo = {};
+for (const D of DOORS) {
+const mem = ids.filter((q) => q.dr === D.k).sort((a, b) => a.dj - b.dj || (a.id < b.id ? -1 : 1)); const n = mem.length, ld = mem[0];
+let wait = null; if (ld && ld.me) { if (n >= D.min) { if (lead.d !== D.k || !lead.since) { lead.d = D.k; lead.since = now; } wait = Math.max(0, waitS(D, n) - (now - lead.since) / 1000); if (wait <= 0 && !lead.busy && !launched) startGroup(D, mem.slice(0, D.max)); } else if (lead.d === D.k) { lead.since = 0; lead.go = null; } }
+else if (ld && ld.c) { const g = cats.get(ld.id); const gp = g && g.dg; if (typeof gp === 'number' && isFinite(gp)) wait = Math.max(0, gp); }
+if (lead.d === D.k && !(ld && ld.me)) { lead.d = ''; lead.since = 0; lead.go = null; }
+doorInfo[D.k] = { n, wait, mem };
+const st = n ? (wait != null ? tr('{n}/{m} 人・{s} 秒後出發').replace('{n}', n).replace('{m}', D.max).replace('{s}', Math.ceil(wait)) : tr('{n}/{m} 人・還差 {k} 人').replace('{n}', n).replace('{m}', D.max).replace('{k}', D.min - n)) : tr('站進光圈排隊（{a}～{m} 人）').replace('{a}', D.min).replace('{m}', D.max);
+if (D.spot.s !== st) { D.spot.s = st; D.spot.dirty = true; const sm = D.spot.el && D.spot.el.querySelector('small'); if (sm) sm.textContent = st; }
+const on = n > 0; D.fill.material.opacity = on ? 0.38 + 0.18 * Math.sin(performance.now() / 180) : 0.18; D.glow.emissiveIntensity = on ? 0.55 : 0.22;
+}
+if (!launched && myDoor && myId) { const mem = (doorInfo[myDoor] || {}).mem || [], ld = mem[0]; if (ld && ld.c) { const g = cats.get(ld.id), go = g && g.go; if (go && go.d === myDoor && Array.isArray(go.ids) && go.ids.includes(myId) && Math.abs(now - (+go.t || 0)) < 60000 && go.i >= 1 && go.i <= 99) launch(DOORS.find((D) => D.k === go.d), go.i | 0, 350); } }
+}
+async function startGroup(D, mem) {
+lead.busy = true; let pick = 1 + Math.floor(Math.random() * 6);
+try { const api = SC.relay && (await SC.relay.use('room')); if (api && api.peek) { const names = []; for (let i = 1; i <= 16; i++) names.push(POOL[D.rule] + i); const seen = await api.peek(names, 2500); if (seen) for (let i = 1; i <= 16; i++) { if (!(seen[POOL[D.rule] + i] || []).some((q) => q && q.v === 1)) { pick = i; break; } } } } catch (e) {}
+lead.busy = false; if (!P.on || myDoor !== D.k) return;
+lead.go = { d: D.k, i: pick, ids: mem.map((q) => (q.me ? myId : q.id)), t: Date.now() }; sendNow();
+launch(D, pick, 1100);
+}
+function launch(D, i, ms) {
+if (launched || !D) return; launched = true; say('🚪 ' + tr('人到齊了！一起去 {n}…').replace('{n}', tr(D.n))); sfx('win');
+setTimeout(() => { if (!P.on) { launched = false; return; }
+P.sticky = true; P.last = { x: D.px, z: D.pz + 0 }; leaveNow(); const sel = (SC.ui && SC.ui.selNow && SC.ui.selNow()) || {};
+T.enter(D.ranked ? 'ranked' : 'net');
+if (!D.ranked) { const nm = document.querySelector('#pick-nm .pick[data-v="' + D.rule + '"]'); if (nm) nm.click(); }
+try { if (SC.net.code) SC.net.leave(); SC.net.profile({ n: myName(), k: sel.kind, w: sel.weapon, u: myUid() }); SC.net.quickJoin(i, D.ranked ? 'all' : false, D.ranked ? null : D.rule); } catch (e) {}
+launched = false; }, ms);
+}
+let sendNowF = false; const sendNow = () => { sendNowF = true; sendT = 0; };
+function netTick(dt) {
+if (!room) { if (!joining && (!offT || performance.now() - offT > 20000)) connect(); return; }
+const now = performance.now(); while (evs.length && now - evs[0].t > 1200) evs.shift();
+const peers = room.peers(), live = new Set();
+for (const p of peers) { if (p.isMe || !p.presence || p.presence.pz !== 1) continue; const c = catFor(p, dt); if (!c) continue; live.add(p.peer);
+const pr = p.presence; c.dg = typeof pr.dg === 'number' ? pr.dg : null; c.go = pr.go && typeof pr.go === 'object' ? pr.go : null;
+const E = Array.isArray(pr.e) ? pr.e : []; let last = lastSeq.get(p.peer); if (last == null) last = E.reduce((m, e) => Math.max(m, Array.isArray(e) ? +e[0] || 0 : 0), 0);
+for (const e of E) { if (!Array.isArray(e) || !(e[0] > last) || e.length > 8) continue; last = e[0]; onEv(c, e); } lastSeq.set(p.peer, last); }
+for (const [id, c] of cats) if (!live.has(id)) { dropCat(c); cats.delete(id); lastSeq.delete(id); }
+if (infoEl) { const v = tr('{n} 號・{m}/{c} 人').replace('{n}', roomNo).replace('{m}', cats.size + 1).replace('{c}', CAP); if (infoEl.textContent !== v) infoEl.textContent = v; }
+if ((sendT -= dt) > 0 && !sendNowF) return; sendT = 0.1; sendNowF = false; const m = T.netMe(); if (!m) return; const a = m.a || {}, rgb = T._myRgb ? T._myRgb() : null;
+const di = doorInfo[myDoor], dg = lead.d === myDoor && di && di.wait != null && di.mem[0] && di.mem[0].me ? Math.round(di.wait * 10) / 10 : null;
+room.presence({ pz: 1, u: myUid(), n: myName(), k: m.k, lk: SC.wear && SC.wear.code ? SC.wear.code() : '', c: rgb ? (rgb[0] << 16) | (rgb[1] << 8) | rgb[2] : null, p: [r2(m.x), r2(m.y), r2(m.z), r2(m.f)], a: [r2(a.speed || 0), a.onGround ? 1 : 0, r2(a.vy || 0)], e: evs.map((x) => x.e), dr: myDoor === 'need-login' ? '' : myDoor, dj: myDoorAt, dg, go: lead.go && lead.go.d === myDoor ? lead.go : null });
+}
+function leaveNow() { disconnect(); }
+const pv = new V3();
+function frame(dt, t) {
+for (const f of anim) f(t, dt);
+for (const n of npcs) { try { n.c.animate(dt, { speed: 0, onGround: true, vy: 0, form: 'biped', submerged: false, pitch: 0, firing: false, rolling: false, charge: 0, t: t + n.ph }); } catch (e) {} n.c.group.rotation.y = n.f + Math.sin(t * 0.6 + n.ph) * 0.25; }
+netTick(dt); doorTick();
+const cam = T._camera(); if (!cam || !hud) return; const W = hud.clientWidth, Hh = hud.clientHeight;
+const place = (el, x, y, z, up) => { pv.set(x, y + up, z).project(cam); const vis = pv.z < 1 && pv.x > -1.2 && pv.x < 1.2 && pv.y > -1.2 && pv.y < 1.2; el.style.visibility = vis ? '' : 'hidden'; if (vis) el.style.transform = `translate(${(((pv.x + 1) / 2) * W).toFixed(1)}px,${(((1 - pv.y) / 2) * Hh).toFixed(1)}px) translate(-50%,-100%)`; return vis; };
+for (const c of cats.values()) { const far = Math.hypot(c.x - cam.position.x, c.z - cam.position.z) > 70; c.tag.style.display = far ? 'none' : ''; if (!far) place(c.tag, c.x, c.y, c.z, 4.6); if (c.bub) { c.bubT -= dt; if (c.bubT <= 0 || muted.has(c.key)) c.bub.classList.add('off'); place(c.bub, c.x, c.y, c.z, 6.4); } }
+if (myBub) { myBubT -= dt; if (myBubT <= 0) myBub.classList.add('off'); const p = myPos(); place(myBub, p.x, p.y, p.z, 5.6); }
+for (let i = pops.length - 1; i >= 0; i--) { const q = pops[i]; q.t += dt; if (q.t > 1.6) { q.el.remove(); pops.splice(i, 1); continue; } place(q.el, q.x, q.y + q.t * 2.2, q.z, 0); q.el.style.opacity = String(Math.min(1, 2.2 - q.t * 1.4)); }
+}
+function collide(p, pad) {
+for (const s of solids) { const dx = p.x - s.x, dz = p.z - s.z, d = Math.hypot(dx, dz), m = s.r + pad; if (d < m && d > 1e-4) { p.x = s.x + (dx / d) * m; p.z = s.z + (dz / d) * m; } }
+for (const c of cats.values()) { const dx = p.x - c.x, dz = p.z - c.z, d = Math.hypot(dx, dz), m = 1.5; if (d < m && d > 1e-4 && Math.abs(p.y - c.y) < 3) { p.x = c.x + (dx / d) * m; p.z = c.z + (dz / d) * m; } }
+const r = Math.hypot(p.x, p.z); if (r > R0 - 0.5) { p.x *= (R0 - 0.5) / r; p.z *= (R0 - 0.5) / r; }
+}
+function near(p) {
+for (const D of DOORS) if (inPad(D, p.x, p.z)) { D.spot.btn = D.ranked && acc() && acc().needed && !acc().user ? '登入' : ''; return D.spot; }
+let best = null, bd = 1e9; for (const s of spots) { if (s.k.startsWith('d-')) continue; const d = Math.hypot(p.x - s.door.x, p.z - s.door.z); if (d < 4.6 && d < bd) { bd = d; best = s; } } return best;
+}
+function act(k) {
+if (!P.on) return false;
+if (k === 'lore') { loreOpen(); return true; }
+if (k === 'd-rank') { if (acc() && acc().needed && !acc().user && acc().open) acc().open(); return true; }
+if (k.startsWith('d-')) return true;
+if (SHOPS.some((s) => s.k === k) || k === 'boss') { P.sticky = true; P.last = { x: myPos().x, z: myPos().z }; return false; }
+return false;
+}
+const zone = { H, out, collide, near, act, frame, shops: SHOPS.map((s) => s.k).concat(['boss', 'set']),   exitAt: () => false,
+get scene() { return scene; }, get sun() { return sun; }, get spots() { return spots; }, get solids() { return solids; },
+enterZone: () => { P.on = true; launched = false; myDoor = ''; lead = { d: '', since: 0, go: null, busy: false }; if (hud) hud.hidden = false; document.getElementById('app').classList.add('in-plaza'); const th = T._ui().hud; if (th) th.classList.add('in-plaza'); T.holdWeapon('none'); clearTimeout(offTimer); connect(); },
+leave: () => { P.on = false; if (hud) hud.hidden = true; closeChat(); if (loreEl) loreEl.hidden = true; if (menuEl) menuEl.hidden = true; document.getElementById('app').classList.remove('in-plaza'); const th = T._ui().hud; if (th) th.classList.remove('in-plaza'); T.holdWeapon(); offTimer = setTimeout(() => { if (!P.on) disconnect(); }, 1500); },
+};
+let offTimer = 0;
+P.zone = zone;
+P.open = () => { P.sticky = true; if (!T.on) { T.show(); return; } enter(); };
+function enter() { if (!built) build(); if (T.zone() === zone) return; let at = { x: 0, z: 19, face: Math.PI }; if (P.last && Math.hypot(P.last.x, P.last.z) < R0) { const L = Math.hypot(P.last.x, P.last.z) || 1, k = Math.max(0, L - 3.5) / L; at = { x: P.last.x * k, z: P.last.z * k, face: Math.atan2(-P.last.x, -P.last.z) }; } P.last = null; T.setZone(zone, at); }
+let riceSaid = false;
+{ const real = T.show; T.show = (...a) => { real(...a); if (!T.on) return; if (P.sticky || !P.isDev()) enter(); else if (!riceSaid) { riceSaid = true; say(tr('🍙 飯糰小鎮：漆貓最愛吃鮭魚飯糰，所以小鎮就叫飯糰小鎮！')); } }; }
+window.addEventListener('keydown', (e) => {
+if (!P.on || !T.on || T.zone() !== zone) return; const tg = e.target; if (tg && /INPUT|TEXTAREA|SELECT/.test(tg.tagName)) return;
+if (document.querySelector('.ac-wrap, .rkd-ov:not([hidden]), .stk-ov:not([hidden]), .fm-ov:not([hidden]), .tw-set:not([hidden])') || (loreEl && !loreEl.hidden)) { if (e.code === 'Escape' && loreEl && !loreEl.hidden) { loreEl.hidden = true; e.stopPropagation(); } return; }
+if (e.code === 'KeyT' || e.code === 'Slash' || (e.code === 'Enter' && T._ui().prompt.hidden)) { e.preventDefault(); e.stopPropagation(); openChat(); return; }
+const m = /^(Digit|Numpad)([1-5])$/.exec(e.code); if (m && !e.repeat) { e.preventDefault(); e.stopPropagation(); gesture(EMO[+m[2] - 1][0]); }
+}, true);
+setInterval(() => { const app = document.getElementById('app'); if (app) app.classList.toggle('sc-dev', P.isDev()); if (room && (!T.on || T.zone() !== zone)) disconnect(); }, 1000);
+P._st = () => ({ room: !!room, roomNo, myId, cats: [...cats.values()].map((c) => ({ id: c.id, n: c.name, x: r2(c.x), z: r2(c.z), dr: c.dr })), myDoor, doorInfo: Object.fromEntries(Object.entries(doorInfo).map(([k, v]) => [k, { n: v.n, wait: v.wait }])), lead: { ...lead } });
+P._gesture = gesture; P._chat = sendChat; P._doors = DOORS; P._lore = () => LORE; P._spots = spots;
 })();
 
 
@@ -41247,10 +41646,11 @@ function brand() { const zh = !SC.i18n || /^zh/.test(SC.i18n.lang), t = zh ? T('
 return `<div class="hm-logo" translate="no"><svg class="sp" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true"><path d="M20 66Q4 40 32 34 30 8 66 22 86-2 118 18 150 0 178 16 214-4 240 15 276 0 300 18 338 2 350 28 386 24 376 54 404 72 376 88 380 116 346 106L343 124Q338 134 333 124L330 108Q300 124 272 110L269 126Q263 138 257 126L254 110Q214 122 184 111 150 124 122 110L119 121Q113 131 108 121L104 109Q70 122 52 104 18 112 28 86 2 80 20 66Z" fill="#ff2f86" stroke="#1b1430" stroke-width="5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><ellipse cx="62" cy="36" rx="30" ry="8" fill="#fff" opacity=".35" transform="rotate(-8 62 36)"/></svg>${[...t].map((c) => `<span class="ch">${c}</span>`).join('')}<span class="face">${SC.ui.face('maomao')}</span></div>${zh ? '<div class="hm-sub" translate="no">SpalaCat</div>' : ''}`; }
 let el = null, bLang = '', place = 'home'; HM.on = false;
 function mount() { if (el) return true; const ui = document.getElementById('ui'); if (!ui) return false; el = document.createElement('div'); el.id = 'home'; el.hidden = true;
-el.innerHTML = `<div class="hm-top"><div class="hm-brand"></div><div class="pf-wrap"><div class="pf-bar"></div><div class="pf-tools"><button type="button" data-h="task" aria-label="任務">📋</button><button type="button" data-h="stk" aria-label="貼紙本">📒</button><button type="button" data-h="heart" aria-label="愛心補給站">❤️</button><button type="button" class="fs" data-h="full" aria-label="全螢幕" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="o" d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/><path class="i" d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg></button><button type="button" data-h="set" aria-label="設定">⚙️</button></div></div></div><div class="hd"><button type="button" class="hd-b town1" data-h="house"><i>🏡</i><span><b>沐沐小鎮</b><small>散步、種菜、噴墨</small></span></button><button type="button" class="hd-b cpu" data-h="versus"><i>🎯</i><span><b>單機對戰</b><small>和電腦打，馬上開打</small></span></button><button type="button" class="hd-b net" data-h="net"><i>🌐</i><span><b>連線對戰</b><small>和全世界的玩家對戰</small></span></button><button type="button" class="hd-b rk" data-h="ranked"><i>⚡</i><span><b>積分賽</b><small class="st"></small><small class="sn"></small></span><em>開打！</em></button></div>`;
+el.innerHTML = `<div class="hm-top"><div class="hm-brand"></div><div class="pf-wrap"><div class="pf-bar"></div><div class="pf-tools"><button type="button" data-h="task" aria-label="任務">📋</button><button type="button" data-h="stk" aria-label="貼紙本">📒</button><button type="button" data-h="heart" aria-label="愛心補給站">❤️</button><button type="button" class="fs" data-h="full" aria-label="全螢幕" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="o" d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/><path class="i" d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg></button><button type="button" data-h="set" aria-label="設定">⚙️</button></div></div></div><div class="hd"><button type="button" class="hd-b town1" data-h="plaza"><i>⛲</i><span><b>沐沐廣場</b><small>和大家聊天、湊人開打</small></span></button><button type="button" class="hd-b cpu" data-h="versus"><i>🎯</i><span><b>單機對戰</b><small>和電腦打，馬上開打</small></span></button><button type="button" class="hd-b net" data-h="net"><i>🌐</i><span><b>連線對戰</b><small>和全世界的玩家對戰</small></span></button><button type="button" class="hd-b rk" data-h="ranked"><i>⚡</i><span><b>積分賽</b><small class="st"></small><small class="sn"></small></span><em>開打！</em></button></div>`;
 ui.insertBefore(el, ui.firstChild); bar = el.querySelector('.pf-bar');
+{ const dv = document.createElement('button'); dv.type = 'button'; dv.className = 'hd-dev dev-only'; dv.dataset.h = 'house'; dv.innerHTML = '<i aria-hidden="true">🍙</i><b>飯糰小鎮</b><small>僅開發者可進入試玩</small>'; el.querySelector('.hd').appendChild(dv); }
 el.addEventListener('click', (e) => { const h = e.target.closest('[data-h]'); if (h) { snd(); return HM.go(h.dataset.h); } const b = e.target.closest('[data-pf]'); if (!b) return; snd(); const a = b.dataset.pf; if (a === 'fr') { if (A() && A().user && A().open) A().open('friends'); else card('log', '登入漆貓就能加好友'); } else card(a); });
-addEventListener('keydown', (e) => { if (!HM.on || e.repeat || e.ctrlKey || e.metaKey || e.altKey || busy() || /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '')) return; const k = { Digit1: 'versus', Digit2: 'net', Digit3: 'ranked', KeyE: 'house', Enter: 'house' }[e.code]; if (!k || (e.code === 'Enter' && document.activeElement && document.activeElement.closest('#home'))) return; e.preventDefault(); e.stopImmediatePropagation(); snd(); HM.go(k); }, true);
+addEventListener('keydown', (e) => { if (!HM.on || e.repeat || e.ctrlKey || e.metaKey || e.altKey || busy() || /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '')) return; const k = { Digit1: 'versus', Digit2: 'net', Digit3: 'ranked', KeyE: 'plaza', Enter: 'plaza' }[e.code]; if (!k || (e.code === 'Enter' && document.activeElement && document.activeElement.closest('#home'))) return; e.preventDefault(); e.stopImmediatePropagation(); snd(); HM.go(k); }, true);
 const T0 = SC.town; if (T0 && !T0._hm) { T0._hm = 1; const real = T0.show, set0 = T0.setZone; T0.show = () => { place = 'town'; hideHome(); real(); townBtn(); }; if (set0) T0.setZone = (...x) => { if (!T0.on) T0.show(); return set0(...x); }; }
 return true; }
 const snd = () => { try { SC.audio.init(); SC.audio.sfx.ui(); } catch (x) {   } };
@@ -41259,11 +41659,11 @@ function townBtn() { const tw = document.getElementById('town'); if (!tw || tw.q
 function hideHome() { HM.on = false; if (el) el.hidden = true; document.getElementById('app').classList.remove('in-home'); }
 HM.show = () => { if (!mount()) return; place = 'home'; if (SC.town && SC.town.on) SC.town.hide(); ['m-title', 'm-results', 'm-pause'].forEach((id) => { const m = document.getElementById(id); if (m) m.hidden = true; }); if (SC.catView) SC.catView.hide(); const g = G(); if (!g.demo || !HM._bg) { HM._bg = 1; g.start({ demo: true, map: 'random', roster: '2v2' }); } HM.on = true; el.hidden = false; document.getElementById('app').classList.add('in-home'); const In = SC.input; if (In) { In.release(); In.active = false; } S._ok = 0; load(); brandSync(); paint(); };
 HM.back = () => { if (place === 'town') SC.town.show(); else HM.show(); };
-HM.go = (k) => { if (k === 'house') return SC.town.show(); if (k === 'set') return card('set'); if (k === 'full') { const f = $i('btn-full2'); if (f) f.click(); return; } if (k === 'task' || k === 'stk' || k === 'heart') return SC.town.enter(k); hideHome(); SC.town.enter(k); };
+HM.go = (k) => { if (k === 'plaza' && SC.plaza) { hideHome(); return SC.plaza.open(); } if (k === 'house') { if (SC.plaza) SC.plaza.sticky = false; return SC.town.show(); } if (k === 'set') return card('set'); if (k === 'full') { const f = $i('btn-full2'); if (f) f.click(); return; } if (k === 'task' || k === 'stk' || k === 'heart') return SC.town.enter(k); hideHome(); SC.town.enter(k); };
 function rkCard() { const R = SC.ranked, b = el && el.querySelector('.hd-b.rk'); if (!R || !b || !R.load) return; try { const s = R.load(), t = R.tierOf(s.p), src = document.querySelector('#m-title .rkd-badge .rkd-stars'), n = R.seasonNo(), d = Math.max(0, Math.ceil((R.seasonEnd(n) - Date.now()) / 864e5)), put = (q, h) => { const e = b.querySelector(q); if (e._h !== h) { e._h = h; e.innerHTML = h; } }; put('i', R.icon(t)); put('.st', T(R.TIERS[t].n) + (src ? src.outerHTML : '')); put('.sn', T('第 {n} 季').replace('{n}', n) + '・' + T('還有 {n} 天').replace('{n}', d)); } catch (e) {   } }
 const $i = (id) => document.getElementById(id);
 function fsSync() { const f = $i('btn-full2'), b = el && el.querySelector('.pf-tools .fs'); if (!f || !b) return; b.hidden = f.hidden; b.classList.toggle('on', !!(document.fullscreenElement || document.webkitFullscreenElement)); }
-function brandSync() { if (!el) return; rkCard(); fsSync(); const l = SC.i18n ? SC.i18n.lang : 'zh'; if (bLang !== l) { bLang = l; el.querySelector('.hm-brand').innerHTML = brand(); } const d = el.querySelector('.hd'); if (d.offsetHeight) el.style.setProperty('--dock', d.offsetHeight + 'px'); const bt = document.querySelector('#btn-town span'); if (bt) { const w = place === 'town' ? '回小鎮' : '回首頁'; if (bt.dataset.w !== w) { bt.dataset.w = w; bt.textContent = w; } } if (HM.on && SC.net && SC.net.code) { hideHome(); const m = document.getElementById('m-title'); if (m) m.hidden = false; } }
+function brandSync() { if (!el) return; rkCard(); fsSync(); const l = SC.i18n ? SC.i18n.lang : 'zh'; if (bLang !== l) { bLang = l; el.querySelector('.hm-brand').innerHTML = brand(); } const d = el.querySelector('.hd'); if (d.offsetHeight) el.style.setProperty('--dock', d.offsetHeight + 'px'); const bt = document.querySelector('#btn-town span'); if (bt) { const w = place === 'town' ? (SC.plaza && SC.plaza.sticky ? '回廣場' : '回小鎮') : '回首頁'; if (bt.dataset.w !== w) { bt.dataset.w = w; bt.textContent = w; } } if (HM.on && SC.net && SC.net.code) { hideHome(); const m = document.getElementById('m-title'); if (m) m.hidden = false; } }
 let cv = null; const cd = new THREE.Vector3(), cl = new THREE.Vector3();
 HM.cam = (camera, cam, dt) => { const g = G(); if (!HM.on || !g.demo || g.peek || g.state !== 'play') { cv = null; return false; } const W = SC.world, live = g.actors.filter((a) => a.alive && !a.gone); if (!live.length) return !!cv;
 if (!cv || !cv.a.alive || g.time > cv.until || !g.actors.includes(cv.a)) { const n = live.filter((a) => !cv || a !== cv.a), a = (n.length ? n : live)[(Math.random() * (n.length || live.length)) | 0]; cv = { a, until: g.time + 10, yaw: a.yaw, cut: 1, d: 14 }; }
@@ -45427,6 +45827,7 @@ const devRb = () => { const k = Object.keys(CONFIG.devs || {}), i = account.user
 const repBy = (c) => { if (!c.rb || c.rb === 'admin') return '💬 作者回覆'; const v = Object.values(CONFIG.devs || {}), i = /^dev(\d+)$/.test(c.rb) ? +c.rb.slice(3) - 1 : 0; return '💬 ' + (v[i] || v[0] || '系統開發者') + ' 回覆'; };
 const KTAG = (c) => (c.k === 'bug' ? '🐞 Debug' : PAYTAG[c.pay] || PAYTAG['']);
 const isAdmin = () => !!(account.user && CONFIG.contact && account.user.email && account.user.email.toLowerCase() === CONFIG.contact.toLowerCase());
+account.isDev = () => isAdmin() || !!devName();
 const pl = { rows: null, rooms: null, up: 0, err: '', at: 0, tab: 'list', days: 7, ev: null, evErr: '', sel: '' };
 const MODE_N = { net: '連線', versus: '單機', boss: '貓咪歷險', sandbox: '練習', walk: '散步' };
 const RULE_N = { turf: '塗地戰', knockout: '擊倒戰', zombie: '殭屍戰', mix: '積分賽', conquest: '佔領戰', tsunami: '殭屍海嘯', ranked: '積分賽' };
@@ -45737,6 +46138,8 @@ if (useFb) load().catch(() => { fbp = null; });
 (() => {
 window.SC = window.SC || {};
 SC.CHANGELOG = [
+["2026-11-27", "", "新的沐沐廣場：大家在同一個廣場走來走去、打字聊天（頭上冒對話框）、推一下、揮手、比愛心、擊掌、送飯糰；站進房門前的光圈湊齊人數就一起開打（塗地戰、擊倒戰、積分賽、殭屍保衛戰、一起打電腦）；中間的貓咪和小鎮的店一樣，貓神像下的石碑寫著翻彩的傳說",
+{ en: "New MooMoo Plaza: walk around with everyone, chat in speech bubbles, push, wave, send hearts, high five and give onigiri; step into the ring by a door to gather a team and battle together (Paint Battle, Knockout, Ranked, Zombie Defense, Co-op vs CPU); the cats in the middle run the same shops as the town, and the stone under the Cat God statue tells the Legend of the Color Turn", ja: "新しいムームー広場：みんなで歩いて、吹き出しでおしゃべり、おす・手をふる・ハート・ハイタッチ・おにぎりをあげる；とびらの前の光の輪に人がそろうといっしょにバトル（ぬりぬりバトル、ノックアウト、ランクマッチ、ゾンビ防衛戦、いっしょにCPU戦）；まん中のネコたちは町のお店と同じ、ネコ神像の石碑には色返しの伝説", ko: "새로운 무무 광장: 다 같이 걸어 다니며 말풍선으로 채팅하고, 밀기·손 흔들기·하트·하이파이브·주먹밥 주기; 문 앞 빛의 원에 인원이 모이면 함께 대전(페인트 배틀, 녹아웃, 랭크전, 좀비 방어전, 함께 CPU전); 가운데 고양이들은 마을 가게와 똑같고, 고양이 신상 비석에는 색 뒤집기의 전설", es: "Nueva Plaza MooMoo: pasea con todos, charla con bocadillos, empuja, saluda, manda corazones, choca la mano y regala onigiri; entra en el círculo de una puerta para reunir equipo y luchar juntos; los gatos del centro tienen las mismas tiendas que el pueblo y la piedra bajo el Dios Gato cuenta la leyenda del Giro de Color", pt: "Nova Praça MooMoo: ande com todo mundo, converse em balões, empurre, acene, mande corações, toque aqui e dê onigiri; entre no círculo de uma porta para juntar o time e jogar juntos; os gatos do centro têm as mesmas lojas da vila e a pedra sob o Deus Gato conta a lenda da Virada de Cor", fr: "Nouvelle place MooMoo : balade-toi avec tout le monde, discute en bulles, pousse, salue, envoie des cœurs, tape dans la main et offre des onigiris ; entre dans le cercle d'une porte pour former une équipe et jouer ensemble ; les chats du centre tiennent les mêmes boutiques que le village et la stèle du Dieu Chat raconte la légende du Retour des couleurs", de: "Neuer MooMoo-Platz: mit allen herumlaufen, in Sprechblasen chatten, schubsen, winken, Herzen schicken, abklatschen und Onigiri schenken; in den Ring vor einer Tür stellen, um ein Team zu bilden und zusammen zu spielen; die Katzen in der Mitte führen dieselben Läden wie im Dorf, und der Stein der Katzengottheit erzählt die Legende der Farbwende", it: "Nuova Piazza MooMoo: passeggia con tutti, chatta nei fumetti, spingi, saluta, manda cuori, batti cinque e regala onigiri; entra nel cerchio di una porta per formare la squadra e giocare insieme; i gatti al centro hanno gli stessi negozi del villaggio e la stele del Dio Gatto racconta la leggenda del Giro dei Colori", ru: "Новая площадь МуМу: гуляй со всеми, общайся в облачках, толкайся, маши, шли сердечки, давай пять и дари онигири; встань в круг у двери, чтобы собрать команду и играть вместе; коты в центре держат те же лавки, что и в городке, а камень у Кота-божества хранит легенду о Цветовороте", tr: "Yeni MooMoo Meydanı: herkesle dolaş, konuşma balonlarıyla sohbet et, it, el salla, kalp gönder, çak bir beşlik ve onigiri ver; takım kurmak için bir kapının önündeki halkaya gir ve birlikte oyna; ortadaki kediler kasabadaki dükkanların aynısını işletiyor, Kedi Tanrı taşında Renk Dönümü efsanesi yazıyor", id: "Alun-alun MooMoo baru: jalan-jalan bersama, ngobrol lewat balon kata, dorong, lambai, kirim hati, tos, dan beri onigiri; masuk ke lingkaran di depan pintu untuk kumpul tim dan main bersama; kucing di tengah punya toko yang sama seperti di kota, dan prasasti Dewa Kucing menceritakan legenda Putaran Warna", vi: "Quảng trường MooMoo mới: dạo cùng mọi người, trò chuyện bằng bong bóng, đẩy, vẫy tay, thả tim, đập tay và tặng cơm nắm; đứng vào vòng sáng trước cửa để rủ đủ người rồi cùng đấu; mấy chú mèo ở giữa có cửa hàng giống thị trấn, bia đá dưới tượng Thần Mèo kể truyền thuyết Lật Màu", th: "ลานมูมูใหม่: เดินเล่นกับทุกคน คุยผ่านกล่องคำพูด ผลัก โบกมือ ส่งหัวใจ ไฮไฟว์ และให้ข้าวปั้น ยืนในวงแสงหน้าประตูเพื่อรวมทีมแล้วไปสู้ด้วยกัน แมวตรงกลางมีร้านเหมือนในเมือง และศิลาใต้รูปปั้นเทพแมวเล่าตำนานการพลิกสี" }],
 ["2026-11-27", "", "太陽谷第一人稱：改成跟第三人稱一樣由彩尾握著槍，墨水從槍口射出",
 { en: "Sun Valley first-person view: your colour tail now holds the gun like in third person, and ink fires from the gun", ja: "太陽の谷の一人称視点：三人称と同じく、色しっぽが銃を持ち、インクは銃口から出ます", ko: "태양 계곡 1인칭: 3인칭처럼 색꼬리가 총을 들고, 잉크는 총구에서 나가요", es: "Vista en primera persona del Valle del Sol: tu cola de color sostiene el arma como en tercera persona y la tinta sale del arma", pt: "Primeira pessoa no Vale do Sol: a cauda colorida segura a arma como na terceira pessoa, e a tinta sai da arma", fr: "Vue à la première personne de la Vallée du Soleil : ta queue colorée tient l'arme comme à la troisième personne, et l'encre sort de l'arme", de: "Ego-Perspektive im Sonnental: Dein Farbschwanz hält die Waffe wie in der dritten Person, die Tinte kommt aus der Waffe", it: "Prima persona nella Valle del Sole: la coda colorata impugna l'arma come in terza persona e l'inchiostro esce dall'arma", ru: "Вид от первого лица в Солнечной долине: цветной хвост держит оружие, как в виде от третьего лица, краска летит из ствола", tr: "Güneş Vadisi birinci şahıs: renkli kuyruğun silahı üçüncü şahıstaki gibi tutuyor, mürekkep silahtan çıkıyor", id: "Sudut pandang orang pertama di Lembah Matahari: ekor warna memegang senjata seperti di orang ketiga, tinta keluar dari senjata", vi: "Góc nhìn thứ nhất ở Thung lũng Mặt Trời: đuôi màu cầm súng như góc nhìn thứ ba, mực bắn ra từ súng", th: "มุมมองบุคคลที่หนึ่งในหุบเขาตะวัน: หางสีถือปืนเหมือนมุมมองบุคคลที่สาม และหมึกยิงออกจากปืน" }],
 ["2026-11-27", "", "單機對戰、連線對戰、積分賽可以直接選貓咪：在「我的裝備」最上面點一隻就換，下面的裝備條也看得到現在的貓咪",
@@ -46940,8 +47343,8 @@ const lede = $('lede'); if (lede) head.querySelector('.sx-ttl').appendChild(lede
 backBtn.addEventListener('click', () => SX.back());
 const pm = $('pick-mode');
 [['g1', '對戰'], ['g2', '單人'], ['g3', '生活']].forEach(([c, t]) => { const g = document.createElement('span'); g.className = 'sx-g ' + c; g.textContent = t; pm.appendChild(g); });
-const tw = document.createElement('button'); tw.type = 'button'; tw.className = 'sx-card town'; tw.innerHTML = '<i aria-hidden="true">🏡</i><b>沐沐小鎮</b><small>散步、種菜、噴墨</small>';
-tw.addEventListener('click', (e) => { e.stopPropagation(); snd(); if (SC.net && SC.net.code) SC.net.leave(); if (SC.town) SC.town.show(); }); pm.appendChild(tw);
+const tw = document.createElement('button'); tw.type = 'button'; tw.className = 'sx-card town dev-only'; tw.innerHTML = '<i aria-hidden="true">🍙</i><b>飯糰小鎮</b><small>僅開發者可進入試玩</small>';
+tw.addEventListener('click', (e) => { e.stopPropagation(); snd(); if (SC.net && SC.net.code) SC.net.leave(); if (SC.plaza) SC.plaza.sticky = false; if (SC.town) SC.town.show(); }); pm.appendChild(tw);
 pm.addEventListener('click', (e) => { const b = e.target.closest('.pick[data-v]'); if (b) remember(b.dataset.v); }, true);
 const opts = mt.querySelector('.opts');
 match = document.createElement('section'); match.className = 'sx-col sx-match'; match.setAttribute('aria-label', '這場比賽'); match.innerHTML = '<p class="sx-cap"><b>這場比賽</b><small>選這場怎麼打</small></p>';
