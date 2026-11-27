@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v358';</script><script>window.SC_BUILD='73d04f645bfa';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="貓咪大漆戰"><meta name="theme-color" content="#1b1033"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><script>window.SC_PUBLIC = true;window.SC_VER='v359';</script><script>window.SC_BUILD='e83fe9423b95';(function(){var B=window.SC_BUILD,K='sc-upd';function busy(){try{var g=window.SC&&SC.game;return !!(g&&!g.demo&&g.state==='play')||!!(window.SC&&SC.net&&SC.net.code)}catch(e){return false}}function check(){if(busy())return;fetch(location.pathname.replace(/[^/]*$/,'')+'v.txt?b='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var m=/^\s*([0-9a-f]{12})\s*$/.exec(t);if(!m||m[1]===B)return;var tried='';try{tried=sessionStorage.getItem(K)}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem(K,m[1])}catch(e){}if(!busy())location.replace(location.pathname+'?v='+m[1]+location.hash)}).catch(function(){})}window.addEventListener('load',function(){setTimeout(check,2500)});document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});setInterval(check,300000)})();</script></head><body style="margin:0"><title>貓咪大漆戰 SpalaCat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Noto+Sans+TC:wght@500;700;900&display=swap">
@@ -39923,7 +39923,7 @@ const I = SC.i18n; if (I && I.add) { I.add(RR.map((r) => r.slice(0, 4))); if (I.
 const T = SC.town; if (!T) return;
 const P = (SC.plaza = { on: false, sticky: false, _dev: false });
 const V3 = THREE.Vector3, tr = (s) => (SC.tr ? SC.tr(s) : s), esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';');
-const CAP = 16, ROOMS = 30, R0 = 44;
+const CAP = 100, ROOMS = 30, R0 = 84;
 const r2 = (v) => Math.round(v * 100) / 100;
 const acc = () => SC.account, myUid = () => (acc() && acc().user ? acc().user.uid : '');
 P.isDev = () => !!(P._dev || (acc() && acc().isDev && acc().isDev()));
@@ -39932,80 +39932,77 @@ const myName = () => { const N = SC.net; let n = ''; try { if (acc() && acc().us
 const guestNo = 100 + Math.floor(Math.random() * 900);
 const clean = (t) => (SC.net && SC.net.cleanText ? SC.net.cleanText(t) : String(t || '').slice(0, 40));
 let built = false, scene = null, sun = null, root = null, low = false;
-const spots = [], solids = [], anim = [], npcs = [], pads = [];
-const H = (x, z) => { const r = Math.hypot(x, z); return r < R0 + 2 ? 0 : Math.min(14, (r - R0 - 2) * 0.9); };
+const spots = [], solids = [], anim = [], pads = [];
+const H = (x, z) => 0;
 const out = (x, z) => Math.hypot(x, z) > R0;
 const DOORS = [
-{ k: 'd-turf', rule: 'turf', n: '塗地戰', i: '🎨', min: 2, max: 4, col: 0xff4f9a, a: 162 },
-{ k: 'd-ko', rule: 'knockout', n: '擊倒戰', i: '💥', min: 2, max: 4, col: 0xff8a2a, a: 126 },
-{ k: 'd-rank', rule: 'ranked', n: '積分賽', i: '⚡', min: 2, max: 4, col: 0xffd23f, a: 90, ranked: true },
-{ k: 'd-zb', rule: 'zombie', n: '殭屍保衛戰', i: '🧟', min: 1, max: 6, col: 0x8be04a, a: 54 },
-{ k: 'd-cpu', rule: 'cpu', n: '一起打電腦', i: '🤖', min: 2, max: 4, col: 0x2fc8ff, a: 18 },
+{ k: 'd-turf', rule: 'turf', n: '塗地戰', i: '🎨', min: 2, max: 4, col: 0xff3d9a, a: 162 },
+{ k: 'd-ko', rule: 'knockout', n: '擊倒戰', i: '💥', min: 2, max: 4, col: 0xff8a2a, a: 114 },
+{ k: 'd-rank', rule: 'ranked', n: '積分賽', i: '⚡', min: 2, max: 4, col: 0xffd23f, a: 66, ranked: true },
+{ k: 'd-zb', rule: 'zombie', n: '殭屍保衛戰', i: '🧟', min: 1, max: 6, col: 0x7cf05a, a: 18 },
+{ k: 'd-cpu', rule: 'cpu', n: '一起打電腦', i: '🤖', min: 2, max: 4, col: 0x2fd0ff, a: -30 },
 ];
 const POOL = { turf: 'sc-q', knockout: 'sc-qk', zombie: 'sc-qz', cpu: 'sc-qc', ranked: 'sc-ra' };
 const waitS = (D, n) => (n >= D.max ? 2 : D.rule === 'zombie' ? (n >= 2 ? 10 : 15) : n >= 3 ? 10 : 18);
-const SHOPS = [
-{ k: 'sandbox', kind: 'maomao', n: '教學站', s: '教學試玩', i: '🎈' },
-{ k: 'stk', kind: 'banban', n: '貼紙庫', s: '貼紙本', i: '📒' },
-{ k: 'task', kind: 'taro', n: '任務所', s: '每日任務', i: '📋' },
-{ k: 'wear', kind: 'mochi', n: '喵喵服飾店', s: '用代幣買衣服', i: '👗' },
-{ k: 'heart', kind: 'meiqiu', n: '愛心補給站', s: '贊助和更新日誌', i: '❤️' },
-{ k: 'home', kind: 'shuang', n: '換貓咪', s: '選你的貓咪', i: '🐱' },
-];
+const PAD_R = 4.6;
 const mat = (c, o) => (T._mat ? T._mat(c, o) : new THREE.MeshLambertMaterial({ color: c }));
-const mesh = (g, m, x, y, z, par) => { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = !low; o.receiveShadow = !low; (par || root).add(o); return o; };
-const sign = (txt, col, w, h) => { const c = document.createElement('canvas'); c.width = 512; c.height = 128; const x = c.getContext('2d'); x.fillStyle = '#fff7ea'; x.fillRect(0, 0, 512, 128); x.strokeStyle = '#' + col.toString(16).padStart(6, '0'); x.lineWidth = 16; x.strokeRect(8, 8, 496, 112); x.fillStyle = '#1b1430'; x.font = 'bold 60px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, 256, 68, 470); const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tx })); };
+const glow = (c, k = 1) => new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(k) });
+const mesh = (g, m, x, y, z, par) => { const o = new THREE.Mesh(g, m); o.position.set(x, y, z); o.castShadow = !low && !m.isMeshBasicMaterial; o.receiveShadow = !low; (par || root).add(o); return o; };
+const hex = (c) => '#' + c.toString(16).padStart(6, '0');
+const sign = (txt, col, w, h, dark) => { const c = document.createElement('canvas'); c.width = 512; c.height = 128; const x = c.getContext('2d'); x.fillStyle = dark ? '#14122a' : '#fff7ea'; x.fillRect(0, 0, 512, 128); x.strokeStyle = hex(col); x.lineWidth = 12; x.strokeRect(6, 6, 500, 116); x.fillStyle = dark ? '#ffffff' : '#1b1430'; if (dark) { x.shadowColor = hex(col); x.shadowBlur = 18; } x.font = 'bold 58px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, 256, 68, 470); const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tx })); };
 function spot(o) { o.door = new V3(o.dx, 0, o.dz); o.gy = 0; o.free = true; o.soon = false; if (o.btn == null) o.btn = '進入'; spots.push(o); return o; }
 const U = (deg, r) => { const a = (deg * Math.PI) / 180; return [Math.cos(a) * r, -Math.sin(a) * r]; };
+function winTex(seed) { const c = document.createElement('canvas'); c.width = 64; c.height = 128; const x = c.getContext('2d'); x.fillStyle = '#23223a'; x.fillRect(0, 0, 64, 128); let s = seed * 9301 + 49297; const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280); for (let r = 0; r < 16; r++) for (let q = 0; q < 6; q++) { const v = rnd(); x.fillStyle = v < 0.45 ? '#ffd98a' : v < 0.55 ? '#8fe2ff' : '#2e2d4a'; x.fillRect(4 + q * 10, 4 + r * 8, 6, 5); } const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; tx.wrapS = tx.wrapT = THREE.RepeatWrapping; return tx; }
 function build() {
 built = true; low = !!(T._low && T._low());
-scene = new THREE.Scene(); scene.background = new THREE.Color(0xcfe9f7); scene.fog = new THREE.Fog(0xe9e2d0, 110, 260);
-scene.add(new THREE.HemisphereLight(0xfff2d6, 0x6f8f4a, 1.25));
-sun = new THREE.DirectionalLight(0xffe2b0, 1.75); sun.position.set(-40, 60, 35); scene.add(sun); scene.add(sun.target);
+scene = new THREE.Scene();
+{ const c = document.createElement('canvas'); c.width = 2; c.height = 256; const x = c.getContext('2d'), g = x.createLinearGradient(0, 0, 0, 256); g.addColorStop(0, '#1a1440'); g.addColorStop(0.55, '#5a3a8a'); g.addColorStop(0.8, '#ff8a6a'); g.addColorStop(1, '#ffc28a'); x.fillStyle = g; x.fillRect(0, 0, 2, 256); const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; scene.background = tx; }
+scene.fog = new THREE.Fog(0x3a2c5a, 150, 330);
+scene.add(new THREE.HemisphereLight(0xb8c4ff, 0x3a3050, 1.15));
+sun = new THREE.DirectionalLight(0xffc9a0, 1.35); sun.position.set(-50, 45, 30); scene.add(sun); scene.add(sun.target);
 if (!low) { sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); const sc = sun.shadow.camera; sc.left = sc.bottom = -70; sc.right = sc.top = 70; sc.near = 10; sc.far = 180; sun.shadow.bias = -0.0015; }
 root = new THREE.Group(); scene.add(root);
-{ const SZ = 240, SEG = low ? 90 : 140, gg = new THREE.PlaneGeometry(SZ, SZ, SEG, SEG); gg.rotateX(-Math.PI / 2); const pa = gg.attributes.position, cols = new Float32Array(pa.count * 3), c = new THREE.Color();
-const CS = new THREE.Color(0xeadfc8), CS2 = new THREE.Color(0xd9c9a8), CR = new THREE.Color(0xc96f4a), CG = new THREE.Color(0x92d662), CG2 = new THREE.Color(0x76c052);
-for (let i = 0; i < pa.count; i++) { const x = pa.getX(i), z = pa.getZ(i), r = Math.hypot(x, z); pa.setY(i, H(x, z) + (r > R0 + 4 ? Math.sin(x * 0.15) * Math.cos(z * 0.13) * 1.5 : 0));
-if (r < R0 - 1) { c.copy(CS); if (Math.floor(r / 4) % 2) c.lerp(CS2, 0.55); if (Math.abs(r - 20) < 0.7 || Math.abs(r - 9) < 0.5) c.copy(CR); } else if (r < R0 + 0.6) c.copy(CR); else c.copy(CG).lerp(CG2, 0.5 + 0.5 * Math.sin(x * 0.2 + z * 0.17));
-cols[i * 3] = c.r; cols[i * 3 + 1] = c.g; cols[i * 3 + 2] = c.b; }
-gg.setAttribute('color', new THREE.BufferAttribute(cols, 3)); gg.computeVertexNormals(); const gm = new THREE.Mesh(gg, new THREE.MeshLambertMaterial({ vertexColors: true })); gm.receiveShadow = !low; root.add(gm); }
-{ const n = 64; for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2, x = Math.cos(a) * (R0 + 1.2), z = Math.sin(a) * (R0 + 1.2), deg = (-a * 180) / Math.PI; const nearDoor = DOORS.some((D) => Math.abs((((deg - D.a) % 360) + 540) % 360 - 180) < 7); if (nearDoor) continue; const m = mesh(new THREE.BoxGeometry(4.6, 1.1, 1.2), mat(0xe2d6bf), x, 0.55, z); m.rotation.y = -a + Math.PI / 2; } }
-for (let i = 0; i < 22; i++) { const a = (i / 22) * Math.PI * 2 + 0.13, r = R0 + 10 + (i % 3) * 6, x = Math.cos(a) * r, z = Math.sin(a) * r, y = H(x, z), s = 1 + (i % 4) * 0.2; mesh(new THREE.CylinderGeometry(0.5 * s, 0.7 * s, 3 * s, 6), mat(0x8a5a32), x, y + 1.5 * s, z); mesh(new THREE.ConeGeometry(3 * s, 6 * s, 7), mat(i % 2 ? 0x4fae5a : 0x3f9a50), x, y + 5.5 * s, z); mesh(new THREE.ConeGeometry(2.2 * s, 4.5 * s, 7), mat(0x5bbd63), x, y + 8 * s, z); }
-{ const F = []; for (let i = 0; i < 60; i++) { const a = Math.random() * Math.PI * 2, r = R0 + 2.5 + Math.random() * 6; F.push([Math.cos(a) * r, Math.sin(a) * r]); } const fl = new THREE.InstancedMesh(new THREE.SphereGeometry(0.4, 6, 4), new THREE.MeshLambertMaterial(), F.length), m4 = new THREE.Matrix4(), cc = new THREE.Color(); F.forEach(([x, z], i) => { fl.setMatrixAt(i, m4.makeTranslation(x, H(x, z) + 0.4, z)); fl.setColorAt(i, cc.setHex([0xff6fa8, 0xffd23f, 0xffffff, 0xa56bff, 0xff8a2a][i % 5])); }); root.add(fl); }
+{ const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#4a4b5c'; x.fillRect(0, 0, 256, 256); for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) { const v = 70 + ((i * 7 + j * 13) % 5) * 4; x.fillStyle = `rgb(${v},${v + 1},${v + 14})`; x.fillRect(i * 64 + 2, j * 64 + 2, 60, 60); } const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.repeat.set(32, 32); tx.anisotropy = 4;
+const g = new THREE.Mesh(new THREE.PlaneGeometry(520, 520), new THREE.MeshLambertMaterial({ map: tx })); g.rotation.x = -Math.PI / 2; g.receiveShadow = !low; root.add(g); }
+const ring = (r, w, c, op) => { const m = new THREE.Mesh(new THREE.RingGeometry(r - w / 2, r + w / 2, 96), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: op || 0.9 })); m.rotation.x = -Math.PI / 2; m.position.y = 0.04; root.add(m); return m; };
+ring(12, 0.35, 0xa56bff); ring(30, 0.25, 0x2fd0ff, 0.7); ring(R0 - 1.5, 0.5, 0xff3d9a, 0.8);
+DOORS.forEach((D) => { const [x, z] = U(D.a, (R0 + 12) / 2), L = R0 - 14, st = new THREE.Mesh(new THREE.PlaneGeometry(0.5, L), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.55 })); st.rotation.x = -Math.PI / 2; st.rotation.z = (D.a * Math.PI) / 180 + Math.PI / 2; st.position.set(x, 0.05, z); root.add(st); });
+{ const n = 72, gm = new THREE.MeshLambertMaterial({ color: 0x9fdcff, transparent: true, opacity: 0.28 }), lm = glow(0x8fe2ff); for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2, deg = (-a * 180) / Math.PI; if (DOORS.some((D) => Math.abs((((deg - D.a) % 360) + 540) % 360 - 180) < 5)) continue; const x = Math.cos(a) * (R0 + 1), z = Math.sin(a) * (R0 + 1), ry = -a + Math.PI / 2; const w = mesh(new THREE.BoxGeometry(7.4, 1.6, 0.25), gm, x, 0.8, z); w.rotation.y = ry; w.castShadow = false; const l = mesh(new THREE.BoxGeometry(7.4, 0.12, 0.3), lm, x, 1.66, z); l.rotation.y = ry; } }
+{ const box = new THREE.BoxGeometry(1, 1, 1); for (let i = 0; i < 40; i++) { const a = (i / 40) * Math.PI * 2 + 0.05, r = 130 + (i % 4) * 22, x = Math.cos(a) * r, z = Math.sin(a) * r, w = 16 + (i % 5) * 4, h = 30 + ((i * 37) % 70), tx = winTex(i + 1); tx.repeat.set(Math.max(1, Math.round(w / 10)), Math.max(1, Math.round(h / 20))); const b = new THREE.Mesh(box, new THREE.MeshBasicMaterial({ map: tx, color: 0xbfbfd8 })); b.scale.set(w, h, w); b.position.set(x, h / 2, z); b.rotation.y = -a; root.add(b); }
+[['SPALACAT', 0xff3d9a, 200], ['貓咪大漆戰', 0x2fd0ff, 290], ['⚡ ' + tr('積分賽'), 0xffd23f, 20], ['🎨 ' + tr('塗地戰'), 0x7cf05a, 110]].forEach(([t, c, deg]) => { const [x, z] = U(deg, 112), s = sign(t, c, 36, 9, true); s.position.set(x, 30, z); s.lookAt(0, 30, 0); root.add(s); const p = mesh(new THREE.BoxGeometry(1.2, 26, 1.2), mat(0x2a2a3a), x, 13, z); void p; }); }
+{ const bm = mat(0x2c2c3a), wm = mat(0xc98c55), pm = mat(0x3a3a4a), tm = mat(0x58c070), lm = glow(0xfff1d0); const BN = [], PL = [];
+for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2 + 0.31, [x, z] = [Math.cos(a) * 22, Math.sin(a) * 22]; BN.push([x, z, -a]); }
+for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + 0.15, [x, z] = [Math.cos(a) * 52, Math.sin(a) * 52]; PL.push([x, z]); }
+BN.forEach(([x, z, ry]) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g); mesh(new THREE.BoxGeometry(1.4, 0.25, 4.6), wm, 0, 1, 0, g); mesh(new THREE.BoxGeometry(1.2, 0.95, 0.3), bm, 0, 0.47, -1.9, g); mesh(new THREE.BoxGeometry(1.2, 0.95, 0.3), bm, 0, 0.47, 1.9, g); solids.push({ x, z, r: 1.6 }); });
+PL.forEach(([x, z], i) => { mesh(new THREE.BoxGeometry(4.6, 1, 4.6), pm, x, 0.5, z); mesh(new THREE.SphereGeometry(2.1 + (i % 2) * 0.4, 12, 8), tm, x, 3.6 + (i % 2) * 0.3, z); mesh(new THREE.CylinderGeometry(0.22, 0.28, 2, 6), mat(0x6b4a2a), x, 1.8, z); solids.push({ x, z, r: 3 }); });
+for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2, x = Math.cos(a) * 38, z = Math.sin(a) * 38; mesh(new THREE.CylinderGeometry(0.16, 0.2, 7, 8), pm, x, 3.5, z); const l = mesh(new THREE.BoxGeometry(0.3, 2.2, 0.3), lm, x, 7.2, z); l.castShadow = false; solids.push({ x, z, r: 0.5 }); } }
 buildStatue();
-[[-14, 26, 0.5], [14, 26, -0.5], [-27, 8, 1.3], [27, 8, -1.3]].forEach(([x, z, ry]) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g); mesh(new THREE.BoxGeometry(4.4, 0.3, 1.3), mat(0xc98c55), 0, 1, 0, g); mesh(new THREE.BoxGeometry(4.4, 1.1, 0.25), mat(0xc98c55), 0, 1.7, -0.6, g); [-1.8, 1.8].forEach((bx) => mesh(new THREE.BoxGeometry(0.3, 1, 1.1), mat(0x6b4a2a), bx, 0.5, 0, g)); solids.push({ x, z, r: 1.8 }); });
-[[-9, 33], [9, 33], [-33, -9], [33, -9]].forEach(([x, z]) => { mesh(new THREE.CylinderGeometry(0.18, 0.24, 6, 8), mat(0x3a3a4a), x, 3, z); const lamp = mesh(new THREE.SphereGeometry(0.6, 10, 8), new THREE.MeshBasicMaterial({ color: 0xfff1b0 }), x, 6.3, z); lamp.castShadow = false; solids.push({ x, z, r: 0.5 }); });
-SHOPS.forEach((S, i) => { const deg = 270 - 150 + i * 60, [x, z] = U(deg, 13), [dx, dz] = U(deg, 16.6); const c = SC.makeCat(S.kind); c.setWeapon('none'); c.group.position.set(x, 0, z); c.group.rotation.y = Math.atan2(dx - x, dz - z); c.group.traverse((o) => { if (o.isMesh) o.castShadow = !low; }); root.add(c.group); npcs.push({ c, ph: i * 1.3, f: c.group.rotation.y }); solids.push({ x, z, r: 1.4 });
-const st = mesh(new THREE.CylinderGeometry(1.5, 1.7, 0.4, 16), mat(0xffffff), x, 0.2, z); void st;
-spot({ k: S.k, n: S.n, s: S.s, i: S.i, x, z, y: 6.2, dx, dz }); });
-{ const [x, z] = U(-90, R0 - 0.5); [-3.2, 3.2].forEach((ox) => { mesh(new THREE.BoxGeometry(0.9, 7, 0.9), mat(0x8a5a32), x + ox, 3.5, z); solids.push({ x: x + ox, z, r: 0.8 }); }); mesh(new THREE.BoxGeometry(8, 1, 1.2), mat(0x6b4a2a), x, 7.3, z); const sg = sign('🌿 ' + tr('探險小徑'), 0x3f9a50, 6, 1.5); sg.position.set(x, 8.8, z - 0.7); sg.rotation.y = Math.PI; root.add(sg);
-spot({ k: 'boss', n: '探險小徑', s: '冒險世界・太陽谷', i: '🌿', x, z, y: 10, dx: x, dz: z - 4 }); }
-DOORS.forEach((D) => { const [x, z] = U(D.a, R0 + 0.6), ry = Math.atan2(-x, -z), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g);
-[-3.4, 3.4].forEach((ox) => { const m = mesh(new THREE.BoxGeometry(1.2, 8.5, 1.2), mat(0xfff3d6), ox, 4.25, 0, g); void m; solids.push({ x: x + Math.cos(ry) * ox, z: z - Math.sin(ry) * ox, r: 0.9 }); });
-mesh(new THREE.TorusGeometry(3.4, 0.6, 8, 20, Math.PI), mat(D.col), 0, 8.5, 0, g); const door = mesh(new THREE.BoxGeometry(5.6, 8, 0.3), mat(0x2a2240), 0, 4, -0.4, g); door.material = new THREE.MeshLambertMaterial({ color: 0x2a2240, emissive: D.col, emissiveIntensity: 0.25 }); D.glow = door.material;
-const sg = sign(D.i + ' ' + tr(D.n), D.col, 6.4, 1.6); sg.position.set(0, 13.2, 0.4); g.add(sg);
-const [px, pz] = U(D.a, R0 - 5.6), pad = new THREE.Mesh(new THREE.RingGeometry(2.7, 3.4, 32), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.85 })); pad.rotation.x = -Math.PI / 2; pad.position.set(px, 0.06, pz); root.add(pad);
-const fill = new THREE.Mesh(new THREE.CircleGeometry(2.7, 32), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.22 })); fill.rotation.x = -Math.PI / 2; fill.position.set(px, 0.05, pz); root.add(fill);
+DOORS.forEach((D) => { const [x, z] = U(D.a, R0 + 0.8), ry = Math.atan2(-x, -z), g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g);
+const fm = mat(0x24243a); [-5, 5].forEach((ox) => { mesh(new THREE.BoxGeometry(1.4, 13, 1.6), fm, ox, 6.5, 0, g); mesh(new THREE.BoxGeometry(0.25, 12, 0.3), glow(D.col), ox * 0.86, 6.5, 0.82, g); solids.push({ x: x + Math.cos(ry) * ox, z: z - Math.sin(ry) * ox, r: 1.1 }); });
+mesh(new THREE.BoxGeometry(11.4, 1.6, 1.6), fm, 0, 13.6, 0, g); mesh(new THREE.BoxGeometry(10, 0.25, 0.3), glow(D.col), 0, 12.7, 0.82, g);
+const inner = new THREE.Mesh(new THREE.PlaneGeometry(8.6, 12.4), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.35, side: THREE.DoubleSide })); inner.position.set(0, 6.4, 0); g.add(inner); D.glow = inner.material;
+const sg = sign(D.i + ' ' + tr(D.n), D.col, 10, 2.5, true); sg.position.set(0, 16.2, 0.2); g.add(sg);
+const [px, pz] = U(D.a, R0 - 8), pad = new THREE.Mesh(new THREE.RingGeometry(PAD_R - 0.7, PAD_R, 40), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.95 })); pad.rotation.x = -Math.PI / 2; pad.position.set(px, 0.07, pz); root.add(pad);
+const fill = new THREE.Mesh(new THREE.CircleGeometry(PAD_R - 0.7, 40), new THREE.MeshBasicMaterial({ color: D.col, transparent: true, opacity: 0.2 })); fill.rotation.x = -Math.PI / 2; fill.position.set(px, 0.06, pz); root.add(fill);
 D.px = px; D.pz = pz; D.pad = pad; D.fill = fill; pads.push(D);
-D.spot = spot({ k: D.k, n: D.n, s: '', i: D.i, x, z, y: 15.5, dx: px, dz: pz, btn: '' }); });
-for (let i = 0; i < 5; i++) { const cl = new THREE.Group(); [[0, 0, 4], [3.5, -0.6, 3], [-3.5, -0.8, 3]].forEach(([x, y, r]) => { const m = mesh(new THREE.SphereGeometry(r, 10, 8), new THREE.MeshLambertMaterial({ color: 0xffffff }), x, y, 0, cl); m.castShadow = false; }); cl.position.set(-110 + i * 50, 50 + (i % 3) * 6, -70 - (i % 2) * 40); scene.add(cl); const sp = 1 + (i % 3) * 0.5; anim.push((t, dt) => { cl.position.x += dt * sp; if (cl.position.x > 140) cl.position.x = -140; }); }
+anim.push((t) => { inner.material.opacity = (D.busy ? 0.55 : 0.3) + 0.08 * Math.sin(t * 2 + D.a); });
+D.spot = spot({ k: D.k, n: D.n, s: '', i: D.i, x, z, y: 19, dx: px, dz: pz, btn: '' }); });
 buildHud();
 }
 const GEMS = [0xff4040, 0xff8a2a, 0xffd23f, 0x5fd05a, 0x2f9cff, 0x5a4ae0];
 function buildStatue() {
-const g = new THREE.Group(); root.add(g); const st = 0xe6e0d6, st2 = 0xcfc7b8;
-mesh(new THREE.CylinderGeometry(5.4, 6, 1.2, 28), mat(st2), 0, 0.6, 0, g); mesh(new THREE.CylinderGeometry(4.2, 4.6, 3, 28), mat(st), 0, 2.7, 0, g); mesh(new THREE.CylinderGeometry(4.6, 4.4, 0.5, 28), mat(st2), 0, 4.45, 0, g);
-const cat = new THREE.Group(); cat.position.y = 4.7; g.add(cat);
-mesh(new THREE.SphereGeometry(2.6, 18, 14), mat(st), 0, 2.4, 0, cat).scale.set(1, 1.15, 0.9);
-mesh(new THREE.SphereGeometry(2, 18, 14), mat(st), 0, 5.6, 0.3, cat);
-[-1, 1].forEach((s) => { const e = mesh(new THREE.ConeGeometry(0.75, 1.6, 4), mat(st), s * 1.15, 7.4, 0.2, cat); e.rotation.z = -s * 0.3; mesh(new THREE.SphereGeometry(0.75, 10, 8), mat(st2), s * 1.2, 0.7, 1.6, cat).scale.set(1, 0.6, 1.3); mesh(new THREE.SphereGeometry(0.28, 8, 6), new THREE.MeshLambertMaterial({ color: 0x3a3550 }), s * 0.7, 5.8, 2.1, cat); });
-{ const tail = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.45, 8, 20, Math.PI * 1.2), mat(st)); tail.position.set(0, 1, -1.6); tail.rotation.set(Math.PI / 2, 0, 0.4); cat.add(tail); const tip = mesh(new THREE.ConeGeometry(0.55, 1.4, 8), mat(0xa56bff), -2.1, 1, -2.3, cat); tip.rotation.z = 1.2; }
-for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2 + Math.PI / 2, x = Math.cos(a) * 4.45, z = Math.sin(a) * 4.45; mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.5, 10), mat(0x9a8f7c), x, 2.9, z, g).rotation.set(Math.PI / 2, 0, -a + Math.PI / 2);
-if (i < 6) { const gem = mesh(new THREE.OctahedronGeometry(0.5, 0), new THREE.MeshLambertMaterial({ color: GEMS[i], emissive: GEMS[i], emissiveIntensity: 0.45 }), x * 1.04, 2.9, z * 1.04, g); gem.castShadow = false; anim.push((t) => { gem.rotation.y = t * 0.8 + i; gem.material.emissiveIntensity = 0.35 + 0.2 * Math.sin(t * 1.6 + i); }); } }
-solids.push({ x: 0, z: 0, r: 6.3 });
-const pl = new THREE.Group(); pl.position.set(0, 0, 8.6); pl.rotation.x = -0.18; root.add(pl); mesh(new THREE.BoxGeometry(3.2, 2.2, 0.5), mat(0xbdb3a2), 0, 1.1, 0, pl); const sg = sign('📜 ' + tr('翻彩的傳說'), 0xa56bff, 2.9, 0.75); sg.position.set(0, 1.5, 0.27); pl.add(sg); solids.push({ x: 0, z: 8.6, r: 1.7 });
-spot({ k: 'lore', n: '貓神像的石碑', s: '翻彩的傳說', i: '📜', x: 0, z: 8.6, y: 4.2, dx: 0, dz: 11.6, btn: '看看' });
+const g = new THREE.Group(); root.add(g); const st = 0xf4f2f6, base = mat(0x1c1b2c, { rough: 0.25 });
+mesh(new THREE.CylinderGeometry(6.4, 6.8, 1, 6), base, 0, 0.5, 0, g); mesh(new THREE.CylinderGeometry(4.6, 5, 3.4, 6), base, 0, 2.7, 0, g); mesh(new THREE.TorusGeometry(5, 0.12, 6, 48), glow(0xa56bff), 0, 4.45, 0, g).rotation.x = Math.PI / 2;
+const cat = new THREE.Group(); cat.position.y = 4.4; g.add(cat); const sm = mat(st, { rough: 0.3 });
+mesh(new THREE.SphereGeometry(2.6, 20, 16), sm, 0, 2.4, 0, cat).scale.set(1, 1.15, 0.9);
+mesh(new THREE.SphereGeometry(2, 20, 16), sm, 0, 5.6, 0.3, cat);
+[-1, 1].forEach((s) => { const e = mesh(new THREE.ConeGeometry(0.75, 1.6, 4), sm, s * 1.15, 7.4, 0.2, cat); e.rotation.z = -s * 0.3; mesh(new THREE.SphereGeometry(0.75, 10, 8), sm, s * 1.2, 0.7, 1.6, cat).scale.set(1, 0.6, 1.3); mesh(new THREE.SphereGeometry(0.28, 8, 6), glow(0x2fd0ff), s * 0.7, 5.8, 2.1, cat); });
+{ const tail = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.45, 8, 20, Math.PI * 1.2), sm); tail.position.set(0, 1, -1.6); tail.rotation.set(Math.PI / 2, 0, 0.4); cat.add(tail); const tip = mesh(new THREE.ConeGeometry(0.55, 1.4, 8), glow(0xa56bff), -2.1, 1, -2.3, cat); tip.rotation.z = 1.2; }
+for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2 + Math.PI / 2, x = Math.cos(a) * 4.7, z = Math.sin(a) * 4.7; mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.4, 12), mat(0x0e0d18), x, 2.9, z, g).rotation.set(Math.PI / 2, 0, -a + Math.PI / 2);
+if (i < 6) { const gem = mesh(new THREE.OctahedronGeometry(0.55, 0), glow(GEMS[i]), x * 1.05, 2.9, z * 1.05, g); anim.push((t) => { gem.rotation.y = t * 0.8 + i; gem.scale.setScalar(1 + 0.08 * Math.sin(t * 1.6 + i)); }); } }
+solids.push({ x: 0, z: 0, r: 7 });
+const pl = new THREE.Group(); pl.position.set(0, 0, 10); root.add(pl); mesh(new THREE.BoxGeometry(2.6, 2.6, 0.6), base, 0, 1.3, 0, pl); const sg = sign('📜 ' + tr('翻彩的傳說'), 0xa56bff, 2.3, 0.6, true); sg.position.set(0, 1.9, 0.31); pl.add(sg); solids.push({ x: 0, z: 10, r: 1.6 });
+spot({ k: 'lore', n: '貓神像的石碑', s: '翻彩的傳說', i: '📜', x: 0, z: 10, y: 4.2, dx: 0, dz: 13, btn: '看看' });
 }
 let hud = null, bubBox = null, barEl = null, chatEl = null, emoEl = null, loreEl = null, infoEl = null, menuEl = null;
 const EMO = [['push', '🫸', '推一下'], ['wave', '👋', '揮手'], ['heart', '🫶', '比愛心'], ['five', '🙌', '擊掌'], ['gift', '🍙', '送飯糰']];
@@ -40052,22 +40049,46 @@ say('⛲ ' + tr('歡迎來到沐沐廣場 {n} 號！走到門前的光圈就能�
 }
 function disconnect() { tok++; joining = false; if (room) { try { room.leave(); } catch (e) {} } room = null; roomNo = 0; cats.forEach((c) => dropCat(c)); cats.clear(); lastSeq.clear(); evs = []; }
 const ev = (e) => { evs.push({ t: performance.now(), e: [++seq, ...e] }); if (evs.length > 30) evs.shift(); };
-function dropCat(c) { if (c.cat && c.cat.group.parent) c.cat.group.parent.remove(c.cat.group); if (c.tag) c.tag.remove(); if (c.bub) c.bub.remove(); }
+function dropCat(c) { freeModel(c); if (c.tag) c.tag.remove(); if (c.bub) c.bub.remove(); }
+let FULLset = null; const pool = {}; P._full = (n) => { FULLset = n; lodT = 0; };
+const fullN = () => FULLset != null ? FULLset : low || (SC.perf && SC.perf.q === 'low') ? 6 : (SC.input && SC.input.isTouch) || (SC.perf && SC.perf.q === 'mid') ? 10 : 16;
+let lite = null, ears = null, liteCol = new THREE.Color(), liteO = new THREE.Object3D(), lodT = 0;
+function freeModel(c) { if (!c.cat) return; const g = c.cat.group; if (g.parent) g.parent.remove(g); (pool[c.kind] = pool[c.kind] || []).push(c.cat); c.cat = null; c.tag.style.display = 'none'; }
+function getModel(c) { const L = pool[c.kind]; let cat = L && L.pop(); if (!cat) { cat = SC.makeCat(c.kind); try { cat.setWeapon('none'); } catch (e) {} } c.cat = cat; c.col = -1; c.lk = null; scene.add(cat.group); }
+function liteMesh() {
+if (lite) return lite; const g = new THREE.SphereGeometry(1.25, 10, 8); g.scale(1, 1.35, 1); g.translate(0, 1.7, 0);
+const m = new THREE.MeshLambertMaterial({ color: 0xffffff }); lite = new THREE.InstancedMesh(g, m, CAP); lite.count = 0; lite.frustumCulled = false; lite.castShadow = false; scene.add(lite);
+const eg = new THREE.ConeGeometry(0.5, 1.1, 6); ears = new THREE.InstancedMesh(eg, m, CAP * 2); ears.count = 0; ears.frustumCulled = false; scene.add(ears); return lite;
+}
+function lod(dt) {
+const p = myPos(); if (!p) return; const list = [...cats.values()];
+if ((lodT -= dt) <= 0) { lodT = 0.4; for (const c of list) c.d = Math.hypot(c.x - p.x, c.z - p.z); list.sort((a, b) => a.d - b.d); const F = fullN(); list.forEach((c, i) => { c.full = i < F && c.d < 90; }); }
+const im = liteMesh(); let n = 0; const now = performance.now() / 1000;
+for (const c of list) {
+if (c.full && !c.cat) getModel(c); else if (!c.full && c.cat) freeModel(c);
+if (c.cat) { const cat = c.cat, g = cat.group;
+if (c.lk !== c.lkW && SC.wear && SC.wear.show) { c.lk = c.lkW; try { SC.wear.show(cat, c.lk); } catch (e) {} }
+if (c.col !== c.rgb) { c.col = c.rgb; cat.setTeamColor(new THREE.Color(((c.rgb >> 16) & 255) / 255, ((c.rgb >> 8) & 255) / 255, (c.rgb & 255) / 255)); }
+g.position.set(c.x, c.y, c.z); g.rotation.y = c.f + (c.spin > 0 ? (c.spin -= dt) * 12 : 0); if (cat.squash) cat.squash *= Math.exp(-10 * dt);
+const a = c.a; try { cat.animate(dt, { speed: +a[0] || 0, onGround: !!a[1], vy: +a[2] || 0, form: 'biped', submerged: false, pitch: 0, firing: false, rolling: false, charge: 0, t: now }); } catch (e) {}
+} else if (n < CAP) { liteO.position.set(c.x, c.y, c.z); liteO.rotation.set(0, c.f, 0); liteO.updateMatrix(); im.setMatrixAt(n, liteO.matrix); im.setColorAt(n, liteCol.setHex(c.rgb));
+for (let s2 = -1; s2 <= 1; s2 += 2) { const j = n * 2 + (s2 > 0 ? 1 : 0), cs = Math.cos(c.f), sn = Math.sin(c.f); liteO.position.set(c.x + cs * 0.7 * s2, c.y + 3.75, c.z - sn * 0.7 * s2); liteO.rotation.set(0, c.f, -0.3 * s2); liteO.updateMatrix(); ears.setMatrixAt(j, liteO.matrix); ears.setColorAt(j, liteCol); }
+n++; }
+}
+im.count = n; ears.count = n * 2; for (const M of [im, ears]) { M.instanceMatrix.needsUpdate = true; if (M.instanceColor) M.instanceColor.needsUpdate = true; }
+}
 function catFor(p, dt) {
 const pr = p.presence, kind = SC.CAT_KINDS && SC.CAT_KINDS[pr.k] ? pr.k : 'maomao'; let c = cats.get(p.peer);
-if (c && c.kind !== kind) { dropCat(c); cats.delete(p.peer); c = null; }
+if (c && c.kind !== kind) { freeModel(c); c.kind = kind; }
 const Q = Array.isArray(pr.p) && pr.p.length === 4 && pr.p.every((v) => typeof v === 'number' && isFinite(v) && Math.abs(v) < 300) ? pr.p : null; if (!Q) return null;
-if (!c) { const cat = SC.makeCat(kind); try { cat.setWeapon('none'); } catch (e) {} cat.group.position.set(Q[0], Q[1], Q[2]); scene.add(cat.group); const tag = document.createElement('button'); tag.type = 'button'; tag.className = 'pz-tag'; tag.setAttribute('translate', 'no'); tag.onclick = (e) => { e.stopPropagation(); tagMenu(p.peer); }; bubBox.appendChild(tag);
-c = { id: p.peer, cat, kind, x: Q[0], y: Q[1], z: Q[2], f: Q[3], name: '', col: -1, tag, bub: null, bubT: 0, spin: 0 }; cats.set(p.peer, c); }
+if (!c) { const tag = document.createElement('button'); tag.type = 'button'; tag.className = 'pz-tag'; tag.setAttribute('translate', 'no'); tag.style.display = 'none'; tag.onclick = (e) => { e.stopPropagation(); tagMenu(p.peer); }; bubBox.appendChild(tag);
+c = { id: p.peer, cat: null, kind, x: Q[0], y: Q[1], z: Q[2], f: Q[3], name: '', col: -1, rgb: 0xffffff, lk: '', tag, bub: null, bubT: 0, spin: 0, a: [] }; cats.set(p.peer, c); }
 const nm = (SC.net && SC.net.clean ? SC.net.clean(pr.n) : String(pr.n || '').slice(0, 8)) || tr('玩家'); if (nm !== c.name) { c.name = nm; c.tag.textContent = nm; }
 c.uid = typeof pr.u === 'string' ? pr.u.slice(0, 40) : ''; c.key = c.uid || p.peer; c.tag.classList.toggle('mute', muted.has(c.key));
-if (SC.wear && SC.wear.show) SC.wear.show(c.cat, typeof pr.lk === 'string' ? pr.lk : '');
-if (typeof pr.c === 'number' && pr.c !== c.col) { c.col = pr.c; c.cat.setTeamColor(new THREE.Color(((pr.c >> 16) & 255) / 255, ((pr.c >> 8) & 255) / 255, (pr.c & 255) / 255)); }
+c.lkW = typeof pr.lk === 'string' ? pr.lk.slice(0, 200) : ''; if (typeof pr.c === 'number') c.rgb = pr.c & 0xffffff;
 const k = 1 - Math.exp(-12 * dt); if (Math.hypot(Q[0] - c.x, Q[2] - c.z) > 12) { c.x = Q[0]; c.y = Q[1]; c.z = Q[2]; }
 c.x += (Q[0] - c.x) * k; c.y += (Q[1] - c.y) * k; c.z += (Q[2] - c.z) * k; let df = Q[3] - c.f; df = Math.atan2(Math.sin(df), Math.cos(df)); c.f += df * k;
-const g = c.cat.group; if (g.parent !== scene) scene.add(g); g.position.set(c.x, c.y, c.z); g.rotation.y = c.f + (c.spin > 0 ? (c.spin -= dt) * 12 : 0);
-const a = Array.isArray(pr.a) ? pr.a : []; if (c.cat.squash) c.cat.squash *= Math.exp(-10 * dt);
-try { c.cat.animate(dt, { speed: +a[0] || 0, onGround: !!a[1], vy: +a[2] || 0, form: 'biped', submerged: false, pitch: 0, firing: false, rolling: false, charge: 0, t: performance.now() / 1000 }); } catch (e) {}
+c.a = Array.isArray(pr.a) ? pr.a : [];
 c.dr = typeof pr.dr === 'string' ? pr.dr : ''; c.dj = typeof pr.dj === 'number' ? pr.dj : 0;
 return c;
 }
@@ -40085,14 +40106,14 @@ else if (k === 'heart') say('🫶 ' + tr('{n} 對你比愛心').replace('{n}', c
 else if (k === 'wave') say('👋 ' + tr('{n} 跟你揮手').replace('{n}', c.name));
 }
 const myPos = () => T._pos;
-function nearest(maxD) { let best = null, bd = maxD; const p = myPos(); for (const c of cats.values()) { if (!c.cat.group.visible) continue; const d = Math.hypot(c.x - p.x, c.z - p.z); if (d < bd) { bd = d; best = c; } } return best; }
+function nearest(maxD) { let best = null, bd = maxD; const p = myPos(); for (const c of cats.values()) { const d = Math.hypot(c.x - p.x, c.z - p.z); if (d < bd) { bd = d; best = c; } } return best; }
 let gestT = 0, chatT = 0;
 function gesture(k) {
 if (!P.on) return; const now = performance.now(); if (now - gestT < (k === 'push' ? 1200 : 700)) return; gestT = now;
 const p = myPos(), need = k === 'push' || k === 'five' || k === 'gift', tgt = nearest(k === 'push' ? 4 : 6);
 if (need && !tgt) { say(tr('旁邊沒有人，走近一點再試試')); return; }
 let dx = 0, dz = 0; if (tgt) { dx = tgt.x - p.x; dz = tgt.z - p.z; const L = Math.hypot(dx, dz) || 1; dx /= L; dz /= L; T._face(Math.atan2(dx, dz)); }
-if (k === 'push') { T.lunge(12, 0.12); sfx('swing'); tgt.cat.squash = 0.4; }
+if (k === 'push') { T.lunge(12, 0.12); sfx('swing'); if (tgt.cat) tgt.cat.squash = 0.4; }
 else if (k === 'wave' || k === 'heart') sfx('pop'); else sfx('ding');
 showEmo(p.x, p.y, p.z, k); ev(['g', k, tgt ? tgt.id : '', r2(dx), r2(dz)]);
 }
@@ -40107,11 +40128,11 @@ el.textContent = text; el.classList.remove('off'); void el.offsetWidth; el.class
 }
 let myBubT = 0; const pops = [];
 const EMOI = Object.fromEntries(EMO.map((m) => [m[0], m[1]]));
-function showEmo(x, y, z, k, c) { const el = document.createElement('div'); el.className = 'pz-emo'; el.textContent = EMOI[k] || '✨'; bubBox.appendChild(el); pops.push({ el, x, y: y + 6.5, z, t: 0 }); if (c && k === 'heart') c.cat.squash = -0.2; if (SC.fx && SC.fx.burst && k === 'heart') { try { SC.fx.burst(x, y + 4, z, new THREE.Color(0xff6fa8), 8, 10, 0.5); } catch (e) {} } }
+function showEmo(x, y, z, k, c) { const el = document.createElement('div'); el.className = 'pz-emo'; el.textContent = EMOI[k] || '✨'; bubBox.appendChild(el); pops.push({ el, x, y: y + 6.5, z, t: 0 }); if (c && c.cat && k === 'heart') c.cat.squash = -0.2; if (SC.fx && SC.fx.burst && k === 'heart') { try { SC.fx.burst(x, y + 4, z, new THREE.Color(0xff6fa8), 8, 10, 0.5); } catch (e) {} } }
 function tagMenu(id) { const c = cats.get(id); if (!c) return; menuEl.dataset.id = id; const m = muted.has(c.key), fr = c.uid && myUid() && acc() && acc().isFriend && !acc().isFriend(c.uid) && c.uid !== myUid();
 menuEl.innerHTML = `<div class="pz-mcard"><b translate="no">${esc(c.name)}</b>${fr ? `<button type="button" class="btn" data-pm="friend">🤝 ${esc(tr('加好友'))}</button>` : ''}<button type="button" class="btn" data-pm="${m ? 'unmute' : 'mute'}">${m ? '🔈 ' + esc(tr('取消靜音')) : '🔇 ' + esc(tr('靜音'))}</button></div>`; menuEl.hidden = false; if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock(); }
 let myDoor = '', myDoorAt = 0, lead = { d: '', since: 0, go: null, busy: false }, launched = false, doorInfo = {};
-const inPad = (D, x, z) => Math.hypot(x - D.px, z - D.pz) < 3.1;
+const inPad = (D, x, z) => Math.hypot(x - D.px, z - D.pz) < PAD_R - 0.3;
 function doorTick() {
 const p = myPos(), now = Date.now(); let d = ''; for (const D of DOORS) if (inPad(D, p.x, p.z)) d = D.k;
 if (d && DOORS.find((D) => D.k === d).ranked && acc() && acc().needed && !acc().user) { if (myDoor !== 'need-login') say('⚡ ' + tr('積分賽要先登入，走到門前按「登入」')); d = 'need-login'; }
@@ -40157,19 +40178,20 @@ const E = Array.isArray(pr.e) ? pr.e : []; let last = lastSeq.get(p.peer); if (l
 for (const e of E) { if (!Array.isArray(e) || !(e[0] > last) || e.length > 8) continue; last = e[0]; onEv(c, e); } lastSeq.set(p.peer, last); }
 for (const [id, c] of cats) if (!live.has(id)) { dropCat(c); cats.delete(id); lastSeq.delete(id); }
 if (infoEl) { const v = tr('{n} 號・{m}/{c} 人').replace('{n}', roomNo).replace('{m}', cats.size + 1).replace('{c}', CAP); if (infoEl.textContent !== v) infoEl.textContent = v; }
-if ((sendT -= dt) > 0 && !sendNowF) return; sendT = 0.1; sendNowF = false; const m = T.netMe(); if (!m) return; const a = m.a || {}, rgb = T._myRgb ? T._myRgb() : null;
+if ((sendT -= dt) > 0 && !sendNowF) return; sendT = 0.1 * Math.max(1, (cats.size + 1) / 30); const forced = sendNowF; sendNowF = false; const m = T.netMe(); if (!m) return; const a = m.a || {}, rgb = T._myRgb ? T._myRgb() : null;
 const di = doorInfo[myDoor], dg = lead.d === myDoor && di && di.wait != null && di.mem[0] && di.mem[0].me ? Math.round(di.wait * 10) / 10 : null;
-room.presence({ pz: 1, u: myUid(), n: myName(), k: m.k, lk: SC.wear && SC.wear.code ? SC.wear.code() : '', c: rgb ? (rgb[0] << 16) | (rgb[1] << 8) | rgb[2] : null, p: [r2(m.x), r2(m.y), r2(m.z), r2(m.f)], a: [r2(a.speed || 0), a.onGround ? 1 : 0, r2(a.vy || 0)], e: evs.map((x) => x.e), dr: myDoor === 'need-login' ? '' : myDoor, dj: myDoorAt, dg, go: lead.go && lead.go.d === myDoor ? lead.go : null });
+const pr = { pz: 1, u: myUid(), n: myName(), k: m.k, lk: SC.wear && SC.wear.code ? SC.wear.code() : '', c: rgb ? (rgb[0] << 16) | (rgb[1] << 8) | rgb[2] : null, p: [r2(m.x), r2(m.y), r2(m.z), r2(m.f)], a: [r2(a.speed || 0), a.onGround ? 1 : 0, r2(a.vy || 0)], e: evs.map((x) => x.e), dr: myDoor === 'need-login' ? '' : myDoor, dj: myDoorAt, dg, go: lead.go && lead.go.d === myDoor ? lead.go : null };
+const key = JSON.stringify(pr); if (key === lastSent && !forced) return; lastSent = key; room.presence(pr);
 }
+let lastSent = '';
 function leaveNow() { disconnect(); }
 const pv = new V3();
 function frame(dt, t) {
 for (const f of anim) f(t, dt);
-for (const n of npcs) { try { n.c.animate(dt, { speed: 0, onGround: true, vy: 0, form: 'biped', submerged: false, pitch: 0, firing: false, rolling: false, charge: 0, t: t + n.ph }); } catch (e) {} n.c.group.rotation.y = n.f + Math.sin(t * 0.6 + n.ph) * 0.25; }
-netTick(dt); doorTick();
+netTick(dt); lod(dt); doorTick();
 const cam = T._camera(); if (!cam || !hud) return; const W = hud.clientWidth, Hh = hud.clientHeight;
 const place = (el, x, y, z, up) => { pv.set(x, y + up, z).project(cam); const vis = pv.z < 1 && pv.x > -1.2 && pv.x < 1.2 && pv.y > -1.2 && pv.y < 1.2; el.style.visibility = vis ? '' : 'hidden'; if (vis) el.style.transform = `translate(${(((pv.x + 1) / 2) * W).toFixed(1)}px,${(((1 - pv.y) / 2) * Hh).toFixed(1)}px) translate(-50%,-100%)`; return vis; };
-for (const c of cats.values()) { const far = Math.hypot(c.x - cam.position.x, c.z - cam.position.z) > 70; c.tag.style.display = far ? 'none' : ''; if (!far) place(c.tag, c.x, c.y, c.z, 4.6); if (c.bub) { c.bubT -= dt; if (c.bubT <= 0 || muted.has(c.key)) c.bub.classList.add('off'); place(c.bub, c.x, c.y, c.z, 6.4); } }
+for (const c of cats.values()) { const far = !c.cat || Math.hypot(c.x - cam.position.x, c.z - cam.position.z) > 70; c.tag.style.display = far ? 'none' : ''; if (!far) place(c.tag, c.x, c.y, c.z, 4.6); if (c.bub) { c.bubT -= dt; if (c.bubT <= 0 || muted.has(c.key)) c.bub.classList.add('off'); place(c.bub, c.x, c.y, c.z, 6.4); } }
 if (myBub) { myBubT -= dt; if (myBubT <= 0) myBub.classList.add('off'); const p = myPos(); place(myBub, p.x, p.y, p.z, 5.6); }
 for (let i = pops.length - 1; i >= 0; i--) { const q = pops[i]; q.t += dt; if (q.t > 1.6) { q.el.remove(); pops.splice(i, 1); continue; } place(q.el, q.x, q.y + q.t * 2.2, q.z, 0); q.el.style.opacity = String(Math.min(1, 2.2 - q.t * 1.4)); }
 }
@@ -40187,10 +40209,9 @@ if (!P.on) return false;
 if (k === 'lore') { loreOpen(); return true; }
 if (k === 'd-rank') { if (acc() && acc().needed && !acc().user && acc().open) acc().open(); return true; }
 if (k.startsWith('d-')) return true;
-if (SHOPS.some((s) => s.k === k) || k === 'boss') { P.sticky = true; P.last = { x: myPos().x, z: myPos().z }; return false; }
 return false;
 }
-const zone = { H, out, collide, near, act, frame, shops: SHOPS.map((s) => s.k).concat(['boss', 'set']),   exitAt: () => false,
+const zone = { H, out, collide, near, act, frame, shops: ['set'],   exitAt: () => false,
 get scene() { return scene; }, get sun() { return sun; }, get spots() { return spots; }, get solids() { return solids; },
 enterZone: () => { P.on = true; launched = false; myDoor = ''; lead = { d: '', since: 0, go: null, busy: false }; if (hud) hud.hidden = false; document.getElementById('app').classList.add('in-plaza'); const th = T._ui().hud; if (th) th.classList.add('in-plaza'); T.holdWeapon('none'); clearTimeout(offTimer); connect(); },
 leave: () => { P.on = false; if (hud) hud.hidden = true; closeChat(); if (loreEl) loreEl.hidden = true; if (menuEl) menuEl.hidden = true; document.getElementById('app').classList.remove('in-plaza'); const th = T._ui().hud; if (th) th.classList.remove('in-plaza'); T.holdWeapon(); offTimer = setTimeout(() => { if (!P.on) disconnect(); }, 1500); },
@@ -40198,7 +40219,7 @@ leave: () => { P.on = false; if (hud) hud.hidden = true; closeChat(); if (loreEl
 let offTimer = 0;
 P.zone = zone;
 P.open = () => { P.sticky = true; if (!T.on) { T.show(); return; } enter(); };
-function enter() { if (!built) build(); if (T.zone() === zone) return; let at = { x: 0, z: 19, face: Math.PI }; if (P.last && Math.hypot(P.last.x, P.last.z) < R0) { const L = Math.hypot(P.last.x, P.last.z) || 1, k = Math.max(0, L - 3.5) / L; at = { x: P.last.x * k, z: P.last.z * k, face: Math.atan2(-P.last.x, -P.last.z) }; } P.last = null; T.setZone(zone, at); }
+function enter() { if (!built) build(); if (T.zone() === zone) return; let at = { x: 0, z: 22, face: Math.PI }; if (P.last && Math.hypot(P.last.x, P.last.z) < R0) { const L = Math.hypot(P.last.x, P.last.z) || 1, k = Math.max(0, L - 3.5) / L; at = { x: P.last.x * k, z: P.last.z * k, face: Math.atan2(-P.last.x, -P.last.z) }; } P.last = null; T.setZone(zone, at); }
 let riceSaid = false;
 { const real = T.show; T.show = (...a) => { real(...a); if (!T.on) return; if (P.sticky || !P.isDev()) enter(); else if (!riceSaid) { riceSaid = true; say(tr('🍙 飯糰小鎮：漆貓最愛吃鮭魚飯糰，所以小鎮就叫飯糰小鎮！')); } }; }
 window.addEventListener('keydown', (e) => {
@@ -46233,6 +46254,8 @@ if (useFb) load().catch(() => { fbp = null; });
 (() => {
 window.SC = window.SC || {};
 SC.CHANGELOG = [
+["2026-11-27", "", "沐沐廣場改版：更大的傍晚城市廣場和霓虹對戰傳送門，一間最多 100 人；拿掉小鎮的店和 NPC 貓咪，廣場專門用來找人開打",
+{"en": "MooMoo Plaza redone: a bigger modern city square at dusk with neon battle portals, up to 100 players per plaza; the town shops and NPC cats are gone, so the plaza is all about finding a match", "ja": "ムームー広場をリニューアル：夕暮れの広い現代的な街の広場とネオンの対戦ゲート、1つの広場に最大100人；町のお店とNPCのネコはなくなり、対戦相手を探す場所になりました", "ko": "무무 광장 새단장: 해 질 녘의 더 넓은 현대 도시 광장과 네온 대전 포털, 광장 하나에 최대 100명; 마을 상점과 NPC 고양이는 없어지고 대전 상대를 찾는 곳이 됐어요", "es": "Plaza MooMoo renovada: una plaza urbana moderna más grande al atardecer con portales de batalla de neón, hasta 100 jugadores por plaza; ya no están las tiendas del pueblo ni los gatos NPC: la plaza es para encontrar partida", "pt": "Praça MooMoo renovada: uma praça urbana moderna maior ao entardecer com portais de batalha neon, até 100 jogadores por praça; as lojas da vila e os gatos NPC saíram, a praça é para achar partida", "fr": "Place MooMoo refaite : une place urbaine moderne plus grande au crépuscule avec des portails de combat néon, jusqu’à 100 joueurs par place ; plus de boutiques du village ni de chats PNJ, la place sert à trouver une partie", "de": "MooMoo-Platz neu: ein größerer moderner Stadtplatz in der Abenddämmerung mit Neon-Kampfportalen, bis zu 100 Spieler pro Platz; die Dorfläden und NPC-Katzen sind weg, der Platz ist zum Matchfinden da", "it": "Piazza MooMoo rinnovata: una piazza cittadina moderna più grande al tramonto con portali di battaglia al neon, fino a 100 giocatori per piazza; niente più negozi del villaggio né gatti PNG, la piazza serve a trovare partite", "ru": "Площадь МуМу обновлена: большая современная городская площадь в сумерках с неоновыми порталами боёв, до 100 игроков на площади; магазинов деревни и NPC-котов больше нет, площадь — чтобы найти бой", "tr": "MooMoo Meydanı yenilendi: akşam vakti daha büyük, modern bir şehir meydanı ve neon savaş kapıları, meydan başına 100 oyuncuya kadar; köy dükkânları ve NPC kediler kalktı, meydan maç bulmak için", "id": "Alun-alun MooMoo diperbarui: alun-alun kota modern yang lebih besar saat senja dengan portal pertarungan neon, hingga 100 pemain per alun-alun; toko desa dan kucing NPC dihapus, alun-alun untuk mencari pertandingan", "vi": "Quảng trường MooMoo làm mới: quảng trường thành phố hiện đại rộng hơn lúc hoàng hôn với cổng đấu neon, tối đa 100 người mỗi quảng trường; bỏ cửa hàng làng và mèo NPC, quảng trường để tìm trận", "th": "ปรับโฉมลานมูมู: ลานเมืองทันสมัยยามเย็นที่กว้างขึ้นพร้อมประตูต่อสู้นีออน สูงสุด 100 คนต่อลาน; เอาร้านในหมู่บ้านและแมว NPC ออก ลานนี้มีไว้หาคู่ต่อสู้"}],
 ["2026-11-27", "", "太陽谷的武器換成上古彩貓的樣式和名字：彩露葫蘆、彩紋石輪、星脈長笛、彩螺號角、彩羽刃（功能完全不變）",
 { en: "Sun Valley weapons now look like the ancient colour cats' gear: Dewdrop Gourd, Glyph Stone Wheel, Starvein Flute, Conch Horn and Plume Blade (they work exactly the same)", ja: "太陽の谷の武器が古代の彩ネコの道具に：彩露のひょうたん、彩紋の石車、星脈の長笛、彩貝のほら貝、彩羽の刃（性能はそのまま）", ko: "태양 계곡 무기가 고대 채색 고양이의 도구로 바뀌었어요: 채색 이슬 호리병, 채색 무늬 돌바퀴, 별줄기 장피리, 채색 소라 나팔, 채색 깃털 칼날 (성능은 그대로)", es: "Las armas del Valle del Sol ahora son reliquias de los antiguos gatos de color: Calabaza de rocío, Rueda de piedra rúnica, Flauta de vena estelar, Caracola de color y Hoja de pluma (funcionan igual)", pt: "As armas do Vale do Sol agora são relíquias dos antigos gatos coloridos: Cabaça de orvalho, Roda de pedra rúnica, Flauta veia-estelar, Concha-trombeta e Lâmina de pena (funcionam igual)", fr: "Les armes de la Vallée du Soleil deviennent des reliques des anciens chats de couleur : Gourde de rosée, Roue de pierre gravée, Flûte de veine stellaire, Conque de couleur et Lame-plume (même fonctionnement)", de: "Die Waffen im Sonnental sind jetzt Relikte der uralten Farbkatzen: Tauflaschenkürbis, Runen-Steinrad, Sternader-Flöte, Farbmuschelhorn und Federklinge (sie funktionieren genau gleich)", it: "Le armi della Valle del Sole ora sono reliquie degli antichi gatti colorati: Zucca di rugiada, Ruota di pietra incisa, Flauto di vena stellare, Conchiglia-corno e Lama di piuma (funzionano allo stesso modo)", ru: "Оружие Солнечной долины теперь в стиле древних цветных кошек: Тыква-росинка, Резное каменное колесо, Флейта звёздной жилы, Цветной рог-раковина и Перо-клинок (работает так же)", tr: "Güneş Vadisi silahları artık kadim renk kedilerinin eşyaları: Çiy Su Kabağı, Oymalı Taş Teker, Yıldız Damarı Flütü, Renkli Deniz Kabuğu Boru ve Tüy Bıçak (aynı şekilde çalışır)", id: "Senjata Lembah Matahari kini berupa pusaka kucing warna kuno: Labu Embun, Roda Batu Berukir, Seruling Urat Bintang, Terompet Kerang Warna, dan Bilah Bulu (fungsinya sama)", vi: "Vũ khí ở Thung lũng Mặt Trời giờ là bảo vật của mèo màu cổ đại: Hồ lô sương màu, Bánh xe đá hoa văn, Sáo mạch sao, Tù và ốc màu và Lưỡi lông vũ (công dụng y như cũ)", th: "อาวุธในหุบเขาตะวันเปลี่ยนเป็นของแมวสีโบราณ: น้ำเต้าหยาดสี วงล้อหินลายสี ขลุ่ยสายดาว แตรหอยสังข์สี และใบมีดขนนก (ใช้งานเหมือนเดิม)" }],
 ["2026-11-27", "", "新的沐沐廣場：大家在同一個廣場走來走去、打字聊天（頭上冒對話框）、推一下、揮手、比愛心、擊掌、送飯糰；站進房門前的光圈湊齊人數就一起開打（塗地戰、擊倒戰、積分賽、殭屍保衛戰、一起打電腦）；中間的貓咪和小鎮的店一樣，貓神像下的石碑寫著翻彩的傳說",
